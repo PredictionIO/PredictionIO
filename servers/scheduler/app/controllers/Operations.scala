@@ -6,6 +6,7 @@ import io.prediction.commons.Config
 import scala.sys.process._
 import java.io.File
 
+import org.apache.commons.io.FileUtils
 import play.api._
 import play.api.libs.json._
 import play.api.mvc._
@@ -19,7 +20,7 @@ object Operations extends Controller {
     val localPath = BaseDir.appDir(config.settingsLocalTempRoot, appid)
     val localFile = new File(localPath)
     localFile.mkdirs()
-    val localCode = try { localFile.delete() } catch { case _: Throwable => false }
+    val localCode = FileUtils.deleteQuietly(localFile)
     val hadoopPath = BaseDir.appDir(config.settingsHdfsRoot, appid)
     // mkdir again to make sure that rmr failure is not due to non existing dir.
     // mkdir error can be ignored.
@@ -40,7 +41,7 @@ object Operations extends Controller {
     val localPath = BaseDir.engineDir(config.settingsLocalTempRoot, appid, engineid)
     val localFile = new File(localPath)
     localFile.mkdirs()
-    val localCode = try { localFile.delete() } catch { case _: Throwable => false }
+    val localCode = FileUtils.deleteQuietly(localFile)
     val hadoopPath = BaseDir.engineDir(config.settingsHdfsRoot, appid, engineid)
     // mkdir again to make sure that rmr failure is not due to non existing dir.
     // mkdir error can be ignored.
@@ -61,7 +62,7 @@ object Operations extends Controller {
     val localPath = BaseDir.algoDir(config.settingsLocalTempRoot, appid, engineid, algoid, None)
     val localFile = new File(localPath)
     localFile.mkdirs()
-    val localCode = try { localFile.delete() } catch { case _: Throwable => false }
+    val localCode = FileUtils.deleteQuietly(localFile)
     val hadoopPath = BaseDir.algoDir(config.settingsHdfsRoot, appid, engineid, algoid, None)
     val hadoopCode = if (hadoopRequired(request)) {
       val mkdir = s"${Scheduler.hadoopCommand} fs -mkdir $hadoopPath".!
@@ -80,7 +81,7 @@ object Operations extends Controller {
     val localPath = BaseDir.offlineEvalDir(config.settingsLocalTempRoot, appid, engineid, offlineevalid)
     val localFile = new File(localPath)
     localFile.mkdirs()
-    val localCode = try { localFile.delete() } catch { case _: Throwable => false }
+    val localCode = FileUtils.deleteQuietly(localFile)
     val hadoopPath = BaseDir.offlineEvalDir(config.settingsHdfsRoot, appid, engineid, offlineevalid)
     // mkdir again to make sure that rmr failure is not due to non existing dir.
     // mkdir error can be ignored.

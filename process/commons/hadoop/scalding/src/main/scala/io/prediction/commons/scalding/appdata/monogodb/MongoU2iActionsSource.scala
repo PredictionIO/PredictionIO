@@ -103,7 +103,8 @@ class MongoU2iActionsSource(db: String, host: String, port: Int, appId: Int) ext
       fields: (String, String, String, String, Option[String]) =>
         val (action, uid, iid, t, v) = fields
 
-        val vData: String = v.getOrElse(null) // use null if no such field for this record
+        // u2iAction v field type is Int
+        val vData: Any = v.map(_.toInt).getOrElse(null) // use null if no such field for this record
 
         (action, uid, iid, new java.util.Date(t.toLong), vData, appid)
     }.write(this)

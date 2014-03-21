@@ -6,9 +6,8 @@ import io.prediction.output.itemrec.ItemRecAlgoOutput
 import io.prediction.output.itemsim.ItemSimAlgoOutput
 
 import grizzled.slf4j.Logger
-import java.io.File
+import java.io.{ File, PrintWriter }
 import scala.sys.process._
-import scalax.io._
 
 case class TopKItemsConfig(
   enginetype: String = "",
@@ -75,38 +74,42 @@ object TopKItems {
 
       val tmpFilePath = OfflineMetricFile(commonsConfig.settingsLocalTempRoot, engine.appid, engine.id, evalid, metricid, algoid, "topKItems.tsv")
       val tmpFile = new File(tmpFilePath)
-      val output: Output = Resource.fromFile(tmpFile)
+      tmpFile.getParentFile().mkdirs()
       logger.info(s"Dumping data to temporary file $tmpFilePath...")
 
       config.enginetype match {
         case "itemrec" => {
           val users = commonsConfig.getAppdataTrainingUsers
           var userCount = 0
-          users.getByAppid(evalid) foreach { u =>
-            val topKItems = ItemRecAlgoOutput.output(u.id, k, None, None, None, None)(app, engine, algo, Some(offlineEval))
-            if (topKItems.length > 0) {
-              userCount += 1
-              val topKString = topKItems.map(iid => s"${evalid}_${iid}").mkString(",")
-              output.write(s"${evalid}_${u.id}\t${topKString}\n")
+          printToFile(tmpFile) { p =>
+            users.getByAppid(evalid) foreach { u =>
+              val topKItems = ItemRecAlgoOutput.output(u.id, k, None, None, None, None)(app, engine, algo, Some(offlineEval))
+              if (topKItems.length > 0) {
+                userCount += 1
+                val topKString = topKItems.map(iid => s"${evalid}_${iid}").mkString(",")
+                p.println(s"${evalid}_${u.id}\t${topKString}")
+              }
             }
+            logger.info(s"Found $userCount user(s) with non-zero top-K items")
           }
-          logger.info(s"Found $userCount user(s) with non-zero top-K items")
         }
         case "itemsim" => {
           val items = commonsConfig.getAppdataTrainingItems
           val scores = Seq.range(1, k + 1).reverse
           var itemCount = 0
-          items.getByAppid(evalid) foreach { i =>
-            val topKItems = ItemSimAlgoOutput.output(i.id, k, None, None, None, None)(app, engine, algo, Some(offlineEval))
-            if (topKItems.length > 0) {
-              itemCount += 1
-              topKItems.zip(scores) foreach { tuple =>
-                val (iid, score) = tuple
-                output.write(s"${evalid}_${i.id}\t${evalid}_${iid}\t${score}\n")
+          printToFile(tmpFile) { p =>
+            items.getByAppid(evalid) foreach { i =>
+              val topKItems = ItemSimAlgoOutput.output(i.id, k, None, None, None, None)(app, engine, algo, Some(offlineEval))
+              if (topKItems.length > 0) {
+                itemCount += 1
+                topKItems.zip(scores) foreach { tuple =>
+                  val (iid, score) = tuple
+                  p.println(s"${evalid}_${i.id}\t${evalid}_${iid}\t${score}")
+                }
               }
             }
+            logger.info(s"Found ${itemCount} item(s) with non-zero top-K items")
           }
-          logger.info(s"Found ${itemCount} item(s) with non-zero top-K items")
         }
       }
 
@@ -123,5 +126,10 @@ object TopKItems {
 
       logger.info("Finished")
     }
+  }
+
+  def printToFile(f: java.io.File)(op: java.io.PrintWriter => Unit) {
+    val p = new java.io.PrintWriter(f)
+    try { op(p) } finally { p.close() }
   }
 }

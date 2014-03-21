@@ -283,6 +283,42 @@
         }
     },
     "algoinfos": {
+        "pdio-local-itemrec-random": {
+            "name": "Random Rank (Non-distributed)",
+            "description": "Predict user preferences randomly.",
+            "batchcommands": [
+                "$base$/bin/random --appid $appid$ --engineid $engineid$ --algoid $algoid$ --numPredictions $numRecommendations$ --modelSet $modelset$ --recommendationTime $recommendationTime$"
+            ],
+            "offlineevalcommands": [
+                "$base$/bin/random --appid $appid$ --engineid $engineid$ --algoid $algoid$ --numPredictions $numRecommendations$ --modelSet false --recommendationTime $recommendationTime$ --evalid $evalid$"
+            ],
+            "paramorder": [],
+            "engineinfoid": "itemrec",
+            "techreq": [],
+            "datareq": [
+                "Users and Items."
+            ],
+            "params": {},
+            "paramsections": []
+        },
+        "pdio-local-itemsim-random": {
+            "name": "Random Rank (Non-distributed)",
+            "description": "Predict user preferences randomly.",
+            "batchcommands": [
+                "$base$/bin/random --appid $appid$ --engineid $engineid$ --algoid $algoid$ --numPredictions $numSimilarItems$ --modelSet $modelset$ --recommendationTime $recommendationTime$"
+            ],
+            "offlineevalcommands": [
+                "$base$/bin/random --appid $appid$ --engineid $engineid$ --algoid $algoid$ --numPredictions $numSimilarItems$ --modelSet false --recommendationTime $recommendationTime$ --evalid $evalid$"
+            ],
+            "paramorder": [],
+            "engineinfoid": "itemsim",
+            "techreq": [],
+            "datareq": [
+                "Users and Items."
+            ],
+            "params": {},
+            "paramsections": []
+        },
         "pdio-randomrank": {
             "name": "Random Rank",
             "description": "Predict user preferences randomly.",
@@ -1129,7 +1165,7 @@
                 "$hadoop$ jar $base$/lib/$pdioItemrecAlgo$ io.prediction.algorithms.scalding.mahout.itemrec.DataPreparator --hdfs --dbType $appdataDbType$ --dbName $appdataDbName$ --dbHost $appdataDbHost$ --dbPort $appdataDbPort$ --hdfsRoot $hdfsRoot$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ $itypes$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$",
                 "$hadoop$ fs -getmerge $dataFilePrefix$recommendItems.csv $localTempDir$recommendItemsM.csv",
                 "$hadoop$ fs -copyFromLocal $localTempDir$recommendItemsM.csv $dataFilePrefix$recommendItemsM.csv",
-                "$hadoop$ jar $mahoutCoreJob$ org.apache.mahout.cf.taste.hadoop.item.RecommenderJob --input $dataFilePrefix$ratings.csv --itemsFile $dataFilePrefix$recommendItemsM.csv --output $algoFilePrefix$predicted.tsv --tempDir $mahoutTempDir$ --numRecommendations $numRecommendations$ --booleanData $booleanData$ --maxPrefsPerUser $maxPrefsPerUser$ --minPrefsPerUser $minPrefsPerUser$ --maxSimilaritiesPerItem $maxSimilaritiesPerItem$ --maxPrefsPerUserInItemSimilarity $maxPrefsPerUserInItemSimilarity$ --similarityClassname $similarityClassname$ --threshold $threshold$",
+                "$hadoop$ jar $mahoutCoreJob$ org.apache.mahout.cf.taste.hadoop.item.RecommenderJob --input $dataFilePrefix$ratings.csv --itemsFile $dataFilePrefix$recommendItemsM.csv --output $algoFilePrefix$predicted.tsv --tempDir $mahoutTempDir$ --numRecommendations $numRecommendations$ --booleanData $booleanData$ --maxPrefsPerUser $maxPrefsPerUser$ --minPrefsPerUser $minPrefsPerUser$ --maxSimilaritiesPerItem $maxSimilaritiesPerItem$ --maxPrefsInItemSimilarity $maxPrefsInItemSimilarity$ --similarityClassname $similarityClassname$ --threshold $threshold$",
                 "$hadoop$ jar $base$/lib/$pdioItemrecAlgo$ io.prediction.algorithms.scalding.mahout.itemrec.ModelConstructor --hdfs --dbType $modeldataDbType$ --dbName $modeldataDbName$ --dbHost $modeldataDbHost$ --dbPort $modeldataDbPort$ --hdfsRoot $hdfsRoot$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ --modelSet $modelset$ --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$ --recommendationTime $recommendationTime$ --booleanData $booleanData$"
             ],
             "offlineevalcommands": [
@@ -1140,7 +1176,7 @@
                 "$hadoop$ jar $base$/lib/$pdioItemrecAlgo$ io.prediction.algorithms.scalding.mahout.itemrec.DataPreparator --hdfs --dbType $appdataTrainingDbType$ --dbName $appdataTrainingDbName$ --dbHost $appdataTrainingDbHost$ --dbPort $appdataTrainingDbPort$ --hdfsRoot $hdfsRoot$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ --evalid $evalid$ $itypes$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$",
                 "$hadoop$ fs -getmerge $dataFilePrefix$recommendItems.csv $localTempDir$recommendItemsM.csv",
                 "$hadoop$ fs -copyFromLocal $localTempDir$recommendItemsM.csv $dataFilePrefix$recommendItemsM.csv",
-                "$hadoop$ jar $mahoutCoreJob$ org.apache.mahout.cf.taste.hadoop.item.RecommenderJob --input $dataFilePrefix$ratings.csv --itemsFile $dataFilePrefix$recommendItemsM.csv --output $algoFilePrefix$predicted.tsv --tempDir $mahoutTempDir$ --numRecommendations $numRecommendations$ --booleanData $booleanData$ --maxPrefsPerUser $maxPrefsPerUser$ --minPrefsPerUser $minPrefsPerUser$ --maxSimilaritiesPerItem $maxSimilaritiesPerItem$ --maxPrefsPerUserInItemSimilarity $maxPrefsPerUserInItemSimilarity$ --similarityClassname $similarityClassname$ --threshold $threshold$",
+                "$hadoop$ jar $mahoutCoreJob$ org.apache.mahout.cf.taste.hadoop.item.RecommenderJob --input $dataFilePrefix$ratings.csv --itemsFile $dataFilePrefix$recommendItemsM.csv --output $algoFilePrefix$predicted.tsv --tempDir $mahoutTempDir$ --numRecommendations $numRecommendations$ --booleanData $booleanData$ --maxPrefsPerUser $maxPrefsPerUser$ --minPrefsPerUser $minPrefsPerUser$ --maxSimilaritiesPerItem $maxSimilaritiesPerItem$ --maxPrefsInItemSimilarity $maxPrefsInItemSimilarity$ --similarityClassname $similarityClassname$ --threshold $threshold$",
                 "$hadoop$ jar $base$/lib/$pdioItemrecAlgo$ io.prediction.algorithms.scalding.mahout.itemrec.ModelConstructor --hdfs --dbType $modeldataTrainingDbType$ --dbName $modeldataTrainingDbName$ --dbHost $modeldataTrainingDbHost$ --dbPort $modeldataTrainingDbPort$ --hdfsRoot $hdfsRoot$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ --evalid $evalid$ --modelSet $modelset$ --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$ --recommendationTime $recommendationTime$ --booleanData $booleanData$"
             ],
             "paramorder": [
@@ -1148,7 +1184,7 @@
                 "maxPrefsPerUser",
                 "minPrefsPerUser",
                 "maxSimilaritiesPerItem",
-                "maxPrefsPerUserInItemSimilarity",
+                "maxPrefsInItemSimilarity",
                 "similarityClassname",
                 "threshold",
                 "viewParam",
@@ -1219,7 +1255,7 @@
                     },
                     "defaultvalue": 100
                 },
-                "maxPrefsPerUserInItemSimilarity": {
+                "maxPrefsInItemSimilarity": {
                     "name": "Max Num of Preferences per User in Item Similarity",
                     "description": "Max number of preferences to consider per user in the item similarity computation phase, users with more preferences will be sampled down.",
                     "constraint": {
@@ -1535,8 +1571,8 @@
                     },
                     "defaultvalue": 150
                 },
-                "maxPrefsPerUserInItemSimilarityMin": {
-                    "name": "maxPrefsPerUserInItemSimilarityMin",
+                "maxPrefsInItemSimilarityMin": {
+                    "name": "maxPrefsInItemSimilarityMin",
                     "constraint": {
                         "paramtype": "integer"
                     },
@@ -1545,8 +1581,8 @@
                     },
                     "defaultvalue": 500
                 },
-                "maxPrefsPerUserInItemSimilarityMax": {
-                    "name": "maxPrefsPerUserInItemSimilarityMax",
+                "maxPrefsInItemSimilarityMax": {
+                    "name": "maxPrefsInItemSimilarityMax",
                     "constraint": {
                         "paramtype": "integer"
                     },
@@ -1583,7 +1619,7 @@
                                 "maxPrefsPerUser",
                                 "minPrefsPerUser",
                                 "maxSimilaritiesPerItem",
-                                "maxPrefsPerUserInItemSimilarity"
+                                "maxPrefsInItemSimilarity"
                             ]
                         }
                     ]
@@ -2023,16 +2059,419 @@
             ]
         },
         "mahout-knnitembased": {
-            "name": "Mahout's kNN Item Based Collaborative Filtering (Non-distributed)",
+            "name": "Mahout's kNN Item Based Collaborative Filtering (extension to GenericItemBased) (Non-distributed)",
             "description": "Predicts user preferences based on previous behaviors of users on similar items (Non-distributed).",
             "batchcommands": [
                 "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ $itypes$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$ --matrixMarket false",
-                "$base$/bin/itemrec.mahout.mahoutjob io.prediction.algorithms.mahout.itemrec.knnitembased.KNNItemBasedJob --input $localTempDir$ratings.csv --output $localTempDir$predicted.tsv --appid $appid$ --engineid $engineid$ --algoid $algoid$ --booleanData $booleanData$ --numRecommendations $numRecommendations$ --itemSimilarity $itemSimilarity$ --weighted $weighted$",
+                "$base$/bin/itemrec.mahout.mahoutjob io.prediction.algorithms.mahout.itemrec.knnitembased.KNNItemBasedJob --input $localTempDir$ratings.csv --output $localTempDir$predicted.tsv --appid $appid$ --engineid $engineid$ --algoid $algoid$ --booleanData $booleanData$ --numRecommendations $numRecommendations$ --itemSimilarity $itemSimilarity$ --weighted $weighted$ --nearestN $nearestN$ --threshold $threshold$",
                 "$base$/bin/itemrec.mahout.modelcon --inputDir $localTempDir$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ --modelSet $modelset$ --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$ --booleanData $booleanData$"
             ],
             "offlineevalcommands": [
                 "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ --evalid $evalid$ $itypes$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$ --matrixMarket false",
-                "$base$/bin/itemrec.mahout.mahoutjob io.prediction.algorithms.mahout.itemrec.knnitembased.KNNItemBasedJob --input $localTempDir$ratings.csv --output $localTempDir$predicted.tsv --appid $appid$ --engineid $engineid$ --algoid $algoid$ --evalid $evalid$ --booleanData $booleanData$ --numRecommendations $numRecommendations$ --itemSimilarity $itemSimilarity$ --weighted $weighted$",
+                "$base$/bin/itemrec.mahout.mahoutjob io.prediction.algorithms.mahout.itemrec.knnitembased.KNNItemBasedJob --input $localTempDir$ratings.csv --output $localTempDir$predicted.tsv --appid $appid$ --engineid $engineid$ --algoid $algoid$ --evalid $evalid$ --booleanData $booleanData$ --numRecommendations $numRecommendations$ --itemSimilarity $itemSimilarity$ --weighted $weighted$ --nearestN $nearestN$ --threshold $threshold$",
+                "$base$/bin/itemrec.mahout.modelcon --inputDir $localTempDir$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ --evalid $evalid$ --modelSet $modelset$ --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$ --booleanData $booleanData$"
+            ],
+            "paramorder": [
+                "booleanData",
+                "itemSimilarity",
+                "weighted",
+                "nearestN",
+                "threshold",
+                "viewParam",
+                "likeParam",
+                "dislikeParam",
+                "conversionParam",
+                "conflictParam"
+            ],
+            "engineinfoid": "itemrec",
+            "techreq": [],
+            "datareq": [
+                "Users, Items, and U2I Actions such as Like, Conversion and Rate."
+            ],
+            "params": {
+                "booleanData": {
+                    "name": "Boolean Data",
+                    "description": "Treat input data as having no preference values.",
+                    "constraint": {
+                        "paramtype": "boolean"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "True",
+                                "value": "true"
+                            },
+                            {
+                                "name": "False",
+                                "value": "false"
+                            }
+                        ]
+                    },
+                    "defaultvalue": false
+                },
+                "itemSimilarity": {
+                    "name": "Item Similarity",
+                    "description": "Item Similarity Measure.",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "City Block",
+                                "value": "CityBlockSimilarity"
+                            },
+                            {
+                                "name": "Euclidean Distance",
+                                "value": "EuclideanDistanceSimilarity"
+                            },
+                            {
+                                "name": "Log-Likelihood",
+                                "value": "LogLikelihoodSimilarity"
+                            },
+                            {
+                                "name": "Pearson Correlation",
+                                "value": "PearsonCorrelationSimilarity"
+                            },
+                            {
+                                "name": "Tanimoto Coefficient",
+                                "value": "TanimotoCoefficientSimilarity"
+                            },
+                            {
+                                "name": "Uncentered Cosine",
+                                "value": "UncenteredCosineSimilarity"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "LogLikelihoodSimilarity"
+                },
+                "weighted": {
+                    "name": "Weighted",
+                    "description": "The Similarity score is weighted (only applied to Euclidean Distance, Pearson Correlation, Uncentered Cosine item similarity).",
+                    "constraint": {
+                        "paramtype": "boolean"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "True",
+                                "value": "true"
+                            },
+                            {
+                                "name": "False",
+                                "value": "false"
+                            }
+                        ]
+                    },
+                    "defaultvalue": false
+                },
+                "viewParam": {
+                    "name": "View Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "3"
+                },
+                "nearestN": {
+                    "name": "Nearest K",
+                    "description": "K-nearest rated item neighbors.",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 10
+                },
+                "threshold": {
+                    "name": "Threshold",
+                    "description": "Similarity threshold.",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 5e-324
+                },
+                "likeParam": {
+                    "name": "Like Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "5"
+                },
+                "dislikeParam": {
+                    "name": "Dislike Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "1"
+                },
+                "conversionParam": {
+                    "name": "Conversion Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "4"
+                },
+                "conflictParam": {
+                    "name": "Override",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "Use the latest action",
+                                "value": "latest"
+                            },
+                            {
+                                "name": "Use the highest preference score one",
+                                "value": "highest"
+                            },
+                            {
+                                "name": "Use the lowest preference score one",
+                                "value": "lowest"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "latest"
+                },
+                "nearestNMin": {
+                    "name": "nearestNMin",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 5
+                },
+                "nearestNMax": {
+                    "name": "nearestNMax",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 15
+                },
+                "thresholdMin": {
+                    "name": "thresholdMin",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 5e-324
+                },
+                "thresholdMax": {
+                    "name": "thresholdMax",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 0.2
+                }
+            },
+            "paramsections": [
+                {
+                    "name": "Parameter Settings",
+                    "sectiontype": "normal",
+                    "subsections": [
+                        {
+                            "name": "Item Similarity Measurement",
+                            "sectiontype": "normal",
+                            "params": [
+                                "itemSimilarity"
+                            ]
+                        },
+                        {
+                            "name": "Advanced Parameters",
+                            "sectiontype": "normal",
+                            "params": [
+                                "booleanData",
+                                "weighted"
+                            ]
+                        },
+                        {
+                            "name": "Numeric Parameters",
+                            "sectiontype": "tuning",
+                            "params": [
+                                "nearestN",
+                                "threshold"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "User Actions Representation Settings",
+                    "sectiontype": "normal",
+                    "subsections": [
+                        {
+                            "name": "User Action Scores",
+                            "sectiontype": "normal",
+                            "description": "Define the preference score represented by each user action from 1 to 5. 5 is the most preferred, 1 is the least preferred. 3 is neutral.",
+                            "params": [
+                                "viewParam",
+                                "likeParam",
+                                "dislikeParam",
+                                "conversionParam"
+                            ]
+                        },
+                        {
+                            "name": "Overriding",
+                            "sectiontype": "normal",
+                            "description": "When there are conflicting actions, e.g. a user gives an item a rating 5 but later dislikes it, determine which action will be considered as final preference.",
+                            "params": [
+                                "conflictParam"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "mahout-genericitembased": {
+            "name": "Mahout's Generic Item Based Collaborative Filtering (Non-distributed)",
+            "description": "Predicts user preferences based on previous behaviors of users on similar items (Non-distributed).",
+            "batchcommands": [
+                "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ $itypes$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$ --matrixMarket false",
+                "$base$/bin/itemrec.mahout.mahoutjob io.prediction.algorithms.mahout.itemrec.genericitembased.GenericItemBasedJob --input $localTempDir$ratings.csv --output $localTempDir$predicted.tsv --appid $appid$ --engineid $engineid$ --algoid $algoid$ --booleanData $booleanData$ --numRecommendations $numRecommendations$ --itemSimilarity $itemSimilarity$ --weighted $weighted$",
+                "$base$/bin/itemrec.mahout.modelcon --inputDir $localTempDir$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ --modelSet $modelset$ --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$ --booleanData $booleanData$"
+            ],
+            "offlineevalcommands": [
+                "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ --evalid $evalid$ $itypes$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$ --matrixMarket false",
+                "$base$/bin/itemrec.mahout.mahoutjob io.prediction.algorithms.mahout.itemrec.genericitembased.GenericItemBasedJob --input $localTempDir$ratings.csv --output $localTempDir$predicted.tsv --appid $appid$ --engineid $engineid$ --algoid $algoid$ --evalid $evalid$ --booleanData $booleanData$ --numRecommendations $numRecommendations$ --itemSimilarity $itemSimilarity$ --weighted $weighted$",
                 "$base$/bin/itemrec.mahout.modelcon --inputDir $localTempDir$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ --evalid $evalid$ --modelSet $modelset$ --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$ --booleanData $booleanData$"
             ],
             "paramorder": [
@@ -5248,7 +5687,7 @@
                 "$base$/bin/quiet.sh $hadoop$ fs -rmr $algoDir$",
                 "$hadoop$ jar $base$/lib/$pdioItemsimAlgo$ io.prediction.algorithms.scalding.mahout.itemsim.DataCopy --hdfs --dbType $appdataDbType$ --dbName $appdataDbName$ --dbHost $appdataDbHost$ --dbPort $appdataDbPort$ --hdfsRoot $hdfsRoot$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ $itypes$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$",
                 "$hadoop$ jar $base$/lib/$pdioItemsimAlgo$ io.prediction.algorithms.scalding.mahout.itemsim.DataPreparator --hdfs --dbType $appdataDbType$ --dbName $appdataDbName$ --dbHost $appdataDbHost$ --dbPort $appdataDbPort$ --hdfsRoot $hdfsRoot$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ $itypes$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$",
-                "$hadoop$ jar $mahoutCoreJob$ org.apache.mahout.cf.taste.hadoop.similarity.item.ItemSimilarityJob --input $dataFilePrefix$ratings.csv --output $algoFilePrefix$similarities.tsv --tempDir $mahoutTempDir$ --maxSimilaritiesPerItem $numSimilarItems$ --booleanData $booleanData$ --maxPrefsPerUser $maxPrefsPerUser$ --minPrefsPerUser $minPrefsPerUser$ --similarityClassname $similarityClassname$ --threshold $threshold$",
+                "$hadoop$ jar $mahoutCoreJob$ org.apache.mahout.cf.taste.hadoop.similarity.item.ItemSimilarityJob --input $dataFilePrefix$ratings.csv --output $algoFilePrefix$similarities.tsv --tempDir $mahoutTempDir$ --maxSimilaritiesPerItem $numSimilarItems$ --booleanData $booleanData$ --maxPrefs $maxPrefs$ --minPrefsPerUser $minPrefsPerUser$ --similarityClassname $similarityClassname$ --threshold $threshold$",
                 "$hadoop$ jar $base$/lib/$pdioItemsimAlgo$ io.prediction.algorithms.scalding.mahout.itemsim.ModelConstructor --hdfs --dbType $modeldataDbType$ --dbName $modeldataDbName$ --dbHost $modeldataDbHost$ --dbPort $modeldataDbPort$ --hdfsRoot $hdfsRoot$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ --modelSet $modelset$ --numSimilarItems $numSimilarItems$ --recommendationTime $recommendationTime$"
             ],
             "offlineevalcommands": [
@@ -5256,12 +5695,12 @@
                 "$base$/bin/quiet.sh $hadoop$ fs -rmr $algoDir$",
                 "$hadoop$ jar $base$/lib/$pdioItemsimAlgo$ io.prediction.algorithms.scalding.mahout.itemsim.DataCopy --hdfs --dbType $appdataTrainingDbType$ --dbName $appdataTrainingDbName$ --dbHost $appdataTrainingDbHost$ --dbPort $appdataTrainingDbPort$ --hdfsRoot $hdfsRoot$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ --evalid $evalid$ $itypes$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$",
                 "$hadoop$ jar $base$/lib/$pdioItemsimAlgo$ io.prediction.algorithms.scalding.mahout.itemsim.DataPreparator --hdfs --dbType $appdataTrainingDbType$ --dbName $appdataTrainingDbName$ --dbHost $appdataTrainingDbHost$ --dbPort $appdataTrainingDbPort$ --hdfsRoot $hdfsRoot$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ --evalid $evalid$ $itypes$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$",
-                "$hadoop$ jar $mahoutCoreJob$ org.apache.mahout.cf.taste.hadoop.similarity.item.ItemSimilarityJob --input $dataFilePrefix$ratings.csv --output $algoFilePrefix$similarities.tsv --tempDir $mahoutTempDir$ --maxSimilaritiesPerItem $numSimilarItems$ --booleanData $booleanData$ --maxPrefsPerUser $maxPrefsPerUser$ --minPrefsPerUser $minPrefsPerUser$ --similarityClassname $similarityClassname$ --threshold $threshold$",
+                "$hadoop$ jar $mahoutCoreJob$ org.apache.mahout.cf.taste.hadoop.similarity.item.ItemSimilarityJob --input $dataFilePrefix$ratings.csv --output $algoFilePrefix$similarities.tsv --tempDir $mahoutTempDir$ --maxSimilaritiesPerItem $numSimilarItems$ --booleanData $booleanData$ --maxPrefs $maxPrefs$ --minPrefsPerUser $minPrefsPerUser$ --similarityClassname $similarityClassname$ --threshold $threshold$",
                 "$hadoop$ jar $base$/lib/$pdioItemsimAlgo$ io.prediction.algorithms.scalding.mahout.itemsim.ModelConstructor --hdfs --dbType $modeldataTrainingDbType$ --dbName $modeldataTrainingDbName$ --dbHost $modeldataTrainingDbHost$ --dbPort $modeldataTrainingDbPort$ --hdfsRoot $hdfsRoot$ --appid $appid$ --engineid $engineid$ --algoid $algoid$ --evalid $evalid$ --modelSet $modelset$ --numSimilarItems $numSimilarItems$ --recommendationTime $recommendationTime$"
             ],
             "paramorder": [
                 "booleanData",
-                "maxPrefsPerUser",
+                "maxPrefs",
                 "minPrefsPerUser",
                 "similarityClassname",
                 "threshold",
@@ -5300,7 +5739,7 @@
                     },
                     "defaultvalue": false
                 },
-                "maxPrefsPerUser": {
+                "maxPrefs": {
                     "name": "Max Num of Preferences per User",
                     "description": "Maximum number of preferences considered per user in final recommendation phase.",
                     "constraint": {
@@ -5567,8 +6006,8 @@
                     },
                     "defaultvalue": 0.15
                 },
-                "maxPrefsPerUserMin": {
-                    "name": "maxPrefsPerUserMin",
+                "maxPrefsMin": {
+                    "name": "maxPrefsMin",
                     "constraint": {
                         "paramtype": "integer"
                     },
@@ -5577,8 +6016,8 @@
                     },
                     "defaultvalue": 500
                 },
-                "maxPrefsPerUserMax": {
-                    "name": "maxPrefsPerUserMax",
+                "maxPrefsMax": {
+                    "name": "maxPrefsMax",
                     "constraint": {
                         "paramtype": "integer"
                     },
@@ -5632,7 +6071,7 @@
                             "sectiontype": "tuning",
                             "params": [
                                 "threshold",
-                                "maxPrefsPerUser",
+                                "maxPrefs",
                                 "minPrefsPerUser"
                             ]
                         }
@@ -5799,8 +6238,8 @@
                 "kParam"
             ]
         },
-        "sm_map_k": {
-            "name": "MAP@k (non-distributed)",
+        "map_k_nd": {
+            "name": "MAP@k (Non-distributed)",
             "description": "Mean Average Precision",
             "engineinfoids": [
                 "itemrec"
@@ -5838,7 +6277,7 @@
         },
         "ismap_k": {
             "name": "ISMAP@k",
-            "description": "Item Similarity Mean Average Precision at k",
+            "description": "Item Similarity Mean Average Precision",
             "engineinfoids": [
                 "itemsim"
             ],
@@ -5872,6 +6311,43 @@
             ],
             "paramorder": [
                 "kParam"
+            ]
+        },
+        "ismap_k_nd": {
+            "name": "ISMAP@k (Non-distributed)",
+            "description": "Item Similarity Mean Average Precision",
+            "engineinfoids": [
+                "itemsim"
+            ],
+            "commands": [
+                "$base$/bin/topk --enginetype itemsim --evalid $evalid$ --algoid $algoid$ --k $k$ --metricid $metricid$ --hdfsroot $hdfsRoot$ --local",
+                "$base$/bin/mapatk --appid $appid$ --engineid $engineid$ --evalid $evalid$ --metricid $metricid$ --algoid $algoid$ --iteration $iteration$ --splitset $splitset$ --k $k$ --goal $goalParam$"
+            ],
+            "params": {
+                "k": {
+                    "name": "k",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "defaultvalue": 20,
+                    "ui": {
+                        "uitype": "text"
+                    }
+                }
+            },
+            "paramsections": [
+                {
+                    "name": "Parameters",
+                    "sectiontype": "normal",
+                    "description": "",
+                    "params": [
+                        "k"
+                    ]
+                }
+            ],
+            "paramorder": [
+                "k"
             ]
         }
     },

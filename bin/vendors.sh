@@ -29,16 +29,16 @@ install_play () {
 }
 
 install_mahout () {
-    echo "Going to download and install Apache Mahout 0.8..."
+    echo "Going to download and install Apache Mahout 0.9..."
     mkdir -p $VENDORS_PATH
     cd $VENDORS_PATH
-    #echo "Retrieving Apache mirror list..."
-    #curl -o apache_mahout_mirrors.txt http://www.apache.org/dyn/closer.cgi/mahout/0.8/mahout-distribution-0.8.tar.gz
-    #MAHOUT_URL=$(cat apache_mahout_mirrors.txt | grep -m 1 "<strong>.*</strong>" | sed 's/.*<strong>//' | sed 's/<\/strong>.*//')
-    #echo "Found mirror: $MAHOUT_URL"
-    #curl -O $MAHOUT_URL
-    curl -O http://archive.apache.org/dist/mahout/0.8/mahout-distribution-0.8.tar.gz
-    tar zxvf mahout-distribution-0.8.tar.gz
+    echo "Retrieving Apache mirror list..."
+    curl -o apache_mahout_mirrors.txt http://www.apache.org/dyn/closer.cgi/mahout/0.9/mahout-distribution-0.9.tar.gz
+    MAHOUT_URL=$(cat apache_mahout_mirrors.txt | grep -m 1 "<strong>.*</strong>" | sed 's/.*<strong>//' | sed 's/<\/strong>.*//')
+    echo "Found mirror: $MAHOUT_URL"
+    curl -O $MAHOUT_URL
+    #curl -O http://archive.apache.org/dist/mahout/0.8/mahout-distribution-0.8.tar.gz
+    tar zxvf mahout-distribution-0.9.tar.gz
     cd $BASE
 }
 
@@ -64,7 +64,7 @@ install_graphchi_cpp_cf_linux64 () {
 VENDORS_PATH="$BASE/vendors"
 VENDOR_SBT="$VENDORS_PATH/sbt-0.13.1/sbt"
 VENDOR_PLAY="$VENDORS_PATH/play-2.2.1/play"
-VENDOR_MAHOUT="$VENDORS_PATH/mahout-distribution-0.8"
+VENDOR_MAHOUT="$VENDORS_PATH/mahout-distribution-0.9"
 VENDOR_GRAPHCHI_CPP_CF_LINUX32="$VENDORS_PATH/graphchi-cpp-cf-linux-i686-0a6545ccb7"
 VENDOR_GRAPHCHI_CPP_CF_LINUX64="$VENDORS_PATH/graphchi-cpp-cf-linux-x86_64-0a6545ccb7"
 
@@ -96,12 +96,12 @@ else
     exit 1
 fi
 
-if [ -r "$VENDOR_MAHOUT/mahout-core-0.8-job.jar" ] ; then
-    echo "Using Apache Mahout 0.8 in vendors."
+if [ -r "$VENDOR_MAHOUT/mahout-core-0.9-job.jar" ] ; then
+    echo "Using Apache Mahout 0.9 in vendors."
 elif install_mahout ; then
     echo ""
 else
-    echo "Unable to locate Apache Mahout 0.8 and automatic installation failed. Aborting." >&2
+    echo "Unable to locate Apache Mahout 0.9 and automatic installation failed. Aborting." >&2
     exit 1
 fi
 

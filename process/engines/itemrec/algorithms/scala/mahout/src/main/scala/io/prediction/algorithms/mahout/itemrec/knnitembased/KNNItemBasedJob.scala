@@ -25,6 +25,8 @@ class KNNItemBasedJob extends MahoutJob {
     val booleanData: Boolean = getArgOpt(args, "booleanData", "false").toBoolean
     val itemSimilarity: String = getArgOpt(args, "itemSimilarity", defaultItemSimilarity)
     val weighted: Boolean = getArgOpt(args, "weighted", "false").toBoolean
+    val threshold: Double = getArgOpt(args, "threshold").map(_.toDouble).getOrElse(Double.MinPositiveValue)
+    val nearestN: Int = getArgOpt(args, "nearestN", "10").toInt
 
     val weightedParam: Weighting = if (weighted) Weighting.WEIGHTED else Weighting.UNWEIGHTED
 
@@ -39,11 +41,7 @@ class KNNItemBasedJob extends MahoutJob {
     }
 
     // As of Mahout 0.9, the implementation uses ALL neighbours (k=ALL)
-    val recommender: Recommender = if (booleanData) {
-      new GenericBooleanPrefItemBasedRecommender(dataModel, similarity)
-    } else {
-      new GenericItemBasedRecommender(dataModel, similarity)
-    }
+    val recommender: Recommender = new KNNItemBasedRecommender(dataModel, similarity, booleanData, nearestN, threshold)
 
     recommender
   }

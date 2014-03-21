@@ -16,7 +16,6 @@ libraryDependencies in ThisBuild ++= Seq(
   "com.github.nscala-time" %% "nscala-time" % "0.6.0",
   "org.slf4j" % "slf4j-log4j12" % "1.7.5" % "test",
   "org.specs2" %% "specs2" % "2.3.10" % "test")
-  //"org.specs2" %% "specs2" % "1.14" % "test")
 
 publishTo in ThisBuild := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.m2/repository")))
 
@@ -28,6 +27,8 @@ lazy val root = project.in(file(".")).aggregate(
   commons,
   output,
   processHadoopScalding,
+  processEnginesCommonsAlgoScalaRandom,
+  processEnginesCommonsEvalScalaMetricsMAP,
   processEnginesCommonsEvalScalaParamGen,
   processEnginesCommonsEvalScalaTopKItems,
   processEnginesCommonsEvalScalaU2ITrainingTestSplit,
@@ -67,6 +68,11 @@ lazy val processCommonsHadoopScalding = project
   .in(file("process/commons/hadoop/scalding")).dependsOn(commons)
   .settings(scalariformSettings: _*)
 
+lazy val processEnginesCommonsAlgoScalaRandom = project
+  .in(file("process/engines/commons/algorithms/scala/random"))
+  .dependsOn(commons)
+  .settings(scalariformSettings: _*)
+
 lazy val processEnginesCommonsEvalHadoopScalding = project
   .in(file("process/engines/commons/evaluations/hadoop/scalding"))
   .aggregate(processEnginesCommonsEvalHadoopScaldingU2ITrainingTestSplit)
@@ -75,6 +81,11 @@ lazy val processEnginesCommonsEvalHadoopScalding = project
 lazy val processEnginesCommonsEvalHadoopScaldingU2ITrainingTestSplit = project
   .in(file("process/engines/commons/evaluations/hadoop/scalding/u2itrainingtestsplit"))
   .dependsOn(processCommonsHadoopScalding)
+
+lazy val processEnginesCommonsEvalScalaMetricsMAP = project
+  .in(file("process/engines/commons/evaluations/scala/map"))
+  .dependsOn(commons)
+  .settings(scalariformSettings: _*)
 
 lazy val processEnginesCommonsEvalScalaParamGen = project
   .in(file("process/engines/commons/evaluations/scala/paramgen"))
@@ -160,11 +171,6 @@ lazy val processEnginesItemRecEvalHadoopScalding = project
 lazy val processEnginesItemRecEvalHadoopScaldingMetricsMAP = project
   .in(file("process/engines/itemrec/evaluations/hadoop/scalding/metrics/map"))
   .dependsOn(processCommonsHadoopScalding)
-  .settings(scalariformSettings: _*)
-
-lazy val processEnginesItemRecEvalScalaMetricsMAP = project
-  .in(file("process/engines/itemrec/evaluations/scala/map"))
-  .dependsOn(commons)
   .settings(scalariformSettings: _*)
 
 lazy val processEnginesItemSimAlgoHadoopScalding = project

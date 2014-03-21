@@ -1,6 +1,6 @@
 import xerial.sbt.Pack._
 
-name := "predictionio-process-commons-evaluations-topkitems"
+name := "predictionio-process-commons-algorithms-scala-random"
 
 libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.1.1",
@@ -16,6 +16,6 @@ packExpandedClasspath := true
 
 packGenerateWindowsBatFile := false
 
-packMain := Map("topk" -> "io.prediction.evaluations.commons.topkitems.TopKItems")
+packMain := Map("random" -> "io.prediction.algorithms.commons.random.Random")
 
-packJvmOpts := Map("topk" -> Common.packCommonJvmOpts)
+packJvmOpts := Map("random" -> Common.packCommonJvmOpts)

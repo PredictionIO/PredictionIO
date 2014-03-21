@@ -1,14 +1,11 @@
-package io.prediction.metrics.itemrec.map
+package io.prediction.metrics.commons.map
 
 import io.prediction.commons.Config
 import io.prediction.commons.settings.OfflineEvalResult
-//import io.prediction.commons.appdata.{ Item, Items, U2IAction, U2IActions, User, Users }
 import io.prediction.commons.filepath.OfflineMetricFile
 
-//import java.io.{ BufferedWriter, File, FileWriter }
 import scala.io.Source
 
-//import com.github.nscala_time.time.Imports._
 import grizzled.slf4j.Logger
 
 case class MAPAtKConfig(
@@ -29,6 +26,8 @@ case class MAPAtKConfig(
  */
 object MAPAtK {
   def main(args: Array[String]) {
+    val commonsConfig = new Config()
+    val engines = commonsConfig.getSettingsEngines
     val parser = new scopt.OptionParser[MAPAtKConfig]("mapatk") {
       head("mapatk")
       opt[Int]("appid") required () action { (x, c) =>
@@ -36,6 +35,8 @@ object MAPAtK {
       } text ("the App ID that this metric will be applied to")
       opt[Int]("engineid") required () action { (x, c) =>
         c.copy(engineid = x)
+      } validate { x =>
+        engines.get(x) map { _ => success } getOrElse failure(s"the Engine ID does not correspond to a valid Engine")
       } text ("the Engine ID that this metric will be applied to")
       opt[Int]("evalid") required () action { (x, c) =>
         c.copy(evalid = x)
@@ -69,43 +70,40 @@ object MAPAtK {
 
     parser.parse(args, MAPAtKConfig()) map { config =>
       val logger = Logger(MAPAtK.getClass)
-      val commonsConfig = new Config()
       val u2iDb = if (config.splitset == "validation") commonsConfig.getAppdataValidationU2IActions else commonsConfig.getAppdataTestU2IActions
       val resultsDb = commonsConfig.getSettingsOfflineEvalResults
+      val engine = engines.get(config.engineid).get
 
-      // Collect relevant items for all users
-      logger.info("Collecting relevant items...")
-      val relevantItems = scala.collection.mutable.Map[String, scala.collection.mutable.Set[String]]()
-      u2iDb.getAllByAppid(config.evalid) filter { u2iAction =>
+      // Collect relevant items for all users and items
+      logger.info("Collecting relevance data...")
+      val u2i = u2iDb.getAllByAppid(config.evalid).toSeq filter { u2iAction =>
         config.goal match {
           case "view" | "conversion" | "like" => u2iAction.action == config.goal
-          case "rate3" => try { u2iAction.action == "rate" && u2iAction.v.get.toInt >= 3 } catch {
+          case "rate3" => try { u2iAction.action == "rate" && u2iAction.v.get >= 3 } catch {
             case e: Exception =>
               logger.error(s"${u2iAction.uid}-${u2iAction.iid}: ${u2iAction.v} (${e.getMessage()})")
               false
           }
-          case "rate4" => try { u2iAction.action == "rate" && u2iAction.v.get.toInt >= 4 } catch {
+          case "rate4" => try { u2iAction.action == "rate" && u2iAction.v.get >= 4 } catch {
             case e: Exception =>
               logger.error(s"${u2iAction.uid}-${u2iAction.iid}: ${u2iAction.v} (${e.getMessage()})")
               false
           }
-          case "rate5" => try { u2iAction.action == "rate" && u2iAction.v.get.toInt == 5 } catch {
+          case "rate5" => try { u2iAction.action == "rate" && u2iAction.v.get == 5 } catch {
             case e: Exception =>
               logger.error(s"${u2iAction.uid}-${u2iAction.iid}: ${u2iAction.v} (${e.getMessage()})")
               false
           }
-        }
-      } foreach { u2iAction =>
-        if (relevantItems.contains(u2iAction.uid)) {
-          relevantItems(u2iAction.uid) += u2iAction.iid
-        } else {
-          relevantItems += (u2iAction.uid -> scala.collection.mutable.Set(u2iAction.iid))
         }
       }
+
+      val relevantItems = u2i.groupBy(_.uid).mapValues(_.map(_.iid).toSet)
+      val relevantUsers = if (engine.infoid == "itemsim") u2i.groupBy(_.iid).mapValues(_.map(_.uid).toSet) else Map[String, Set[String]]()
+
       logger.info(s"# users: ${relevantItems.size}")
+      if (engine.infoid == "itemsim") logger.info(s"# items: ${relevantUsers.size}")
 
       // Read top-k list for every user
-      val topKItems = scala.collection.mutable.Map[String, Seq[String]]()
       val topKFilePath = OfflineMetricFile(
         commonsConfig.settingsLocalTempRoot,
         config.appid,
@@ -116,17 +114,61 @@ object MAPAtK {
         "topKItems.tsv")
       logger.info(s"Reading top-K list from: $topKFilePath")
       val prefixSize = config.evalid.toString.length + 1
-      Source.fromFile(topKFilePath).getLines() foreach { topKLine =>
-        val topKLineParts = topKLine.split("\t")
-        topKItems += (topKLineParts(0).drop(prefixSize) -> topKLineParts(1).split(",").map(_.drop(prefixSize)))
+
+      val topKItems: Map[String, Seq[String]] = engine.infoid match {
+        case "itemrec" => {
+          Source.fromFile(topKFilePath).getLines().toSeq.map(
+            _.split("\t")).groupBy(
+              _.apply(0)) map { t =>
+                (t._1.drop(prefixSize) -> t._2.apply(0).apply(1).split(",").toSeq.map(_.drop(prefixSize)))
+              }
+        }
+        case "itemsim" => {
+          /**
+           * topKItems.tsv for ItemSim
+           *     iid     simiid  score
+           *     i0      i1      3.2
+           *     i0      i4      2.5
+           *     i0      i5      1.4
+           *
+           * 1. Read all lines into a Seq[String].
+           * 2. Split by \t into Seq[Array[String]].
+           * 3. Group by first element (iid) into Map[String, Seq[Array[String]]].
+           * 4. Sort and filter Seq[Array[String]] to become Map[String, Seq[String]].
+           */
+          Source.fromFile(topKFilePath).getLines().toSeq.map(
+            _.split("\t")).groupBy(
+              _.apply(0)) map { t =>
+                (t._1.drop(prefixSize) -> t._2.sortBy(_.apply(2)).reverse.map(_.apply(1).drop(prefixSize)))
+              }
+        }
       }
 
-      val apAtK = topKItems map { t =>
-        relevantItems.get(t._1) map { ri =>
-          averagePrecisionAtK(config.k, t._2, ri.toSet)
-        } getOrElse 0.0
+      logger.info(s"Running MAP@${config.k} for ${engine.infoid} engine")
+      val mapAtK: Double = engine.infoid match {
+        case "itemrec" => {
+          val apAtK = topKItems map { t =>
+            relevantItems.get(t._1) map { ri =>
+              averagePrecisionAtK(config.k, t._2, ri)
+            } getOrElse 0.0
+          }
+          apAtK.sum / scala.math.min(topKItems.size, relevantItems.size)
+        }
+        case "itemsim" => {
+          val iapAtK = topKItems map { t =>
+            relevantUsers.get(t._1) map { ru =>
+              val apAtK = ru map { uid =>
+                relevantItems.get(uid) map { ri =>
+                  averagePrecisionAtK(config.k, t._2, ri)
+                } getOrElse 0.0
+              }
+              apAtK.sum / scala.math.min(ru.size, relevantItems.size)
+            } getOrElse 0.0
+          }
+          iapAtK.sum / scala.math.min(topKItems.size, relevantUsers.size)
+        }
+        case _ => 0.0
       }
-      val mapAtK = apAtK.sum / scala.math.min(topKItems.size, relevantItems.size)
 
       logger.info(s"MAP@${config.k} = $mapAtK. Saving results...")
 
@@ -138,7 +180,7 @@ object MAPAtK {
         iteration = config.iteration,
         splitset = config.splitset))
 
-      logger.info("MAP@${config.k} has run to completion")
+      logger.info(s"MAP@${config.k} has run to completion")
     }
   }
 
