@@ -123,6 +123,14 @@ object API extends Controller {
     )
   }
 
+  def ValidAttributes(list: Map[String, Any]): Boolean = {
+    val pattern = "^.*\\..*$".r
+    list.keys.foreach {
+      case pattern() => return true
+      case _ => None
+    }
+    return false
+  }
   /**
    * In order to override default error messages, use Lang("en") for
    * Messages() to enforce framwork to use conf/messages.en because
@@ -250,16 +258,21 @@ object API extends Controller {
         f => bindFailed(f.errors),
         (t, attributes) => {
           val (appkey, uid, latlng, inactive) = t
-          AuthenticatedApp(t._1) { app =>
-            users.insert(User(
-              id = uid,
-              appid = app.id,
-              ct = DateTime.now,
-              latlng = latlng map { parseLatlng(_) },
-              inactive = inactive,
-              attributes = if (attributes.isEmpty) None else Some(attributes)
-            ))
-            APIMessageResponse(CREATED, Map("message" -> "User created."))
+          if (ValidAttributes(attributes)) {
+            APIMessageResponse(NOT_FOUND, Map("message" -> "Optional Parameters, Parameter keys cannot contain dots (i.e. .)"))
+
+          } else {
+            AuthenticatedApp(t._1) { app =>
+              users.insert(User(
+                id = uid,
+                appid = app.id,
+                ct = DateTime.now,
+                latlng = latlng map { parseLatlng(_) },
+                inactive = inactive,
+                attributes = if (attributes.isEmpty) None else Some(attributes)
+              ))
+              APIMessageResponse(CREATED, Map("message" -> "User created."))
+            }
           }
         }
       )
