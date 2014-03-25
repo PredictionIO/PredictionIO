@@ -51,15 +51,15 @@ class GraphChiModelConstructorSpec extends Specification {
     inputDirFile.mkdirs()
 
     val usersIndex = List(
-      "1\tu0",
-      "2\tu1",
-      "3\tu2")
+      "1\tu1",
+      "2\tu2",
+      "3\tu3")
 
     val itemsIndex = List(
-      "1\ti0\tt1,t2",
-      "2\ti1\tt1",
-      "3\ti2\tt2,t3",
-      "4\ti3\tt3"
+      "1\ti1\tt1,t2",
+      "2\ti2\tt1",
+      "3\ti3\tt2,t3",
+      "4\ti4\tt3"
     )
 
     val ratingsMM = List(
@@ -77,9 +77,8 @@ class GraphChiModelConstructorSpec extends Specification {
     )
 
     /*
-     * 1.2 1.1
-     * 4.3 2.3
-     * 2.4 1.9
+     * 1.2 2.4 1.1
+     * 4.3 1.1 2.4
      */
     val ratingsUMM = List(
       "%%MatrixMarket matrix array real general",
@@ -89,34 +88,32 @@ class GraphChiModelConstructorSpec extends Specification {
       "4.3",
       "2.4",
       "1.1",
-      "2.3",
-      "1.9"
+      "1.1",
+      "2.4"
     )
 
     /*
-     * 2.3 2.6
-     * 5.1 0.3
-     * 3.1 1.9
-     * 1.2 4.0
+     * 2.1 3.1 2.6 1.9
+     * 1.5 1.2 1.3 2.0
      */
     val ratingsVMM = List(
       "%%MatrixMarket matrix array real general",
       "%This file contains ALS output matrix V. In each row D factors of a single item node.",
       "4 2",
-      "2.3",
-      "5.1",
+      "2.1",
+      "1.5",
       "3.1",
       "1.2",
       "2.6",
-      "0.3",
+      "1.3",
       "1.9",
-      "4.0"
+      "2.0"
     )
 
-    /* UV:
-     * 5.62 6.45 5.81 5.84
-     * 15.87 22.62 17.7 14.36
-     * 10.46 12.81 11.05 10.48
+    /* Ut V:
+     * 8.97 8.88  8.71  10.88
+     * 6.69 8.76  7.67  6.76
+     * 5.91 6.29  5.98  6.89
      */
 
     def writeToFile(lines: List[String], filePath: String) = {
@@ -178,43 +175,43 @@ class GraphChiModelConstructorSpec extends Specification {
         "numRecommendations" -> 5
       )
 
-      val u0Expected = ItemRecScore(
-        uid = "u0",
-        iids = Seq("i1", "i3", "i2", "i0"),
-        scores = Seq(6.45, 5.84, 5.81, 5.62),
-        itypes = Seq(Seq("t1"), Seq("t3"), Seq("t2", "t3"), Seq("t1", "t2")),
-        appid = appid,
-        algoid = algoid,
-        modelset = modelSet)
-
       val u1Expected = ItemRecScore(
         uid = "u1",
-        iids = Seq("i1", "i2", "i0", "i3"),
-        scores = Seq(22.62, 17.7, 15.87, 14.36),
-        itypes = Seq(Seq("t1"), Seq("t2", "t3"), Seq("t1", "t2"), Seq("t3")),
+        iids = Seq("i4", "i1", "i2", "i3"),
+        scores = Seq(10.88, 8.97, 8.88, 8.71),
+        itypes = Seq(Seq("t3"), Seq("t1", "t2"), Seq("t1"), Seq("t2", "t3")),
         appid = appid,
         algoid = algoid,
         modelset = modelSet)
 
       val u2Expected = ItemRecScore(
         uid = "u2",
-        iids = Seq("i1", "i2", "i3", "i0"),
-        scores = Seq(12.81, 11.05, 10.48, 10.46),
+        iids = Seq("i2", "i3", "i4", "i1"),
+        scores = Seq(8.76, 7.67, 6.76, 6.69),
         itypes = Seq(Seq("t1"), Seq("t2", "t3"), Seq("t3"), Seq("t1", "t2")),
+        appid = appid,
+        algoid = algoid,
+        modelset = modelSet)
+
+      val u3Expected = ItemRecScore(
+        uid = "u3",
+        iids = Seq("i4", "i2", "i3", "i1"),
+        scores = Seq(6.89, 6.29, 5.98, 5.91),
+        itypes = Seq(Seq("t3"), Seq("t1"), Seq("t2", "t3"), Seq("t1", "t2")),
         appid = appid,
         algoid = algoid,
         modelset = modelSet)
 
       GraphChiModelConstructor.main(argMapToArray(args))
 
-      val u0ItemRec = modeldataItemRecScores.getByUid("u0")
       val u1ItemRec = modeldataItemRecScores.getByUid("u1")
       val u2ItemRec = modeldataItemRecScores.getByUid("u2")
+      val u3ItemRec = modeldataItemRecScores.getByUid("u3")
 
       // don't check id
-      u0ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u0Expected)) and
-        (u1ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u1Expected))) and
-        (u2ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u2Expected)))
+      u1ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u1Expected)) and
+        (u2ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u2Expected))) and
+        (u3ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u3Expected)))
 
     }
 
@@ -250,43 +247,43 @@ class GraphChiModelConstructorSpec extends Specification {
         "numRecommendations" -> 2
       )
 
-      val u0Expected = ItemRecScore(
-        uid = "u0",
-        iids = Seq("i1", "i3"),
-        scores = Seq(6.45, 5.84),
-        itypes = Seq(Seq("t1"), Seq("t3")),
-        appid = appid,
-        algoid = algoid,
-        modelset = modelSet)
-
       val u1Expected = ItemRecScore(
         uid = "u1",
-        iids = Seq("i1", "i2"),
-        scores = Seq(22.62, 17.7),
-        itypes = Seq(Seq("t1"), Seq("t2", "t3")),
+        iids = Seq("i4", "i1"),
+        scores = Seq(10.88, 8.97),
+        itypes = Seq(Seq("t3"), Seq("t1", "t2")),
         appid = appid,
         algoid = algoid,
         modelset = modelSet)
 
       val u2Expected = ItemRecScore(
         uid = "u2",
-        iids = Seq("i1", "i2"),
-        scores = Seq(12.81, 11.05),
+        iids = Seq("i2", "i3"),
+        scores = Seq(8.76, 7.67),
         itypes = Seq(Seq("t1"), Seq("t2", "t3")),
+        appid = appid,
+        algoid = algoid,
+        modelset = modelSet)
+
+      val u3Expected = ItemRecScore(
+        uid = "u3",
+        iids = Seq("i4", "i2"),
+        scores = Seq(6.89, 6.29),
+        itypes = Seq(Seq("t3"), Seq("t1")),
         appid = appid,
         algoid = algoid,
         modelset = modelSet)
 
       GraphChiModelConstructor.main(argMapToArray(args))
 
-      val u0ItemRec = modeldataItemRecScores.getByUid("u0")
       val u1ItemRec = modeldataItemRecScores.getByUid("u1")
       val u2ItemRec = modeldataItemRecScores.getByUid("u2")
+      val u3ItemRec = modeldataItemRecScores.getByUid("u3")
 
       // don't check id
-      u0ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u0Expected)) and
-        (u1ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u1Expected))) and
-        (u2ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u2Expected)))
+      u1ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u1Expected)) and
+        (u2ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u2Expected))) and
+        (u3ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u3Expected)))
 
     }
 
@@ -298,9 +295,9 @@ class GraphChiModelConstructorSpec extends Specification {
       inputDirFile.mkdirs()
 
       val itemsIndex = List(
-        "1\ti0\tt1,t2",
-        "3\ti2\tt2,t3",
-        "4\ti3\tt3"
+        "1\ti1\tt1,t2",
+        "3\ti3\tt2,t3",
+        "4\ti4\tt3"
       )
 
       writeToFile(usersIndex, s"${inputDir}usersIndex.tsv")
@@ -339,43 +336,43 @@ class GraphChiModelConstructorSpec extends Specification {
         "numRecommendations" -> 5
       )
 
-      val u0Expected = ItemRecScore(
-        uid = "u0",
-        iids = Seq("i3", "i2", "i0"),
-        scores = Seq(5.84, 5.81, 5.62),
-        itypes = Seq(Seq("t3"), Seq("t2", "t3"), Seq("t1", "t2")),
-        appid = appid,
-        algoid = algoid,
-        modelset = modelSet)
-
       val u1Expected = ItemRecScore(
         uid = "u1",
-        iids = Seq("i2", "i0", "i3"),
-        scores = Seq(17.7, 15.87, 14.36),
-        itypes = Seq(Seq("t2", "t3"), Seq("t1", "t2"), Seq("t3")),
+        iids = Seq("i4", "i1", "i3"),
+        scores = Seq(10.88, 8.97, 8.71),
+        itypes = Seq(Seq("t3"), Seq("t1", "t2"), Seq("t2", "t3")),
         appid = appid,
         algoid = algoid,
         modelset = modelSet)
 
       val u2Expected = ItemRecScore(
         uid = "u2",
-        iids = Seq("i2", "i3", "i0"),
-        scores = Seq(11.05, 10.48, 10.46),
+        iids = Seq("i3", "i4", "i1"),
+        scores = Seq(7.67, 6.76, 6.69),
         itypes = Seq(Seq("t2", "t3"), Seq("t3"), Seq("t1", "t2")),
+        appid = appid,
+        algoid = algoid,
+        modelset = modelSet)
+
+      val u3Expected = ItemRecScore(
+        uid = "u3",
+        iids = Seq("i4", "i3", "i1"),
+        scores = Seq(6.89, 5.98, 5.91),
+        itypes = Seq(Seq("t3"), Seq("t2", "t3"), Seq("t1", "t2")),
         appid = appid,
         algoid = algoid,
         modelset = modelSet)
 
       GraphChiModelConstructor.main(argMapToArray(args))
 
-      val u0ItemRec = modeldataItemRecScores.getByUid("u0")
       val u1ItemRec = modeldataItemRecScores.getByUid("u1")
       val u2ItemRec = modeldataItemRecScores.getByUid("u2")
+      val u3ItemRec = modeldataItemRecScores.getByUid("u3")
 
       // don't check id
-      u0ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u0Expected)) and
-        (u1ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u1Expected))) and
-        (u2ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u2Expected)))
+      u1ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u1Expected)) and
+        (u2ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u2Expected))) and
+        (u3ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u3Expected)))
 
     }
 
@@ -411,28 +408,28 @@ class GraphChiModelConstructorSpec extends Specification {
         "numRecommendations" -> 4
       )
 
-      val u0Expected = ItemRecScore(
-        uid = "u0",
-        iids = Seq("i3"),
-        scores = Seq(5.84),
-        itypes = Seq(Seq("t3")),
-        appid = appid,
-        algoid = algoid,
-        modelset = modelSet)
-
       val u1Expected = ItemRecScore(
         uid = "u1",
-        iids = Seq("i2"),
-        scores = Seq(17.7),
-        itypes = Seq(Seq("t2", "t3")),
+        iids = Seq("i4"),
+        scores = Seq(10.88),
+        itypes = Seq(Seq("t3")),
         appid = appid,
         algoid = algoid,
         modelset = modelSet)
 
       val u2Expected = ItemRecScore(
         uid = "u2",
-        iids = Seq("i0"),
-        scores = Seq(10.46),
+        iids = Seq("i3"),
+        scores = Seq(7.67),
+        itypes = Seq(Seq("t2", "t3")),
+        appid = appid,
+        algoid = algoid,
+        modelset = modelSet)
+
+      val u3Expected = ItemRecScore(
+        uid = "u3",
+        iids = Seq("i1"),
+        scores = Seq(5.91),
         itypes = Seq(Seq("t1", "t2")),
         appid = appid,
         algoid = algoid,
@@ -440,14 +437,14 @@ class GraphChiModelConstructorSpec extends Specification {
 
       GraphChiModelConstructor.main(argMapToArray(args))
 
-      val u0ItemRec = modeldataItemRecScores.getByUid("u0")
       val u1ItemRec = modeldataItemRecScores.getByUid("u1")
       val u2ItemRec = modeldataItemRecScores.getByUid("u2")
+      val u3ItemRec = modeldataItemRecScores.getByUid("u3")
 
       // don't check id
-      u0ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u0Expected)) and
-        (u1ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u1Expected))) and
-        (u2ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u2Expected)))
+      u1ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u1Expected)) and
+        (u2ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u2Expected))) and
+        (u3ItemRec.map(roundUpScores(_).copy(id = None)) must beSome(roundUpScores(u3Expected)))
 
     }
 

@@ -17,6 +17,8 @@ play
 
 # In play framework console
 run
+# Or, if you need to specify port number.
+run -Dhttp.port=8000
 
 # Everytime when pio modules are updated (and published).
 # Need to update the dependency in Play console.

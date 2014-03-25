@@ -18,12 +18,6 @@
         },
         "jars.pdioCommonsEval": {
             "value": "predictionio-process-hadoop-scalding-assembly-0.7.0-SNAPSHOT.jar"
-        },
-        "jars.pdioCommonsParamGen": {
-            "value": "predictionio-process-commons-evaluations-paramgen-assembly-0.7.0-SNAPSHOT.jar"
-        },
-        "jars.pdioCommonsU2ITrainingTestSplit": {
-            "value": "predictionio-process-commons-evaluations-scala-u2itrainingtestsplittime-assembly-0.7.0-SNAPSHOT.jar"
         }
     },
     "engineinfos": {
@@ -850,12 +844,12 @@
             "name": "GraphChi's Alternating Least Squares Collaborative Filtering",
             "description": "Predict user preferences based on matrix factorization.",
             "batchcommands": [
-                "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$",
+                "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$ --matrixMarket true",
                 "$base$/bin/als --training=$localTempDir$ratings.mm --lambda=$lambda$ --minval=1 --maxval=5 --max_iter=$maxIter$ --quiet=1",
                 "$base$/bin/itemrec.graphchi.modelcon --inputDir $localTempDir$ --appid $appid$ --algoid $algoid$ --modelSet $modelset$ --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$"
             ],
             "offlineevalcommands": [
-                "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$",
+                "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$ --matrixMarket true",
                 "$base$/bin/als --training=$localTempDir$ratings.mm --lambda=$lambda$ --minval=1 --maxval=5 --max_iter=$maxIter$ --quiet=1",
                 "$base$/bin/itemrec.graphchi.modelcon --inputDir $localTempDir$ --appid $appid$ --algoid $algoid$ --evalid $evalid$ --modelSet false --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$"
             ],
@@ -1122,6 +1116,1432 @@
                             "sectiontype": "tuning",
                             "params": [
                                 "lambda",
+                                "maxIter"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "User Actions Representation Settings",
+                    "sectiontype": "normal",
+                    "subsections": [
+                        {
+                            "name": "User Action Scores",
+                            "sectiontype": "normal",
+                            "description": "Define the preference score represented by each user action from 1 to 5. 5 is the most preferred, 1 is the least preferred. 3 is neutral.",
+                            "params": [
+                                "viewParam",
+                                "likeParam",
+                                "dislikeParam",
+                                "conversionParam"
+                            ]
+                        },
+                        {
+                            "name": "Overriding",
+                            "sectiontype": "normal",
+                            "description": "When there are conflicting actions, e.g. a user gives an item a rating 5 but later dislikes it, determine which action will be considered as final preference.",
+                            "params": [
+                                "conflictParam"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "graphchi-als_coord": {
+            "name": "GraphChi's CCD++ Alternating Least Squares Collaborative Filtering with Parallel Coordinate Descent",
+            "description": "Predict user preferences based on matrix factorization.",
+            "batchcommands": [
+                "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$ --matrixMarket true",
+                "$base$/bin/als_coord --training=$localTempDir$ratings.mm --lambda=$lambda$ --minval=1 --maxval=5 --max_iter=$maxIter$ --quiet=1",
+                "$base$/bin/itemrec.graphchi.modelcon --inputDir $localTempDir$ --appid $appid$ --algoid $algoid$ --modelSet $modelset$ --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$"
+            ],
+            "offlineevalcommands": [
+                "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$ --matrixMarket true",
+                "$base$/bin/als_coord --training=$localTempDir$ratings.mm --lambda=$lambda$ --minval=1 --maxval=5 --max_iter=$maxIter$ --quiet=1",
+                "$base$/bin/itemrec.graphchi.modelcon --inputDir $localTempDir$ --appid $appid$ --algoid $algoid$ --evalid $evalid$ --modelSet false --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$"
+            ],
+            "paramorder": [
+                "lambda",
+                "maxIter",
+                "viewParam",
+                "likeParam",
+                "dislikeParam",
+                "conversionParam",
+                "conflictParam"
+            ],
+            "engineinfoid": "itemrec",
+            "techreq": [
+                "GraphChi"
+            ],
+            "datareq": [
+                "Users, Items, and U2I Actions such as Like, Conversion and Rate."
+            ],
+            "params": {
+                "lambda": {
+                    "name": "Lambda",
+                    "description": "Regularization parameter to avoid overfitting.",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 0.065
+                },
+                "lambdaMin": {
+                    "name": "Lambda (Min)",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 0.01
+                },
+                "lambdaMax": {
+                    "name": "Lambda (Max)",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 0.1
+                },
+                "maxIter": {
+                    "name": "Maximum Number of Iterations",
+                    "description": "Maximum number of training iterations allowed.",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 6
+                },
+                "maxIterMin": {
+                    "name": "Maximum Number of Iterations (Min)",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1
+                },
+                "maxIterMax": {
+                    "name": "Maximum Number of Iterations (Max)",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 20
+                },
+                "viewParam": {
+                    "name": "View Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "3"
+                },
+                "likeParam": {
+                    "name": "Like Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "5"
+                },
+                "dislikeParam": {
+                    "name": "Dislike Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "1"
+                },
+                "conversionParam": {
+                    "name": "Conversion Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "4"
+                },
+                "conflictParam": {
+                    "name": "Override",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "Use the latest action",
+                                "value": "latest"
+                            },
+                            {
+                                "name": "Use the highest preference score one",
+                                "value": "highest"
+                            },
+                            {
+                                "name": "Use the lowest preference score one",
+                                "value": "lowest"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "latest"
+                }
+            },
+            "paramsections": [
+                {
+                    "name": "Parameter Settings",
+                    "sectiontype": "normal",
+                    "subsections": [
+                        {
+                            "name": "Numeric Parameters",
+                            "sectiontype": "tuning",
+                            "params": [
+                                "lambda",
+                                "maxIter"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "User Actions Representation Settings",
+                    "sectiontype": "normal",
+                    "subsections": [
+                        {
+                            "name": "User Action Scores",
+                            "sectiontype": "normal",
+                            "description": "Define the preference score represented by each user action from 1 to 5. 5 is the most preferred, 1 is the least preferred. 3 is neutral.",
+                            "params": [
+                                "viewParam",
+                                "likeParam",
+                                "dislikeParam",
+                                "conversionParam"
+                            ]
+                        },
+                        {
+                            "name": "Overriding",
+                            "sectiontype": "normal",
+                            "description": "When there are conflicting actions, e.g. a user gives an item a rating 5 but later dislikes it, determine which action will be considered as final preference.",
+                            "params": [
+                                "conflictParam"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "graphchi-sgd": {
+            "name": "GraphChi's Stochastic Gradient Descent",
+            "description": "Predict user preferences based on matrix factorization.",
+            "batchcommands": [
+                "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$ --matrixMarket true",
+                "$base$/bin/sgd --training=$localTempDir$ratings.mm --sgd_lambda=$lambda$ --sgd_gamma=$gamma$ --sgd_step_dec=$stepDec$ --minval=1 --maxval=5 --max_iter=$maxIter$ --quiet=1",
+                "$base$/bin/itemrec.graphchi.modelcon --inputDir $localTempDir$ --appid $appid$ --algoid $algoid$ --modelSet $modelset$ --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$"
+            ],
+            "offlineevalcommands": [
+                "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$ --matrixMarket true",
+                "$base$/bin/sgd --training=$localTempDir$ratings.mm --sgd_lambda=$lambda$ --sgd_gamma=$gamma$ --sgd_step_dec=$stepDec$ --minval=1 --maxval=5 --max_iter=$maxIter$ --quiet=1",
+                "$base$/bin/itemrec.graphchi.modelcon --inputDir $localTempDir$ --appid $appid$ --algoid $algoid$ --evalid $evalid$ --modelSet false --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$"
+            ],
+            "paramorder": [
+                "lambda",
+                "gamma",
+                "stepDec",
+                "maxIter",
+                "viewParam",
+                "likeParam",
+                "dislikeParam",
+                "conversionParam",
+                "conflictParam"
+            ],
+            "engineinfoid": "itemrec",
+            "techreq": [
+                "GraphChi"
+            ],
+            "datareq": [
+                "Users, Items, and U2I Actions such as Like, Conversion and Rate."
+            ],
+            "params": {
+                "lambda": {
+                    "name": "Lambda",
+                    "description": "Regularization parameter to avoid overfitting.",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1E-4
+                },
+                "lambdaMin": {
+                    "name": "Lambda (Min)",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1E-5
+                },
+                "lambdaMax": {
+                    "name": "Lambda (Max)",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1E-3
+                },
+                "gamma": {
+                    "name": "Gamma",
+                    "description": "Gradient step size.",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1E-4
+                },
+                "gammaMin": {
+                    "name": "Gamma (Min)",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1E-5
+                },
+                "gammaMax": {
+                    "name": "Gamma (Max)",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1E-3
+                },
+                "stepDec": {
+                    "name": "Step Decrement",
+                    "description": "Multiplicative step decrement.",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 0.9
+                },
+                "stepDecMin": {
+                    "name": "Step Decrement (Min)",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 0.8
+                },
+                "stepDecMax": {
+                    "name": "Step Decrement (Max)",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 0.99
+                },
+                "maxIter": {
+                    "name": "Maximum Number of Iterations",
+                    "description": "Maximum number of training iterations allowed.",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 6
+                },
+                "maxIterMin": {
+                    "name": "Maximum Number of Iterations (Min)",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1
+                },
+                "maxIterMax": {
+                    "name": "Maximum Number of Iterations (Max)",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 20
+                },
+                "viewParam": {
+                    "name": "View Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "3"
+                },
+                "likeParam": {
+                    "name": "Like Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "5"
+                },
+                "dislikeParam": {
+                    "name": "Dislike Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "1"
+                },
+                "conversionParam": {
+                    "name": "Conversion Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "4"
+                },
+                "conflictParam": {
+                    "name": "Override",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "Use the latest action",
+                                "value": "latest"
+                            },
+                            {
+                                "name": "Use the highest preference score one",
+                                "value": "highest"
+                            },
+                            {
+                                "name": "Use the lowest preference score one",
+                                "value": "lowest"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "latest"
+                }
+            },
+            "paramsections": [
+                {
+                    "name": "Parameter Settings",
+                    "sectiontype": "normal",
+                    "subsections": [
+                        {
+                            "name": "Numeric Parameters",
+                            "sectiontype": "tuning",
+                            "params": [
+                                "lambda",
+                                "gamma",
+                                "stepDec",
+                                "maxIter"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "User Actions Representation Settings",
+                    "sectiontype": "normal",
+                    "subsections": [
+                        {
+                            "name": "User Action Scores",
+                            "sectiontype": "normal",
+                            "description": "Define the preference score represented by each user action from 1 to 5. 5 is the most preferred, 1 is the least preferred. 3 is neutral.",
+                            "params": [
+                                "viewParam",
+                                "likeParam",
+                                "dislikeParam",
+                                "conversionParam"
+                            ]
+                        },
+                        {
+                            "name": "Overriding",
+                            "sectiontype": "normal",
+                            "description": "When there are conflicting actions, e.g. a user gives an item a rating 5 but later dislikes it, determine which action will be considered as final preference.",
+                            "params": [
+                                "conflictParam"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "graphchi-nmf": {
+            "name": "GraphChi's Non-negative Matrix Factorization",
+            "description": "Predict user preferences based on matrix factorization.",
+            "batchcommands": [
+                "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$ --matrixMarket true",
+                "$base$/bin/nmf --training=$localTempDir$ratings.mm --minval=1 --maxval=5 --max_iter=$maxIter$ --quiet=1",
+                "$base$/bin/itemrec.graphchi.modelcon --inputDir $localTempDir$ --appid $appid$ --algoid $algoid$ --modelSet $modelset$ --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$"
+            ],
+            "offlineevalcommands": [
+                "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$ --matrixMarket true",
+                "$base$/bin/nmf --training=$localTempDir$ratings.mm --minval=1 --maxval=5 --max_iter=$maxIter$ --quiet=1",
+                "$base$/bin/itemrec.graphchi.modelcon --inputDir $localTempDir$ --appid $appid$ --algoid $algoid$ --evalid $evalid$ --modelSet false --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$"
+            ],
+            "paramorder": [
+                "maxIter",
+                "viewParam",
+                "likeParam",
+                "dislikeParam",
+                "conversionParam",
+                "conflictParam"
+            ],
+            "engineinfoid": "itemrec",
+            "techreq": [
+                "GraphChi"
+            ],
+            "datareq": [
+                "Users, Items, and U2I Actions such as Like, Conversion and Rate."
+            ],
+            "params": {
+                "maxIter": {
+                    "name": "Maximum Number of Iterations",
+                    "description": "Maximum number of training iterations allowed.",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 6
+                },
+                "maxIterMin": {
+                    "name": "Maximum Number of Iterations (Min)",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1
+                },
+                "maxIterMax": {
+                    "name": "Maximum Number of Iterations (Max)",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 20
+                },
+                "viewParam": {
+                    "name": "View Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "3"
+                },
+                "likeParam": {
+                    "name": "Like Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "5"
+                },
+                "dislikeParam": {
+                    "name": "Dislike Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "1"
+                },
+                "conversionParam": {
+                    "name": "Conversion Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "4"
+                },
+                "conflictParam": {
+                    "name": "Override",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "Use the latest action",
+                                "value": "latest"
+                            },
+                            {
+                                "name": "Use the highest preference score one",
+                                "value": "highest"
+                            },
+                            {
+                                "name": "Use the lowest preference score one",
+                                "value": "lowest"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "latest"
+                }
+            },
+            "paramsections": [
+                {
+                    "name": "Parameter Settings",
+                    "sectiontype": "normal",
+                    "subsections": [
+                        {
+                            "name": "Numeric Parameters",
+                            "sectiontype": "tuning",
+                            "params": [
+                                "maxIter"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "User Actions Representation Settings",
+                    "sectiontype": "normal",
+                    "subsections": [
+                        {
+                            "name": "User Action Scores",
+                            "sectiontype": "normal",
+                            "description": "Define the preference score represented by each user action from 1 to 5. 5 is the most preferred, 1 is the least preferred. 3 is neutral.",
+                            "params": [
+                                "viewParam",
+                                "likeParam",
+                                "dislikeParam",
+                                "conversionParam"
+                            ]
+                        },
+                        {
+                            "name": "Overriding",
+                            "sectiontype": "normal",
+                            "description": "When there are conflicting actions, e.g. a user gives an item a rating 5 but later dislikes it, determine which action will be considered as final preference.",
+                            "params": [
+                                "conflictParam"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "graphchi-climf": {
+            "name": "GraphChi's CLiMF algorithm",
+            "description": "Predict user preferences based on matrix factorization and optimizing MRR (mean reciprocal rank)",
+            "batchcommands": [
+                "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$ --matrixMarket true",
+                "$base$/bin/climf --training=$localTempDir$ratings.mm --binary_relevance_thresh=$relevanceThresh$ --halt_on_mrr_decrease=$halt$ --num_ratings=$numRatings$ --sgd_lambda=$lambda$ --sgd_gamma=$gamma$ --sgd_step_dec=$stepDec$ --minval=1 --maxval=5 --max_iter=$maxIter$ --quiet=1",
+                "$base$/bin/itemrec.graphchi.modelcon --inputDir $localTempDir$ --appid $appid$ --algoid $algoid$ --modelSet $modelset$ --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$"
+            ],
+            "offlineevalcommands": [
+                "$base$/bin/itemrec.generic.dataprep --outputDir $localTempDir$ --appid $appid$ --viewParam $viewParam$ --likeParam $likeParam$ --dislikeParam $dislikeParam$ --conversionParam $conversionParam$ --conflictParam $conflictParam$ --recommendationTime $recommendationTime$ --matrixMarket true",
+                "$base$/bin/climf --training=$localTempDir$ratings.mm --binary_relevance_thresh=$relevanceThresh$ --halt_on_mrr_decrease=$halt$ --num_ratings=$numRatings$ --sgd_lambda=$lambda$ --sgd_gamma=$gamma$ --sgd_step_dec=$stepDec$ --minval=1 --maxval=5 --max_iter=$maxIter$ --quiet=1",
+                "$base$/bin/itemrec.graphchi.modelcon --inputDir $localTempDir$ --appid $appid$ --algoid $algoid$ --evalid $evalid$ --modelSet false --unseenOnly $unseenOnly$ --numRecommendations $numRecommendations$"
+            ],
+            "paramorder": [
+                "relevanceThresh",
+                "halt",
+                "numRatings",
+                "lambda",
+                "gamma",
+                "stepDec",
+                "maxIter",
+                "viewParam",
+                "likeParam",
+                "dislikeParam",
+                "conversionParam",
+                "conflictParam"
+            ],
+            "engineinfoid": "itemrec",
+            "techreq": [
+                "GraphChi"
+            ],
+            "datareq": [
+                "Users, Items, and U2I Actions such as Like, Conversion and Rate."
+            ],
+            "params": {
+                "relevanceThresh": {
+                    "name": "Binary Relevant Threshold",
+                    "description": "Consider the item liked/relevant if rating is at least this value.",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 0
+                },
+                "relevanceThreshMin": {
+                    "name": "Binary Relevant Threshold (Min)",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 0
+                },
+                "relevanceThreshMax": {
+                    "name": "Binary Relevant Threshold (Max)",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 3
+                },
+                "halt": {
+                    "name": "Halt on MRR Decrease",
+                    "description": "Halt if the training set objective (smoothed MRR) decreases.",
+                    "constraint": {
+                        "paramtype": "boolean"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "True",
+                                "value": "true"
+                            },
+                            {
+                                "name": "False",
+                                "value": "false"
+                            }
+                        ]
+                    },
+                    "defaultvalue": false
+                },
+                "numRatings": {
+                    "name": "Number of Ratings",
+                    "description": "Consider this many top predicted items when computing actual MRR on validation set.",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 10000
+                },
+                "numRatingsMin": {
+                    "name": "Number of Ratings (Min)",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 10
+                },
+                "numRatingsMax": {
+                    "name": "Number of Ratings (Max)",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 10000
+                },
+                "lambda": {
+                    "name": "Lambda",
+                    "description": "Regularization parameter to avoid overfitting.",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1E-6
+                },
+                "lambdaMin": {
+                    "name": "Lambda (Min)",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1E-7
+                },
+                "lambdaMax": {
+                    "name": "Lambda (Max)",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1E-5
+                },
+                "gamma": {
+                    "name": "Gamma",
+                    "description": "Gradient step size.",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1E-6
+                },
+                "gammaMin": {
+                    "name": "Gamma (Min)",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1E-7
+                },
+                "gammaMax": {
+                    "name": "Gamma (Max)",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1E-5
+                },
+                "maxIter": {
+                    "name": "Maximum Number of Iterations",
+                    "description": "Maximum number of training iterations allowed.",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 6
+                },
+                "maxIterMin": {
+                    "name": "Maximum Number of Iterations (Min)",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 1
+                },
+                "maxIterMax": {
+                    "name": "Maximum Number of Iterations (Max)",
+                    "constraint": {
+                        "paramtype": "integer"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 20
+                },
+                "stepDec": {
+                    "name": "Step Decrement",
+                    "description": "Multiplicative step decrement.",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 0.9
+                },
+                "stepDecMin": {
+                    "name": "Step Decrement (Min)",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 0.8
+                },
+                "stepDecMax": {
+                    "name": "Step Decrement (Max)",
+                    "constraint": {
+                        "paramtype": "double"
+                    },
+                    "ui": {
+                        "uitype": "text"
+                    },
+                    "defaultvalue": 0.99
+                },
+                "viewParam": {
+                    "name": "View Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "3"
+                },
+                "likeParam": {
+                    "name": "Like Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "5"
+                },
+                "dislikeParam": {
+                    "name": "Dislike Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "1"
+                },
+                "conversionParam": {
+                    "name": "Conversion Score",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            },
+                            {
+                                "name": "2",
+                                "value": "2"
+                            },
+                            {
+                                "name": "3",
+                                "value": "3"
+                            },
+                            {
+                                "name": "4",
+                                "value": "4"
+                            },
+                            {
+                                "name": "5",
+                                "value": "5"
+                            },
+                            {
+                                "name": "Ignore",
+                                "value": "ignore"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "4"
+                },
+                "conflictParam": {
+                    "name": "Override",
+                    "description": "",
+                    "constraint": {
+                        "paramtype": "string"
+                    },
+                    "ui": {
+                        "uitype": "selection",
+                        "selections": [
+                            {
+                                "name": "Use the latest action",
+                                "value": "latest"
+                            },
+                            {
+                                "name": "Use the highest preference score one",
+                                "value": "highest"
+                            },
+                            {
+                                "name": "Use the lowest preference score one",
+                                "value": "lowest"
+                            }
+                        ]
+                    },
+                    "defaultvalue": "latest"
+                }
+            },
+            "paramsections": [
+                {
+                    "name": "Parameter Settings",
+                    "sectiontype": "normal",
+                    "subsections": [
+                        {
+                            "name": "Boolean Parameter",
+                            "sectiontype": "normal",
+                            "params": [
+                                "halt"
+                            ]
+                        },
+                        {
+                            "name": "Numeric Parameters",
+                            "sectiontype": "tuning",
+                            "params": [
+                                "relevanceThresh",
+                                "numRatings",
+                                "lambda",
+                                "gamma",
+                                "stepDec",
                                 "maxIter"
                             ]
                         }
@@ -6113,7 +7533,7 @@
                 "itemrec", "itemsim"
             ],
             "commands": [
-                "java -jar $base$/lib/$pdioCommonsU2ITrainingTestSplit$ --hadoop $hadoop$ --pdioEvalJar $base$/lib/$pdioCommonsEval$ --sequenceNum $iteration$ --hdfs --dbType $appdataDbType$ --dbName $appdataDbName$ --dbHost $appdataDbHost$ --dbPort $appdataDbPort$ --training_dbType $appdataTrainingDbType$ --training_dbName $appdataTrainingDbName$ --training_dbHost $appdataTrainingDbHost$ --training_dbPort $appdataTrainingDbPort$ --validation_dbType $appdataValidationDbType$ --validation_dbName $appdataValidationDbName$ --validation_dbHost $appdataValidationDbHost$ --validation_dbPort $appdataValidationDbPort$ --test_dbType $appdataTestDbType$ --test_dbName $appdataTestDbName$ --test_dbHost $appdataTestDbHost$ --test_dbPort $appdataTestDbPort$ --hdfsRoot $hdfsRoot$ --localTempRoot $localTempRoot$ --appid $appid$ --engineid $engineid$ --evalid $evalid$ $itypes$ --trainingPercent $trainingPercent$ --validationPercent $validationPercent$ --testPercent $testPercent$ --timeorder $timeorder$"
+                "$base$/bin/u2itrainingtestsplit --hadoop $hadoop$ --pdioEvalJar $base$/lib/$pdioCommonsEval$ --sequenceNum $iteration$ --hdfs --dbType $appdataDbType$ --dbName $appdataDbName$ --dbHost $appdataDbHost$ --dbPort $appdataDbPort$ --training_dbType $appdataTrainingDbType$ --training_dbName $appdataTrainingDbName$ --training_dbHost $appdataTrainingDbHost$ --training_dbPort $appdataTrainingDbPort$ --validation_dbType $appdataValidationDbType$ --validation_dbName $appdataValidationDbName$ --validation_dbHost $appdataValidationDbHost$ --validation_dbPort $appdataValidationDbPort$ --test_dbType $appdataTestDbType$ --test_dbName $appdataTestDbName$ --test_dbHost $appdataTestDbHost$ --test_dbPort $appdataTestDbPort$ --hdfsRoot $hdfsRoot$ --localTempRoot $localTempRoot$ --appid $appid$ --engineid $engineid$ --evalid $evalid$ $itypes$ --trainingPercent $trainingPercent$ --validationPercent $validationPercent$ --testPercent $testPercent$ --timeorder $timeorder$"
             ],
             "params": {
                 "timeorder": {
@@ -6356,7 +7776,7 @@
             "name": "Random Search",
             "description": "Random search within specified interval",
             "commands": [
-                "java -Dio.prediction.base=$base$ $configFile$ -Devalids=$evalids$ -Dalgoid=$algoid$ -Dloop=$loop$ -Dparamsets=$paramsets$ -jar $base$/lib/$pdioCommonsParamGen$"
+                "$base$/bin/paramgen --evalids $evalids$ --algoid $algoid$ --loop $loop$ --paramsets $paramsets$"
             ],
             "paramorder": [],
             "paramnames": {},

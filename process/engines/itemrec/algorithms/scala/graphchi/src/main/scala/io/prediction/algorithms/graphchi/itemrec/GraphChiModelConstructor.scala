@@ -130,10 +130,10 @@ object GraphChiModelConstructor {
     }
 
     // feature x user matrix
-    val userMatrix = MatrixMarketReader.readDense(s"${arg.inputDir}ratings.mm_U.mm").t
+    val userMatrix = MatrixMarketReader.readDense(s"${arg.inputDir}ratings.mm_U.mm")
 
     // feature x item matrix
-    val itemMatrix = MatrixMarketReader.readDense(s"${arg.inputDir}ratings.mm_V.mm").t
+    val itemMatrix = MatrixMarketReader.readDense(s"${arg.inputDir}ratings.mm_V.mm")
 
     for (uindex <- 1 to userMatrix.cols if usersMap.contains(uindex)) {
       val scores = for (

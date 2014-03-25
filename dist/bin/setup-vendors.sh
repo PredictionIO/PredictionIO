@@ -17,6 +17,14 @@ BASE=`pwd`
 . "$BASE/bin/vendors.sh"
 
 # Detect existing installations in search path
+if vendor_graphchi_exists ; then
+	echo "Found GraphChi C++ Collaborative Filtering Toolkit in vendors area. Assuming it has been installed."
+else
+	echo "Cannot find GraphChi C++ Collaborative Filtering Toolkit from vendors area. Installing it from the Internet."
+	install_graphchi "$VENDORS_PATH"
+fi
+
+# Detect existing installations in search path
 if [ $(process_exists "mongod") -gt "0" ] ; then
 	echo "mongod is running. Skipping MongoDB installation."
 elif command_exists "mongod" ; then

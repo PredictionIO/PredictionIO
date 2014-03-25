@@ -35,12 +35,6 @@ if test "$SKIP_PROCESS" = "1" ; then
 else
     echo "+ Assemble Process Hadoop Scalding"
     BASE_TARGETS="$BASE_TARGETS processHadoopScalding/assembly"
-
-    echo "+ Assemble Process Commons Evaluations Scala Parameter Generator"
-    BASE_TARGETS="$BASE_TARGETS processEnginesCommonsEvalScalaParamGen/assembly"
-
-    echo "+ Assemble Process Commons Evaluations Scala U2I Training-Test Splitter"
-    BASE_TARGETS="$BASE_TARGETS processEnginesCommonsEvalScalaU2ITrainingTestSplit/assembly"
 fi
 
 # Build Non-distributed Random Algorithm
@@ -79,9 +73,16 @@ BASE_TARGETS="$BASE_TARGETS processEnginesCommonsEvalScalaU2ISplit/pack"
 echo "+ Pack Single Machine MAP@k"
 BASE_TARGETS="$BASE_TARGETS processEnginesCommonsEvalScalaMetricsMAP/pack"
 
+# Build parameter generator
+echo "+ Pack Process Commons Evaluations Scala Parameter Generator"
+BASE_TARGETS="$BASE_TARGETS processEnginesCommonsEvalScalaParamGen/pack"
+
 # Build Single Machine Top-K Collector
 echo "+ Pack Single Machine Top-K Collector"
 BASE_TARGETS="$BASE_TARGETS processEnginesCommonsEvalScalaTopKItems/pack"
+
+echo "+ Pack Process Commons Evaluations Scala U2I Training-Test Splitter Wrapper"
+BASE_TARGETS="$BASE_TARGETS processEnginesCommonsEvalScalaU2ITrainingTestSplit/pack"
 
 # Build connection check tool
 echo "+ Pack Connection Check Tool"

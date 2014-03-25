@@ -39,52 +39,52 @@ class APISpec extends Specification {
     timezone = "UTC"))
 
   val dac = Item(
-    id         = "dac",
-    appid      = appid,
-    ct         = DateTime.now,
-    itypes     = List("fresh", "meat"),
-    starttime  = Some(DateTime.now.hour(14).minute(13)),
-    endtime    = None,
-    price      = Some(49.394),
-    profit     = None,
-    latlng     = Some((37.3197611, -122.0466141)),
-    inactive   = None,
+    id = "dac",
+    appid = appid,
+    ct = DateTime.now,
+    itypes = List("fresh", "meat"),
+    starttime = Some(DateTime.now),
+    endtime = None,
+    price = Some(49.394),
+    profit = None,
+    latlng = Some((37.3197611, -122.0466141)),
+    inactive = None,
     attributes = Some(Map("foo" -> "bar", "foo2" -> "bar2")))
   val hsh = Item(
-    id         = "hsh",
-    appid      = appid,
-    ct         = DateTime.now,
-    itypes     = List("fresh", "meat"),
-    starttime  = Some(DateTime.now.hour(23).minute(13)),
-    endtime    = None,
-    price      = Some(49.394),
-    profit     = None,
-    latlng     = Some((37.3370801, -122.0493201)),
-    inactive   = None,
+    id = "hsh",
+    appid = appid,
+    ct = DateTime.now,
+    itypes = List("fresh", "meat"),
+    starttime = Some(DateTime.now),
+    endtime = None,
+    price = Some(49.394),
+    profit = None,
+    latlng = Some((37.3370801, -122.0493201)),
+    inactive = None,
     attributes = None)
   val mvh = Item(
-    id         = "mvh",
-    appid      = appid,
-    ct         = DateTime.now,
-    itypes     = List("fresh", "meat"),
-    starttime  = Some(DateTime.now.hour(17).minute(13)),
-    endtime    = None,
-    price      = Some(49.394),
-    profit     = None,
-    latlng     = Some((37.3154153, -122.0566829)),
-    inactive   = None,
+    id = "mvh",
+    appid = appid,
+    ct = DateTime.now,
+    itypes = List("fresh", "meat"),
+    starttime = Some(DateTime.now),
+    endtime = None,
+    price = Some(49.394),
+    profit = None,
+    latlng = Some((37.3154153, -122.0566829)),
+    inactive = None,
     attributes = Some(Map("foo3" -> "bar3")))
   val lbh = Item(
-    id         = "lbh",
-    appid      = appid,
-    ct         = DateTime.now,
-    itypes     = List("fresh", "meat"),
-    starttime  = Some(DateTime.now.hour(3).minute(13)),
-    endtime    = None,
-    price      = Some(49.394),
-    profit     = None,
-    latlng     = Some((37.2997029, -122.0034684)),
-    inactive   = None,
+    id = "lbh",
+    appid = appid,
+    ct = DateTime.now,
+    itypes = List("fresh", "meat"),
+    starttime = Some(DateTime.now),
+    endtime = None,
+    price = Some(49.394),
+    profit = None,
+    latlng = Some((37.2997029, -122.0034684)),
+    inactive = None,
     attributes = Some(Map("foo4" -> "bar4", "foo5" -> "bar5")))
   val allItems = Seq(dac, hsh, lbh, mvh)
   allItems foreach { items.insert(_) }
@@ -93,20 +93,20 @@ class APISpec extends Specification {
     val enginename = "itemrec"
 
     val engineid = engines.insert(Engine(
-      id       = 0,
-      appid    = appid,
-      name     = "itemrec",
-      infoid   = "itemrec",
-      itypes   = None,
-      params   = Map()))
+      id = 0,
+      appid = appid,
+      name = "itemrec",
+      infoid = "itemrec",
+      itypes = None,
+      params = Map()))
 
     val algoid = algos.insert(Algo(
-      id       = 0,
+      id = 0,
       engineid = engineid,
-      name     = enginename,
-      infoid   = "pdio-knnitembased",
-      command  = "itemr",
-      params   = Map("foo" -> "bar"),
+      name = enginename,
+      infoid = "pdio-knnitembased",
+      command = "itemr",
+      params = Map("foo" -> "bar"),
       settings = Map("dead" -> "beef"),
       modelset = true,
       createtime = DateTime.now,
@@ -116,36 +116,9 @@ class APISpec extends Specification {
 
     itemRecScores.insert(ItemRecScore(
       uid = "user1",
-      iid = "dac",
-      score = 1,
-      itypes = Seq("bar"),
-      appid = appid,
-      algoid = algoid,
-      modelset = true))
-
-    itemRecScores.insert(ItemRecScore(
-      uid = "user1",
-      iid = "hsh",
-      score = 4,
-      itypes = Seq("foo"),
-      appid = appid,
-      algoid = algoid,
-      modelset = true))
-
-    itemRecScores.insert(ItemRecScore(
-      uid = "user1",
-      iid = "mvh",
-      score = 3,
-      itypes = Seq("unrelated"),
-      appid = appid,
-      algoid = algoid,
-      modelset = true))
-
-    itemRecScores.insert(ItemRecScore(
-      uid = "user1",
-      iid = "lbh",
-      score = 2,
-      itypes = Seq("unrelated"),
+      iids = Seq("hsh", "mvh", "lbh", "dac"),
+      scores = Seq(4, 3, 2, 1),
+      itypes = Seq(Seq("fresh", "meat"), Seq("fresh", "meat"), Seq("fresh", "meat"), Seq("fresh", "meat")),
       appid = appid,
       algoid = algoid,
       modelset = true))
@@ -154,8 +127,8 @@ class APISpec extends Specification {
       val response = Helpers.await(wsUrl(s"/engines/itemrec/${enginename}/topn.json")
         .withQueryString(
           "pio_appkey" -> "appkey",
-          "pio_uid"    -> "user1",
-          "pio_n"      -> "10")
+          "pio_uid" -> "user1",
+          "pio_n" -> "10")
         .get())
       response.status must beEqualTo(OK) and
         (response.body must beEqualTo("""{"pio_iids":["hsh","mvh","lbh","dac"]}"""))
@@ -165,8 +138,8 @@ class APISpec extends Specification {
       val response = Helpers.await(wsUrl(s"/engines/itemrec/${enginename}/topn.json")
         .withQueryString(
           "pio_appkey" -> "appkey",
-          "pio_uid"    -> "user1",
-          "pio_n"      -> "10",
+          "pio_uid" -> "user1",
+          "pio_n" -> "10",
           "pio_latlng" -> "37.3229978,-122.0321823",
           "pio_within" -> "2.2")
         .get())
@@ -179,20 +152,20 @@ class APISpec extends Specification {
     val enginename = "itemsim"
 
     val engineid = engines.insert(Engine(
-      id       = 0,
-      appid    = appid,
-      name     = "itemsim",
-      infoid   = "itemsim",
-      itypes   = None,
-      params   = Map()))
+      id = 0,
+      appid = appid,
+      name = "itemsim",
+      infoid = "itemsim",
+      itypes = None,
+      params = Map()))
 
     val algoid = algos.insert(Algo(
-      id       = 0,
+      id = 0,
       engineid = engineid,
-      name     = enginename,
-      infoid   = "pdio-itembasedcf",
-      command  = "items",
-      params   = Map("foo" -> "bar"),
+      name = enginename,
+      infoid = "pdio-itembasedcf",
+      command = "items",
+      params = Map("foo" -> "bar"),
       settings = Map("dead" -> "beef"),
       modelset = true,
       createtime = DateTime.now,
@@ -202,36 +175,9 @@ class APISpec extends Specification {
 
     itemSimScores.insert(ItemSimScore(
       iid = "user1",
-      simiid = "dac",
-      score = 1,
-      itypes = Seq("bar"),
-      appid = appid,
-      algoid = algoid,
-      modelset = true))
-
-    itemSimScores.insert(ItemSimScore(
-      iid = "user1",
-      simiid = "hsh",
-      score = 4,
-      itypes = Seq("foo"),
-      appid = appid,
-      algoid = algoid,
-      modelset = true))
-
-    itemSimScores.insert(ItemSimScore(
-      iid = "user1",
-      simiid = "mvh",
-      score = 3,
-      itypes = Seq("unrelated"),
-      appid = appid,
-      algoid = algoid,
-      modelset = true))
-
-    itemSimScores.insert(ItemSimScore(
-      iid = "user1",
-      simiid = "lbh",
-      score = 2,
-      itypes = Seq("unrelated"),
+      simiids = Seq("hsh", "mvh", "lbh", "dac"),
+      scores = Seq(4, 3, 2, 1),
+      itypes = Seq(Seq("fresh", "meat"), Seq("fresh", "meat"), Seq("fresh", "meat"), Seq("fresh", "meat")),
       appid = appid,
       algoid = algoid,
       modelset = true))
@@ -240,8 +186,8 @@ class APISpec extends Specification {
       val response = Helpers.await(wsUrl(s"/engines/itemsim/${enginename}/topn.json")
         .withQueryString(
           "pio_appkey" -> "appkey",
-          "pio_iid"    -> "user1",
-          "pio_n"      -> "10")
+          "pio_iid" -> "user1",
+          "pio_n" -> "10")
         .get())
       response.status must beEqualTo(OK) and
         (response.body must beEqualTo("""{"pio_iids":["hsh","mvh","lbh","dac"]}"""))
@@ -251,8 +197,8 @@ class APISpec extends Specification {
       val response = Helpers.await(wsUrl(s"/engines/itemsim/${enginename}/topn.json")
         .withQueryString(
           "pio_appkey" -> "appkey",
-          "pio_iid"    -> "user1",
-          "pio_n"      -> "10",
+          "pio_iid" -> "user1",
+          "pio_n" -> "10",
           "pio_latlng" -> "37.3229978,-122.0321823",
           "pio_within" -> "2.2")
         .get())
@@ -265,7 +211,7 @@ class APISpec extends Specification {
     "fail creation with tabs in itypes" in new WithServer {
       val response = Helpers.await(wsUrl(s"/items.json").post(Map(
         "pio_appkey" -> Seq("appkey"),
-        "pio_iid"    -> Seq("fooitem"),
+        "pio_iid" -> Seq("fooitem"),
         "pio_itypes" -> Seq("footype\tbartype"))))
       response.status must beEqualTo(BAD_REQUEST)
     }

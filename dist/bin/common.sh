@@ -1,6 +1,6 @@
 # PredictionIO Shared Shell Code
 
-# This script should be sourced with $BASE set to the base of the repository
+# This script should be sourced with $BASE set to the base of the binary package
 
 VERSION=0.7.0-SNAPSHOT
 

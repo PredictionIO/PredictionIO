@@ -21,7 +21,21 @@ object MatrixMarketReader {
       val line = lines.next()
       val size = line.split("""\s+""")
 
-      val (rowNum, colNum): (Int, Int) = try {
+      // matrix market dense format is column oriented
+      /* eg:
+       * 2 3
+       * 1
+       * 2
+       * 3
+       * 4
+       * 5
+       * 6
+       * becomes
+       * 1 4
+       * 2 5
+       * 3 6
+       */
+      val (colNum, rowNum): (Int, Int) = try {
         (size(0).toInt, size(1).toInt)
       } catch {
         case e: Exception =>
