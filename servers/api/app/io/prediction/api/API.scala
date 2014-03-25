@@ -259,7 +259,7 @@ object API extends Controller {
         (t, attributes) => {
           val (appkey, uid, latlng, inactive) = t
           if (ValidAttributes(attributes)) {
-            APIMessageResponse(NOT_FOUND, Map("message" -> "Optional Parameters, Parameter keys cannot contain dots (i.e. .)"))
+            APIMessageResponse(BAD_REQUEST, Map("message" -> "Optional Parameters, Parameter keys cannot contain dots (i.e. .)"))
 
           } else {
             AuthenticatedApp(t._1) { app =>
