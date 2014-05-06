@@ -18,3 +18,11 @@ GET     /apps/:appid/engines/:engineid/offlineevals/:offlineevalid/delete       
 GET     /apps/:appid/engines/:engineid/offlineevals/:offlineevalid/stop         io.prediction.scheduler.Scheduler.stopOfflineEval(appid: Int, engineid: Int, offlineevalid: Int)
 
 GET     /apps/:appid/engines/:engineid/offlinetunes/:offlinetuneid/stop         io.prediction.scheduler.Scheduler.stopOfflineTune(appid: Int, engineid: Int, offlinetuneid: Int)
+
+GET     /monitor/ramUsage                         io.prediction.scheduler.StatsMonitor.getRamUsage()
+GET     /monitor/cpuUsage                         io.prediction.scheduler.StatsMonitor.getCpuUsage()
+GET     /monitor/usedDiskSpace                    io.prediction.scheduler.StatsMonitor.getUsedDiskSpace()
+GET     /monitor/jobs                             io.prediction.scheduler.StatsMonitor.getJobUsage()
+GET     /monitor/stats                            io.prediction.scheduler.StatsMonitor.getStats()
+
+GET   	/collector/stats/:numStats 		    				io.prediction.scheduler.StatsCollector.getStats(numStats: Int)

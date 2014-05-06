@@ -80,3 +80,5 @@ GET     /apps/:appid/engines/:engineid/algos/:algoid/template.js     controllers
 GET     /engineinfos/:engineinfoid/metricinfos/:metricinfoid/template.html    controllers.Application.getMetricInfoTemplateHtml(engineinfoid: String, metricinfoid: String)
 GET     /engineinfos/:engineinfoid/splitterinfos/:splitterinfoid/template.html    controllers.Application.getSplitterInfoTemplateHtml(engineinfoid: String, splitterinfoid: String)
 
+# Monitor
+GET    /collector/stats/:numStats            controllers.StatsCollector.getStats(numStats: Int)

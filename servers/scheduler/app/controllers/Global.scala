@@ -8,6 +8,14 @@ import scala.concurrent.future
 
 object Global extends GlobalSettings {
   override def onStart(app: Application) = {
+
+    Logger.info("Calling start StatsCollector on StartUP")
+
+    future {
+      Logger.info("Started Stats Collector Thread")
+      io.prediction.scheduler.StatsCollector.storeStats()
+    }
+
     Logger.info("Quartz scheduler is starting...")
 
     io.prediction.scheduler.Scheduler.scheduler.start()

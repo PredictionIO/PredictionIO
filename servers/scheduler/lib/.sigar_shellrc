@@ -1,0 +1,48 @@
+#this file is loaded by the sigar shell.
+#commands in this file are run just as they would be if they
+#were typed in by hand in the shell prompt.
+
+#find weblogic nodes (-1 means last index in the array)
+alias ps-wls ps State.Name.eq=java,Args.-1.eq=weblogic.Server
+
+#find websphere 4.x nodes
+alias ps-was4 ps State.Name.eq=java,Args.*.eq=com.ibm.ejs.sm.server.ManagedServer
+
+#find websphere admin server
+alias ps-was4adm ps State.Name.eq=java,Args.*.eq=com.ibm.ejs.sm.server.AdminServer
+
+#find websphere 5.x nodes
+alias ps-was5 ps State.Name.eq=java,Args.*.eq=com.ibm.ws.runtime.WsServer
+
+#find websphere 4.x and 5.x nodes
+alias ps-was ps State.Name.eq=java,Args.*.eq=com.ibm.ws.bootstrap.WSLauncher
+
+#find jboss (use .sw=java to match 'java' or 'javaw')
+alias ps-jboss ps State.Name.sw=java,Args.*.eq=org.jboss.Main
+
+#find tomcat
+alias ps-tomcat ps State.Name.eq=java,Args.*.eq=org.apache.catalina.startup.Bootstrap
+
+#find apache parent processes
+#($1 is the return value of the first query in the string)
+#'Pne' => 'P' flags means parent of matched process
+#to filter out httpd child processes
+alias ps-apache ps State.Name.re=https?d.*|[Aa]pache2?$,State.Name.Pne=$1
+
+#find ant processes (ant hangs on me sometimes)
+#(* matches any value in the array)
+alias ps-ant ps State.Name.eq=java,Args.*.eq=org.apache.tools.ant.Main
+
+#HQ agents
+alias ps-hqagent ps State.Name.sw=java,Args.-1.eq=org.hyperic.hq.agent.server.AgentDaemon
+
+#find all java procs except the shell itself
+#($$ is the current process id)
+alias ps-java ps State.Name.eq=java,Pid.Pid.ne=$$
+alias java ps-java
+
+#find all processes owned by the current user
+alias ps-me ps CredName.User.eq=$user.name
+
+#VMware Server or GSX VMs
+alias ps-vmx ps State.Name.eq=vmware-vmx,Args.1.eq=-C
