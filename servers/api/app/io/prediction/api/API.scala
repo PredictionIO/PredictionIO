@@ -265,16 +265,20 @@ object API extends Controller {
         f => bindFailed(f.errors),
         (t, attributes) => {
           val (appkey, uid, latlng, inactive) = t
-          AuthenticatedApp(t._1) { app =>
-            users.insert(User(
-              id = uid,
-              appid = app.id,
-              ct = DateTime.now,
-              latlng = latlng map { parseLatlng(_) },
-              inactive = inactive,
-              attributes = if (attributes.isEmpty) None else Some(attributes)
-            ))
-            APIMessageResponse(CREATED, Map("message" -> "User created."))
+          if (attributes.keys.exists(_.contains("."))) {
+            APIMessageResponse(BAD_REQUEST, Map("message" -> "Optional Parameters, Parameter keys cannot contain dots (i.e. .)"))
+          } else {
+            AuthenticatedApp(t._1) { app =>
+              users.insert(User(
+                id = uid,
+                appid = app.id,
+                ct = DateTime.now,
+                latlng = latlng map { parseLatlng(_) },
+                inactive = inactive,
+                attributes = if (attributes.isEmpty) None else Some(attributes)
+              ))
+              APIMessageResponse(CREATED, Map("message" -> "User created."))
+            }
           }
         }
       )
