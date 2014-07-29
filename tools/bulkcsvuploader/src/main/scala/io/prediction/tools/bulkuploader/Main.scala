@@ -105,7 +105,7 @@ object BulkCsvUploader {
         appid = appid,
         ct = DateTime.now,
         itypes = itypes,
-        starttime = None,
+        starttime = Some(DateTime.now),
         endtime = None,
         price = None,
         profit = None,
@@ -183,7 +183,7 @@ object BulkCsvUploader {
           u2i.insert(makeU2IAction(fields(0), fields(1), fields(2)))
         } else {
           val ratio = Option(fields(3).toInt)
-          u2i.insert(makeU2IAction(fields(0), fields(1), fields(2),ratio))
+          u2i.insert(makeU2IAction(fields(0), fields(1), fields(2), ratio))
         }
       } else {
         importErrors += 1
