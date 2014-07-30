@@ -1,0 +1,23 @@
+language: scala
+env:
+  - PLAY_VERSION=2.2.2
+scala:
+  - "2.10.3"
+jdk:
+  - oraclejdk7
+  - openjdk7
+  - openjdk6
+services: mongodb
+before_script:
+  - wget http://downloads.typesafe.com/play/${PLAY_VERSION}/play-${PLAY_VERSION}.zip
+  - unzip -q play-${PLAY_VERSION}.zip
+script:
+  - sbt test
+  - sbt commons/publish
+  - sbt output/publish
+  - cd servers/admin
+  - ../../play-${PLAY_VERSION}/play test
+  - cd ../api
+  - ../../play-${PLAY_VERSION}/play test
+  - cd ../scheduler
+  - ../../play-${PLAY_VERSION}/play test
