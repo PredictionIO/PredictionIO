@@ -1,0 +1,6 @@
+{
+  "id": "io.prediction.engines.itemsim.examples",
+  "version": "0.8.1-SNAPSHOT",
+  "name": "PredictionIO ItemSim Engine Examples",
+  "engineFactory": "io.prediction.engines.itemsim.ItemSimEngine"
+}

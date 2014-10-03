@@ -1,8 +1,0 @@
-@(id: String, name: String, description: Option[String])
-                                <div class="control-group">
-                                    <label for="@id" class="control-label">@name</label>
-                                    <div class="controls">
-                                        <input id="@id" name="@id" class="span2" type="text">
-                                        @Html(description.map("<span class=\"help-inline\">"+_+"</span>").getOrElse(""))
-                                    </div>
-                                </div>

@@ -1,0 +1,9 @@
+[
+  {
+    "name": "SGD",
+    "params": {
+      "numIterations": 800,
+      "stepSize": 0.1
+    }
+  }
+]

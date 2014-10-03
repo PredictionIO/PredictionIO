@@ -1,0 +1,6 @@
+{
+  "id": "org.apache.spark.mllib.recommendation.engine",
+  "version": "0.8.1-SNAPSHOT",
+  "name": "Item Recommendations",
+  "engineFactory": "org.apache.spark.mllib.recommendation.engine.RecommendationEngine"
+}

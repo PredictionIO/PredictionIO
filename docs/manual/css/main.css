@@ -1,0 +1,65 @@
+.docs-sidebar-menu {
+    border-right: 1px dashed #41b7d8;
+    font-size: 78%;
+    padding-right: 20px;
+}
+.docs-sidebar-menu a {
+    color: #1657ab !important;
+}
+#docsContainer a.headerlink {
+    font-size: 0.8em;
+    padding: 0 0 0 7px;
+    text-decoration: none;
+    visibility: hidden;
+}
+#docsContainer *:hover > a.headerlink {
+    visibility: visible;
+}
+
+#docsContainer {
+    font-family: helvetica,arial,sans-serif;
+}
+#docsContainer h1, #docsContainer h2, #docsContainer h3, #docsContainer h4, #docsContainer h5, #docsContainer h6 {
+    font-family: helvetica,arial,sans-serif;
+    font-weight: bold;
+    text-transform: none;
+}
+#docsContainer h1 {
+    font-size: 160%;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+#docsContainer h2 {
+    font-size: 135%;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+#docsContainer h3 {
+    font-size: 110%;
+    margin-bottom: 10px;
+}
+#docsContainer h4 {
+    font-size: 100%;
+    margin-bottom: 5px;
+}
+#docsContainer h5 {
+    font-size: 80%;
+}
+#docsContainer h6 {
+    font-size: 80%;
+}
+
+#docsContainer table {
+  margin-bottom: 20px;
+}
+pre {
+    word-break: normal!important;
+}
+
+code {
+    color: #DC143C;
+}
+
+.anchor {
+  padding-top: 95px;
+}

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]> <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8] -->
+<html lang="en">
+  <!-- <![endif] -->
+  <head>
+  <meta charset="utf-8" />
+  <!-- %meta{:content => "IE=edge,chrome=1", "http-equiv" => "X-UA-Compatible"} -->
+  <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
+  <meta content="PredictionIO Open Source Machine Learning Server" name="description" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="http://prediction.io/assets/images/favicon.png" rel="shortcut icon" />
+  <link rel="apple-touch-icon-precomposed" href="http://prediction.io/assets/images/iosicon.png" />
+
+  <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
+
+  <link href="http://prediction.io/assets/stylesheets/bootstrap.css?v=201409231" media="screen" rel="stylesheet" type="text/css" />
+  <link href="http://prediction.io/assets/stylesheets/responsive.css?v=201409231" media="screen" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="{{ "/css/font-awesome.min.css?v=201409231" | prepend: site.baseurl }}">
+  <!--[if IE 7]>
+    <link rel="stylesheet" type="text/css" href="{{ "/css/font-awesome-ie7.min.css" | prepend: site.baseurl }}">
+  <![endif]-->
+
+  <link href="http://prediction.io/assets/stylesheets/theme.css?v=201409231" media="screen" rel="stylesheet" type="text/css" />
+  <link href="http://prediction.io/assets/stylesheets/fonts.css?v=201409231" media="screen" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="{{ "/css/main.css?v=201409231" | prepend: site.baseurl }}">
+  <link rel="stylesheet" href="{{ "/css/syntax.css?v=201409231" | prepend: site.baseurl }}">
+</head>
+  <body class="theme-pattern-subtle-grey">
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+      _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+      _gaq.push(['_setAccount', 'UA-38306178-1']);
+      _gaq.push(['_setDomainName', 'prediction.io']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <!-- Page Header -->
+    <header id="masthead">
+      <nav class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container">
+            <a class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </a>
+            <h1 class="brand">
+              <a href="http://prediction.io/">
+                <img src="http://prediction.io/assets/images/PredictionIO-logo.png" width="160px"/>
+              </a>
+            </h1>
+            <div class="nav-collapse collapse">
+              <a href="http://prediction.io/download" class="pull-right marginLeft btn btn-primary btn-small">Download</a>
+              <ul class="nav pull-right">
+                <li class="active"><a href="http://docs.prediction.io/">Docs</a></li>
+                <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">Community</a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="http://groups.google.com/group/predictionio-user" target="_blank">User Forum</a>
+                    </li>
+                    <li>
+                      <a href="https://predictionio.uservoice.com/forums/219398-general/filters/top" target="_blank">Request a Feature</a>
+                    </li>
+
+                    <li>
+                      <a href="http://www.twitter.com/predictionio" target="_blank">Twitter</a>
+                    </li>
+                    <li>
+                      <a href="http://www.facebook.com/predictionio" target="_blank">Facebook Page</a>
+                    </li>
+                  </ul>
+                </li>
+                <li class=""><a href="http://blog.prediction.io">Blog</a></li>
+                <li></li>
+              </ul>
+            </div>
+
+          </div>
+
+        </div>
+      </nav>
+    </header>
+    <!-- Main Content -->
+    <div id="content" role="main">
+      <section id="promo" class="section alt">
+          <div class="container">
+            <h1><a href="/">Documentation</a></h1>
+          </div>
+      </section>
+      <div id="docsContainer" class="section">
+          <div class="container">
+            <div class="row-fluid">
+              <div class="span3">
+                <div class=" docs-sidebar-menu">
+                  {% include nav.html %}
+                </div>
+              </div>
+              <div class="span9">
+                {{content}}
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+    <!-- Page Footer -->
+    <footer class="section" id="footer" role="contentinfo">
+      <div class="container">
+        <div class="row-fluid">
+          <div class="span4">
+            <h3>PredictionIO</h3>
+            <ul class="icons">
+              <li>
+                    <i class="icon-circle-blank"></i>
+                    <a href="http://prediction.io/download">Download</a>
+              </li>
+              <li>
+                    <i class="icon-circle-blank"></i>
+                    <a href="http://docs.prediction.io/">Docs</a>
+              </li>
+              <li>
+                    <i class="icon-circle-blank"></i>
+                    <a href="http://groups.google.com/group/predictionio-user">Support Forum</a>
+              </li>
+              <li>
+                <i class="icon-circle-blank"></i>
+                    <a href="mailto:&#115;&#117;&#112;&#112;&#111;&#114;&#116;&#064;&#112;&#114;&#101;&#100;&#105;&#099;&#116;&#105;&#111;&#110;&#046;&#105;&#111;">Contact Us</a>
+              </li>
+            </ul>
+          </div>
+          <div class="span4">
+            <h3>Contribute</h3>
+            <ul class="icons">
+              <li>
+                    <i class="icon-circle-blank"></i>
+                    <a href="https://github.com/PredictionIO">Source Code</a>
+              </li>
+              <li>
+                <i class="icon-circle-blank"></i>
+                    <a href="http://predictionio.atlassian.net">Bug Tracker</a>
+              </li>
+              <li>
+                    <i class="icon-circle-blank"></i>
+                    <a href="http://groups.google.com/group/predictionio-dev">Contributors' Forum</a>
+              </li>
+              <li>
+                    <i class="icon-circle-blank"></i>
+                    <a href="https://predictionio.uservoice.com/forums/219398-general/filters/top" target="_blank">Request a Feature</a>
+              </li>
+            </ul>
+          </div>
+          <div class="span4">
+            <h3>Follow Us</h3>
+            <p>
+                Keep up to date with PredictionIO
+            </p>
+            <ul class="icons">
+              <li>
+                <i class="icon-envelope"></i>
+                <a href="http://eepurl.com/u4OEH">Subscribe Newsletter</a>
+              </li>
+              <li>
+                <i class="icon-twitter"></i>
+                <a href="http://twitter.com/predictionio/" target="_blank">@PredictionIO</a>
+              </li>
+              <li>
+                <i class="icon-facebook"></i>
+                <a href="http://www.facebook.com/predictionio" target="_blank">PredictionIO </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="http://prediction.io/assets/javascripts/jquery.min.js?v=201409231" type="text/javascript"></script>
+    <script src="http://prediction.io/assets/javascripts/bootstrap.js?v=201409231" type="text/javascript"></script>
+    <script src="http://prediction.io/assets/javascripts/script.js?v=201409231" type="text/javascript"></script>
+    <script src="{{ "/js/main.js?v=201409231" | prepend: site.baseurl }}" type="text/javascript"></script>
+</body>
+</html>

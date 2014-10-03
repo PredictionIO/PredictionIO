@@ -1,0 +1,19 @@
+- title: "Overview"
+  href: "/predictionio.html"
+  
+- title: "Installing PredictionIO"
+  href: "/install/"
+  
+- title: "Quick Start"
+  href: "/tutorials/engines/quickstart.html"
+
+- title: "Collecting Data"
+  href: "/eventapi.html"
+
+- title: "Deploying an Engine Instance"
+  href: "/engines/"
+  
+- title: "Glossary"
+  href: "/glossary.html"
+
+

@@ -1,0 +1,13 @@
+[
+  {
+    "name": "ncMahoutItemBased",
+    "params": {
+      "booleanData": true,
+      "itemSimilarity": "LogLikelihoodSimilarity",
+      "weighted": false,
+      "threshold": 4.9E-324,
+      "freshness" : 0,
+      "freshnessTimeUnit" : 86400
+    }
+  }
+]

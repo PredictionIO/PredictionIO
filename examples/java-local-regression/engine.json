@@ -1,0 +1,7 @@
+
+{
+  "id": "java-local-regression",
+  "version": "0.0.1-SNAPSHOT",
+  "name": "java-local-regression",
+  "engineFactory": "io.prediction.examples.java.regression.EngineFactory"
+}

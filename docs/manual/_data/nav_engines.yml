@@ -1,0 +1,14 @@
+- title: "Item Ranking"
+  href: "/engines/itemrank"
+
+- title: "Item Recommendation"
+  href: "/engines/itemrec"
+
+#- title: "Item Similarity"
+#  href: "/engines/itemsim"
+ 
+- title: "Concept: Engine and Engine Instances"
+  href: "/engines/concept"
+    
+- title: "Tutorials & Samples"
+  href: "/tutorials/engines/"

@@ -1,0 +1,10 @@
+{
+  "actions": {
+    "view": 3,
+    "like": 5,
+    "dislike": 1,
+    "conversion": 4,
+    "rate": null
+  },
+  "conflict": "latest"
+}

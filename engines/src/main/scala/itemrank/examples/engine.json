@@ -1,0 +1,6 @@
+{
+  "id": "io.prediction.engines.itemrank.examples",
+  "version": "0.8.1-SNAPSHOT",
+  "name": "PredictionIO ItemRank Engine Examples",
+  "engineFactory": "io.prediction.engines.itemrank.ItemRankEngine"
+}

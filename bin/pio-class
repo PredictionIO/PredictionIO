@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+# Copyright 2014 TappingStone, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+cygwin=false
+case "`uname`" in
+    CYGWIN*) cygwin=true;;
+esac
+
+SCALA_VERSION=2.10
+
+# Figure out where PredictionIO is installed
+FWDIR="$(cd `dirname $0`/..; pwd)"
+
+# Export this as PIO_HOME
+export PIO_HOME="$FWDIR"
+
+. $FWDIR/bin/load-pio-env.sh
+
+. $FWDIR/bin/semver.sh
+
+if [ -z "$1" ]; then
+  echo "Usage: pio-class <class> [<args>]" 1>&2
+  exit 1
+fi
+
+# Make sure the Apache Spark version meets the prerequisite if it is a binary
+# distribution
+MIN_SPARK_VERSION="1.1.0"
+if [ -r "$SPARK_HOME/RELEASE" ]; then
+  SPARK_VERSION=`awk '{print $2}' $SPARK_HOME/RELEASE`
+  if semverLT $SPARK_VERSION $MIN_SPARK_VERSION; then
+    echo "You have Apache Spark $SPARK_VERSION at $SPARK_HOME which does not meet the minimum version requirement of $MIN_SPARK_VERSION."
+    echo "Aborting."
+    exit 1
+  fi
+else
+  echo "$SPARK_HOME is an Apache Spark development tree. Please make sure you are using at least $MIN_SPARK_VERSION."
+fi
+
+# Find the java binary
+if [ -n "${JAVA_HOME}" ]; then
+  RUNNER="${JAVA_HOME}/bin/java"
+else
+  if [ `command -v java` ]; then
+    RUNNER="java"
+  else
+    echo "JAVA_HOME is not set" >&2
+    exit 1
+  fi
+fi
+
+# Compute classpath using external script
+classpath_output=$($FWDIR/bin/compute-classpath.sh)
+if [[ "$?" != "0" ]]; then
+  echo "$classpath_output"
+  exit 1
+else
+  CLASSPATH=$classpath_output
+fi
+
+export CLASSPATH
+
+exec "$RUNNER" -cp "$CLASSPATH" $JAVA_OPTS "$@"

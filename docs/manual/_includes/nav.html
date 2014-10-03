@@ -1,0 +1,94 @@
+<div>
+    <h2>Getting Started</h2>
+	<ul>
+	    {% for sec in site.data.nav_gettingstarted %}
+	    <li><a href="{{ site.url }}{{ site.baseurl }}{{ sec.href }}">{{ sec.title }}</a></li>
+	        {% if sec.subsec != null %}
+	        <ul>
+	        {% for subsec in sec.subsec %}
+	            <li><a href="{{ site.url }}{{ site.baseurl }}{{ subsec.href }}">{{ subsec.title }}</a></li>
+	        {% endfor %}
+	        </ul>
+	        {% endif %}
+	    </li>
+	    {% endfor %}
+	</ul>
+
+    <h2>Using Built-in Engines</h2>
+    <ul>
+        {% for sec in site.data.nav_engines %}
+        <li><a href="{{ site.url }}{{ site.baseurl }}{{ sec.href }}">{{ sec.title }}</a></li>
+            {% if sec.subsec != null %}
+            <ul>
+            {% for subsec in sec.subsec %}
+                <li><a href="{{ site.url }}{{ site.baseurl }}{{ subsec.href }}">{{ subsec.title }}</a></li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Cookbook</h2>
+    <ul>
+        {% for sec in site.data.nav_cookbook %}
+        <li><a href="{{ site.url }}{{ site.baseurl }}{{ sec.href }}">{{ sec.title }}</a></li>
+            {% if sec.subsec != null %}
+            <ul>
+            {% for subsec in sec.subsec %}
+                <li><a href="{{ site.url }}{{ site.baseurl }}{{ subsec.href }}">{{ subsec.title }}</a></li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Engine Builders' Guide</h2>
+    <ul>
+        {% for sec in site.data.nav_enginebuilders %}
+        <li><a href="{{ site.url }}{{ site.baseurl }}{{ sec.href }}">{{ sec.title }}</a></li>
+            {% if sec.subsec != null %}
+            <ul>
+            {% for subsec in sec.subsec %}
+                <li><a href="{{ site.url }}{{ site.baseurl }}{{ subsec.href }}">{{ subsec.title }}</a></li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Running on Production</h2>
+    <ul>
+        {% for sec in site.data.nav_production %}
+        <li><a href="{{ site.url }}{{ site.baseurl }}{{ sec.href }}">{{ sec.title }}</a></li>
+            {% if sec.subsec != null %}
+            <ul>
+            {% for subsec in sec.subsec %}
+                <li><a href="{{ site.url }}{{ site.baseurl }}{{ subsec.href }}">{{ subsec.title }}</a></li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+
+	<h2>Contributors</h2>
+	<ul class="kb-menu">
+	  <li><a href="{{ site.baseurl }}/contributorsguide.html">Contributors' Guide</a></li>
+	  <li><a href="{{ site.baseurl }}/projects.html">Community-powered Projects</a></li>
+	</ul>
+
+	<h2>SDKs and Plugins</h2>
+	<ul class="kb-menu">
+	  <li><a target="_blank" href="/java/api">Android &amp; Java SDK API Doc</a></li>
+      <li><a target="_blank" href="http://pythonhosted.org/PredictionIO/">Python SDK API Doc</a></li>
+      <li><a target="_blank" href="/ruby/api/PredictionIO.html">Ruby SDK API Doc</a></li>
+      <li><a target="_blank" href="/php/api">PHP SDK API Doc</a></li>
+	  <!-- <li><a href="../../contribution/projects.html">Meteor SDK</a></li>  -->
+	  <!-- <li><a href="../../contribution/projects.html">Node.js SDK</a></li> -->
+	  <!-- <li><a href="../../contribution/projects.html">Play Framework Plugin</a></li> -->
+	  <!-- <li><a href="../../contribution/projects.html">Symfony2 Bundle</a></li> -->
+	</ul>
+</div>

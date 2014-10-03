@@ -1,0 +1,6 @@
+{
+  "id": "org.sample.test",
+  "version": "0.1",
+  "name": "My Hello World Engine",
+  "engineFactory": "org.sample.test.MyEngineFactory"
+}

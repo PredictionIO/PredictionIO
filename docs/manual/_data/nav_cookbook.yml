@@ -1,0 +1,18 @@
+- title: "Adding customized business logics"
+  href: "/cookbook/customlogics.html"
+
+- title: "Adding algorithms to a built-in engine"
+  href: "/cookbook/addalgorithm.html"
+  
+- title: "Selecting an algorithm"
+  href: "/cookbook/choosingalgorithms.html"
+  
+- title: "Evaluating the prediction results"
+  href: "/cookbook/evaluation.html"
+  
+- title: "Tuning for better accuracy"
+  href: "/cookbook/tuningalgorithm.html"
+
+- title: "Using your existing data source"
+  href: "/cookbook/existingdatasource.html"
+  

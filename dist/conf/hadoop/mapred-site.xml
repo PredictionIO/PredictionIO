@@ -1,6 +1,0 @@
-<configuration>
-	<property>
-		<name>mapred.job.tracker</name>
-		<value>localhost:9002</value>
-	</property>
-</configuration>

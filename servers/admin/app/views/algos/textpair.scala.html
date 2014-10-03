@@ -1,9 +1,0 @@
-@(id1: String, id2: String, name: String, description: Option[String])
-                                                    <div class="control-group">
-                                                        <label class="control-label">@name</label>
-                                                        <div class="controls">
-                                                            Min: <input name="@id1" id="@id1" class="rightMargin span1" type="text">
-                                                            Max: <input name="@id2" id="@id2" class="span1" type="text">
-                                                            @Html(description.map("<span class=\"help-inline\">"+_+"</span>").getOrElse(""))
-                                                        </div>
-                                                    </div>

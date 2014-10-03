@@ -1,0 +1,36 @@
+[
+  {
+    "name": "prepare simple data with conflict=latest",
+    "preparatorParams": {
+      "actions": { "view": 3, "like" : 5, "conversion" : 5, "rate" : null },
+      "conflict": "latest"
+    },
+    "users": { "0": { "uid": "itemranker01" } },
+    "items": {
+      "0": {
+        "iid": "item0",
+        "itypes": ["book"],
+        "starttime": 1,
+        "endtime": 1,
+        "inactive": false
+      }
+    },
+    "u2iActions": [
+      {
+        "uindex": 0,
+        "iindex": 0,
+        "action": "like",
+        "v": 1,
+        "t": 0
+      }
+    ],
+    "expect": [
+      {
+        "uindex": 0,
+        "iindex": 0,
+        "rating": 5,
+        "t": 0
+      }
+    ]
+  }
+]

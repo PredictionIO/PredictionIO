@@ -1,8 +1,0 @@
-@(id: String, name: String, description: Option[String], selections: Seq[(String, String)], defaultValue: Option[String])
-<label for="@{id}[<%= data.index %>]">@{name} =</label>
-<select name="@{id}[<%= data.index %>]" id="@{id}[<%= data.index %>]" class="span2">
-    @for(s <- selections) {
-        <option value="@s._2" @{defaultValue.map(d => if (s._2 == d) "selected" else "").getOrElse("")}>@s._1</option>
-    }
-</select>
-<!--@Html(description.map("<span class=\"help-inline\">"+_+"</span>").getOrElse("")) -->

@@ -1,0 +1,7 @@
+[
+  { "name" : "genericitembased",
+    "params" : { "numRecommendations" : 50,
+                 "itemSimilarity" : "LogLikelihoodSimilarity",
+                 "weighted" : false }
+  }
+]

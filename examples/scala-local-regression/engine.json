@@ -1,0 +1,6 @@
+{
+  "id": "io.prediction.examples.regression.local",
+  "version": "0.8.1-SNAPSHOT",
+  "name": "Nak-based Regression Engine",
+  "engineFactory": "io.prediction.examples.regression.local.RegressionEngineFactory"
+}

@@ -1,0 +1,261 @@
+<html>
+  <head>
+    <title>ItemRankMetrics</title>
+    <style>
+      table {
+        border-collapse: collapse;
+      }
+
+      table, td, th {
+        border: 1px solid black;
+      }
+      #mid>div {
+        display:inline-block;
+        vertical-align: top;
+        margin: 4px;
+        border-style:solid;
+        border-width:thin;
+        border-color:#aaa;
+      }
+      #mid p {
+        margin: 0;
+      }
+    </style>
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+
+    <script type="text/javascript"
+      src="http://systemsbiology-visualizations.googlecode.com/svn/trunk/src/main/js/load.js"></script>
+
+    <script>
+      google.load('visualization', '1', {packages:['table', 'corechart',]});
+    </script>
+    <script>
+      google.load("visualization", "1", {});
+      google.load("prototype", "1.6");  
+    </script>
+    <script>
+      systemsbiology.load("visualization", "1.0", {packages:["bioheatmap"]});
+    </script>
+    <script
+      src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> 
+  </head>
+  <body>
+    <h3>Item Rank Metrics !</h3>
+    <h4 id='params'></h4>
+
+    <div id='top'></div>
+    <div id='mid'></div>
+    <div id='bot'></div>
+  
+    <script type='text/javascript'>
+      google.setOnLoadCallback(draw);
+      var rawData; 
+      var algoParams;
+      var paramsObj = {};
+      var paramsList = [];
+
+      var paramsList = [
+        'data_source',
+        'preparator',
+        'algorithms',
+        'serving',
+        'metrics'];
+
+      function draw() {
+        loadData();
+        drawHead();
+        drawTop();
+        drawTable();
+        drawBot();
+      };
+
+      function loadData() {
+        rawData = JSON.parse(
+            jQuery.ajax({
+              url: 'metrics_results.json',
+              dataType: 'json',
+              async: false,
+              }).responseText);
+
+        for (i = 0; i < paramsList.length; i++) {
+          var params = paramsList[i];
+
+          paramsObj[params] = JSON.parse(
+            jQuery.ajax({
+              url: params + '_params.json',
+              dataType: 'json',
+              async: false,
+            }).responseText);
+        }
+      };
+      
+      function drawHead() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Component');
+        data.addColumn('string', 'Params');
+
+        for (i = 0; i < paramsList.length; i++) {
+          var params = paramsList[i];
+          if (params == 'algorithms') {
+            var algoParams = paramsObj[params];
+
+            for (j = 0; j < algoParams.length; j++) {
+              var algoName = 'algorithm ' + j + ' : ' + algoParams[j]._1;
+              data.addRow([algoName, JSON.stringify(algoParams[j]._2)]);
+            }
+          } else {
+            data.addRow([params, JSON.stringify(paramsObj[params])]);
+          }
+        }
+
+        var tableDiv = document.createElement('div');
+        document.getElementById('params').appendChild(tableDiv);
+        var newTable = new google.visualization.Table(tableDiv);
+        newTable.draw(data, {showRowNumber: true, width: '1024px'});
+      }
+
+      function drawTop() {
+        // Main data
+        var newDiv = document.createElement('div');
+        document.getElementById('top').appendChild(newDiv);
+        var newTable = new google.visualization.Table(newDiv);
+        newTable.draw(data, {showRowNumber: true, width: '300px'});
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Key');
+        data.addColumn('number', 'Algo');
+        data.addColumn({type: 'number', role: 'interval'});
+        data.addColumn({type: 'number', role: 'interval'});
+        data.addColumn({type: 'string', role: 'style'});
+        data.addColumn('number', 'Baseline');
+        data.addColumn({type: 'number', role: 'interval'});
+        data.addColumn({type: 'number', role: 'interval'});
+        data.addColumn({type: 'string', role: 'style'});
+
+        for (runIdx = 0; runIdx < rawData.runs.length; runIdx++) {
+          var run = rawData.runs[runIdx];
+          var algo = run._2;
+          var base = run._3;
+          data.addRow([
+              run._1, 
+              algo.average, 
+              algo.average - 1.96 * algo.stdev / Math.sqrt(algo.count),
+              algo.average + 1.96 * algo.stdev / Math.sqrt(algo.count),
+              'opacity: 0.4',
+              base.average, 
+              base.average - 1.96 * base.stdev / Math.sqrt(base.count),
+              base.average + 1.96 * base.stdev / Math.sqrt(base.count),
+              'opacity: 0.4',
+              ]);
+        }
+        
+        var formatter = new google.visualization.NumberFormat(
+          {fractionDigits: 6})
+        formatter.format(data, 1); 
+        formatter.format(data, 2); 
+        formatter.format(data, 3); 
+        formatter.format(data, 5); 
+        formatter.format(data, 6); 
+        formatter.format(data, 7); 
+
+        var options = {
+          title: 'Algorithm Performance: Measure ' + rawData.measureType + '.'
+                   + ' The range denotes the 95% confidence internval.',
+          height: 50 + rawData.runs.length * 15,
+          colors: ['green', 'blue']
+        };
+
+        var chart = new google.visualization.BarChart(newDiv);
+        chart.draw(data, options);
+      }
+
+      function drawTable() {
+
+        // Aggregation Tables
+        for (aggIdx = 0; aggIdx < rawData.aggregations.length; aggIdx++) {
+          var width = '480px';
+
+          var aggregation = rawData.aggregations[aggIdx];
+          var name = aggregation._1;
+          var aggData = aggregation._2;
+          
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'Key');
+          data.addColumn('number', 'Average');
+          data.addColumn('number', 'Stdev');
+          data.addColumn('number', 'Count');
+          data.addColumn('number', 'Min');
+          data.addColumn('number', 'Max');
+
+          for (i=0; i < aggData.length; i++) {
+            var row = aggData[i];
+            data.addRow([row._1, row._2.average, row._2.stdev, row._2.count,
+                row._2.min, row._2.max]);
+          }
+
+          var formatter = new google.visualization.NumberFormat(
+              {fractionDigits: 4})
+          formatter.format(data, 1); 
+          formatter.format(data, 2); 
+          formatter.format(data, 4); 
+          formatter.format(data, 5); 
+
+          var newDiv = document.createElement('div');
+          document.getElementById('mid').appendChild(newDiv);
+
+          var tableId = 'aggregation_' + aggIdx;
+
+          var headerDiv = document.createElement('p');
+          headerDiv.innerHTML = name;
+          headerDiv.target = '#' + tableId;
+          headerDiv.onclick = function(e) {
+            $(e.target.target).toggle();
+          };
+          newDiv.appendChild(headerDiv);
+          
+          var tableDiv = document.createElement('div');
+          tableDiv.id = tableId;
+          newDiv.appendChild(tableDiv);
+          var newTable = new google.visualization.Table(tableDiv);
+          newTable.draw(data, {showRowNumber: true, width: width});
+          $('#' + tableId).toggle();
+        }
+
+      }
+  
+      function drawBot() {
+        var data = new google.visualization.DataTable();
+        var heatMap = rawData.heatMap;
+
+        var columnCount = heatMap.columns.length;
+
+        data.addColumn('string', 'Key');
+        for (i = 0; i < heatMap.columns.length; i++) {
+          data.addColumn('number', heatMap.columns[i]);
+        }
+
+        data.addRows(heatMap.data.length);
+        for (r = 0; r < heatMap.data.length; r++) {
+          var row = heatMap.data[r];
+
+          data.setCell(r, 0, row._1);
+          for (c = 0; c < columnCount; c++) {
+            data.setCell(r, c+1, row._2[c]);
+          }
+        }
+
+        var options = {
+          'startColor': {r:255, g:255, b:255, a:1},
+          'endColor': {r:60, g:180, b:0, a:1},
+          'passThroughBlack': false,
+          'cellWidth': 25,
+          'cellHeight': 25,
+        }
+        heatmap = new org.systemsbiology.visualization.BioHeatMap(document.getElementById('bot'));
+        heatmap.draw(data, options);
+         
+      }
+    </script>
+  </body>
+</html>
+

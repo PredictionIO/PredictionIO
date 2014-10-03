@@ -1,0 +1,30 @@
+================================================================================
+Copyright 2014 TappingStone, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+================================================================================
+
+This product includes software, code and tests from the following projects:
+
+  - Apache Commons - http://commons.apache.org/ - Copyright © 2014 The Apache Software Foundation
+  - Apache Hadoop - http://hadoop.apache.org/ - Copyright © 2014 The Apache Software Foundation
+  - Apache HBase - http://hbase.apache.org/ - Copyright © 2014 The Apache Software Foundation
+  - Apache Mahout - http://mahout.apache.org/ - Copyright © 2014 The Apache Software Foundation
+  - Apache Spark - http://spark.apache.org/ - Copyright © 2014 The Apache Software Foundation
+  - Casbah - http://mongodb.github.io/casbah/ - Copyright © 2010 MongoDB, Inc.
+  - Chill - https://engineering.twitter.com/opensource/projects/chill - Copyright © 2012 Twitter, Inc.  - Elasticsearch - http://www.elasticsearch.org/ - Copyright © 2014 Elasticsearch
+  - Grizzled-SLF4J - http://software.clapper.org/grizzled-slf4j/ - Copyright © 2010 Brian M. Clapper  - Gson - https://code.google.com/p/google-gson/ - Copyright © 2010 Google  - Guava - https://code.google.com/p/guava-libraries/ - Copyright © 2014 Google  - Json4s - http://json4s.org/ - Copyright © 2014 json4s.org
+  - Saddle - http://saddle.github.io/doc/ - © Copyright 2013, The Saddle Development Team
+  - scalaj-http - https://github.com/scalaj/scalaj-http - © Copyright 2014 scalaj.org
+  - ScalaNLP - http://www.scalanlp.org/ - Copyright © 2014 David Hall
+  - ScalaTest - http://www.scalatest.org/ - Copyright © 2009-2013 Artima, Inc.  - scopt - https://github.com/scopt/scopt - Copyright © 2010 Google  - specs2 - http://etorreborre.github.io/specs2/ - Copyright © 2014 Eric Torreborre  - spray - http://spray.io/ - Copyright © 2014 Typesafe, Inc.  - typetools - https://github.com/jhalterman/typetools/ - Copyright © 2010-2013 Jonathan Halterman

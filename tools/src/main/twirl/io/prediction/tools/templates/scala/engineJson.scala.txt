@@ -1,0 +1,7 @@
+@(id: String, version: String, name: String, engineFactory: String)
+{
+  "id": "@{id}",
+  "version": "@{version}",
+  "name": "@{name}",
+  "engineFactory": "@{engineFactory}"
+}

@@ -1,6 +1,0 @@
-@(id: String, name: String, description: Option[String], defaultValue: Option[String])
-<span>@{name}:</span>
-<input name="@{id}[<%= data.index %>]" id="@{id}[<%= data.index %>]" class="span1" type="text" @{defaultValue.map { "value="+_ }.getOrElse{""}}>
-<p> 
-    <small>@{description.getOrElse("")}</small>
-</p>

@@ -1,8 +1,0 @@
-@(name: String, description: Option[String], content: String)
-                        <div class="boxBlock">
-                            <div class="boxtitle">@name</div>
-                            <div class="boxContent">
-                                @Html(description.map(d => "<div class=\"row-fluid bottomMargin\">" + d + "</div>").getOrElse(""))
-@Html(content)
-                            </div>
-                        </div>

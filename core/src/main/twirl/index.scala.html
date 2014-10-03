@@ -1,0 +1,65 @@
+@import io.prediction.data.storage.EngineInstance
+@import io.prediction.data.storage.EngineManifest
+@import io.prediction.workflow.ServerConfig
+@import org.joda.time.DateTime
+@import org.joda.time.format.DateTimeFormat
+@(args: ServerConfig,
+  manifest: EngineManifest,
+  engineInstance: EngineInstance,
+  algorithms: Seq[String],
+  algorithmsParams: Seq[String],
+  models: Seq[String],
+  servingParams: String,
+  serverStartTime: DateTime)
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>@{manifest.id} @{manifest.version} - PredictionIO Server at @{args.ip}:@{args.port}</title>
+    <link href="/assets/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      td { font-family: Menlo, Monaco, Consolas, "Courier New", monospace; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1>PredictionIO Server at @{args.ip}:@{args.port}</h1>
+        <p class="lead">@{manifest.id} @{manifest.version}</p>
+      </div>
+      <h2>Engine Instance Information</h2>
+      <table class="table table-bordered table-striped">
+        <tr><th>ID</th><td>@{engineInstance.id}</td></tr>
+        <tr><th>Training Start Time</th><td>@{DateTimeFormat.forStyle("FF").print(engineInstance.startTime)}</td></tr>
+        <tr><th>Training End Time</th><td>@{DateTimeFormat.forStyle("FF").print(engineInstance.endTime)}</td></tr>
+      </table>
+      <h2>Server Information</h2>
+      <table class="table table-bordered table-striped">
+        <tr><th>Start Time</th><td>@{DateTimeFormat.forStyle("FF").print(serverStartTime)}</td></tr>
+        <tr><th>Engine Factory Class (Scala/Java)</th><td>@{manifest.engineFactory}</td></tr>
+        <tr>
+          <th rowspan="@(manifest.files.size)">Library Files</th>
+          <td>@{manifest.files.head}</td>
+        </tr>
+        @for(f <- manifest.files.drop(1)) {
+        <tr><td>@f</td></tr>
+        }
+      </table>
+      <h2>Algorithms and Models</h2>
+        <table class="table table-bordered table-striped">
+          <tr><th>#</th><th colspan="2">Information</th></tr>
+          @for(a <- algorithms.zip(algorithmsParams).zip(models).zipWithIndex) {
+          <tr>
+            <th rowspan="3">@{a._2 + 1}</th>
+            <th>Class</th><td>@{a._1._1._1}</td>
+          </tr>
+          <tr><th>Parameters</th><td>@{a._1._1._2}</td></tr>
+          <tr><th>Model</th><td>@{a._1._2}</td></tr>
+          }
+        </table>
+      <h2>Serving</h2>
+      <table class="table table-bordered table-striped">
+        <tr><th>Parameters</th><td>@{servingParams}</td></tr>
+      </table>
+    </div>
+  </body>
+</html>

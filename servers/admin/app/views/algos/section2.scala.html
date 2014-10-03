@@ -1,4 +1,0 @@
-@(name: String, description: Option[String], content: String)
-                                                <h5>@name</h5>
-                                                @Html(description.map(d => s"<p>$d</p>").getOrElse(""))
-@Html(content)

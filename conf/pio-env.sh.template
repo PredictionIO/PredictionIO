@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+# Copy this file as pio-env.sh and edit it for your site's configuration.
+
+# PredictionIO Main Configuration
+#
+# This section controls core behavior of PredictionIO. It is very likely that
+# you need to change these to fit your site.
+
+# SPARK_HOME: Apache Spark is a hard dependency and must be configured.
+SPARK_HOME=/path_to_apache_spark
+
+# HADOOP_CONF_DIR: You must configure this if you intend to run PredictionIO
+#                  with Hadoop 2.
+
+# HBASE_CONF_DIR: You must configure this if you intend to run PredictionIO
+#                 with HBase on a remote cluster.
+
+# Filesystem paths where PredictionIO uses as block storage.
+PIO_FS_BASEDIR=$HOME/.pio_store
+PIO_FS_ENGINESDIR=$PIO_FS_BASEDIR/engines
+PIO_FS_TMPDIR=$PIO_FS_BASEDIR/tmp
+
+# PredictionIO Storage Configuration
+#
+# This section controls programs that make use of PredictionIO's built-in
+# storage facilities. Default values are shown below.
+
+# Storage Repositories
+PIO_STORAGE_REPOSITORIES_METADATA_NAME=predictionio_metadata
+PIO_STORAGE_REPOSITORIES_METADATA_SOURCE=ELASTICSEARCH
+
+PIO_STORAGE_REPOSITORIES_MODELDATA_NAME=pio_
+PIO_STORAGE_REPOSITORIES_MODELDATA_SOURCE=LOCALFS
+
+PIO_STORAGE_REPOSITORIES_APPDATA_NAME=predictionio_appdata
+PIO_STORAGE_REPOSITORIES_APPDATA_SOURCE=ELASTICSEARCH
+
+PIO_STORAGE_REPOSITORIES_EVENTDATA_NAME=predictionio_eventdata
+PIO_STORAGE_REPOSITORIES_EVENTDATA_SOURCE=HBASE
+
+# Storage Data Sources
+PIO_STORAGE_SOURCES_ELASTICSEARCH_TYPE=elasticsearch
+PIO_STORAGE_SOURCES_ELASTICSEARCH_HOSTS=localhost
+PIO_STORAGE_SOURCES_ELASTICSEARCH_PORTS=9300
+
+PIO_STORAGE_SOURCES_LOCALFS_TYPE=localfs
+PIO_STORAGE_SOURCES_LOCALFS_HOSTS=$PIO_FS_BASEDIR/models
+PIO_STORAGE_SOURCES_LOCALFS_PORTS=0
+
+PIO_STORAGE_SOURCES_HBASE_TYPE=hbase
+PIO_STORAGE_SOURCES_HBASE_HOSTS=0
+PIO_STORAGE_SOURCES_HBASE_PORTS=0

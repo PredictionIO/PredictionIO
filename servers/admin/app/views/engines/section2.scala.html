@@ -1,8 +1,0 @@
-@(name: String, description: Option[String], content: String)
-                                <div class="row-fluid">
-                                    <h5>@name</h5>
-                                    <div class="span12">
-                                        @Html(description.map(d => s"<p>$d</p>").getOrElse(""))
-@Html(content)
-                                    </div>
-                                </div>

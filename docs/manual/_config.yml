@@ -1,0 +1,21 @@
+# Site settings
+title: PredictionIO Documentation
+email: support@prediction.io
+description: >
+  PredictionIO tech documentation
+  PredictionIO is a Machine Learning Server for developers
+baseurl: "/0.8.0" # the subpath of your site, e.g. /blog/
+url: "" # the base hostname & protocol for your site
+permalink: /:title
+highlighter: pygments
+exclude: ['bin', 'README.md']
+markdown: redcarpet
+redcarpet:
+  extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "with_toc_data", 'strikethrough', 'superscript']
+
+# Version Params
+pio_version: 0.8.0
+spark_download_filename: spark-1.1.0-bin-hadoop2.4
+elasticsearch_download_filename: elasticsearch-1.3.2
+hbase_basename: hbase-0.98.6
+hbase_variant: hadoop2-bin

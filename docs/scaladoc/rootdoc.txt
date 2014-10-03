@@ -1,0 +1,4 @@
+This is the API documentation of PredictionIO.
+
+If you are building a prediction engine, the most interesting package would be
+[[io.prediction.controller]].

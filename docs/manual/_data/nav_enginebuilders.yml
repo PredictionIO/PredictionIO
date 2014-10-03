@@ -1,0 +1,29 @@
+- title: "DASE Architecture Overview"
+  href: "/enginebuilders/"
+
+- title: "Building the HelloWorld Engine"
+  href: "/tutorials/enginebuilders/local-helloworld.html"
+
+- title: "Step-by-step Engine Building"
+  href: "/tutorials/enginebuilders/stepbystep/"
+  subsec:
+    - title: "Data and Algorithm"
+      href: "/tutorials/enginebuilders/stepbystep/dataalgorithm.html"
+
+    - title: "Testing Engine Components"
+      href: "/tutorials/enginebuilders/stepbystep/testcomponents.html"
+
+    - title: "Evaluation"
+      href: "/tutorials/enginebuilders/stepbystep/evaluation.html"
+
+    - title: "Serving: Combining Algorithms"
+      href: "/tutorials/enginebuilders/stepbystep/combiningalgorithms.html"
+
+- title: "Learning by Examples"
+  href: "/enginebuilders/examples.html"
+
+- title: "Dev API for Engine Builders"
+  href: "/enginebuilders/api.html"
+
+- title: "Packaging a Sharable Engine"
+  href: "/enginebuilders/sharable.html"

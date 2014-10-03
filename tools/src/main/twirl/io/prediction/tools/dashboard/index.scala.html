@@ -1,0 +1,114 @@
+@import io.prediction.data.storage.EngineInstance
+@import io.prediction.tools.dashboard.DashboardConfig
+@import org.joda.time.DateTime
+@import org.joda.time.format.DateTimeFormat
+@(dc: DashboardConfig,
+  dashboardStartTime: DateTime,
+  env: Map[String, String],
+  evalCompletedInstances: Seq[EngineInstance])
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>PredictionIO Dashboard at @{dc.ip}:@{dc.port}</title>
+    <link href="/assets/favicon.png" rel="shortcut icon" />
+    <link href="/assets/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+    .string { color: green; }
+    .number { color: darkorange; }
+    .boolean { color: blue; }
+    .null { color: magenta; }
+    .key { color: red; }
+    </style>
+    <script type="text/javascript">
+      function syntaxHighlight(json) {
+        if (typeof json != 'string') {
+          json = JSON.stringify(json, undefined, 2);
+        }
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+          var cls = 'number';
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              cls = 'key';
+            } else {
+              cls = 'string';
+            }
+          } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+          } else if (/null/.test(match)) {
+            cls = 'null';
+          }
+          return '<span class="' + cls + '">' + match + '</span>';
+        });
+      }
+      function shorternClassName(className) {
+        return className.replace(/(\w)\w*\./g, "$1."); 
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="page-header">
+        <h1>PredictionIO Dashboard at @{dc.ip}:@{dc.port}</h1>
+        <p class="lead">Started on: @{DateTimeFormat.forStyle("FF").print(dashboardStartTime)}</p>
+      </div>
+      <h2>Completed Evaluations</h2>
+      <table class="table table-bordered table-striped">
+        <tr>
+          <th>ID</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Batch</th>
+          <th>Engine ID</th>
+          <th>Engine Version</th>
+          <th>Metrics Class</th>
+          <th>View Metrics Results As</th>
+        </tr>
+        @for(i <- evalCompletedInstances) {
+        <tr>
+          <td>@{i.id}</td>
+          <td>@{DateTimeFormat.forStyle("MM").print(i.startTime)}</td>
+          <td>@{DateTimeFormat.forStyle("MM").print(i.endTime)}</td>
+          <td>@{i.batch}</td>
+          <td>@{i.engineId}</td>
+          <td>@{i.engineVersion}</td>
+          <td>
+            <script type="text/javascript">document.write(shorternClassName("@{i.metricsClass}"));</script>
+          </td>
+          <td>
+            <div>@{i.multipleMetricsResults}</div>
+            <div> 
+              <a href="/engine_instances/@{i.id}/metrics_results.html" class="btn btn-primary">HTML</a>
+              <a href="/engine_instances/@{i.id}/metrics_results.txt" class="btn btn-success">Plain Text</a>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="8">
+            <span class="glyphicon glyphicon-chevron-down" data-toggle="collapse" data-target="#@{i.id}"></span>
+            <div id="@{i.id}" class="collapse">
+              <table class="table table-bordered table-striped">
+                <tr><th>Component</th><th>Parameters</th></tr>
+                <tr><th>Data Source</th><td><pre><script type="text/javascript">document.write(syntaxHighlight(JSON.parse('@Html(i.dataSourceParams)')));</script></pre></td></tr>
+                <tr><th>Preparator</th><td><pre><script type="text/javascript">document.write(syntaxHighlight(JSON.parse('@Html(i.preparatorParams)')));</script></pre></td></tr>
+                <tr><th>Algorithms</th><td><pre><script type="text/javascript">document.write(syntaxHighlight(JSON.parse('@Html(i.algorithmsParams)')));</script></pre></td></tr>
+                <tr><th>Serving</th><td><pre><script type="text/javascript">document.write(syntaxHighlight(JSON.parse('@Html(i.servingParams)')));</script></pre></td></tr>
+                <tr><th>Metrics</th><td><pre><script type="text/javascript">document.write(syntaxHighlight(JSON.parse('@Html(i.metricsParams)')));</script></pre></td></tr>
+              </table>
+            </div>
+          </td>
+        </tr>
+        }
+      </table>
+      <h2>Environment</h2>
+      <p>The following values are accurate up to the time when the dashboard was launched.</p>
+      <table class="table table-bordered table-striped">
+        @for(k <- env.keys.toSeq.sorted) {
+        <tr><th>@{k}</th><td>@{env(k)}</td></tr>
+        }
+      </table>
+    </div>
+    <script src="/assets/jquery-1.11.1.min.js"></script>
+    <script src="/assets/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+  </body>
+</html>
