@@ -38,11 +38,11 @@ import scala.reflect._
  * A local data source runs locally within a single machine and return data that
  * can fit within a single machine.
  *
- * @param <DSP> Data Source Parameters
- * @param <DP> Data Parameters
- * @param <TD> Training Data
- * @param <Q> Input Query
- * @param <A> Actual Value
+ * @tparam DSP     Data Source Parameters
+ * @tparam DP      Data Parameters
+ * @tparam TD      Training Data
+ * @tparam Q       Input Query
+ * @tparam A       Actual Value
  */
 abstract class LJavaDataSource[DSP <: Params, DP, TD, Q, A]
   extends BaseDataSource[DSP, DP, RDD[TD], Q, A]()(
@@ -92,11 +92,11 @@ abstract class LJavaDataSource[DSP <: Params, DP, TD, Q, A]
   * A parallel data source runs locally within a single machine, or in parallel
   * on a cluster, to return data that is distributed across a cluster.
   *
-  * @param <DSP> Data source parameters class.
-  * @param <DP> Data parameters data class.
-  * @param <TD> Training data class.
-  * @param <Q> Input query class.
-  * @param <A> Actual value class.
+  * @tparam DSP     Data source parameters class.
+  * @tparam DP      Data parameters data class.
+  * @tparam TD      Training data class.
+  * @tparam Q       Input query class.
+  * @tparam A       Actual value class.
   */
 abstract class PJavaDataSource[DSP <: Params, DP, TD, Q, A]
   extends BaseDataSource[DSP, DP, TD, Q, A]()(
