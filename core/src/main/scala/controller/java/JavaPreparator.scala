@@ -36,9 +36,9 @@ import scala.reflect._
  * A local preparator runs locally within a single machine and produces prepared
  * data that can fit within a single machine.
  *
- * @param <PP> Preparator Parameters
- * @param <TD> Training Data
- * @param <PD> Prepared Data
+ * @tparam PP     Preparator Parameters
+ * @tparam TD     Training Data
+ * @tparam PD     Prepared Data
  */
 abstract class LJavaPreparator[PP <: Params, TD, PD]
   extends BasePreparator[PP, RDD[TD], RDD[PD]]() (
@@ -60,7 +60,7 @@ abstract class LJavaPreparator[PP <: Params, TD, PD]
  * A helper concrete implementation of {@link LJavaPreparator} that pass
  * training data through without any special preparation.
  *
- * @param <TD> Training Data
+ * @tparam TD     Training Data
  */
 class LJavaIdentityPreparator[TD] extends LJavaPreparator[EmptyParams, TD, TD] {
   override def prepare(td: TD): TD = td
@@ -89,9 +89,9 @@ object LJavaIdentityPreparator {
   * A parallel preparator can be run in parallel on a cluster and produces a
   * prepared data that is distributed across a cluster.
   *
-  * @param <PP> Preparator parameters class.
-  * @param <TD> Training data class.
-  * @param <PD> Prepared data class.
+  * @tparam PP     Preparator parameters class.
+  * @tparam TD     Training data class.
+  * @tparam PD     Prepared data class.
   */
 abstract class PJavaPreparator[PP <: Params, TD, PD]
   extends BasePreparator[PP, TD, PD]() (
@@ -115,7 +115,7 @@ abstract class PJavaPreparator[PP <: Params, TD, PD]
  * A helper concrete implementation of {@link PJavaPreparator} that pass
  * training data through without any special preparation.
  *
- * @param <TD> Training Data
+ * @tparam TD     Training Data
  */
 class PJavaIdentityPreparator[TD] extends PJavaPreparator[EmptyParams, TD, TD] {
   override def prepare(jsc: JavaSparkContext, td: TD): TD = td

@@ -17,12 +17,12 @@ import scala.collection.JavaConversions._
  * JavaEngineBuilder to conveniently instantiate an instance of this class.
  * For now it only accepts LJavaServing as the serving class.
  *
- * @param <TD> Training Data
- * @param <DP> Data Parameters
- * @param <PD> Prepared Data
- * @param <Q> Input Query
- * @param <P> Output Prediction
- * @param <A> Actual Value
+ * @tparam TD     Training Data
+ * @tparam DP     Data Parameters
+ * @tparam PD     Prepared Data
+ * @tparam Q      Input Query
+ * @tparam P      Output Prediction
+ * @tparam A      Actual Value
  */
 class PJavaEngine[TD, DP, PD, Q, P, A](
     dataSourceClass: Class[_ <: PJavaDataSource[_ <: Params, DP, TD, Q, A]],
