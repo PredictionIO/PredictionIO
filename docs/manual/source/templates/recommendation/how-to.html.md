@@ -8,3 +8,4 @@ Here are the pages that show you how you can customize the Recommendation engine
 - [Train with Implicit Preference](/templates/recommendation/training-with-implicit-preference/)
 - [Customize Data Preparator](/templates/recommendation/customize-data-prep/)
 - [Customize Serving](/templates/recommendation/customize-serving/)
+- [Filter Recommended Items by Blacklist in Query](/templates/recommendation/blacklist-items/)
