@@ -218,3 +218,5 @@ $ pio deploy
 ```
 
 You can change the `filepath` value without re-building the code next time.
+
+#### [Next: Filter Recommended Items by Blacklist in Query](blacklist-items.html)
