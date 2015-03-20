@@ -68,10 +68,13 @@ Elasticsearch.
 
 If you are not using the default setting at localhost. You may change the following in ```conf/pio-env.sh``` to fit your setup.
 
+Make sure to set PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME
+
 ```
 PIO_STORAGE_SOURCES_ELASTICSEARCH_TYPE=elasticsearch
 PIO_STORAGE_SOURCES_ELASTICSEARCH_HOSTS=localhost
 PIO_STORAGE_SOURCES_ELASTICSEARCH_PORTS=9300
+PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME=/path/to/elasticsearch
 ```
 
 #### <a name="hbase"></a>HBase Setup
@@ -114,6 +117,13 @@ would be
 ```
 export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
 ```
+
+Navigate to your pio root and edit ```conf/pio-env.sh``` add:
+
+```
+PIO_STORAGE_SOURCES_HBASE_HOME=/path/to/hbase
+```
+
 
 <%= partial 'shared/install/dependent_services' %>
 
