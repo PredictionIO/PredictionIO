@@ -19,3 +19,4 @@ package io.prediction.e2
   * PredictionIO.
   */
 package object engine {}
+package object evaluation {}

@@ -163,4 +163,8 @@ case class LabeledPoint(label: String, features: Array[String]) {
 
     s"($label, $featuresString)"
   }
+  override def equals(other: Any) = other match {
+    case that: LabeledPoint => (that.label == this.label && that.features.deep == this.features.deep)
+    case _ => false
+  }
 }
