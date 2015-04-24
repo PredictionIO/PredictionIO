@@ -221,7 +221,7 @@ abstract class SumMetric[EI, Q, P, A, R: ClassTag](implicit num: Numeric[R])
   * @group Evaluation
   */
 class ZeroMetric[EI, Q, P, A] extends Metric[EI, Q, P, A, Double]() {
-  def calculate(sc: SparkContext, evalDataSet: Seq[(EI, RDD[(Q, P, A)])]): Double = 0.0
+   def calculate(sc: SparkContext, evalDataSet: Seq[(EI, RDD[(Q, P, A)])]): Double = 0.0
 }
 
 object ZeroMetric {

@@ -145,7 +145,7 @@ class Engine[TD, EI, PD, Q, P, A](
 
     val algoParamsList = engineParams.algorithmParamsList
     require(
-      algoParamsList.size > 0, 
+      algoParamsList.size > 0,
       "EngineParams.algorithmParamsList must have at least 1 element.")
 
     val algorithms = algoParamsList.map { case (algoName, algoParams) =>
@@ -302,7 +302,7 @@ class Engine[TD, EI, PD, Q, P, A](
 
     val algoParamsList = engineParams.algorithmParamsList
     require(
-      algoParamsList.size > 0, 
+      algoParamsList.size > 0,
       "EngineParams.algorithmParamsList must have at least 1 element.")
 
     val algorithms = algoParamsList.map { case (algoName, algoParams) => {

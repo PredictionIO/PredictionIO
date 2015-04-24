@@ -94,14 +94,14 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
     // map to EventAPI JSON
     val json =
       ("event" -> userAction.event) ~
-      ("entityType" -> "user") ~
-      ("entityId" -> userAction.userId) ~
-      ("eventTime" -> userAction.timestamp) ~
-      ("properties" -> (
-        ("context" -> userAction.context) ~
-        ("anotherProperty1" -> userAction.anotherProperty1) ~
-        ("anotherProperty2" -> userAction.anotherProperty2)
-      ))
+        ("entityType" -> "user") ~
+        ("entityId" -> userAction.userId) ~
+        ("eventTime" -> userAction.timestamp) ~
+        ("properties" -> (
+          ("context" -> userAction.context) ~
+            ("anotherProperty1" -> userAction.anotherProperty1) ~
+            ("anotherProperty2" -> userAction.anotherProperty2)
+          ))
     json
   }
 
@@ -111,16 +111,16 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
     // map to EventAPI JSON
     val json =
       ("event" -> userActionItem.event) ~
-      ("entityType" -> "user") ~
-      ("entityId" -> userActionItem.userId) ~
-      ("targetEntityType" -> "item") ~
-      ("targetEntityId" -> userActionItem.itemId) ~
-      ("eventTime" -> userActionItem.timestamp) ~
-      ("properties" -> (
-        ("context" -> userActionItem.context) ~
-        ("anotherPropertyA" -> userActionItem.anotherPropertyA) ~
-        ("anotherPropertyB" -> userActionItem.anotherPropertyB)
-      ))
+        ("entityType" -> "user") ~
+        ("entityId" -> userActionItem.userId) ~
+        ("targetEntityType" -> "item") ~
+        ("targetEntityId" -> userActionItem.itemId) ~
+        ("eventTime" -> userActionItem.timestamp) ~
+        ("properties" -> (
+          ("context" -> userActionItem.context) ~
+            ("anotherPropertyA" -> userActionItem.anotherPropertyA) ~
+            ("anotherPropertyB" -> userActionItem.anotherPropertyB)
+          ))
     json
   }
 

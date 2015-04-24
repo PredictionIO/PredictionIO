@@ -15,10 +15,10 @@
 
 package io.prediction.data.webhooks
 
+import org.specs2.execute.Result
 import org.specs2.mutable._
 
 import org.json4s.JObject
-import org.json4s.Formats
 import org.json4s.DefaultFormats
 import org.json4s.native.JsonMethods.parse
 import org.json4s.native.Serialization.write
@@ -28,12 +28,11 @@ trait ConnectorTestUtil extends Specification {
 
   implicit val formats = DefaultFormats
 
-  def check(connector: JsonConnector, original: String, event: String) = {
+  def check(connector: JsonConnector, original: String, event: String): Result = {
     val originalJson = parse(original).asInstanceOf[JObject]
     val eventJson = parse(event).asInstanceOf[JObject]
     // write and parse back to discard any JNothing field
     val result = parse(write(connector.toEventJson(originalJson))).asInstanceOf[JObject]
-
     result.obj must containTheSameElementsAs(eventJson.obj)
   }
 

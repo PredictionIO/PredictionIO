@@ -21,16 +21,283 @@ import org.specs2.mutable._
 
 class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
 
-  // TOOD: test other events
   // TODO: test different optional fields
+
+  val commonFields =
+    s"""
+       |  "anonymousId": "id",
+       |  "sendAt": "sendAt",
+     """.stripMargin
 
   "SegmentIOConnector" should {
 
+    "convert group with context to event JSON" in {
+      val context =
+        """
+          |  "context": {
+          |    "app": {
+          |      "name": "InitechGlobal",
+          |      "version": "545",
+          |      "build": "3.0.1.545"
+          |    },
+          |    "campaign": {
+          |      "name": "TPS Innovation Newsletter",
+          |      "source": "Newsletter",
+          |      "medium": "email",
+          |      "term": "tps reports",
+          |      "content": "image link"
+          |    },
+          |    "device": {
+          |      "id": "B5372DB0-C21E-11E4-8DFC-AA07A5B093DB",
+          |      "advertisingId": "7A3CBEA0-BDF5-11E4-8DFC-AA07A5B093DB",
+          |      "adTrackingEnabled": true,
+          |      "manufacturer": "Apple",
+          |      "model": "iPhone7,2",
+          |      "name": "maguro",
+          |      "type": "ios",
+          |      "token": "ff15bc0c20c4aa6cd50854ff165fd265c838e5405bfeb9571066395b8c9da449"
+          |    },
+          |    "ip": "8.8.8.8",
+          |    "library": {
+          |      "name": "analytics-ios",
+          |      "version": "1.8.0"
+          |    },
+          |    "locale": "nl-NL",
+          |    "network": {
+          |      "bluetooth": false,
+          |      "carrier": "T-Mobile NL",
+          |      "cellular": true,
+          |      "wifi": false
+          |    },
+          |    "location": {
+          |      "city": "San Francisco",
+          |      "country": "United States",
+          |      "latitude": 40.2964197,
+          |      "longitude": -76.9411617,
+          |      "speed": 0
+          |    },
+          |    "os": {
+          |      "name": "iPhone OS",
+          |      "version": "8.1.3"
+          |    },
+          |    "referrer": {
+          |      "id": "ABCD582CDEFFFF01919",
+          |      "type": "dataxu"
+          |    },
+          |    "screen": {
+          |      "width": 320,
+          |      "height": 568,
+          |      "density": 2
+          |    },
+          |    "timezone": "Europe/Amsterdam",
+          |    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5)"
+          |  }
+        """.stripMargin
+
+      val group =
+        s"""
+           |{ $commonFields
+            |  "type": "group",
+            |  "groupId": "groupId",
+            |  "userId": "userIdValue",
+            |  "timestamp" : "2012-12-02T00:30:08.276Z",
+            |  "traits": {
+            |    "name": "groupName",
+            |    "employees": 329,
+            |  },
+            |  $context
+            |}
+        """.stripMargin
+
+      val expected =
+        s"""
+          |{
+          |  "event": "group",
+          |  "entityType": "user",
+          |  "entityId": "userIdValue",
+          |  "properties": {
+          |    $context,
+          |    "groupId": "groupId",
+          |    "traits": {
+          |      "name": "groupName",
+          |      "employees": 329
+          |    },
+          |  },
+          |  "eventTime" : "2012-12-02T00:30:08.276Z"
+          |}
+        """.stripMargin
+
+      check(SegmentIOConnector, group, expected)
+    }
+
+    "convert group to event JSON" in {
+      val group =
+        s"""
+          |{ $commonFields
+          |  "type": "group",
+          |  "groupId": "groupId",
+          |  "userId": "userIdValue",
+          |  "timestamp" : "2012-12-02T00:30:08.276Z",
+          |  "traits": {
+          |    "name": "groupName",
+          |    "employees": 329,
+          |  }
+          |}
+        """.stripMargin
+
+      val expected =
+        """
+          |{
+          |  "event": "group",
+          |  "entityType": "user",
+          |  "entityId": "userIdValue",
+          |  "properties": {
+          |    "groupId": "groupId",
+          |    "traits": {
+          |      "name": "groupName",
+          |      "employees": 329
+          |    }
+          |  },
+          |  "eventTime" : "2012-12-02T00:30:08.276Z"
+          |}
+        """.stripMargin
+
+      check(SegmentIOConnector, group, expected)
+    }
+
+    "convert screen to event JSON" in {
+      val screen =
+        s"""
+          |{ $commonFields
+          |  "type": "screen",
+          |  "name": "screenName",
+          |  "userId": "userIdValue",
+          |  "timestamp" : "2012-12-02T00:30:08.276Z",
+          |  "properties": {
+          |    "variation": "screenVariation"
+          |  }
+          |}
+        """.stripMargin
+
+      val expected =
+        """
+          |{
+          |  "event": "screen",
+          |  "entityType": "user",
+          |  "entityId": "userIdValue",
+          |  "properties": {
+          |    "properties": {
+          |      "variation": "screenVariation"
+          |    },
+          |    "name": "screenName"
+          |  },
+          |  "eventTime" : "2012-12-02T00:30:08.276Z"
+          |}
+        """.stripMargin
+
+      check(SegmentIOConnector, screen, expected)
+    }
+
+    "convert page to event JSON" in {
+      val page =
+       s"""
+          |{ $commonFields
+          |  "type": "page",
+          |  "name": "pageName",
+          |  "userId": "userIdValue",
+          |  "timestamp" : "2012-12-02T00:30:08.276Z",
+          |  "properties": {
+          |    "title": "pageTitle",
+          |    "url": "pageUrl"
+          |  }
+          |}
+        """.stripMargin
+
+      val expected =
+        """
+          |{
+          |  "event": "page",
+          |  "entityType": "user",
+          |  "entityId": "userIdValue",
+          |  "properties": {
+          |    "properties": {
+          |      "title": "pageTitle",
+          |      "url": "pageUrl"
+          |    },
+          |    "name": "pageName"
+          |  },
+          |  "eventTime" : "2012-12-02T00:30:08.276Z"
+          |}
+        """.stripMargin
+
+      check(SegmentIOConnector, page, expected)
+    }
+
+    "convert alias to event JSON" in {
+      val alias =
+        s"""
+          |{ $commonFields
+          |  "type": "alias",
+          |  "previousId": "previousIdValue",
+          |  "userId": "userIdValue",
+          |  "timestamp" : "2012-12-02T00:30:08.276Z"
+          |}
+        """.stripMargin
+
+      val expected =
+        """
+          |{
+          |  "event": "alias",
+          |  "entityType": "user",
+          |  "entityId": "userIdValue",
+          |  "properties": {
+          |    "previousId" : "previousIdValue"
+          |  },
+          |  "eventTime" : "2012-12-02T00:30:08.276Z"
+          |}
+        """.stripMargin
+
+      check(SegmentIOConnector, alias, expected)
+    }
+
+    "convert track to event JSON" in {
+      val track =
+       s"""
+          |{ $commonFields
+          |  "userId": "some_user_id",
+          |  "type": "track",
+          |  "event": "Registered",
+          |  "timestamp" : "2012-12-02T00:30:08.276Z",
+          |  "properties": {
+          |    "plan": "Pro Annual",
+          |    "accountType" : "Facebook"
+          |  }
+          |}
+        """.stripMargin
+
+      val expected =
+        """
+          |{
+          |  "event": "track",
+          |  "entityType": "user",
+          |  "entityId": "some_user_id",
+          |  "properties": {
+          |    "event": "Registered",
+          |    "properties": {
+          |      "plan": "Pro Annual",
+          |      "accountType": "Facebook"
+          |    }
+          |  },
+          |  "eventTime" : "2012-12-02T00:30:08.276Z"
+          |}
+        """.stripMargin
+
+      check(SegmentIOConnector, track, expected)
+    }
+
     "convert identify to event JSON" in {
-      // simple format
-      val identify = """
-        {
-          "version"   : 1,
+      val identify = s"""
+        { $commonFields
           "type"      : "identify",
           "userId"    : "019mr8mf4r",
           "traits"    : {
