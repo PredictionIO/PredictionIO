@@ -24,3 +24,4 @@ quickstartapp/
 *.iml
 .idea/
 .templates-cache
+/vendors
