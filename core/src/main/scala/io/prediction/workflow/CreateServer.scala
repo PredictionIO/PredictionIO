@@ -36,6 +36,7 @@ import com.twitter.bijection.Injection
 import com.twitter.chill.KryoBase
 import com.twitter.chill.KryoInjection
 import com.twitter.chill.ScalaKryoInstantiator
+import de.javakaffee.kryoserializers.ArraysAsListSerializer
 import de.javakaffee.kryoserializers.SynchronizedCollectionsSerializer
 import grizzled.slf4j.Logging
 import org.json4s._
@@ -56,12 +57,14 @@ import scala.util.Random
 import scala.util.Success
 
 import java.io.{Serializable, PrintWriter, StringWriter}
+import java.util
 
 class KryoInstantiator(classLoader: ClassLoader) extends ScalaKryoInstantiator {
   override def newKryo(): KryoBase = {
     val kryo = super.newKryo()
     kryo.setClassLoader(classLoader)
     SynchronizedCollectionsSerializer.registerSerializers(kryo)
+    kryo.register(util.Arrays.asList("").getClass, new ArraysAsListSerializer())
     kryo
   }
 }
