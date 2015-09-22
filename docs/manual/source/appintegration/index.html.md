@@ -25,7 +25,7 @@ For further information, please read:
 ## Sending Query
 
 After you deploy an engine as a web service,
-it will wait for queries from your application and return predicted results in JSON format.  An engine listens to port 8000 by default. If you want to deploy multiple engines, you can specific a different port for each of them.
+it will wait for queries from your application and return predicted results in JSON format.  An engine listens to port 8000 by default. If you want to deploy multiple engines, you can specify a different port for each of them.
 
 For further information, please read:
 
