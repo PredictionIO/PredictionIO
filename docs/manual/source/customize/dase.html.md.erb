@@ -10,7 +10,7 @@ DataSource reads and selects useful data from the Event Store (data store of the
 
 ## readTraining()
 
-You need to implment readTraining() of [PDataSource](https://docs.prediction.io/api/current/#io.prediction.controller.PDataSource), where you can use the [PEventStore Engine API](https://docs.prediction.io/api/current/#io.prediction.data.store.PEventStore$) to read the events and create the TrainingData based on the events.
+You need to implement readTraining() of [PDataSource](https://docs.prediction.io/api/current/#io.prediction.controller.PDataSource), where you can use the [PEventStore Engine API](https://docs.prediction.io/api/current/#io.prediction.data.store.PEventStore$) to read the events and create the TrainingData based on the events.
 
 The following code example reads user "view" and "buy" item events, filters specific type of events for future processing and returns TrainingData accordingly.
 
