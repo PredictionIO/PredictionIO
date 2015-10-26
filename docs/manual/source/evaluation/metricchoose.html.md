@@ -5,10 +5,10 @@ title: Choosing Evaluation Metrics
 The [hyperparameter tuning module](/evaluation/paramtuning/) allows us to select
 the optimal engine parameter defined by a `Metric`.
 `Metric` determines the quality of an engine variant. 
-We have skimmmed through the process of choosing the right `Metric` in previous
+We have skimmed through the process of choosing the right `Metric` in previous
 sections.
 
-This secion discusses basic evaluation metrics commonly used for 
+This section discusses basic evaluation metrics commonly used for 
 classification problems.
 If you are more interested in knowing how to *implement* a custom metric, please
 skip to [the next section](/evaluation/metricbuild/).
@@ -60,7 +60,7 @@ which measures the correctness among all positive labels.
 A binary classifier gives only two
 output values (i.e. positive and negative).
 For problem where there are multiple values (3 in our example),
-we first have to tranform our problem into 
+we first have to transform our problem into 
 a binary classification problem. For example, we can have problem whether
 label = 1.0. The confusion matrix now becomes:
 
@@ -82,7 +82,7 @@ which measures how many positive labels are successfully predicted amongst
 all positive labels.
 Formally, it is the ratio between the number of correct positive answer
 (true positive) and the sum of correct positive answer (true positive) and
-wrongly negatively labeled asnwer (false negative).
+wrongly negatively labeled answer (false negative).
 In this case, the recall is 30 / (30 + 15) = ~0.6667.
 
 
