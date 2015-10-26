@@ -13,7 +13,7 @@ A simplistic form of metric is a function which takes a
 `(Query, PredictedResult, ActualResult)`-tuple (*QPA-tuple*) as input
 and return a score. 
 Exploiting this properties allows us to implement custom metric with a single
-line of code (plus some boilerplates). We demonstate this with two metrics:
+line of code (plus some boilerplates). We demonstrate this with two metrics:
 accuracy and precision.
 
 <!--
