@@ -98,6 +98,14 @@ $ cd PredictionIO
 $ pio template get PredictionIO/template-scala-parallel-similarproduct tapster-episode-similar
 ```
 
+You should immediately be prompted with the following message:
+
+```
+Please enter the template's Scala package name (e.g. com.mycompany): 
+```
+
+Go ahead and input `tapster`. 
+
 Next we are going to update the App ID in the ‘engine.json’ file to match the App ID we just created.
 
 ```
