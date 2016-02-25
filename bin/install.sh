@@ -172,7 +172,7 @@ else
       fi
       email=${email:-$guess_email}
 
-      url="http://direct.prediction.io/$PIO_VERSION/install.json/install/install/$email/"
+      url="https://direct.prediction.io/$PIO_VERSION/install.json/install/install/$email/"
       curl --silent ${url} > /dev/null
     fi
 
