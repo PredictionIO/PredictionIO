@@ -5,7 +5,7 @@ import io.prediction.controller.EmptyEvaluationInfo
 import io.prediction.controller.EmptyActualResult
 import io.prediction.controller.Params
 import io.prediction.data.storage.Event
-import io.prediction.data.storage.Storage
+import io.prediction.data.store.PEventStore
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
@@ -13,7 +13,7 @@ import org.apache.spark.rdd.RDD
 
 import grizzled.slf4j.Logger
 
-case class DataSourceParams(appId: Int) extends Params
+case class DataSourceParams(appName: String) extends Params
 
 class DataSource(val dsp: DataSourceParams)
   extends PDataSource[TrainingData,
@@ -23,11 +23,10 @@ class DataSource(val dsp: DataSourceParams)
 
   override
   def readTraining(sc: SparkContext): TrainingData = {
-    val eventsDb = Storage.getPEvents()
 
     // create a RDD of (entityID, User)
-    val usersRDD: RDD[(String, User)] = eventsDb.aggregateProperties(
-      appId = dsp.appId,
+    val usersRDD: RDD[(String, User)] = PEventStore.aggregateProperties(
+      appName = dsp.appName,
       entityType = "user"
     )(sc).map { case (entityId, properties) =>
       val user = try {
@@ -43,8 +42,8 @@ class DataSource(val dsp: DataSourceParams)
     }.cache()
 
     // create a RDD of (entityID, Item)
-    val itemsRDD: RDD[(String, Item)] = eventsDb.aggregateProperties(
-      appId = dsp.appId,
+    val itemsRDD: RDD[(String, Item)] = PEventStore.aggregateProperties(
+      appName = dsp.appName,
       entityType = "item"
     )(sc).map { case (entityId, properties) =>
       val item = try {
@@ -65,8 +64,8 @@ class DataSource(val dsp: DataSourceParams)
     }.cache()
 
     // get all "user" "view" "item" events
-    val viewEventsRDD: RDD[ViewEvent] = eventsDb.find(
-      appId = dsp.appId,
+    val viewEventsRDD: RDD[ViewEvent] = PEventStore.find(
+      appName = dsp.appName,
       entityType = Some("user"),
       eventNames = Some(List("view")),
       // targetEntityType is optional field of an event.

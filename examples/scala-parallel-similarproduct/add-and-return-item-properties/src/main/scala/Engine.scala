@@ -13,7 +13,9 @@ case class Query(
 
 case class PredictedResult(
   itemScores: Array[ItemScore]
-) extends Serializable
+) extends Serializable {
+  override def toString: String = itemScores.mkString(",")
+}
 
 case class ItemScore(
   item: String,
@@ -28,7 +30,9 @@ object SimilarProductEngine extends IEngineFactory {
     new Engine(
       classOf[DataSource],
       classOf[Preparator],
-      Map("als" -> classOf[ALSAlgorithm]),
+      Map(
+        "als" -> classOf[ALSAlgorithm],
+        "cooccurrence" -> classOf[CooccurrenceAlgorithm]),
       classOf[Serving])
   }
 }

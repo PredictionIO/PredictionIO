@@ -3,7 +3,7 @@
 ---
 
 This small how-to explains how to add user defined properties to items returned by PredictionIO engine.
-This how-to is based on the [Similar Product Engine Template](http://docs.prediction.io/templates/similarproduct/quickstart/) version v0.1.3
+This how-to is based on the [Similar Product Engine Template](http://docs.prediction.io/templates/similarproduct/quickstart/) version v0.3.2
 To use this how-to you need to be familiar with scala programming language.
 In this how-to we also suppose you was able to set up and run `Similar Product Engine` (see their [quick start guide](http://docs.prediction.io/templates/similarproduct/quickstart/)).
 
@@ -62,7 +62,7 @@ to the `Serving` component where the engine will send required information back 
 ### Implementation
 
 #### Modify The Item
-In file [DataSource.scala#L104](https://github.com/PredictionIO/PredictionIO/blob/develop/examples/scala-parallel-similarproduct/add-and-return-item-properties/src/main/scala/DataSource.scala#L104)
+In file [DataSource.scala#L99](https://github.com/PredictionIO/template-scala-parallel-similarproduct/blob/develop/src/main/scala/DataSource.scala#L99)
 you will find class `Item` defined in the next way
 ```scala
 case class Item(categories: Option[List[String]])
@@ -79,7 +79,7 @@ case class Item(
 
 #### Create The Item Properly
 Now, your IDE (or compiler) will say you about all the places where you need make changes to create item
-properly. For example, [DataSource.scala#L52](https://github.com/PredictionIO/PredictionIO/blob/develop/examples/scala-parallel-similarproduct/add-and-return-item-properties/src/main/scala/DataSource.scala#L52)
+properly. For example, [DataSource.scala#L51](https://github.com/PredictionIO/template-scala-parallel-similarproduct/blob/develop/src/main/scala/DataSource.scala#L51)
 ```scala
 Item(categories = properties.getOpt[List[String]]("categories"))
 ```
@@ -93,7 +93,7 @@ Item(
 ```
 
 #### Modify The ItemScore
-Now, when you've fixed item creation, take a look on class `ItemScore` from the file [Engine.scala](https://github.com/PredictionIO/PredictionIO/blob/develop/examples/scala-parallel-similarproduct-multi/src/main/scala/Engine.scala)
+Now, when you've fixed item creation, take a look on class `ItemScore` from the file [Engine.scala](https://github.com/PredictionIO/template-scala-parallel-similarproduct/blob/develop/src/main/scala/Engine.scala)
 ```scala
 case class ItemScore(
 	item: String,
@@ -118,7 +118,7 @@ case class ItemScore(
 Again, now you need to go through all the places where `ItemScore` is created and fix compiler errors.
 
 Result is initially created by the `Algorithm` component and then is passed to the `Serving` component.
-Take a look on a place where object of class ItemScore is initially created in file [ALSAlgorithm.scala#L171](https://github.com/PredictionIO/PredictionIO/blob/develop/examples/scala-parallel-similarproduct/add-and-return-item-properties/src/main/scala/ALSAlgorithm.scala#L171).
+Take a look on a place where object of class ItemScore is initially created in file [ALSAlgorithm.scala#L170](https://github.com/PredictionIO/template-scala-parallel-similarproduct/blob/develop/src/main/scala/ALSAlgorithm.scala#L170).
 ```scala
 new ItemScore(
 	item = model.itemIntStringMap(i),
@@ -140,9 +140,27 @@ Using `model.items(i)` you can receive corresponding object of the `Item` class,
 and now you can access its properties which you created during previous step.
 Using `model.itemIntStringMap(i)` you can receive ID of corresponding item.
 
+Since the Cooccurrence Algorithm was added in [v0.3.2](https://github.com/PredictionIO/template-scala-parallel-similarproduct#v031), you need to modify [CooccurrenceAlgorithm.scala#L126](https://github.com/PredictionIO/template-scala-parallel-similarproduct/blob/develop/src/main/scala/CooccurrenceAlgorithm.scala#L126) in order for the build to succeed. 
+```scala
+ItemScore(
+	item = model.itemIntStringMap(index),
+	score = count
+)
+```
+You code after changes will be similar to posted below
+```scala
+val it = model.items(index)
+ItemScore(
+	item = model.itemIntStringMap(index),
+	title = it.title,
+	date = it.date,
+	imdbUrl = it.imdbUrl,
+	score = count
+)
+```
 #### Modify Script That Supplies Data For The Engine
 And this is the final step. You should supply your data to the engine using new format now.
-To get the idea take a look on this piece of code in our [sample python script](https://github.com/PredictionIO/PredictionIO/blob/develop/examples/scala-parallel-similarproduct/add-and-return-item-properties/data/import_eventserver.py#L34)
+To get the idea take a look on this piece of code in our sample python script in [data/import_eventserver.py](https://github.com/PredictionIO/template-scala-parallel-similarproduct/blob/develop/data/import_eventserver.py#L34)
 that creates test.
 
 Creating item before modification.
