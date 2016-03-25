@@ -31,8 +31,8 @@ class JDBCEvaluationInstances(client: String, config: StorageClientConfig, prefi
     create table if not exists $tableName (
       id varchar(100) not null primary key,
       status text not null,
-      startTime timestamp not null,
-      endTime timestamp not null,
+      startTime timestamp DEFAULT CURRENT_TIMESTAMP,
+      endTime timestamp DEFAULT CURRENT_TIMESTAMP,
       evaluationClass text not null,
       engineParamsGeneratorClass text not null,
       batch text not null,

@@ -4,6 +4,8 @@ title: Deploying an Engine
 
 An engine must be **built** (i.e. `pio build`) and **trained** (i.e. `pio train`)  before it can be deployed as a web service.
 
+WARNING: The engine server is not protected by authentication, and the instructions below assume deployment in a trusted environment. See the section [Deploying with AWS](/system/deploy-cloudformation/) for a production deployment example.
+
 ## Deploying an Engine the First Time
 
 After you have [downloaded an Engine Template](/start/download/),  you can deploy it with these steps:

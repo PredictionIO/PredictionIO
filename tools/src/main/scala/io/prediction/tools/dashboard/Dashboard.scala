@@ -15,8 +15,13 @@
 
 package io.prediction.tools.dashboard
 
+import com.typesafe.config.ConfigFactory
+import io.prediction.authentication.KeyAuthentication
+import io.prediction.configuration.SSLConfiguration
 import io.prediction.data.storage.Storage
-
+import spray.can.server.ServerSettings
+import spray.routing.directives.AuthMagnet
+import scala.concurrent.{Future, ExecutionContext}
 import akka.actor.{ActorContext, Actor, ActorSystem, Props}
 import akka.io.IO
 import akka.pattern.ask
@@ -27,6 +32,7 @@ import spray.can.Http
 import spray.http._
 import spray.http.MediaTypes._
 import spray.routing._
+import spray.routing.authentication.{Authentication, UserPass, BasicAuth}
 
 import scala.concurrent.duration._
 
@@ -34,7 +40,7 @@ case class DashboardConfig(
   ip: String = "localhost",
   port: Int = 9000)
 
-object Dashboard extends Logging {
+object Dashboard extends Logging with SSLConfiguration{
   def main(args: Array[String]): Unit = {
     val parser = new scopt.OptionParser[DashboardConfig]("Dashboard") {
       opt[String]("ip") action { (x, c) =>
@@ -55,7 +61,12 @@ object Dashboard extends Logging {
     val service =
       system.actorOf(Props(classOf[DashboardActor], dc), "dashboard")
     implicit val timeout = Timeout(5.seconds)
-    IO(Http) ? Http.Bind(service, interface = dc.ip, port = dc.port)
+    val settings = ServerSettings(system)
+    IO(Http) ? Http.Bind(
+      service,
+      interface = dc.ip,
+      port = dc.port,
+      settings = Some(settings.copy(sslEncryption = true)))
     system.awaitTermination
   }
 }
@@ -67,22 +78,26 @@ class DashboardActor(
   def receive: Actor.Receive = runRoute(dashboardRoute)
 }
 
-trait DashboardService extends HttpService with CORSSupport {
+trait DashboardService extends HttpService with KeyAuthentication with CORSSupport {
+
+  implicit def executionContext: ExecutionContext = actorRefFactory.dispatcher
   val dc: DashboardConfig
   val evaluationInstances = Storage.getMetaDataEvaluationInstances
   val pioEnvVars = sys.env.filter(kv => kv._1.startsWith("PIO_"))
   val serverStartTime = DateTime.now
   val dashboardRoute =
     path("") {
-      get {
-        respondWithMediaType(`text/html`) {
-          complete {
-            val completedInstances = evaluationInstances.getCompleted
-            html.index(
-              dc,
-              serverStartTime,
-              pioEnvVars,
-              completedInstances).toString
+      authenticate(withAccessKeyFromFile) { request =>
+        get {
+          respondWithMediaType(`text/html`) {
+            complete {
+              val completedInstances = evaluationInstances.getCompleted
+              html.index(
+                dc,
+                serverStartTime,
+                pioEnvVars,
+                completedInstances).toString
+            }
           }
         }
       }

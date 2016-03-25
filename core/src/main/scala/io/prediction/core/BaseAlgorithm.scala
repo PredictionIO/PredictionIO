@@ -25,7 +25,7 @@ import org.apache.spark.rdd.RDD
 
 /** :: DeveloperApi ::
   * Base trait with default custom query serializer, exposed to engine developer
-  * via [[io.prediction.controller.CustomQuerySerializer
+  * via [[io.prediction.controller.CustomQuerySerializer]]
   */
 @DeveloperApi
 trait BaseQuerySerializer {

@@ -14,6 +14,16 @@ to the community! Simply edit [this page](https://github.com/PredictionIO/Predic
 
 Community-powered SDKs are [separately listed](/sdk/).
 
+## Magento 2 Personalised Products Module
+
+URL: https://github.com/richdynamix/personalised-products
+
+Personalised Products is a Magento 2 module that will serve realtime predicted suggestions for product upsells on the product page and complimentary suggestions for cross sells on the basket page. All powered by PredictionIO using the [Similar Product](https://templates.prediction.io/PredictionIO/template-scala-parallel-similarproduct "Similar Product") engine and the [Complementary Purchase](https://templates.prediction.io/PredictionIO/template-scala-parallel-complementarypurchase "Complementary Purchase") engine.
+
+- Core Author: Steven Richardson
+
+- Status: It works with PredictionIO v0.9.5 - Under active development
+
 ## Vagrant Installation for PredictionIO
 
 URL: https://github.com/PredictionIO/PredictionIO-Vagrant

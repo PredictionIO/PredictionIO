@@ -57,11 +57,11 @@ class JDBCLEvents(
         targetEntityType text,
         targetEntityId text,
         properties text,
-        eventTime timestamp not null,
+        eventTime timestamp DEFAULT CURRENT_TIMESTAMP,
         eventTimeZone varchar(50) not null,
         tags text,
         prId text,
-        creationTime timestamp not null,
+        creationTime timestamp DEFAULT CURRENT_TIMESTAMP,
         creationTimeZone varchar(50) not null)""").execute().apply()
 
         // create index
@@ -77,11 +77,11 @@ class JDBCLEvents(
         targetEntityType text,
         targetEntityId text,
         properties text,
-        eventTime timestamp not null,
+        eventTime timestamp DEFAULT CURRENT_TIMESTAMP,
         eventTimeZone varchar(50) not null,
         tags text,
         prId text,
-        creationTime timestamp not null,
+        creationTime timestamp DEFAULT CURRENT_TIMESTAMP,
         creationTimeZone varchar(50) not null)""").execute().apply()
       }
       true

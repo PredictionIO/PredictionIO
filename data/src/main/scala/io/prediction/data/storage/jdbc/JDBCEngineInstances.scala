@@ -31,8 +31,8 @@ class JDBCEngineInstances(client: String, config: StorageClientConfig, prefix: S
     create table if not exists $tableName (
       id varchar(100) not null primary key,
       status text not null,
-      startTime timestamp not null,
-      endTime timestamp not null,
+      startTime timestamp DEFAULT CURRENT_TIMESTAMP,
+      endTime timestamp DEFAULT CURRENT_TIMESTAMP,
       engineId text not null,
       engineVersion text not null,
       engineVariant text not null,

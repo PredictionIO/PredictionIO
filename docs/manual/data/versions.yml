@@ -1,5 +1,5 @@
-pio: 0.9.5
-spark: 1.5.1
+pio: 0.9.6
+spark: 1.5.2
 spark_download_filename: spark-1.5.1-bin-hadoop2.6
 elasticsearch_download_filename: elasticsearch-1.4.4
 hbase_basename: hbase-1.0.0

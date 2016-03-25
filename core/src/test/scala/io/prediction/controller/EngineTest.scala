@@ -167,62 +167,6 @@ extends FunSuite with Inside with SharedSparkContext {
       Unit, pModel21, pModel22, pModel23, model24, model25)
   }
 
-  test("Engine.prepareDeploy PAlgo") {
-    val engine = new Engine(
-      classOf[PDataSource2],
-      classOf[PPreparator1],
-      Map(
-        "PAlgo2" -> classOf[PAlgo2],
-        "PAlgo3" -> classOf[PAlgo3],
-        "NAlgo2" -> classOf[NAlgo2],
-        "NAlgo3" -> classOf[NAlgo3]
-      ),
-      classOf[LServing1])
-
-    val engineParams = EngineParams(
-      dataSourceParams = PDataSource2.Params(0),
-      preparatorParams = PPreparator1.Params(1),
-      algorithmParamsList = Seq(
-        ("PAlgo2", PAlgo2.Params(20)),
-        ("PAlgo3", PAlgo3.Params(21)),
-        ("PAlgo3", PAlgo3.Params(22)),
-        ("NAlgo2", NAlgo2.Params(23)),
-        ("NAlgo3", NAlgo3.Params(24)),
-        ("NAlgo3", NAlgo3.Params(25))
-      ),
-      servingParams = LServing1.Params(3))
-
-    val pd = ProcessedData(1, TrainingData(0))
-    val model20 = PAlgo2.Model(20, pd)
-    val model21 = PAlgo3.Model(21, pd)
-    val model22 = PAlgo3.Model(22, pd)
-    val model23 = NAlgo2.Model(23, pd)
-    val model24 = NAlgo3.Model(24, pd)
-    val model25 = NAlgo3.Model(25, pd)
-
-    val rand = new Random()
-
-    val fakeEngineInstanceId = s"FakeInstanceId-${rand.nextLong()}"
-
-    val persistedModels = engine.train(
-      sc, 
-      engineParams,
-      engineInstanceId = fakeEngineInstanceId,
-      params = WorkflowParams()
-    )
-
-    val deployableModels = engine.prepareDeploy(
-      sc,
-      engineParams,
-      fakeEngineInstanceId,
-      persistedModels,
-      params = WorkflowParams()
-    )
-
-    deployableModels should contain theSameElementsAs Seq(
-      model20, model21, model22, model23, model24, model25)
-  }
-
   test("Engine.eval") {
     val engine = new Engine(
       classOf[PDataSource2],
@@ -273,6 +217,62 @@ extends FunSuite with Inside with SharedSparkContext {
         }}
       }
     }}
+  }
+
+  test("Engine.prepareDeploy PAlgo") {
+    val engine = new Engine(
+      classOf[PDataSource2],
+      classOf[PPreparator1],
+      Map(
+        "PAlgo2" -> classOf[PAlgo2],
+        "PAlgo3" -> classOf[PAlgo3],
+        "NAlgo2" -> classOf[NAlgo2],
+        "NAlgo3" -> classOf[NAlgo3]
+      ),
+      classOf[LServing1])
+
+    val engineParams = EngineParams(
+      dataSourceParams = PDataSource2.Params(0),
+      preparatorParams = PPreparator1.Params(1),
+      algorithmParamsList = Seq(
+        ("PAlgo2", PAlgo2.Params(20)),
+        ("PAlgo3", PAlgo3.Params(21)),
+        ("PAlgo3", PAlgo3.Params(22)),
+        ("NAlgo2", NAlgo2.Params(23)),
+        ("NAlgo3", NAlgo3.Params(24)),
+        ("NAlgo3", NAlgo3.Params(25))
+      ),
+      servingParams = LServing1.Params(3))
+
+    val pd = ProcessedData(1, TrainingData(0))
+    val model20 = PAlgo2.Model(20, pd)
+    val model21 = PAlgo3.Model(21, pd)
+    val model22 = PAlgo3.Model(22, pd)
+    val model23 = NAlgo2.Model(23, pd)
+    val model24 = NAlgo3.Model(24, pd)
+    val model25 = NAlgo3.Model(25, pd)
+
+    val rand = new Random()
+
+    val fakeEngineInstanceId = s"FakeInstanceId-${rand.nextLong()}"
+
+    val persistedModels = engine.train(
+      sc,
+      engineParams,
+      engineInstanceId = fakeEngineInstanceId,
+      params = WorkflowParams()
+    )
+
+    val deployableModels = engine.prepareDeploy(
+      sc,
+      engineParams,
+      fakeEngineInstanceId,
+      persistedModels,
+      params = WorkflowParams()
+    )
+
+    deployableModels should contain theSameElementsAs Seq(
+      model20, model21, model22, model23, model24, model25)
   }
 }
 

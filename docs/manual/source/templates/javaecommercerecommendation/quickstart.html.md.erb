@@ -34,7 +34,7 @@ The constraint *unavailableItems* set events are used to exclude a list of unava
 ### Input Query
 
 - User entity ID
-- Num of items to be recommended
+- Number of items to be recommended
 - List of whitelisted item categories (optional)
 - List of whitelisted item entity IDs (optional)
 - List of blacklisted item entity IDs (optional)
@@ -442,7 +442,7 @@ WARNING: Note that the "algorithms" also has `appName` parameter which you need 
 
 ## 6. Use the Engine
 
-Now, You can retrieve predicted results. To recommend 4 items to user ID "u1". You send this JSON `{ "user": ["u1"], "num": 4 }` to the deployed engine and it will return a JSON of the recommended items. Simply send a query by making a HTTP request or through the `EngineClient` of an SDK.
+Now, You can retrieve predicted results. To recommend 4 items to user ID "u1". You send this JSON `{ "userEntityId": "u1", "number": 4 }` to the deployed engine and it will return a JSON of the recommended items. Simply send a query by making a HTTP request or through the `EngineClient` of an SDK.
 
 With the deployed engine running, open another temrinal and run the following `curl` command or use SDK to send the query:
 
@@ -609,8 +609,8 @@ Try to get recommendation for user *u1* again, the unavaiable items (e.g. i4, i1
 ```
 $ curl -H "Content-Type: application/json" \
 -d '{
-  "user": "u1",
-  "num": 4,
+  "userEntityId": "u1",
+  "number": 4,
   "blackList": ["i21", "i26", "i40"]
 }' \
 http://localhost:8000/queries.json

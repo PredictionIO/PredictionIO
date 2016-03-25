@@ -12,6 +12,7 @@ An entity may peform some events (e.g user 1 does something), and entity may hav
 
 1. Generic events performed by an entity.
 2. Special events for recording changes of an entity's properties
+3. Batch events
 
 They are explained in details below.
 
@@ -273,3 +274,75 @@ Array((2,PropertyMap(Map(b -> JInt(5), a -> JInt(3), c -> JInt(6)), 2014-09-09T1
 ```
 
 As you have seen in the example above, the state of user-2 is different depending on the available events or the time you are looking at the data. Recording events in logging fashioned allows us to re-construct the state the entity according to the time.
+
+## 3. Batch Events to the EventServer
+
+Using a different REST address on the usual EventServer port, as of PredictionIO 0.9.5 you can send batches of up to 50 events as a time. The format is as described above but the JSON payload is packaged as an array of Event objects.
+
+**Response:**
+
+* Status:
+    * 200 on success if we can return an array data in the response even when some events fail (e.g. because of ill-format). Client needs to check individual dictionary to verify all events were successfully created.
+    * 400 otherwise. Perhaps exceeded 50 events?
+* Data: an array of dictionaries each of which contains either following keys
+    * “status”: 201 if the event was successfully created; otherwise, 400.
+    * "eventID": the value is the eventID if the event is successfully created and
+    * "message": the error message string if any error occurs during creation
+
+The order in the response array is corresponding to the order of the request array. However, the events might be imported in any order.
+
+###Sample Request:
+
+    curl -i -X POST http://localhost:7070/batch/events.json?accessKey=...
+    -H "Content-Type: application/json" -d ‘ \
+    [
+        {
+            "event": "$create",
+            "entityType": "user",
+            "entityId": "uid",
+            "properties": {
+                ...
+            }
+        },
+        {
+            "event": "like",
+            "entityType": "user",
+            "entityId": "uid",
+            "targetEntityType": "item",
+            "targetEntityId": "iid",
+            "properties": {
+                ...
+            }
+            "eventTime": "2004-12-13T21:39:45.618-07:00"
+        },
+    	...
+    ]‘
+
+
+###Sample Response:
+
+    HTTP/1.1 200 Successful
+    Server: spray-can/1.2.1
+    Date: Wed, 10 Sep 2014 22:51:33 GMT
+    Content-Type: application/json; charset=UTF-8
+    Content-Length: 41
+    [
+        {"eventId":"AAAABAAAAQDP3-jSlTMGVu0waj8"},
+        {
+            "status": 201,
+            "eventId": "AAAABAAAAQDP3-jSlTMGVu0waj8"
+        },
+        {
+            "status": 201,
+            "eventId":"AAAABAAAAQDP3-jSlTMGVu0waj9"
+        },
+         …
+        {
+            "status": 400,
+            "message":"Required entityType is missing”
+        },
+		…
+    ]
+
+
+Notice that each subrequest receives a status responce. The limit of 50 events per batch requests is in line with Facebook, Mixpanel, SegmentIO and other event syncs that accept batches.

@@ -2,11 +2,13 @@
 title: Text Classification Engine Tutorial
 ---
 
+(Updated for Text Classification Template version 3.1)
+
 ## Introduction
 
 In the real world, there are many applications that collect text as data. For example, spam detectors take email and header content to automatically determine what is or is not spam; applications can gague the general sentiment in a geographical area by analyzing Twitter data; and news articles can be automatically categorized based solely on the text content.There are a wide array of machine learning models you can use to create, or train, a predictive model to assign an incoming article, or query, to an existing category. Before you can use these techniques you must first transform the text data (in this case the set of news articles) into numeric vectors, or feature vectors, that can be used to train your model.
 
-The purpose of this tutorial is to illustrate how you can go about doing this using PredictionIO's platform. The advantages of using this platform include: a dynamic engine that responds to queries in real-time; [separation of concerns](http://en.wikipedia.org/wiki/Separation_of_concerns), which offers code re-use and maintainability, and distributed computing capabilities for scalability and efficiency. Moreover, it is easy to incorporate non-trivial data modeling tasks into the DASE architecture allowing Data Scientists to focus on tasks related to modeling. This tutorial will exemplify some of these ideas by guiding you through PredictionIO's [text classification template(http://templates.prediction.io/PredictionIO/template-scala-parallel-textclassification/). 
+The purpose of this tutorial is to illustrate how you can go about doing this using PredictionIO's platform. The advantages of using this platform include: a dynamic engine that responds to queries in real-time; [separation of concerns](http://en.wikipedia.org/wiki/Separation_of_concerns), which offers code re-use and maintainability, and distributed computing capabilities for scalability and efficiency. Moreover, it is easy to incorporate non-trivial data modeling tasks into the DASE architecture allowing Data Scientists to focus on tasks related to modeling. This tutorial will exemplify some of these ideas by guiding you through PredictionIO's [text classification template(http://templates.prediction.io/PredictionIO/template-scala-parallel-textclassification/).
 
 
 
@@ -29,11 +31,11 @@ This engine template is meant to handle text classification which means you will
 
 `{text : String}`.
 
-In the running example, a query would be an incoming news article. Once the engine is deployed it can process the query, and then return a Predicted Result of the form 
+In the running example, a query would be an incoming news article. Once the engine is deployed it can process the query, and then return a Predicted Result of the form
 
 `{category : String, confidence : Double}`.
 
-Here category is the model's class assignment for this new text document (i.e. the best guess for this article's categorization), and confidence, a value between 0 and 1 representing your confidence in the category prediction (0 meaning you have no confidence in the prediction). The Actual Result is of the form 
+Here category is the model's class assignment for this new text document (i.e. the best guess for this article's categorization), and confidence, a value between 0 and 1 representing your confidence in the category prediction (0 meaning you have no confidence in the prediction). The Actual Result is of the form
 
 `{category : String}`.
 
@@ -42,16 +44,20 @@ This is used in the evaluation stage when estimating the performance of your pre
 
 ## Quick Start
 
-This is a quick start guide in case you want to start using the engine right away. For more detailed information, read the subsequent sections.
+This is a quick start guide in case you want to start using the engine right away. Sample email data for spam classification will be used. For more detailed information, read the subsequent sections.
 
 
-**1.** Create a new application. After the application is created, you will be given an access key and application ID for the application.
+### 1. Create a new application.
+
+After the application is created, you will be given an access key and application ID for the application.
 
 ```
 $ pio app new MyTextApp
 ```
 
-**2.** Import the tutorial data. There are three different data sets available, each giving a different use case for this engine. Please refer to the **Data Source: Reading Event Data** section to see how to appropriate modify the `DataSource` class for use with each respective data set. The default data set is an e-mail spam data set.
+### 2. Import the tutorial data.
+
+There are three different data sets available, each giving a different use case for this engine. Please refer to the **Data Source: Reading Event Data** section to see how to appropriate modify the `DataSource` class for use with each respective data set. The default data set is an e-mail spam data set.
 
 These data sets have already been processed and are ready for [batch import](/datacollection/batchimport/). Replace `***` with your actual application ID.
 
@@ -61,7 +67,12 @@ $ pio import --appid *** --input data/stopwords.json
 $ pio import --appid *** --input data/emails.json
 ```
 
-**3.** Set the engine parameters in the file `engine.json`. The default settings are shown below.
+### 3. Set the engine parameters in the file `engine.json`.
+
+The default settings are shown below. By default, it uses the algorithm name "lr" which is logstic regression. Please see later section for more detailed explanation of engine.json setting.
+
+Make sure the "appName" is same as the app you created in step1.
+
 
 ```
 {
@@ -75,14 +86,16 @@ $ pio import --appid *** --input data/emails.json
   },
   "preparator": {
     "params": {
-      "nGram": 2
+      "nGram": 1,
+      "numFeatures": 500,
+      "SPPMI": false
     }
   },
   "algorithms": [
     {
-      "name": "nb",
+      "name": "lr",
       "params": {
-        "lambda": 0.25
+        "regParam": 0.00000005
       }
     }
   ]
@@ -90,26 +103,78 @@ $ pio import --appid *** --input data/emails.json
 
 ```
 
-**4.** Build your engine.
+### 4. Build your engine.
 
 ```
-$ pio build
+$ pio build --verbose
 ```
 
-**5.a.** Train your model and deploy.
+This command should take few minutes for the first time; all subsequent builds should be less than a minute. You can also run it without `--verbose` if you don't want to see all the log messages.
+
+Upon successful build, you should see a console message similar to the following
+
+```
+[INFO] [RegisterEngine$] Registering engine 6wxDy2hxLbvaMJra927ahFdQHDIVXeQz 266bae678c570dee58154b2338cef7aa1646e0d3
+[INFO] [Console$] Your engine is ready for training.
+```
+
+### 5.a. Train your model and deploy.
 
 ```
 $ pio train
+```
+
+When your engine is trained successfully, you should see a console message similar to the following.
+
+```
+[INFO] [CoreWorkflow$] Training completed successfully.
+```
+
+Now your engine is ready to deploy. Run:
+
+```
 $ pio deploy
 ```
 
-**5.b.** Evaluate your training model and tune parameters. 
+When the engine is deployed successfully and running, you should see a console message similar to the following:
+
+```
+[INFO] [HttpListener] Bound to /0.0.0.0:8000
+[INFO] [MasterActor] Engine is deployed and running. Engine API is live at http://0.0.0.0:8000.
+```
+
+Now you can send query to the engine. Open another terminal and send the following http request to the deployed engine:
+
+```
+$ curl -H "Content-Type: application/json" -d '{ "text":"I like speed and fast motorcycles." }' http://localhost:8000/queries.json
+```
+
+you should see following outputs returned by the engine:
+
+```
+{"category":"not spam","confidence":0.852619510921587}
+```
+
+Try another query:
+
+```
+$ curl -H "Content-Type: application/json" -d '{ "text":"Earn extra cash!" }' http://localhost:8000/queries.json
+```
+
+you should see following outputs returned by the engine:
+
+```
+{"category":"spam","confidence":0.5268770133242983}
+```
+
+
+### 5.b.Evaluate your training model and tune parameters.
 
 ```
 $ pio eval org.template.textclassification.AccuracyEvaluation org.template.textclassification.EngineParamsList
 ```
 
-**Note:** Training and evaluation stages are generally different stages of engine development. Evaluation is there to help you choose the best [algorithm parameters](/evaluation/paramtuning/) to use for training an engine that is to be deployed as a web service. 
+**Note:** Training and evaluation stages are generally different stages of engine development. Evaluation is there to help you choose the best [algorithm parameters](/evaluation/paramtuning/) to use for training an engine that is to be deployed as a web service.
 
 Depending on your needs, in steps (5.x.) above, you can configure your Spark settings by typing a command of the form:
 
@@ -122,16 +187,17 @@ Only the latter commands are listed as these are some of the more commonly modif
 **Note:** We recommend you set your driver memory to `1G` or `2G` as the data size when dealing with text can be very large.
 
 
-
+# Detailed Explanation of DASE
 
 ## Importing Data
 
-Follow the Quick Start instructions for importing data. Make sure that the Data Source is modified accordingly to match the `event`, `entityType`, and `properties` fields set for the specific dataset. The following section explains this in more detail.
+In the quick start, email spam classification is used. This template can easily be modified for other types text classification.
 
+If you want to import different sets of data, follow the Quick Start instructions to import data from different files. Make sure that the Data Source is modified accordingly to match the `event`, `entityType`, and `properties` fields set for the specific dataset. The following section explains this in more detail.
 
 ## Data Source: Reading Event Data
 
-Now that the data has been imported into PredictionIO's Event Server, it needs to be read from storage to be used by the engine. This is precisely what the DataSource engine component is for, which is implemented in the template script `DataSource.scala`. The class `Observation` serves as a wrapper for storing the information about a news document needed to train a model. The attribute label refers to the label of the category a document belongs to, and text, stores the actual document content as a string. The class TrainingData is used to store an RDD of Observation objects along with the set of stop words. 
+Now that the data has been imported into PredictionIO's Event Server, it needs to be read from storage to be used by the engine. This is precisely what the DataSource engine component is for, which is implemented in the template script `DataSource.scala`. The class `Observation` serves as a wrapper for storing the information about a news document needed to train a model. The attribute label refers to the label of the category a document belongs to, and text, stores the actual document content as a string. The class TrainingData is used to store an RDD of Observation objects along with the set of stop words.
 
 The class `DataSourceParams` is used to specify the parameters needed to read and prepare the data for processing. This class is initialized with two parameters `appName` and `evalK`. The first parameter specifies your application name (i.e. MyTextApp), which is needed so that the DataSource component knows where to pull the event data from. The second parameter is used for model evaluation and specifies the number of folds to use in [cross-validation](http://en.wikipedia.org/wiki/Cross-validation_%28statistics%29) when estimating a model performance metric.
 
@@ -175,32 +241,34 @@ private def readEventData(sc: SparkContext) : RDD[Observation] = {
 ...
 ```
 
-Note that `readEventData` and `readStopWords` use different entity types and event names, but use the same application name. This is because the sample import script imports two different data types, documents and stop words. These field distinctions are required for distinguishing between the two. The method `readEval` is used to prepare the different cross-validation folds needed for evaluating your model and tuning hyper parameters. 
+Note that `readEventData` and `readStopWords` use different entity types and event names, but use the same application name. This is because the sample import script imports two different data types, documents and stop words. These field distinctions are required for distinguishing between the two. The method `readEval` is used to prepare the different cross-validation folds needed for evaluating your model and tuning hyper parameters.
 
-Now, the default dataset used for training is contained in the file `data/emails.json` and contains a set of e-mail spam data. If we want to switch over to one of the other data sets we must make sure that the `eventNames` and `entityType` fields are changed accordingly. The following show one observation from each of the provided data files:
+Now, the default dataset used for training is contained in the file `data/emails.json` and contains a set of e-mail spam data. If we want to switch over to one of the other data sets we must make sure that the `eventNames` and `entityType` fields are changed accordingly.
 
-**1.** `emails.json`
+In the data/ directory, you will find different sets of data files for different types of text classifcaiton application. The following show one observation from each of the provided data files:
+
+- `emails.json`:
 
 ```
 {"eventTime": "2015-06-08T16:45:00.590+0000", "entityId": 1, "properties": {"text": "Subject: dobmeos with hgh my energy level has gone up ! stukm\nintroducing\ndoctor - formulated\nhgh\nhuman growth hormone - also called hgh\nis referred to in medical science as the master hormone . it is very plentiful\nwhen we are young , but near the age of twenty - one our bodies begin to produce\nless of it . by the time we are forty nearly everyone is deficient in hgh ,\nand at eighty our production has normally diminished at least 90 - 95 % .\nadvantages of hgh :\n- increased muscle strength\n- loss in body fat\n- increased bone density\n- lower blood pressure\n- quickens wound healing\n- reduces cellulite\n- improved vision\n- wrinkle disappearance\n- increased skin thickness texture\n- increased energy levels\n- improved sleep and emotional stability\n- improved memory and mental alertness\n- increased sexual potency\n- resistance to common illness\n- strengthened heart muscle\n- controlled cholesterol\n- controlled mood swings\n- new hair growth and color restore\nread\nmore at this website\nunsubscribe\n", "label": "spam"}, "event": "e-mail", "entityType": "content"}
 
 ```
 
-**2.** `20newsgroups.json`
+- `20newsgroups.json`:
 
 ```
 {"entityType": "source", "eventTime": "2015-06-08T18:01:55.003+0000", "event": "documents", "entityId": 1, "properties": {"category": "sci.crypt", "text": "From: rj@ri.cadre.com (Rob deFriesse)\nSubject: Can DES code be shipped to Canada?\nArticle-I.D.: fripp.1993Apr22.125402.27561\nReply-To: rj@ri.cadre.com\nOrganization: Cadre Technologies Inc.\nLines: 13\nNntp-Posting-Host: 192.9.200.19\n\nSomeone in Canada asked me to send him some public domain DES file\nencryption code I have.  Is it legal for me to send it?\n\nThanx.\n--\nEschew Obfuscation\n\nRob deFriesse                    Mail:  rj@ri.cadre.com\nCadre Technologies Inc.          Phone:  (401) 351-5950\n222 Richmond St.                 Fax:    (401) 351-7380\nProvidence, RI  02903\n\nI don't speak for my employer.\n", "label": 11.0}}
 ```
 
-**3.** `sentimentanalysis.json`
+- `sentimentanalysis.json`:
 
 ```
 {"eventTime": "2015-06-08T16:58:14.278+0000", "entityId": 23714, "entityType": "source", "properties": {"phrase": "Tosca 's intoxicating ardor", "sentiment": 3}, "event": "phrases"}
 ```
 
-Now, note that the `entityType`, `event`, and `properties`  fields for the `20newsgroups.json` dataset differ from the default `emails.json` set. If you want to use the newsgroups data set the engine's Data Source component must be modified accordingly. To do this, you need only modify the method `readEventData` as follows:
+Now, note that the `entityType`, `event`, and `properties`  fields for the `20newsgroups.json` dataset differ from the default `emails.json` set. Default DataSource implementation is to read from `email.json` data set. If you want to use others such as newsgroups data set, the engine's Data Source component must be modified accordingly. To do this, you need only modify the method `readEventData` as follows:
 
-**1.** `20newsgroups.json`
+### Modify DataSource to Read `20newsgroups.json`
 
 ```scala
 private def readEventData(sc: SparkContext) : RDD[Observation] = {
@@ -223,7 +291,7 @@ private def readEventData(sc: SparkContext) : RDD[Observation] = {
   }
 ```
 
-**2.** `sentimentanalysis.json`
+### Modify DataSource to Read `sentimentanalysis.json`
 
 ```scala
 private def readEventData(sc: SparkContext) : RDD[Observation] = {
@@ -237,7 +305,7 @@ private def readEventData(sc: SparkContext) : RDD[Observation] = {
       // objects.
     )(sc).map(e => {
       val label = e.properties.get[Double]("sentiment")
-      
+
       Observation(
         label,
         e.properties.get[String]("phrase"),
@@ -293,7 +361,9 @@ Recall that the Preparator stage is used for doing any prior data processing nee
 // components.
 
 case class PreparatorParams(
-  nGram : Int
+  nGram: Int,
+  numFeatures: Int = 5000,
+  SPPMI: Boolean
 ) extends Params
 
 
@@ -310,11 +380,11 @@ class Preparator(pp: PreparatorParams) extends PPreparator[TrainingData, Prepare
 
 ```
 
-The simplicity of this stage implementation truly exemplifies one of the benefits of using the PredictionIO platform. For developers, it is easy to incorporate different classes and tools into the DASE framework so that the process of creating an engine is greatly simplified which helps increase your productivity. For data scientists, the load of implementation details you need to worry about is minimized so that you can focus on what is important to you: training a good predictive model. 
+The simplicity of this stage implementation truly exemplifies one of the benefits of using the PredictionIO platform. For developers, it is easy to incorporate different classes and tools into the DASE framework so that the process of creating an engine is greatly simplified which helps increase your productivity. For data scientists, the load of implementation details you need to worry about is minimized so that you can focus on what is important to you: training a good predictive model.
 
-The following subsection explains the class PreparedData, which actually handles the transformation of text documents to feature vectors. 
+The following subsection explains the class PreparedData, which actually handles the transformation of text documents to feature vectors.
 
-### PreparedData: Text Vectorization and Feature Reduction 
+### PreparedData: Text Vectorization and Feature Reduction
 
 The Scala class PreparedData which takes the parameters td, nGram, where td is an object of class TrainingData. The other parameter specifies the n-gram parametrization which will be described shortly.
 
@@ -397,7 +467,7 @@ The last and final object implemented in this class simply creates a Map with ke
 
 ## Algorithm Component
 
-The algorithm components in this engine, `NBAlgorithm` and `LRAlgorithm`, actually follows a very general form. Firstly, a parameter class must again be initialized to feed in the corresponding Algorithm model parameters. For example, NBAlgorithm incorporates NBAlgorithmParams which holds the appropriate additive smoothing parameter lambda for the Naive Bayes model. 
+The algorithm components in this engine, `NBAlgorithm` and `LRAlgorithm`, actually follows a very general form. Firstly, a parameter class must again be initialized to feed in the corresponding Algorithm model parameters. For example, NBAlgorithm incorporates NBAlgorithmParams which holds the appropriate additive smoothing parameter lambda for the Naive Bayes model.
 
 
 The main class of interest in this component is the class that extends [P2LAlgorithm](https://docs.prediction.io/api/current/#io.prediction.controller.P2LAlgorithm). This class must implement a method named train which will output your predictive model (as a concrete object, this will be implemented via a Scala  class). It must also implement a predict method that transforms a query to an appropriate feature vector, and uses this to predict with the fitted model. The vectorization function is implemented by a PreparedData object, and the categorization (prediction) is handled by an instance of the NBModel implementation. Again, this demonstrates the facility with which different models can be incorporated into PredictionIO's DASE architecture.
@@ -422,9 +492,9 @@ $$
 \frac{\exp\left(\pi + \theta\mathbf{x}\right)}{\left|\left|\exp\left(\pi + \theta\mathbf{x}\right)\right|\right|}
 $$
 
-is a vector with C components that represent the posterior class membership probabilities for the document given \\(\mathbf{x}\\). That is, the update belief regarding what category this document belongs to after observing its vectorized form. This is the motivation behind defining the class NBModel which uses Spark MLLib's NaiveBayesModel, but implements a separate prediction method. 
+is a vector with C components that represent the posterior class membership probabilities for the document given \\(\mathbf{x}\\). That is, the update belief regarding what category this document belongs to after observing its vectorized form. This is the motivation behind defining the class NBModel which uses Spark MLLib's NaiveBayesModel, but implements a separate prediction method.
 
-The private methods innerProduct and getScores are implemented to do the matrix computation above. 
+The private methods innerProduct and getScores are implemented to do the matrix computation above.
 
 ```scala
 ...
@@ -510,15 +580,15 @@ To use the alternative multinomial logistic regression algorithm change your `en
 
 ## Serving: Delivering the Final Prediction
 
-The serving component is the final stage in the engine, and in a sense, the most important. This is the final stage in which you combine the results obtained from the different models you choose to run. The Serving class extends the [LServing](https://docs.prediction.io/api/current/#io.prediction.controller.LServing) class which must implement a method called serve. This takes a query and an associated sequence of predicted results, which contains the predicted results from the different algorithms that are implemented in your engine, and combines the results to yield a final prediction.  It is this final prediction that you will receive after sending a query. 
- 
+The serving component is the final stage in the engine, and in a sense, the most important. This is the final stage in which you combine the results obtained from the different models you choose to run. The Serving class extends the [LServing](https://docs.prediction.io/api/current/#io.prediction.controller.LServing) class which must implement a method called serve. This takes a query and an associated sequence of predicted results, which contains the predicted results from the different algorithms that are implemented in your engine, and combines the results to yield a final prediction.  It is this final prediction that you will receive after sending a query.
+
 For example, you could choose to slightly modify the implementation to return class probabilities coming from a mixture of model estimates for class probabilities, or any other technique you could conceive for combining your results. The default engine setting has this set to yield the label from the model predicting with greater confidence.
 
 
 
 ## Evaluation: Model Assessment and Selection
 
- A predictive model needs to be evaluated to see how it will generalize to future observations. PredictionIO uses cross-validation to perform model performance metric estimates needed to assess your particular choice of model. The script `Evaluation.scala` available with the engine template exemplifies what a usual evaluator setup will look like. First, you must define an appropriate metric. In the engine template, since the topic is text classification, the default metric implemented is category accuracy. 
+ A predictive model needs to be evaluated to see how it will generalize to future observations. PredictionIO uses cross-validation to perform model performance metric estimates needed to assess your particular choice of model. The script `Evaluation.scala` available with the engine template exemplifies what a usual evaluator setup will look like. First, you must define an appropriate metric. In the engine template, since the topic is text classification, the default metric implemented is category accuracy.
 
  Second you must define an evaluation object (i.e. extends the class [Evaluation](https://docs.prediction.io/api/current/#io.prediction.controller.Evaluation)).
 Here, you must specify the actual engine and metric components that are to be used for the evaluation. In the engine template, the specified engine is the TextManipulationEngine object, and metric, Accuracy. Lastly, you must specify the parameter values that you want to test in the cross validation. You see in the following block of code:
@@ -541,9 +611,9 @@ object EngineParamsList extends EngineParamsGenerator {
 ```
 
 
-## Engine Deployment 
+## Engine Deployment
 
-Once an engine is ready for deployment it can interact with your web application in real-time. This section will cover how to send and receive queries from your engine, gather more data, and re-training your model with the newly gathered data. 
+Once an engine is ready for deployment it can interact with your web application in real-time. This section will cover how to send and receive queries from your engine, gather more data, and re-training your model with the newly gathered data.
 
 ### Sending Queries
 
@@ -557,7 +627,7 @@ To actually send a query you can use our REST API by typing in the following she
 curl -H "Content-Type: application/json" -d '{ "text":"I like speed and fast motorcycles." }' http://localhost:8000/queries.json
 ```
 
-There are a number of [SDK's](https://github.com/PredictionIO) you can use to send your queries and obtain a response. Recall that our predicted response is of the form 
+There are a number of [SDK's](https://github.com/PredictionIO) you can use to send your queries and obtain a response. Recall that our predicted response is of the form
 
 ```
 {"category" : "class", "confidence" : 1.0}
@@ -591,4 +661,3 @@ $ pio eval org.template.textclassification.AccuracyEvaluation org.template.textc
 $ pio train
 $ pio deploy
 ```
-

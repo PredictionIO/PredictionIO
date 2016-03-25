@@ -10,10 +10,10 @@ There are two key components:
 
 ### Engine
 
-It is our evaluation target. During evaluation, in additional to 
+It is our evaluation target. During evaluation, in addition to 
 the *train* and *deploy* mode we describe in earlier sections,
 the engine also generates a list of testing data points. These data 
-points is a sequence of *Query* and *Actual Result* tuples. *Queries* are
+points are a sequence of *Query* and *Actual Result* tuples. *Queries* are
 sent to the engine and the engine responds with a *Predicted Result*, 
 in the same way as how the engine serves a query.
 

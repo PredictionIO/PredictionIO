@@ -6,7 +6,7 @@ title: Comics Recommendation Demo
 
 In this demo, we will show you how to build a Tinder-style web application (named "Tapster") recommending comics to users based on their likes/dislikes of episodes interactively.
 
-The demo will use [Similar Product Template](http://docs.prediction.io/templates/similarity/quickstart/). Similar Product Template is a great choice if you want to make recommendations based on immediate user activities or for new users with limited history. It uses MLLib Alternating Least Squares (ALS) recommendation algorithm, a [Collaborative filtering](http://en.wikipedia.org/wiki/Recommender_system#Collaborative_filtering) (CF) algorithm commonly used for recommender systems. These techniques aim to fill in the missing entries of a user-item association matrix. Users and products are described by a small set of latent factors that can be used to predict missing entries. A layman's interpretation of Collaborative Filtering is "People who like this comic, also like these comics."
+The demo will use [Similar Product Template](https://docs.prediction.io/templates/similarproduct/quickstart/). Similar Product Template is a great choice if you want to make recommendations based on immediate user activities or for new users with limited history. It uses MLLib Alternating Least Squares (ALS) recommendation algorithm, a [Collaborative filtering](http://en.wikipedia.org/wiki/Recommender_system#Collaborative_filtering) (CF) algorithm commonly used for recommender systems. These techniques aim to fill in the missing entries of a user-item association matrix. Users and products are described by a small set of latent factors that can be used to predict missing entries. A layman's interpretation of Collaborative Filtering is "People who like this comic, also like these comics."
 
 All the code and data is on GitHub at: [github.com/PredictionIO/Demo-Tapster](https://github.com/PredictionIO/Demo-Tapster).
 
@@ -28,10 +28,10 @@ The data structure looks like this:
 192,587 rows. Each row represents one user like for the given episode.
 
 The tutorial has four major steps:
-Demo application setup
-PredictionIO installation and setup
-Import data into database and PredictionIO
-Integrate demo application with PredictionIO
+- Demo application setup
+- PredictionIO installation and setup
+- Import data into database and PredictionIO
+- Integrate demo application with PredictionIO
 
 ## Tapster Demo Application
 The demo application is built using Rails.

@@ -20,7 +20,7 @@ import org.json4s._
 
 private[prediction] object SegmentIOConnector extends JsonConnector {
 
-  //private lazy val supportedAPI = Vector("2", "2.0", "2.0.0")
+  // private lazy val supportedAPI = Vector("2", "2.0", "2.0.0")
 
   implicit val json4sFormats: Formats = DefaultFormats
 

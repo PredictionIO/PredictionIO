@@ -11,7 +11,9 @@ locals: {
 ## The Engine Design
 
 As you can see from the Quick Start, *MyClassification* takes a JSON prediction
-query, e.g. `{ "features": [4, 3, 8] }`, and return a JSON predicted result.
+query, e.g. `{ "attr0":4, "attr1":3, "attr2":8 }`, and return a JSON predicted result.
+
+WARNING: for version < v0.3.1, it is array of features values: `{ "features": [4, 3, 8] }`
 
 In MyClassification/src/main/scala/***Engine.scala***, the `Query` case class
 defines the format of **query**, such as `{ "attr0":4, "attr1":3, "attr2":8 }`:

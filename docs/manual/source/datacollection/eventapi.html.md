@@ -368,11 +368,16 @@ In addition, the following *optional* parameters are supported:
 - `untilTime`: time in ISO8601 format. Return events with `eventTime < untilTime`.
 - `entityType`: String. The entityType. Return events for this `entityType` only.
 - `entityId`: String. The entityId. Return events for this `entityId` only.
+- `event`: String. The event name. Return events with this name only.
+- `targetEntityType`: String. The targetEntityType. Return events for this `targetEntityType` only.
+- `targetEntityId`: String. The targetEntityId. Return events for this `targetEntityId` only.
 - `limit`: Integer. The number of record events returned. Default is 20. -1 to
   get all.
 - `reversed`: Boolean. **Must be used with both `entityType` and `entityId` specified**, returns events in reversed chronological order. Default is false.
 
 WARNING: If you are using <code>curl</code> with the <code>&</code> symbol, you should quote the entire URL by using single or double quotes.
+
+WARNING: Depending on the size of data, you may encounter timeout when querying with some of the above filters. Event server uses `entityType` and `entityId` as the key so any query without both `entityType` and `entityId` specified might result in a timeout.
 
 For example, get all events of an app with `eventTime >= startTime`
 

@@ -30,8 +30,11 @@ import com.twitter.bijection.Injection
 import com.twitter.chill.KryoBase
 import com.twitter.chill.KryoInjection
 import com.twitter.chill.ScalaKryoInstantiator
+import com.typesafe.config.ConfigFactory
 import de.javakaffee.kryoserializers.SynchronizedCollectionsSerializer
 import grizzled.slf4j.Logging
+import io.prediction.authentication.KeyAuthentication
+import io.prediction.configuration.SSLConfiguration
 import io.prediction.controller.Engine
 import io.prediction.controller.Params
 import io.prediction.controller.Utils
@@ -47,10 +50,12 @@ import org.json4s._
 import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization.write
 import spray.can.Http
+import spray.can.server.ServerSettings
 import spray.http.MediaTypes._
 import spray.http._
 import spray.httpx.Json4sSupport
 import spray.routing._
+import spray.routing.authentication.{UserPass, BasicAuth}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -60,6 +65,7 @@ import scala.language.existentials
 import scala.util.Failure
 import scala.util.Random
 import scala.util.Success
+import scalaj.http.HttpOptions
 
 class KryoInstantiator(classLoader: ClassLoader) extends ScalaKryoInstantiator {
   override def newKryo(): KryoBase = {
@@ -102,6 +108,7 @@ case class BindServer()
 case class StopServer()
 case class ReloadServer()
 case class UpgradeCheck()
+
 
 object CreateServer extends Logging {
   val actorSystem = ActorSystem("pio-server")
@@ -274,11 +281,11 @@ class UpgradeActor(engineClass: String) extends Actor {
   }
 }
 
-class MasterActor(
+class MasterActor (
     sc: ServerConfig,
     engineInstance: EngineInstance,
     engineFactoryName: String,
-    manifest: EngineManifest) extends Actor {
+    manifest: EngineManifest) extends Actor with SSLConfiguration with KeyAuthentication {
   val log = Logging(context.system, this)
   implicit val system = context.system
   var sprayHttpListener: Option[ActorRef] = None
@@ -286,11 +293,14 @@ class MasterActor(
   var retry = 3
 
   def undeploy(ip: String, port: Int): Unit = {
-    val serverUrl = s"http://${ip}:${port}"
+    val serverUrl = s"https://${ip}:${port}"
     log.info(
       s"Undeploying any existing engine instance at $serverUrl")
     try {
-      val code = scalaj.http.Http(s"$serverUrl/stop").asString.code
+      val code = scalaj.http.Http(s"$serverUrl/stop")
+        .option(HttpOptions.allowUnsafeSSL)
+        .param(ServerKey.param, ServerKey.get)
+        .method("POST").asString.code
       code match {
         case 200 => Unit
         case 404 => log.error(
@@ -321,7 +331,12 @@ class MasterActor(
       self ! BindServer()
     case x: BindServer =>
       currentServerActor map { actor =>
-        IO(Http) ! Http.Bind(actor, interface = sc.ip, port = sc.port)
+        val settings = ServerSettings(system)
+        IO(Http) ! Http.Bind(
+          actor,
+          interface = sc.ip,
+          port = sc.port,
+          settings = Some(settings.copy(sslEncryption = true)))
       } getOrElse {
         log.error("Cannot bind a non-existing server backend.")
       }
@@ -345,7 +360,12 @@ class MasterActor(
         val actor = createServerActor(sc, lr, engineFactoryName, manifest)
         sprayHttpListener.map { l =>
           l ! Http.Unbind(5.seconds)
-          IO(Http) ! Http.Bind(actor, interface = sc.ip, port = sc.port)
+          val settings = ServerSettings(system)
+          IO(Http) ! Http.Bind(
+            actor,
+            interface = sc.ip,
+            port = sc.port,
+            settings = Some(settings.copy(sslEncryption = true)))
           currentServerActor.get ! Kill
           currentServerActor = Some(actor)
         } getOrElse {
@@ -357,7 +377,7 @@ class MasterActor(
           s"${manifest.version}. Abort reloading.")
       }
     case x: Http.Bound =>
-      val serverUrl = s"http://${sc.ip}:${sc.port}"
+      val serverUrl = s"https://${sc.ip}:${sc.port}"
       log.info(s"Engine is deployed and running. Engine API is live at ${serverUrl}.")
       sprayHttpListener = Some(sender)
     case x: Http.CommandFailed =>
@@ -411,7 +431,7 @@ class ServerActor[Q, P](
     val algorithmsParams: Seq[Params],
     val models: Seq[Any],
     val serving: BaseServing[Q, P],
-    val servingParams: Params) extends Actor with HttpService {
+    val servingParams: Params) extends Actor with HttpService with KeyAuthentication {
   val serverStartTime = DateTime.now
   val log = Logging(context.system, this)
 
@@ -641,20 +661,24 @@ class ServerActor[Q, P](
       }
     } ~
     path("reload") {
-      get {
-        complete {
-          context.actorSelection("/user/master") ! ReloadServer()
-          "Reloading..."
+      authenticate(withAccessKeyFromFile) { request =>
+        post {
+          complete {
+            context.actorSelection("/user/master") ! ReloadServer()
+            "Reloading..."
+          }
         }
       }
     } ~
     path("stop") {
-      get {
-        complete {
-          context.system.scheduler.scheduleOnce(1.seconds) {
-            context.actorSelection("/user/master") ! StopServer()
+      authenticate(withAccessKeyFromFile) { request =>
+        post {
+          complete {
+            context.system.scheduler.scheduleOnce(1.seconds) {
+              context.actorSelection("/user/master") ! StopServer()
+            }
+            "Shutting down..."
           }
-          "Shutting down..."
         }
       }
     } ~

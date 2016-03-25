@@ -21,13 +21,13 @@ syntax.
 
 URL: https://github.com/orbyone/Sensible.PredictionIO.NET
 
-C#/.NET library for PredictionIO 0.8, supporting both synchronous and
+C#/.NET library for PredictionIO 0.9.4, supporting both synchronous and
 asynchronous calls, for item recommendation and item ranking algorithms. Loosely
 based on the PredictionIO Java SDK API.
 
 - Core Author: Themos Piperakis
 
-- Status: It works with PredictionIO v0.8 - Under active development
+- Status: It works with PredictionIO v0.9.4 - Under active development
 
 
 ## .NET SDK for PredictionIO

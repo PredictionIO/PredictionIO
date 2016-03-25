@@ -12,13 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import SonatypeKeys._
-
 import UnidocKeys._
 
 name := "pio"
 
-version in ThisBuild := "0.9.5"
+version in ThisBuild := "0.9.6"
 
 organization in ThisBuild := "io.prediction"
 
@@ -59,21 +57,18 @@ lazy val root = project in file(".") aggregate(
   e2)
 
 lazy val common = (project in file("common")).
-  settings(sonatypeSettings: _*).
   settings(unmanagedClasspath in Test += conf)
 
 lazy val core = (project in file("core")).
   dependsOn(data).
   settings(genjavadocSettings: _*).
   settings(pioBuildInfoSettings: _*).
-  settings(sonatypeSettings: _*).
   enablePlugins(SbtTwirl).
   settings(unmanagedClasspath in Test += conf)
 
 lazy val data = (project in file("data")).
   dependsOn(common).
   settings(genjavadocSettings: _*).
-  settings(sonatypeSettings: _*).
   settings(unmanagedClasspath in Test += conf)
 
 lazy val tools = (project in file("tools")).
@@ -84,7 +79,6 @@ lazy val tools = (project in file("tools")).
 
 lazy val e2 = (project in file("e2")).
   settings(genjavadocSettings: _*).
-  settings(sonatypeSettings: _*).
   settings(unmanagedClasspath in Test += conf)
 
 scalaJavaUnidocSettings
@@ -165,7 +159,7 @@ pioUnidoc := {
 }
 
 pomExtra in ThisBuild := {
-  <url>http://prediction.io</url>
+  <url>https://prediction.io</url>
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -181,7 +175,15 @@ pomExtra in ThisBuild := {
     <developer>
       <id>pio</id>
       <name>The PredictionIO Team</name>
-      <url>http://prediction.io</url>
+      <url>https://prediction.io</url>
     </developer>
   </developers>
 }
+
+concurrentRestrictions in Global := Seq(
+  Tags.limit(Tags.CPU, 1),
+  Tags.limit(Tags.Network, 1),
+  Tags.limit(Tags.Test, 1),
+  Tags.limitAll( 1 )
+)
+
