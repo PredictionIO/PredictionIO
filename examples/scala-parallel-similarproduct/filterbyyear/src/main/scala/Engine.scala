@@ -10,17 +10,17 @@ case class Query(
   whiteList: Option[Set[String]],
   blackList: Option[Set[String]],
   recommendFromYear: Option[Int]
-) extends Serializable
+)
 
 case class PredictedResult(
   itemScores: Array[ItemScore]
-) extends Serializable
+)
 
 case class ItemScore(
   item: String,
   score: Double,
   year: Int
-) extends Serializable
+)
 
 object SimilarProductEngine extends IEngineFactory {
   def apply() = {

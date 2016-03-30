@@ -114,11 +114,11 @@ case class EventServerArgs(
   stats: Boolean = false)
 
 case class AdminServerArgs(
-ip: String = "localhost",
+ip: String = "127.0.0.1",
 port: Int = 7071)
 
 case class DashboardArgs(
-  ip: String = "0.0.0.0",
+  ip: String = "127.0.0.1",
   port: Int = 9000)
 
 case class UpgradeArgs(

@@ -32,24 +32,24 @@ class DailyResult(
 extends Serializable {}
 
 case class DailyStat (
-  val time: Long,
-  val nav: Double,
-  val ret: Double,
-  val market: Double,
-  val positionCount: Int
-) extends Serializable
+  time: Long,
+  nav: Double,
+  ret: Double,
+  market: Double,
+  positionCount: Int
+)
 
 case class OverallStat (
-  val ret: Double,
-  val vol: Double,
-  val sharpe: Double,
-  val days: Int
-) extends Serializable
+  ret: Double,
+  vol: Double,
+  sharpe: Double,
+  days: Int
+)
 
 case class BacktestingResult(
-  val daily: Seq[DailyStat],
-  val overall: OverallStat
-) extends Serializable with NiceRendering {
+  daily: Seq[DailyStat],
+  overall: OverallStat
+) with NiceRendering {
   override def toString(): String = overall.toString
 
   def toHTML(): String = {

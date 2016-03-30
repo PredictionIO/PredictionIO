@@ -9,8 +9,7 @@ import breeze.stats.MeanAndVariance
 class Serving
   extends LServing[Query, PredictedResult] {
 
-  override
-  def serve(query: Query,
+  override def serve(query: Query,
     predictedResults: Seq[PredictedResult]): PredictedResult = {
 
     // MODFIED

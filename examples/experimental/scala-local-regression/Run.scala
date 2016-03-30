@@ -26,8 +26,7 @@ import java.io.File
 case class DataSourceParams(val filepath: String, val seed: Int = 9527)
   extends Params
 
-case class TrainingData(x: Vector[Vector[Double]], y: Vector[Double])
-  extends Serializable {
+case class TrainingData(x: Vector[Vector[Double]], y: Vector[Double]) {
   val r = x.length
   val c = x.head.length
 }

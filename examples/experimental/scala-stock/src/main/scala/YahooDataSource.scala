@@ -27,13 +27,13 @@ import org.json4s._
 //import org.saddle._
 
 case class HistoricalData(
-  val ticker: String,
-  val timeIndex: Array[DateTime],
-  val close: Array[Double],
-  val adjClose: Array[Double],
-  val adjReturn: Array[Double],
-  val volume: Array[Double],
-  val active: Array[Boolean]) extends Serializable {
+  ticker: String,
+  timeIndex: Array[DateTime],
+  close: Array[Double],
+  adjClose: Array[Double],
+  adjReturn: Array[Double],
+  volume: Array[Double],
+  active: Array[Boolean]) {
 
   override def toString(): String = {
     s"HistoricalData($ticker, ${timeIndex.head}, ${timeIndex.last}, " +
@@ -335,31 +335,31 @@ class YahooDataSource(val params: YahooDataSource.Params)
 
 object YahooDataSource {
   case class Params(
-    val windowParams: DataSourceParams,
+    windowParams: DataSourceParams,
     // Below filters with DataAPISpecific details
-    val appId: Int,  // Ignore appId in DataSourceParams
-    val entityType: String,
-    val startTime: Option[DateTime] = None,
-    val untilTime: Option[DateTime] = None
+    appId: Int,  // Ignore appId in DataSourceParams
+    entityType: String,
+    startTime: Option[DateTime] = None,
+    untilTime: Option[DateTime] = None
   ) extends BaseParams
 
   case class Daily(
-    val close: Double,
-    val adjClose: Double,
-    val adjReturn: Double,
-    val volume: Double,
-    val active: Boolean,
+    close: Double,
+    adjClose: Double,
+    adjReturn: Double,
+    volume: Double,
+    active: Boolean,
     // prevDate is used to verify continuity
-    val prevDate: DateTime)
+    prevDate: DateTime)
 
   /** Intermediate storage for constructing historical data
     * @param timeIndexSet Only datetime in this set is used to create historical
     * data.
     */
   case class Intermediate(
-    val ticker: String = "",
-    val dailyMap: Map[DateTime, Daily] = Map[DateTime, Daily]()
-    ) extends Serializable {
+    ticker: String = "",
+    dailyMap: Map[DateTime, Daily] = Map[DateTime, Daily]()
+    ) {
     override def toString(): String =
       s"YDS.Intermediate($ticker, size=${dailyMap.size})"
   }

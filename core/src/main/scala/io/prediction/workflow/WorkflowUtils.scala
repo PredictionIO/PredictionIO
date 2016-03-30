@@ -294,7 +294,7 @@ object WorkflowUtils extends Logging {
         "Since 0.8.4, the 'params' field is required in engine.json" +
         " in order to specify parameters for DataSource, Preparator or" +
         " Serving.\n" +
-        "Please go to http://docs.prediction.io/resources/upgrade/" +
+        "Please go to https://docs.prediction.io/resources/upgrade/" +
         " for detailed instruction of how to change engine.json.")
       sys.exit(1)
     }
@@ -388,7 +388,7 @@ class UpgradeCheckRunner(
     val component: String,
     val engine: String) extends Runnable with Logging {
   val version = BuildInfo.version
-  val versionsHost = "http://direct.prediction.io/"
+  val versionsHost = "https://direct.prediction.io/"
 
   def run(): Unit = {
     val url = if (engine == "") {

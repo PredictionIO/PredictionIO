@@ -15,9 +15,10 @@
 
 package io.prediction.data.storage
 
-import io.prediction.annotation.DeveloperApi
+import java.security.SecureRandom
 
-import scala.util.Random
+import io.prediction.annotation.DeveloperApi
+import org.apache.commons.codec.binary.Base64
 
 /** :: DeveloperApi ::
   * Stores mapping of access keys, app IDs, and lists of allowed event names
@@ -61,5 +62,10 @@ trait AccessKeys {
   def delete(k: String): Unit
 
   /** Default implementation of key generation */
-  def generateKey: String = Random.alphanumeric.take(64).mkString
+  def generateKey: String = {
+    val sr = SecureRandom.getInstanceStrong
+    val srBytes = Array.fill(48)(0.toByte)
+    sr.nextBytes(srBytes)
+    Base64.encodeBase64URLSafeString(srBytes)
+  }
 }

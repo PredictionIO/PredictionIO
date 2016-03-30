@@ -14,6 +14,12 @@ branches:
 
 language: scala
 
+scala:
+  - 2.10.5
+
+jdk:
+  - oraclejdk8
+
 addons:
     postgresql: "9.3"
 

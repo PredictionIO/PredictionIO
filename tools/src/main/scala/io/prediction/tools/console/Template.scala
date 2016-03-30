@@ -179,7 +179,7 @@ object Template extends Logging {
       "email" -> email,
       "org" -> org)
     try {
-      httpOptionalProxy("http://update.prediction.io/templates.subscribe").
+      httpOptionalProxy("https://update.prediction.io/templates.subscribe").
         postData("json=" + write(data)).asString
     } catch {
       case e: Throwable => error("Unable to subscribe.")
@@ -189,14 +189,14 @@ object Template extends Logging {
   def meta(repo: String, name: String, org: String): Unit = {
     try {
       httpOptionalProxy(
-        s"http://meta.prediction.io/templates/$repo/$org/$name").asString
+        s"https://meta.prediction.io/templates/$repo/$org/$name").asString
     } catch {
       case e: Throwable => debug("Template metadata unavailable.")
     }
   }
 
   def list(ca: ConsoleArgs): Int = {
-    val templatesUrl = "http://templates.prediction.io/index.json"
+    val templatesUrl = "https://templates.prediction.io/index.json"
     try {
       val templatesJson = Source.fromURL(templatesUrl).mkString("")
       val templates = read[List[TemplateEntry]](templatesJson)

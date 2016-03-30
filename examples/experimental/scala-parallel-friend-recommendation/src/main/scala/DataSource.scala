@@ -24,7 +24,7 @@ case class DataSourceParams(
 case class TrainingData(
   val g:Graph[Int,Int],
   val identityMatrix:RDD[(VertexId,Double)]
-) extends Serializable
+)
 
 class DataSource(val dsp: DataSourceParams)
   extends PDataSource[TrainingData, EmptyEvaluationInfo, Query, Double] {

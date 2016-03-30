@@ -6,11 +6,11 @@ import io.prediction.controller._
 //import io.prediction.workflow.CoreWorkflow
 import grizzled.slf4j.Logger
 
-case class Query(q: Int) extends Serializable
+case class Query(q: Int)
 
-case class PredictedResult(p: Int) extends Serializable
+case class PredictedResult(p: Int)
 
-case class ActualResult() extends Serializable
+case class ActualResult()
 
 object VanillaEngine extends IEngineFactory {
   def apply() = {
