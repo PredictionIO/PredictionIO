@@ -78,7 +78,7 @@ $ curl -i -X POST http://localhost:7070/events.json?accessKey=$ACCESS_KEY \
 -H "Content-Type: application/json" \
 -d '{
   "event" : "$set",
-  "entityType" : "user"
+  "entityType" : "user",
   "entityId" : "u0",
   "eventTime" : "2014-11-02T09:39:45.618-08:00"
 }'
@@ -166,7 +166,7 @@ $ curl -i -X POST http://localhost:7070/events.json?accessKey=$ACCESS_KEY \
 -H "Content-Type: application/json" \
 -d '{
   "event" : "$set",
-  "entityType" : "item"
+  "entityType" : "item",
   "entityId" : "i0",
   "properties" : {
     "categories" : ["c1", "c2"]
@@ -244,7 +244,7 @@ $ curl -i -X POST http://localhost:7070/events.json?accessKey=$ACCESS_KEY \
 -H "Content-Type: application/json" \
 -d '{
   "event" : "view",
-  "entityType" : "user"
+  "entityType" : "user",
   "entityId" : "u0",
   "targetEntityType" : "item",
   "targetEntityId" : "i0",
