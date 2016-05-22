@@ -26,7 +26,7 @@ import org.apache.spark.mllib.tree.RandomForest // CHANGED
 import org.apache.spark.mllib.tree.model.RandomForestModel // CHANGED
 ```
 
-These are the necessary classes in order to use the MLLib's Random Forest algporithm.
+These are the necessary classes in order to use the MLLib's Random Forest algorithm.
 
 Modify the `AlgorithmParams` class for the Random Forest algorithm:
 
@@ -88,10 +88,10 @@ class RandomForestAlgorithm(val ap: RandomForestAlgorithmParams) // CHANGED
 
 }
 ```
-Note that the MLlib Random Forest algorithm takes the same training data as the Navie Bayes algoithm (ie, RDD[LabeledPoint]) so you don't need to modify the `DataSource`, `TrainigData` and `PreparedData` classes. If the new algoritm to be added requires different types of training data, then you need to modify these classes accordingly to accomodate your new algorithm.
+Note that the MLlib Random Forest algorithm takes the same training data as the Navie Bayes algorithm (ie, RDD[LabeledPoint]) so you don't need to modify the `DataSource`, `TrainigData` and `PreparedData` classes. If the new algorithm to be added requires different types of training data, then you need to modify these classes accordingly to accomodate your new algorithm.
 ##  Update Engine.scala
 
-Modify the EngineFactory to add the new algorithm class `RandomForestAlgorithm` you just defined and give it a name `"randomforest"`. The name will be used in `engne.json` to specify which algorithm to use.
+Modify the EngineFactory to add the new algorithm class `RandomForestAlgorithm` you just defined and give it a name `"randomforest"`. The name will be used in `engine.json` to specify which algorithm to use.
 
 ```scala
 object ClassificationEngine extends IEngineFactory {
