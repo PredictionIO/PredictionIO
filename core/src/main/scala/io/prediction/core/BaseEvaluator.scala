@@ -57,10 +57,10 @@ abstract class BaseEvaluator[EI, Q, P, A, ER <: BaseEvaluatorResult]
 trait BaseEvaluatorResult extends Serializable {
   /** A short description of the result */
   def toOneLiner(): String = ""
-  
+
   /** HTML portion of the rendered evaluator results */
   def toHTML(): String = ""
-  
+
   /** JSON portion of the rendered evaluator results */
   def toJSON(): String = ""
 
@@ -68,5 +68,5 @@ trait BaseEvaluatorResult extends Serializable {
     * Indicate if this result is inserted into database
     */
   @Experimental
-  val noSave: Boolean = false 
+  val noSave: Boolean = false
 }

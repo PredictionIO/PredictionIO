@@ -72,7 +72,7 @@ object CoreWorkflow {
       val instanceId = Storage.getMetaDataEngineInstances
 
       val kryo = KryoInstantiator.newKryoInjection
-      
+
       logger.info("Inserting persistent model")
       Storage.getModelDataModels.insert(Model(
         id = engineInstance.id,
@@ -135,7 +135,7 @@ object CoreWorkflow {
       evaluator,
       params)
 
-    if (evaluatorResult.noSave) { 
+    if (evaluatorResult.noSave) {
       logger.info(s"This evaluation result is not inserted into database: $evaluatorResult")
     } else {
       val evaluatedEvaluationInstance = evaluationInstance.copy(

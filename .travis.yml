@@ -55,19 +55,3 @@ script:
 
 after_script:
   - ./bin/travis/pio-stop-travis
-
-deploy:
-  - provider: s3
-    access_key_id:
-      secure: "PxUW6LxwsJ2UlakxsPtkgIwbE949QyJbDF31IdjDIVX5H7KLWA0xkpECj+DXW7/lODsuGLxi02w4Y+KE0Ujo27ovnQAu2F1D6NDGn+D/JIu/wqjRJ4OOOg65j/06zyj5jzWMckLh6wYKABMiInsWiXtr4ehLS6pHVyJVXaLuBPE="
-    secret_access_key:
-      secure: "L3TXxQJZutXrXROf89dTiMuvcnsQ88F+cSqpddhafy4O3agyTMyJcHozizCaKI+VuJVZnUrip/joo4b85PSC8xjU4G7/lOIAoiSyQZU/f4RqUTFyl9ppTHQq2CyZKZy1qhqmBegRcWTy6TLV3JNXzKq+0fgl6/HekUMBuNX98yM="
-    bucket: install.prediction.io
-    region: us-east-1
-    skip_cleanup: true
-    acl: public_read
-    endpoint: install.prediction.io.s3-website-us-east-1.amazonaws.com
-    local-dir: bin
-    detect_encoding: true
-    on:
-      branch: master

@@ -67,7 +67,7 @@ class CommandClient(
     } getOrElse {
       appClient.get(req.id) map {
         app2 =>
-          GeneralResponse(0, 
+          GeneralResponse(0,
               s"App ID ${app2.id} already exists and maps to the app '${app2.name}'. " +
               "Aborting.")
       } getOrElse {

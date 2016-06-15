@@ -44,7 +44,7 @@ abstract class BaseEngine[EI, Q, P, A] extends Serializable {
     */
   @DeveloperApi
   def train(
-    sc: SparkContext, 
+    sc: SparkContext,
     engineParams: EngineParams,
     engineInstanceId: String,
     params: WorkflowParams): Seq[Any]
@@ -61,7 +61,7 @@ abstract class BaseEngine[EI, Q, P, A] extends Serializable {
     */
   @DeveloperApi
   def eval(
-    sc: SparkContext, 
+    sc: SparkContext,
     engineParams: EngineParams,
     params: WorkflowParams): Seq[(EI, RDD[(Q, P, A)])]
 
@@ -77,11 +77,11 @@ abstract class BaseEngine[EI, Q, P, A] extends Serializable {
     */
   @DeveloperApi
   def batchEval(
-    sc: SparkContext, 
+    sc: SparkContext,
     engineParamsList: Seq[EngineParams],
     params: WorkflowParams)
   : Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])] = {
-    engineParamsList.map { engineParams => 
+    engineParamsList.map { engineParams =>
       (engineParams, eval(sc, engineParams, params))
     }
   }

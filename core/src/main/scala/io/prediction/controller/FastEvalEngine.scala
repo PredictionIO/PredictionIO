@@ -42,11 +42,11 @@ import scala.collection.mutable.{ HashMap => MutableHashMap }
 @Experimental
 object FastEvalEngineWorkflow  {
   @transient lazy val logger = Logger[this.type]
-  
+
   type EX = Int
   type AX = Int
   type QX = Long
- 
+
   case class DataSourcePrefix(dataSourceParams: (String, Params)) {
     def this(pp: PreparatorPrefix) = this(pp.dataSourceParams)
     def this(ap: AlgorithmsPrefix) = this(ap.dataSourceParams)
@@ -60,7 +60,7 @@ object FastEvalEngineWorkflow  {
       this(ap.dataSourceParams, ap.preparatorParams)
     }
   }
-  
+
   case class AlgorithmsPrefix(
     dataSourceParams: (String, Params),
     preparatorParams: (String, Params),
@@ -90,7 +90,7 @@ object FastEvalEngineWorkflow  {
 
     if (!cache.contains(prefix)) {
       val dataSource = Doer(
-        workflow.engine.dataSourceClassMap(prefix.dataSourceParams._1), 
+        workflow.engine.dataSourceClassMap(prefix.dataSourceParams._1),
         prefix.dataSourceParams._2)
 
       val result = dataSource
@@ -130,7 +130,7 @@ object FastEvalEngineWorkflow  {
   def computeAlgorithmsResult[TD, EI, PD, Q, P, A](
     workflow: FastEvalEngineWorkflow[TD, EI, PD, Q, P, A],
     prefix: AlgorithmsPrefix): Map[EX, RDD[(QX, Seq[P])]] = {
-    
+
     val algoMap: Map[AX, BaseAlgorithm[PD, _, Q, P]] = prefix.algorithmParamsList
       .map { case (algoName, algoParams) => {
         try {
@@ -162,12 +162,12 @@ object FastEvalEngineWorkflow  {
     val algoModelsMap: Map[EX, Map[AX, Any]] = getPreparatorResult(
       workflow,
       new PreparatorPrefix(prefix))
-    .mapValues { 
+    .mapValues {
       pd => algoMap.mapValues(_.trainBase(workflow.sc,pd))
     }
 
     // Predict
-    val dataSourceResult = 
+    val dataSourceResult =
       FastEvalEngineWorkflow.getDataSourceResult(
         workflow = workflow,
         prefix = new DataSourcePrefix(prefix))
@@ -177,22 +177,22 @@ object FastEvalEngineWorkflow  {
     .map { case (ex, (td, ei, iqaRDD)) => {
       val modelsMap: Map[AX, Any] = algoModelsMap(ex)
       val qs: RDD[(QX, Q)] = iqaRDD.mapValues(_._1)
-  
+
       val algoPredicts: Seq[RDD[(QX, (AX, P))]] = (0 until algoCount)
       .map { ax => {
         val algo = algoMap(ax)
         val model = modelsMap(ax)
         val rawPredicts: RDD[(QX, P)] = algo.batchPredictBase(
-          workflow.sc, 
+          workflow.sc,
           model,
           qs)
-    
-        val predicts: RDD[(QX, (AX, P))] = rawPredicts.map { 
+
+        val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
           case (qx, p) => (qx, (ax, p))
         }
         predicts
       }}
-        
+
       val unionAlgoPredicts: RDD[(QX, Seq[P])] = workflow.sc
       .union(algoPredicts)
       .groupByKey
@@ -205,7 +205,7 @@ object FastEvalEngineWorkflow  {
     }}
     .seq
     .toMap
-    
+
     algoResult
   }
 
@@ -262,13 +262,13 @@ object FastEvalEngineWorkflow  {
     }
     cache(prefix)
   }
-  
+
   def get[TD, EI, PD, Q, P, A](
     workflow: FastEvalEngineWorkflow[TD, EI, PD, Q, P, A],
     engineParamsList: Seq[EngineParams])
   : Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])] = {
     engineParamsList.map { engineParams => {
-      (engineParams, 
+      (engineParams,
         getServingResult(workflow, new ServingPrefix(engineParams)))
     }}
   }
@@ -286,12 +286,12 @@ class FastEvalEngineWorkflow[TD, EI, PD, Q, P, A](
   val workflowParams: WorkflowParams) extends Serializable {
 
   import io.prediction.controller.FastEvalEngineWorkflow._
-  
+
   type DataSourceResult = Map[EX, (TD, EI, RDD[(QX, (Q, A))])]
   type PreparatorResult = Map[EX, PD]
   type AlgorithmsResult = Map[EX, RDD[(QX, Seq[P])]]
   type ServingResult = Seq[(EI, RDD[(Q, P, A)])]
-  
+
   val dataSourceCache = MutableHashMap[DataSourcePrefix, DataSourceResult]()
   val preparatorCache = MutableHashMap[PreparatorPrefix, PreparatorResult]()
   val algorithmsCache = MutableHashMap[AlgorithmsPrefix, AlgorithmsResult]()
@@ -320,8 +320,8 @@ class FastEvalEngine[TD, EI, PD, Q, P, A](
   @transient override lazy val logger = Logger[this.type]
 
   override def eval(
-    sc: SparkContext, 
-    engineParams: EngineParams, 
+    sc: SparkContext,
+    engineParams: EngineParams,
     params: WorkflowParams): Seq[(EI, RDD[(Q, P, A)])] = {
     logger.info("FastEvalEngine.eval")
     batchEval(sc, Seq(engineParams), params).head._2

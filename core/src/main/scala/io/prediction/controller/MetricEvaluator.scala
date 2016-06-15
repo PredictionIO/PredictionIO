@@ -78,13 +78,13 @@ extends BaseEvaluatorResult {
       new NameParamsSerializer
     write(this)
   }
-  
+
   override def toHTML(): String = html.metric_evaluator().toString()
-  
+
   override def toString: String = {
     implicit lazy val formats = Utils.json4sDefaultFormats +
       new NameParamsSerializer
-    
+
     val bestEPStr = JsonExtractor.engineParamstoPrettyJson(Both, bestEngineParams)
 
     val strings = Seq(
@@ -130,7 +130,7 @@ object MetricEvaluator {
       otherMetrics,
       None)
   }
-  
+
   def apply[EI, Q, P, A, R](metric: Metric[EI, Q, P, A, R])
   : MetricEvaluator[EI, Q, P, A, R] = {
     new MetricEvaluator[EI, Q, P, A, R](
@@ -194,7 +194,7 @@ class MetricEvaluator[EI, Q, P, A, R] (
 
     val now = DateTime.now
     val evalClassName = evaluation.getClass.getName
-    
+
     val variant = MetricEvaluator.EngineVariant(
       id = s"$evalClassName $now",
       description = "",
@@ -221,14 +221,14 @@ class MetricEvaluator[EI, Q, P, A, R] (
     val evalResultList: Seq[(EngineParams, MetricScores[R])] = engineEvalDataSet
     .zipWithIndex
     .par
-    .map { case ((engineParams, evalDataSet), idx) => 
+    .map { case ((engineParams, evalDataSet), idx) =>
       val metricScores = MetricScores[R](
         metric.calculate(sc, evalDataSet),
         otherMetrics.map(_.calculate(sc, evalDataSet)))
       (engineParams, metricScores)
     }
     .seq
-    
+
     implicit lazy val formats = Utils.json4sDefaultFormats +
       new NameParamsSerializer
 

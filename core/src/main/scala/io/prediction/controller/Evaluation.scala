@@ -32,7 +32,7 @@ trait Evaluation extends Deployment {
   protected [this] var _evaluatorSet: Boolean = false
   protected [this] var _evaluator: BaseEvaluator[_, _, _, _, _ <: BaseEvaluatorResult] = _
 
-  private [prediction] 
+  private [prediction]
   def evaluator: BaseEvaluator[_, _, _, _, _ <: BaseEvaluatorResult] = {
     assert(_evaluatorSet, "Evaluator not set")
     _evaluator
@@ -60,7 +60,7 @@ trait Evaluation extends Deployment {
     */
   def engineEvaluator_=[EI, Q, P, A, R <: BaseEvaluatorResult](
     engineEvaluator: (
-      BaseEngine[EI, Q, P, A], 
+      BaseEngine[EI, Q, P, A],
       BaseEvaluator[EI, Q, P, A, R])) {
     assert(!_evaluatorSet, "Evaluator can be set at most once")
     engine = engineEvaluator._1
@@ -88,7 +88,7 @@ trait Evaluation extends Deployment {
   def engineMetric_=[EI, Q, P, A](
     engineMetric: (BaseEngine[EI, Q, P, A], Metric[EI, Q, P, A, _])) {
     engineEvaluator = (
-      engineMetric._1, 
+      engineMetric._1,
       MetricEvaluator(
         metric = engineMetric._2,
         otherMetrics = Seq[Metric[EI, Q, P, A, _]](),
@@ -112,8 +112,8 @@ trait Evaluation extends Deployment {
     */
   def engineMetrics_=[EI, Q, P, A](
     engineMetrics: (
-      BaseEngine[EI, Q, P, A], 
-      Metric[EI, Q, P, A, _], 
+      BaseEngine[EI, Q, P, A],
+      Metric[EI, Q, P, A, _],
       Seq[Metric[EI, Q, P, A, _]])) {
     engineEvaluator = (
       engineMetrics._1,

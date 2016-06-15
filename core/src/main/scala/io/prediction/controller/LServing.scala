@@ -18,7 +18,7 @@ package io.prediction.controller
 import io.prediction.annotation.Experimental
 import io.prediction.core.BaseServing
 
-/** Base class of serving. 
+/** Base class of serving.
   *
   * @tparam Q Input query class.
   * @tparam P Output prediction class.

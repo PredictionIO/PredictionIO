@@ -32,8 +32,8 @@ import scala.concurrent.Future
 
 /** JDBC implementation of [[LEvents]] */
 class JDBCLEvents(
-    client: String, 
-    config: StorageClientConfig, 
+    client: String,
+    config: StorageClientConfig,
     namespace: String) extends LEvents with Logging {
   implicit private val formats = org.json4s.DefaultFormats
 

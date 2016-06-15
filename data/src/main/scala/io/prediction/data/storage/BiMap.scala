@@ -130,7 +130,7 @@ object BiMap {
     new BiMap(HashMap(ki : _*))
   }
 
-  /** Create a BiMap[String, Double] from a set of String. The Double index 
+  /** Create a BiMap[String, Double] from a set of String. The Double index
     * starts from 0.
     * @param keys a set of String
     * @return a String to Double BiMap

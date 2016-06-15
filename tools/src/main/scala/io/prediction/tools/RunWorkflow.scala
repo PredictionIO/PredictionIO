@@ -162,7 +162,7 @@ object RunWorkflow extends Logging {
       // If engineParamsGenerator is specified, it overrides the evaluation.
       ca.common.engineParamsGenerator.orElse(ca.common.evaluation)
         .map(x => Seq("--engine-params-generator-class", x))
-        .getOrElse(Seq()) ++ 
+        .getOrElse(Seq()) ++
       (if (ca.common.batch != "") Seq("--batch", ca.common.batch) else Seq()) ++
       Seq("--json-extractor", ca.common.jsonExtractor.toString)
 

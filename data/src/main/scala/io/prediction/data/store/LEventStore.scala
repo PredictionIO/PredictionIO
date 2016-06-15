@@ -87,7 +87,7 @@ object LEventStore {
   }
 
   /** Reads events generically. If entityType or entityId is not specified, it
-    * results in table scan. 
+    * results in table scan.
     *
     * @param appName return events of this app
     * @param entityType return events of this entityType

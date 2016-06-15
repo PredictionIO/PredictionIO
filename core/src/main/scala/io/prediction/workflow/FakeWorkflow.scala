@@ -15,7 +15,7 @@
 
 package io.prediction.workflow
 
-import io.prediction.annotation.Experimental   
+import io.prediction.annotation.Experimental
 // FIXME(yipjustin): Remove wildcard import.
 import io.prediction.core._
 import io.prediction.controller._
@@ -32,7 +32,7 @@ extends BaseEngine[EmptyParams, EmptyParams, EmptyParams, EmptyParams] {
   @transient lazy val logger = Logger[this.type]
 
   def train(
-    sc: SparkContext, 
+    sc: SparkContext,
     engineParams: EngineParams,
     engineInstanceId: String,
     params: WorkflowParams): Seq[Any] = {
@@ -40,7 +40,7 @@ extends BaseEngine[EmptyParams, EmptyParams, EmptyParams, EmptyParams] {
   }
 
   def eval(
-    sc: SparkContext, 
+    sc: SparkContext,
     engineParams: EngineParams,
     params: WorkflowParams)
   : Seq[(EmptyParams, RDD[(EmptyParams, EmptyParams, EmptyParams)])] = {
@@ -56,7 +56,7 @@ private[prediction] class FakeRunner(f: (SparkContext => Unit))
   def evaluateBase(
     sc: SparkContext,
     evaluation: Evaluation,
-    engineEvalDataSet: 
+    engineEvalDataSet:
         Seq[(EngineParams, Seq[(EmptyParams, RDD[(EmptyParams, EmptyParams, EmptyParams)])])],
     params: WorkflowParams): FakeEvalResult = {
     f(sc)
@@ -66,36 +66,36 @@ private[prediction] class FakeRunner(f: (SparkContext => Unit))
 
 @Experimental
 private[prediction] case class FakeEvalResult() extends BaseEvaluatorResult {
-  override val noSave: Boolean = true 
+  override val noSave: Boolean = true
 }
 
 /** FakeRun allows user to implement custom function under the exact enviroment
-  * as other PredictionIO workflow. 
+  * as other PredictionIO workflow.
   *
-  * Useful for developing new features. Only need to extend this trait and 
-  * implement a function: (SparkContext => Unit). For example, the code below 
+  * Useful for developing new features. Only need to extend this trait and
+  * implement a function: (SparkContext => Unit). For example, the code below
   * can be run with `pio eval HelloWorld`.
   *
   * {{{
   * object HelloWorld extends FakeRun {
   *   // func defines the function pio runs, must have signature (SparkContext => Unit).
   *   func = f
-  * 
+  *
   *   def f(sc: SparkContext): Unit {
   *     val logger = Logger[this.type]
   *     logger.info("HelloWorld")
   *   }
   * }
-  * }}} 
-  * 
+  * }}}
+  *
   */
 @Experimental
 trait FakeRun extends Evaluation with EngineParamsGenerator {
   private[this] var _runner: FakeRunner = _
 
   def runner: FakeRunner = _runner
-  def runner_=(r: FakeRunner) { 
-    engineEvaluator = (new FakeEngine(), r) 
+  def runner_=(r: FakeRunner) {
+    engineEvaluator = (new FakeEngine(), r)
     engineParamsList = Seq(new EngineParams())
   }
 

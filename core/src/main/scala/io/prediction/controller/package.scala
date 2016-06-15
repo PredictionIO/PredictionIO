@@ -119,7 +119,7 @@ package object controller {
     * @group Helper
     */
   type EmptyDataParams = EmptyParams
-  
+
   /** Empty evaluation info.
     * @group Helper
     */

@@ -1,5 +1,8 @@
 # [PredictionIO](http://prediction.io)
 
+[![Build
+Status](https://travis-ci.org/PredictionIO/PredictionIO.svg?branch=develop)](https://travis-ci.org/PredictionIO/PredictionIO)
+
 PredictionIO is an open source machine learning framework for developers and
 data scientists. It supports event collection, deployment of algorithms,
 evaluation, querying predictive results via REST APIs.
@@ -66,8 +69,6 @@ hosted at [docs.prediction.io](http://docs.prediction.io/).
 Interested in helping with our documentation? Read [Contributing
 Documentation](http://docs.prediction.io/community/contribute-documentation/).
 
-[![Build
-Status](https://travis-ci.org/PredictionIO/PredictionIO.svg?branch=livedoc)](https://travis-ci.org/PredictionIO/PredictionIO)
 [![Dependency
 Status](https://gemnasium.com/PredictionIO/PredictionIO.svg)](https://gemnasium.com/PredictionIO/PredictionIO)
 
