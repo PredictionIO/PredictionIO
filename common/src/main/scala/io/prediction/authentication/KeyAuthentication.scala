@@ -32,6 +32,7 @@ trait KeyAuthentication {
 
   object ServerKey {
     private val config = ConfigFactory.load("server.conf")
+    val authEnforced = config.getBoolean("io.prediction.server.key-auth-enforced")
     val get = config.getString("io.prediction.server.accessKey")
     val param = "accessKey"
   }
@@ -46,7 +47,7 @@ trait KeyAuthentication {
             AuthenticationFailedRejection.CredentialsRejected, List()))
         }
 
-        if (passedKey.equals(ServerKey.get)) Right(ctx.request)
+        if (!ServerKey.authEnforced || passedKey.equals(ServerKey.get)) Right(ctx.request)
         else Left(AuthenticationFailedRejection(
           AuthenticationFailedRejection.CredentialsRejected, List()))
 
