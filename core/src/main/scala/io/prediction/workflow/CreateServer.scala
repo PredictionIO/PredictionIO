@@ -296,7 +296,7 @@ class MasterActor (
   val protocol = if (sslEnforced) "https://" else "http://"
 
   def undeploy(ip: String, port: Int): Unit = {
-    val serverUrl = protocol + s"${ip}:${port}"
+    val serverUrl = s"${protocol}${ip}:${port}"
     log.info(
       s"Undeploying any existing engine instance at $serverUrl")
     try {
@@ -380,7 +380,7 @@ class MasterActor (
           s"${manifest.version}. Abort reloading.")
       }
     case x: Http.Bound =>
-      val serverUrl = protocol + s"${sc.ip}:${sc.port}"
+      val serverUrl = s"${protocol}${sc.ip}:${sc.port}"
       log.info(s"Engine is deployed and running. Engine API is live at ${serverUrl}.")
       sprayHttpListener = Some(sender)
     case x: Http.CommandFailed =>
