@@ -40,7 +40,7 @@ case class DashboardConfig(
   ip: String = "localhost",
   port: Int = 9000)
 
-object Dashboard extends Logging with SSLConfiguration{
+object Dashboard extends Logging with SSLConfiguration {
   def main(args: Array[String]): Unit = {
     val parser = new scopt.OptionParser[DashboardConfig]("Dashboard") {
       opt[String]("ip") action { (x, c) =>
@@ -62,11 +62,13 @@ object Dashboard extends Logging with SSLConfiguration{
       system.actorOf(Props(classOf[DashboardActor], dc), "dashboard")
     implicit val timeout = Timeout(5.seconds)
     val settings = ServerSettings(system)
+    val serverConfig = ConfigFactory.load("server.conf")
+    val sslEnforced = serverConfig.getBoolean("io.prediction.server.ssl-enforced")
     IO(Http) ? Http.Bind(
       service,
       interface = dc.ip,
       port = dc.port,
-      settings = Some(settings.copy(sslEncryption = true)))
+      settings = Some(settings.copy(sslEncryption = sslEnforced)))
     system.awaitTermination
   }
 }
