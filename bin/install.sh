@@ -11,8 +11,7 @@
 OS=`uname`
 PIO_VERSION=0.9.6
 SPARK_VERSION=1.6.0
-# Looks like support for Elasticsearch 2.0 will require 2.0 so deferring
-ELASTICSEARCH_VERSION=1.7.3
+ELASTICSEARCH_VERSION=2.1.1
 HBASE_VERSION=1.1.2
 POSTGRES_VERSION=9.4-1204.jdbc41
 MYSQL_VERSION=5.1.37
@@ -353,7 +352,7 @@ case $source_setup in
     echo -e "\033[1;36mStarting Elasticsearch setup in:\033[0m $elasticsearch_dir"
     if [[ ! -e elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz ]]; then
       echo "Downloading Elasticsearch..."
-      curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
+      curl -O https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/${ELASTICSEARCH_VERSION}/elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
     fi
     tar zxf elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
     rm -rf ${elasticsearch_dir}

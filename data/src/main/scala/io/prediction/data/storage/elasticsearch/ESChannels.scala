@@ -21,7 +21,7 @@ import io.prediction.data.storage.Channels
 import io.prediction.data.storage.StorageClientConfig
 import org.elasticsearch.ElasticsearchException
 import org.elasticsearch.client.Client
-import org.elasticsearch.index.query.FilterBuilders.termFilter
+import org.elasticsearch.index.query.QueryBuilders.termQuery
 import org.json4s.DefaultFormats
 import org.json4s.JsonDSL._
 import org.json4s.native.JsonMethods._
@@ -81,7 +81,7 @@ class ESChannels(client: Client, config: StorageClientConfig, index: String)
   def getByAppid(appid: Int): Seq[Channel] = {
     try {
       val builder = client.prepareSearch(index).setTypes(estype).
-        setPostFilter(termFilter("appid", appid))
+        setPostFilter(termQuery("appid", appid))
       ESUtils.getAll[Channel](client, builder)
     } catch {
       case e: ElasticsearchException =>

@@ -41,7 +41,6 @@ class ESSequences(client: Client, config: StorageClientConfig, index: String) ex
       (estype ->
         ("_source" -> ("enabled" -> 0)) ~
         ("_all" -> ("enabled" -> 0)) ~
-        ("_type" -> ("index" -> "no")) ~
         ("enabled" -> 0))
     indices.preparePutMapping(index).setType(estype).
       setSource(compact(render(mappingJson))).get

@@ -21,7 +21,7 @@ import io.prediction.data.storage.AccessKey
 import io.prediction.data.storage.AccessKeys
 import org.elasticsearch.ElasticsearchException
 import org.elasticsearch.client.Client
-import org.elasticsearch.index.query.FilterBuilders._
+import org.elasticsearch.index.query.QueryBuilders._
 import org.json4s.JsonDSL._
 import org.json4s._
 import org.json4s.native.JsonMethods._
@@ -87,7 +87,7 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
   def getByAppid(appid: Int): Seq[AccessKey] = {
     try {
       val builder = client.prepareSearch(index).setTypes(estype).
-        setPostFilter(termFilter("appid", appid))
+        setPostFilter(termQuery("appid", appid))
       ESUtils.getAll[AccessKey](client, builder)
     } catch {
       case e: ElasticsearchException =>

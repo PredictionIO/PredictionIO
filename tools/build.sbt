@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-
 import sbtassembly.AssemblyPlugin.autoImport._
 
 name := "tools"
@@ -49,6 +47,7 @@ excludedJars in assembly <<= (fullClasspath in assembly) map { cp =>
 }
 
 assemblyShadeRules in assembly := Seq(
+  ShadeRule.rename("org.joda.time.base.**" -> "shadeio.@1").inLibrary("org.elasticsearch" % "elasticsearch" % elasticsearchVersion.value).inProject,
   ShadeRule.rename("org.objenesis.**" -> "shadeio.@1").inLibrary("com.esotericsoftware.kryo" % "kryo" % "2.21").inProject,
   ShadeRule.rename("com.esotericsoftware.reflectasm.**" -> "shadeio.@1").inLibrary("com.esotericsoftware.kryo" % "kryo" % "2.21").inProject,
   ShadeRule.rename("com.esotericsoftware.minlog.**" -> "shadeio.@1").inLibrary("com.esotericsoftware.kryo" % "kryo" % "2.21").inProject

@@ -22,7 +22,7 @@ import io.prediction.data.storage.EngineInstances
 import io.prediction.data.storage.StorageClientConfig
 import org.elasticsearch.ElasticsearchException
 import org.elasticsearch.client.Client
-import org.elasticsearch.index.query.FilterBuilders._
+import org.elasticsearch.index.query.QueryBuilders._
 import org.elasticsearch.search.sort.SortOrder
 import org.json4s.JsonDSL._
 import org.json4s._
@@ -114,11 +114,11 @@ class ESEngineInstances(client: Client, config: StorageClientConfig, index: Stri
       engineVariant: String): Seq[EngineInstance] = {
     try {
       val builder = client.prepareSearch(index).setTypes(estype).setPostFilter(
-        andFilter(
-          termFilter("status", "COMPLETED"),
-          termFilter("engineId", engineId),
-          termFilter("engineVersion", engineVersion),
-          termFilter("engineVariant", engineVariant))).
+        andQuery(
+          termQuery("status", "COMPLETED"),
+          termQuery("engineId", engineId),
+          termQuery("engineVersion", engineVersion),
+          termQuery("engineVariant", engineVariant))).
         addSort("startTime", SortOrder.DESC)
       ESUtils.getAll[EngineInstance](client, builder)
     } catch {

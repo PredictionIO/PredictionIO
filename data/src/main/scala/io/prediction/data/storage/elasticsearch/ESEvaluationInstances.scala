@@ -22,7 +22,7 @@ import io.prediction.data.storage.EvaluationInstances
 import io.prediction.data.storage.StorageClientConfig
 import org.elasticsearch.ElasticsearchException
 import org.elasticsearch.client.Client
-import org.elasticsearch.index.query.FilterBuilders._
+import org.elasticsearch.index.query.QueryBuilders._
 import org.elasticsearch.search.sort.SortOrder
 import org.json4s.JsonDSL._
 import org.json4s._
@@ -105,7 +105,7 @@ class ESEvaluationInstances(client: Client, config: StorageClientConfig, index: 
   def getCompleted(): Seq[EvaluationInstance] = {
     try {
       val builder = client.prepareSearch(index).setTypes(estype).setPostFilter(
-        termFilter("status", "EVALCOMPLETED")).
+        termQuery("status", "EVALCOMPLETED")).
         addSort("startTime", SortOrder.DESC)
       ESUtils.getAll[EvaluationInstance](client, builder)
     } catch {
