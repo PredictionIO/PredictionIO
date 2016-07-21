@@ -79,7 +79,7 @@ Keep track of development and community news.
 
 *   Follow [@predictionio](https://twitter.com/predictionio) on Twitter.
 *   Read and subscribe to [the
-    Newsletter](https://prediction.io/#newsletter).
+    Newsletter](http://prediction.io/#newsletter).
 *   Join the [Community
     Forum](https://groups.google.com/forum/#!forum/predictionio-user).
 
