@@ -1,10 +1,10 @@
 package org.template.similarproduct
 
-import io.prediction.controller.PAlgorithm
-import io.prediction.controller.Params
-import io.prediction.controller.IPersistentModel
-import io.prediction.controller.IPersistentModelLoader
-import io.prediction.data.storage.BiMap
+import org.apache.predictionio.controller.PAlgorithm
+import org.apache.predictionio.controller.Params
+import org.apache.predictionio.controller.IPersistentModel
+import org.apache.predictionio.controller.IPersistentModelLoader
+import org.apache.predictionio.data.storage.BiMap
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._

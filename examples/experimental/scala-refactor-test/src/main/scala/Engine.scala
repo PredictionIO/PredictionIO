@@ -1,9 +1,9 @@
 package pio.refactor
 
-import io.prediction.controller.IEngineFactory
-import io.prediction.controller.Engine
-import io.prediction.controller._
-//import io.prediction.workflow.CoreWorkflow
+import org.apache.predictionio.controller.IEngineFactory
+import org.apache.predictionio.controller.Engine
+import org.apache.predictionio.controller._
+//import org.apache.predictionio.workflow.CoreWorkflow
 import grizzled.slf4j.Logger
 
 case class Query(q: Int)

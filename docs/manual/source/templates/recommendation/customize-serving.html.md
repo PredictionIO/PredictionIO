@@ -171,7 +171,7 @@ directory to:
 ```scala
 import scala.io.Source
 
-import io.prediction.controller.Params  // ADDED
+import org.apache.predictionio.controller.Params  // ADDED
 
 // ADDED ServingParams to specify the blacklisting file location.
 case class ServingParams(filepath: String) extends Params

@@ -10,7 +10,7 @@ DataSource reads and selects useful data from the Event Store (data store of the
 
 ## readTraining()
 
-You need to implment readTraining() of [PDataSource](https://docs.prediction.io/api/current/#io.prediction.controller.PDataSource), where you can use the [PEventStore Engine API](https://docs.prediction.io/api/current/#io.prediction.data.store.PEventStore$) to read the events and create the TrainingData based on the events.
+You need to implment readTraining() of [PDataSource](https://docs.prediction.io/api/current/#org.apache.predictionio.controller.PDataSource), where you can use the [PEventStore Engine API](https://docs.prediction.io/api/current/#org.apache.predictionio.data.store.PEventStore$) to read the events and create the TrainingData based on the events.
 
 The following code example reads user "view" and "buy" item events, filters specific type of events for future processing and returns TrainingData accordingly.
 
@@ -49,7 +49,7 @@ class DataSource(val dsp: DataSourceParams)
 
 Please see [Event Server Overview](https://docs.prediction.io/datacollection/) to understand [EventAPI](https://docs.prediction.io/datacollection/eventapi/) and [event modeling](https://docs.prediction.io/datacollection/eventmodel/).
 
-With [PEventStore Engine API](https://docs.prediction.io/api/current/#io.prediction.data.store.PEventStore$), you can easily read different events in DataSource and get the information you need.
+With [PEventStore Engine API](https://docs.prediction.io/api/current/#org.apache.predictionio.data.store.PEventStore$), you can easily read different events in DataSource and get the information you need.
 
 For example, let's say you have events like the following:
 
@@ -146,7 +146,7 @@ A few example usages of Preparator:
 
 ## prepare()
 
-You need to implement the `prepare()` method of [PPrepartor](https://docs.prediction.io/api/current/#io.prediction.controller.PPreparator) to perform such tasks.
+You need to implement the `prepare()` method of [PPrepartor](https://docs.prediction.io/api/current/#org.apache.predictionio.controller.PPreparator) to perform such tasks.
 
 Example:
 
@@ -167,8 +167,8 @@ predict() is responsible for using this model to make prediction. It is called w
 
 PredictionIO supports two types of algorithms:
 
-- **[P2LAlgorithm](https://docs.prediction.io/api/current/#io.prediction.controller.P2LAlgorithm)**: trains a Model which does not contain RDD
-- **[PAlgorithm](https://docs.prediction.io/api/current/#io.prediction.controller.PAlgorithm)**: trains a Model which contains RDD
+- **[P2LAlgorithm](https://docs.prediction.io/api/current/#org.apache.predictionio.controller.P2LAlgorithm)**: trains a Model which does not contain RDD
+- **[PAlgorithm](https://docs.prediction.io/api/current/#org.apache.predictionio.controller.PAlgorithm)**: trains a Model which contains RDD
 
 ## P2LAlgorithm
 
@@ -194,7 +194,7 @@ Example:
 
 ## using LEventStore Engine API in predict()
 
-You may use [LEventStore.findByEntity()](https://docs.prediction.io/api/current/#io.prediction.data.store.LEventStore$) to retrieve events of a specific entity. For example, retrieve recent events of the user specified in the query) and use these recent events to make prediction in real time.
+You may use [LEventStore.findByEntity()](https://docs.prediction.io/api/current/#org.apache.predictionio.data.store.LEventStore$) to retrieve events of a specific entity. For example, retrieve recent events of the user specified in the query) and use these recent events to make prediction in real time.
 
 
 For example, the following code reads the recent 10 view events of `query.user`:
@@ -234,7 +234,7 @@ Example:
 
 ## serve()
 
-You need to implement the serve() method of the class [LServing](https://docs.prediction.io/api/current/#io.prediction.controller.LServing). The serve() method processes predicted result. It is also responsible for combining multiple predicted results into one if you have more than one predictive model.
+You need to implement the serve() method of the class [LServing](https://docs.prediction.io/api/current/#org.apache.predictionio.controller.LServing). The serve() method processes predicted result. It is also responsible for combining multiple predicted results into one if you have more than one predictive model.
 
 Example:
 

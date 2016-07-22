@@ -1,8 +1,8 @@
 {
-  "id": "io.prediction.examples.friendrecommendation.keywordsimilarity",
+  "id": "org.apache.predictionio.examples.friendrecommendation.keywordsimilarity",
   "version": "0.1",
   "name": "Friend Recommendation Engine with Keyword Similarity Method",
-  "engineFactory": "io.prediction.examples.friendrecommendation.KeywordSimilarityEngineFactory",
+  "engineFactory": "org.apache.predictionio.examples.friendrecommendation.KeywordSimilarityEngineFactory",
   "datasource": {
     "itemFilePath": "data/item.txt",
     "userKeywordFilePath": "data/user_key_word.txt",

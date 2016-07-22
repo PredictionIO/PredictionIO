@@ -1,7 +1,7 @@
 {
   "id": "default",
   "description": "Parallel Hello World Engine",
-  "engineFactory": "io.prediction.examples.java.parallel.EngineFactory",
+  "engineFactory": "org.apache.predictionio.examples.java.parallel.EngineFactory",
   "algorithms": [
     {
       "name": "ParallelAlgorithm",

@@ -1,6 +1,6 @@
 {
-  "id": "io.prediction.examples.java.recommendations.tutorial5.EngineFactory",
+  "id": "org.apache.predictionio.examples.java.recommendations.tutorial5.EngineFactory",
   "version": "0.8.1-SNAPSHOT",
   "name": "Simple Mahout Recommendations Engine",
-  "engineFactory": "io.prediction.examples.java.recommendations.tutorial5.EngineFactory"
+  "engineFactory": "org.apache.predictionio.examples.java.recommendations.tutorial5.EngineFactory"
 }

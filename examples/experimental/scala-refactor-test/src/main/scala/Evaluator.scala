@@ -1,8 +1,8 @@
 package pio.refactor
 
-import io.prediction.controller.IEngineFactory
-import io.prediction.controller.Engine
-import io.prediction.controller._
+import org.apache.predictionio.controller.IEngineFactory
+import org.apache.predictionio.controller.Engine
+import org.apache.predictionio.controller._
 
 class VanillaEvaluator
   extends Evaluator[EmptyEvaluationInfo, Query, PredictedResult,

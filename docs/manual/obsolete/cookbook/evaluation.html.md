@@ -300,7 +300,7 @@ up and running.
 
 ```
 $ cd $PIO_HOME/examples/scala-local-movielens-evaluation
-$ $PIO_HOME/bin/pio run io.prediction.examples.mlc.Evaluation1 -- \
+$ $PIO_HOME/bin/pio run org.apache.predictionio.examples.mlc.Evaluation1 -- \
   --master spark://`hostname`:7077
 ...
 2014-10-07 19:09:47,136 INFO  workflow.CoreWorkflow$ - Saved engine instance with ID: nfUVwwgMQOqgpb5QEUdAGg
@@ -331,7 +331,7 @@ the evaluation to 12 periods, each period last 1 week. `Evaluation2` perform
 this task. We can run it with the following command:
 
 ```
-$ $PIO_HOME/bin/pio run io.prediction.examples.mlc.Evaluation2 -- \
+$ $PIO_HOME/bin/pio run org.apache.predictionio.examples.mlc.Evaluation2 -- \
   --master spark://`hostname`:7077
 ```
 

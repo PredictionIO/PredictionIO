@@ -1,4 +1,4 @@
-package io.prediction.examples.pfriendrecommendation
+package org.apache.predictionio.examples.pfriendrecommendation
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._

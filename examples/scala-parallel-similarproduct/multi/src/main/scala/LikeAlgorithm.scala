@@ -1,6 +1,6 @@
 package org.template.similarproduct
 
-import io.prediction.data.storage.BiMap
+import org.apache.predictionio.data.storage.BiMap
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._

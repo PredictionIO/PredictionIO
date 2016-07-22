@@ -95,4 +95,7 @@ limitations under the License.
     <check enabled="true"
            class="org.scalastyle.scalariform.PublicMethodsHaveTypeChecker"
            level="error"/>
+    <check level="error"
+           class="org.scalastyle.file.WhitespaceEndOfLineChecker"
+           enabled="true"/>
 </scalastyle>

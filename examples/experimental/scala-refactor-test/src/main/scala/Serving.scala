@@ -1,6 +1,6 @@
 package pio.refactor
 
-import io.prediction.controller.LServing
+import org.apache.predictionio.controller.LServing
 import grizzled.slf4j.Logger
 
 class Serving

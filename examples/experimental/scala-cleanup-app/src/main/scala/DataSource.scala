@@ -1,12 +1,12 @@
-package io.prediction.examples.experimental.cleanupapp
+package org.apache.predictionio.examples.experimental.cleanupapp
 
-import io.prediction.controller.PDataSource
-import io.prediction.controller.EmptyEvaluationInfo
-import io.prediction.controller.EmptyActualResult
-import io.prediction.controller.Params
-import io.prediction.data.storage.Event
-import io.prediction.data.storage.Storage
-import io.prediction.workflow.StopAfterReadInterruption
+import org.apache.predictionio.controller.PDataSource
+import org.apache.predictionio.controller.EmptyEvaluationInfo
+import org.apache.predictionio.controller.EmptyActualResult
+import org.apache.predictionio.controller.Params
+import org.apache.predictionio.data.storage.Event
+import org.apache.predictionio.data.storage.Storage
+import org.apache.predictionio.workflow.StopAfterReadInterruption
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._

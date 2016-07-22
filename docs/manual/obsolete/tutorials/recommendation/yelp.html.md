@@ -106,8 +106,8 @@ An engine represents a type of prediction. For our purposes we will be using the
 [item recommendation engine](/engines/itemrec/).
 
 ```
-$ $PIO_HOME/bin/pio instance io.prediction.engines.itemrec
-$ cd io.prediction.engines.itemrec
+$ $PIO_HOME/bin/pio instance org.apache.predictionio.engines.itemrec
+$ cd org.apache.predictionio.engines.itemrec
 $ $PIO_HOME/bin/pio register
 ```
 
@@ -143,7 +143,7 @@ Before you can deploy your engine you need to train it.
 First you need to **change into the engine instance folder:**
 
 ```
-$ cd $PIO_HOME/io.prediction.engines.itemrec
+$ cd $PIO_HOME/org.apache.predictionio.engines.itemrec
 ```
 
 Train the engine with the imported data:
@@ -165,7 +165,7 @@ Now it is time to launch the engine.
 First you need to **change into the engine instance folder:**
 
 ```
-$ cd $PIO_HOME/io.prediction.engines.itemrec
+$ cd $PIO_HOME/org.apache.predictionio.engines.itemrec
 ```
 
 Then you can deploy with:
@@ -218,7 +218,7 @@ For our example we could train and deploy every 6 hours with the following:
 ```
 $ crontab -e
 
-0 */6 * * *     cd $PIO_HOME/io.prediction.engines.itemrec; $PIO_HOME/bin/pio train; $PIO_HOME/bin/pio deploy
+0 */6 * * *     cd $PIO_HOME/org.apache.predictionio.engines.itemrec; $PIO_HOME/bin/pio train; $PIO_HOME/bin/pio deploy
 ```
 
 It is not necessary to undeploy, the deploy command will do that automatically.

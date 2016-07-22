@@ -74,7 +74,7 @@ This part is simliar to earlier tutorials.
 
 ```
 $ cd $PIO_HOME/examples/java-local-tutorial
-$ ../../bin/pio run io.prediction.examples.java.recommendations.tutorial4.Runner4a -- -- data/ml-100k/
+$ ../../bin/pio run org.apache.predictionio.examples.java.recommendations.tutorial4.Runner4a -- -- data/ml-100k/
 ```
 where `$PIO_HOME` is the root directory of the PredictionIO code tree.
 
@@ -128,7 +128,7 @@ And you can test it out with
 
 ```bash
 $ cd $PIO_HOME/examples/java-local-tutorial
-$ ../../bin/pio run io.prediction.examples.java.recommendations.tutorial4.Runner4b -- -- data/ml-100k/
+$ ../../bin/pio run org.apache.predictionio.examples.java.recommendations.tutorial4.Runner4b -- -- data/ml-100k/
 ```
 
 You should see
@@ -210,7 +210,7 @@ engine](https://github.com/PredictionIO/PredictionIO/tree/master/examples/java-l
 
 ```bash
 $ cd $PIO_HOME/examples/java-local-tutorial
-$ ../../bin/pio run io.prediction.examples.java.recommendations.tutorial4.Runner4c -- -- data/ml-100k/
+$ ../../bin/pio run org.apache.predictionio.examples.java.recommendations.tutorial4.Runner4c -- -- data/ml-100k/
 ```
 
 ## Deployment
@@ -374,10 +374,10 @@ for the engine, and register it with PredictionIO. Here's the content:
 
 ```json
 {
-  "id": "io.prediction.examples.java.recommendations.tutorial4.EngineFactory",
+  "id": "org.apache.predictionio.examples.java.recommendations.tutorial4.EngineFactory",
   "version": "0.8.2",
   "name": "FeatureBased Recommendations Engine",
-  "engineFactory": "io.prediction.examples.java.recommendations.tutorial4.EngineFactory"
+  "engineFactory": "org.apache.predictionio.examples.java.recommendations.tutorial4.EngineFactory"
 }
 ```
 

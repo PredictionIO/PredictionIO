@@ -1,4 +1,4 @@
-package io.prediction.examples.friendrecommendation
+package org.apache.predictionio.examples.friendrecommendation
 
 class FriendRecommendationPrediction (
   val confidence: Double,

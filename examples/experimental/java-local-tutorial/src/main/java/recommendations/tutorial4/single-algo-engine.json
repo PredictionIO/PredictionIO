@@ -1,6 +1,6 @@
 {
-  "id": "io.prediction.examples.java.recommendations.tutorial4.SingleEngineFactory",
+  "id": "org.apache.predictionio.examples.java.recommendations.tutorial4.SingleEngineFactory",
   "version": "0.9.1",
   "name": "FeatureBased Recommendations Engine",
-  "engineFactory": "io.prediction.examples.java.recommendations.tutorial4.SingleEngineFactory"
+  "engineFactory": "org.apache.predictionio.examples.java.recommendations.tutorial4.SingleEngineFactory"
 }

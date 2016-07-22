@@ -1,6 +1,6 @@
 package org.sample.java.helloworld;
 
-import io.prediction.controller.java.*;
+import org.apache.predictionio.controller.java.*;
 
 import java.util.Map;
 import java.util.HashMap;

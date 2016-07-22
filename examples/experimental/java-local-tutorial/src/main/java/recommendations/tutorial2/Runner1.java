@@ -1,18 +1,18 @@
-package io.prediction.examples.java.recommendations.tutorial2;
+package org.apache.predictionio.examples.java.recommendations.tutorial2;
 
-import io.prediction.examples.java.recommendations.tutorial1.TrainingData;
-import io.prediction.examples.java.recommendations.tutorial1.Query;
-import io.prediction.examples.java.recommendations.tutorial1.DataSource;
-import io.prediction.examples.java.recommendations.tutorial1.DataSourceParams;
+import org.apache.predictionio.examples.java.recommendations.tutorial1.TrainingData;
+import org.apache.predictionio.examples.java.recommendations.tutorial1.Query;
+import org.apache.predictionio.examples.java.recommendations.tutorial1.DataSource;
+import org.apache.predictionio.examples.java.recommendations.tutorial1.DataSourceParams;
 
-import io.prediction.controller.java.EmptyParams;
-import io.prediction.controller.java.IJavaEngineFactory;
-import io.prediction.controller.java.JavaSimpleEngine;
-import io.prediction.controller.java.JavaSimpleEngineBuilder;
-import io.prediction.controller.java.JavaEngineParams;
-import io.prediction.controller.java.JavaEngineParamsBuilder;
-import io.prediction.controller.java.JavaWorkflow;
-import io.prediction.controller.java.WorkflowParamsBuilder;
+import org.apache.predictionio.controller.java.EmptyParams;
+import org.apache.predictionio.controller.java.IJavaEngineFactory;
+import org.apache.predictionio.controller.java.JavaSimpleEngine;
+import org.apache.predictionio.controller.java.JavaSimpleEngineBuilder;
+import org.apache.predictionio.controller.java.JavaEngineParams;
+import org.apache.predictionio.controller.java.JavaEngineParamsBuilder;
+import org.apache.predictionio.controller.java.JavaWorkflow;
+import org.apache.predictionio.controller.java.WorkflowParamsBuilder;
 import java.util.HashMap;
 
 public class Runner1 {

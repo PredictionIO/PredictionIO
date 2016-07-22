@@ -39,4 +39,4 @@ FIRST_HALF="${@:1:$FIRST_SEP}"
 
 SECOND_HALF="${@:$FIRST_SEP+1}"
 
-exec ${PIO_HOME}/bin/pio-class io.prediction.tools.console.Console ${FIRST_HALF} --pio-home ${PIO_HOME} ${SECOND_HALF}
+exec ${PIO_HOME}/bin/pio-class org.apache.predictionio.tools.console.Console ${FIRST_HALF} --pio-home ${PIO_HOME} ${SECOND_HALF}

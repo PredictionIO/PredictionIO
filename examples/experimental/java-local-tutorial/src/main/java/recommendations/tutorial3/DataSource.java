@@ -1,10 +1,10 @@
-package io.prediction.examples.java.recommendations.tutorial3;
+package org.apache.predictionio.examples.java.recommendations.tutorial3;
 
-import io.prediction.examples.java.recommendations.tutorial1.TrainingData;
-import io.prediction.examples.java.recommendations.tutorial1.Query;
-import io.prediction.examples.java.recommendations.tutorial1.DataSourceParams;
+import org.apache.predictionio.examples.java.recommendations.tutorial1.TrainingData;
+import org.apache.predictionio.examples.java.recommendations.tutorial1.Query;
+import org.apache.predictionio.examples.java.recommendations.tutorial1.DataSourceParams;
 
-import io.prediction.controller.java.LJavaDataSource;
+import org.apache.predictionio.controller.java.LJavaDataSource;
 import scala.Tuple2;
 import scala.Tuple3;
 import java.io.File;

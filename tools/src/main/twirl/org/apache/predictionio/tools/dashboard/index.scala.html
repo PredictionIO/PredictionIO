@@ -1,0 +1,99 @@
+@import org.apache.predictionio.data.storage.EvaluationInstance
+@import org.apache.predictionio.tools.dashboard.DashboardConfig
+@import org.joda.time.DateTime
+@import org.joda.time.format.DateTimeFormat
+@(dc: DashboardConfig,
+  dashboardStartTime: DateTime,
+  env: Map[String, String],
+  completedInstances: Seq[EvaluationInstance])
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>PredictionIO Dashboard at @{dc.ip}:@{dc.port}</title>
+    <link href="/assets/favicon.png" rel="shortcut icon" />
+    <link href="/assets/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+    .string { color: green; }
+    .number { color: darkorange; }
+    .boolean { color: blue; }
+    .null { color: magenta; }
+    .key { color: red; }
+    </style>
+    <script type="text/javascript">
+      function syntaxHighlight(json) {
+        if (typeof json != 'string') {
+          json = JSON.stringify(json, undefined, 2);
+        }
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+          var cls = 'number';
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              cls = 'key';
+            } else {
+              cls = 'string';
+            }
+          } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+          } else if (/null/.test(match)) {
+            cls = 'null';
+          }
+          return '<span class="' + cls + '">' + match + '</span>';
+        });
+      }
+      function shorternClassName(className) {
+        return className.replace(/(\w)\w*\./g, "$1."); 
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="page-header">
+        <h1>PredictionIO Dashboard at @{dc.ip}:@{dc.port}</h1>
+        <p class="lead">Started on: @{DateTimeFormat.forStyle("FF").print(dashboardStartTime)}</p>
+      </div>
+      <h2>Completed Evaluations</h2>
+      <table class="table table-bordered table-striped">
+        <tr>
+          <th></th>
+          <th>Evaluator Result (One-liner)</th>
+          <th>Evaluation Class</th>
+          <th>Engine Parameters Generator Class</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Batch</th>
+        </tr>
+        @for(i <- completedInstances) {
+        <tr>
+          <td>
+            <div>
+              <a href="/engine_instances/@{i.id}/evaluator_results.html" class="btn btn-primary">HTML</a>
+            </div>
+          </td>
+          <td>
+            <div>@{i.evaluatorResults}</div>
+          </td>
+          <td>
+            <span title="@{i.evaluationClass}"><script type="text/javascript">document.write(shorternClassName("@{i.evaluationClass}"));</script></span>
+          </td>
+          <td>
+            <span title="@{i.engineParamsGeneratorClass}"><script type="text/javascript">document.write(shorternClassName("@{i.engineParamsGeneratorClass}"));</script></span>
+          </td>
+          <td>@{DateTimeFormat.forStyle("MM").print(i.startTime)}</td>
+          <td>@{DateTimeFormat.forStyle("MM").print(i.endTime)}</td>
+          <td>@{i.batch}</td>
+        </tr>
+        }
+      </table>
+      <h2>Environment</h2>
+      <p>The following values are accurate up to the time when the dashboard was launched.</p>
+      <table class="table table-bordered table-striped">
+        @for(k <- env.keys.toSeq.sorted) {
+        <tr><th>@{k}</th><td>@{env(k)}</td></tr>
+        }
+      </table>
+    </div>
+    <script src="/assets/jquery-1.11.1.min.js"></script>
+    <script src="/assets/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+  </body>
+</html>

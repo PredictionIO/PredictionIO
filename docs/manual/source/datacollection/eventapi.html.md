@@ -9,7 +9,7 @@ PredictionIO's SDKs.
 
 INFO: All PredictionIO-compliant engines support accessing the Event Store (i.e. the
 data store of Event Server) through [PredictionIO's Storage
-API](http://docs.prediction.io/api/current/index.html#io.prediction.data.storage.package).
+API](http://docs.prediction.io/api/current/index.html#org.apache.predictionio.data.storage.package).
 
 ## Launching the Event Server
 

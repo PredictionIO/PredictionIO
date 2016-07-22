@@ -87,7 +87,7 @@ For example, setting entity `user-1`'s properties `birthday` and `address`:
 }
 ```
 
-**Note** that the properties values of the entity will be aggregated based on these special events and the eventTime. The state of the entity is different depending on the time you are looking at the data. In engine's DataSource, you can use [PEventStore.aggregateProperties() API](https://docs.prediction.io/api/current/#io.prediction.data.store.PEventStore$) to retrieve the state of entity's properties (based on time).
+**Note** that the properties values of the entity will be aggregated based on these special events and the eventTime. The state of the entity is different depending on the time you are looking at the data. In engine's DataSource, you can use [PEventStore.aggregateProperties() API](https://docs.prediction.io/api/current/#org.apache.predictionio.data.store.PEventStore$) to retrieve the state of entity's properties (based on time).
 
 NOTE: Although it doesn't hurt to import duplicated special events for an entity (exactly same properties) into event server (it just means that the entity changes to the same state as before and new duplicated event provides no new information about the user), it could waste storage space.
 
@@ -223,7 +223,7 @@ NOTE: Note that you should quote the entire URL by using single or double quotes
 
 You should see all events being created for this user-2.
 
-Now, let's retrieve the user-2's properties using the [PEventStore API](https://docs.prediction.io/api/current/#io.prediction.data.store.PEventStore$).
+Now, let's retrieve the user-2's properties using the [PEventStore API](https://docs.prediction.io/api/current/#org.apache.predictionio.data.store.PEventStore$).
 
 First, start `pio-shell` by running:
 
@@ -246,14 +246,14 @@ Run the following code in PIO shell (Replace `"MyTestApp"` with your app name):
 
 ```scala
 scala> val appName="MyTestApp"
-scala> import io.prediction.data.store.PEventStore
+scala> import org.apache.predictionio.data.store.PEventStore
 scala> PEventStore.aggregateProperties(appName=appName, entityType="user")(sc).collect()
 ```
 
 This command is using PEventStore to aggregate the user properties as a Map of user Id and the PropertyMap. `collect()` will return the data as array. You should see the following output at the end, which indicates there is user id 2 with empty properties because that's the state of user 2 with all imported events taken into account.
 
 ```
-res0: Array[(String, io.prediction.data.storage.PropertyMap)] =
+res0: Array[(String, org.apache.predictionio.data.storage.PropertyMap)] =
 Array((2,PropertyMap(Map(), 2014-09-09T16:17:42.937-08:00, 2014-09-13T16:17:42.143-08:00)))
 ```
 
@@ -269,7 +269,7 @@ scala> PEventStore.aggregateProperties(appName=appName, entityType="user", until
 You should see the following ouptut and the aggregated properties matches what we expected as described earlier (right befor event 3): user-2 has properties of a = 3, b = 5 and c = 6.
 
 ```
-res2: Array[(String, io.prediction.data.storage.PropertyMap)] =
+res2: Array[(String, org.apache.predictionio.data.storage.PropertyMap)] =
 Array((2,PropertyMap(Map(b -> JInt(5), a -> JInt(3), c -> JInt(6)), 2014-09-09T16:17:42.937-08:00, 2014-09-10T13:12:04.937-08:00))
 ```
 

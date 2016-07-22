@@ -1,6 +1,6 @@
-package io.prediction.examples.java.recommendations.tutorial5;
+package org.apache.predictionio.examples.java.recommendations.tutorial5;
 
-import io.prediction.controller.java.JavaParams;
+import org.apache.predictionio.controller.java.JavaParams;
 
 public class MahoutAlgoParams implements JavaParams {
 

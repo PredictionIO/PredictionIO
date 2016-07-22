@@ -1,7 +1,7 @@
 {
   "id": "java-local-regression",
   "description": "java-local-regression",
-  "engineFactory": "io.prediction.examples.java.regression.EngineFactory",
+  "engineFactory": "org.apache.predictionio.examples.java.regression.EngineFactory",
   "datasource": {
     "params": {
       "filepath": "PATH-TO-lr_data.txt"

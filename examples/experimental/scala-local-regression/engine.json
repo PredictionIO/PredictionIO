@@ -1,7 +1,7 @@
 {
   "id": "default",
   "description": "Default settings",
-  "engineFactory": "io.prediction.examples.regression.local.RegressionEngineFactory",
+  "engineFactory": "org.apache.predictionio.examples.regression.local.RegressionEngineFactory",
   "datasource": {
     "params": {
       "filepath": "../data/lr_data.txt",

@@ -1,7 +1,7 @@
 {
   "id": "scala-parallel-regression",
   "description": "scala-parallel-regression example",
-  "engineFactory": "io.prediction.examples.regression.parallel.RegressionEngineFactory",
+  "engineFactory": "org.apache.predictionio.examples.regression.parallel.RegressionEngineFactory",
   "datasource": {
     "params": {
       "filepath": "../data/lr_data.txt",

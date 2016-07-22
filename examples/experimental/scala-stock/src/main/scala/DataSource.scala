@@ -1,9 +1,9 @@
-package io.prediction.examples.stock
+package org.apache.predictionio.examples.stock
 
-import io.prediction.controller.Params
-import io.prediction.controller.PDataSource
-import io.prediction.controller.LDataSource
-import io.prediction.controller.EmptyParams
+import org.apache.predictionio.controller.Params
+import org.apache.predictionio.controller.PDataSource
+import org.apache.predictionio.controller.LDataSource
+import org.apache.predictionio.controller.EmptyParams
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._

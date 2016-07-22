@@ -276,7 +276,7 @@ Remember that the Data Preparator is the engine component that takes care of the
 To make sure there is no confusion, replace the import statements in the `Preparator.scala` script with the following:
 
 ```scala
-import io.prediction.controller.{Params, PPreparator}
+import org.apache.predictionio.controller.{Params, PPreparator}
 import org.apache.spark.SparkContext
 import org.apache.spark.mllib.feature.{StandardScaler, StandardScalerModel}
 import org.apache.spark.mllib.linalg.distributed.RowMatrix
@@ -362,8 +362,8 @@ The following code is taken from the [text classification engine template](http:
 ```scala
 package FeatureReduction
 
-import io.prediction.controller.Params
-import io.prediction.controller.P2LAlgorithm
+import org.apache.predictionio.controller.Params
+import org.apache.predictionio.controller.P2LAlgorithm
 import org.apache.spark.SparkContext
 import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.sql.DataFrame

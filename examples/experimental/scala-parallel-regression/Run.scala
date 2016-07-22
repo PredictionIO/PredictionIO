@@ -1,16 +1,16 @@
-package io.prediction.examples.regression.parallel
+package org.apache.predictionio.examples.regression.parallel
 
-import io.prediction.controller.Engine
-import io.prediction.controller.Params
-import io.prediction.controller.PDataSource
-import io.prediction.controller.P2LAlgorithm
-import io.prediction.controller.IdentityPreparator
-import io.prediction.controller.IEngineFactory
-import io.prediction.controller.LAverageServing
-import io.prediction.controller.MeanSquareError
-import io.prediction.controller.Utils
-import io.prediction.controller.Workflow
-import io.prediction.controller.WorkflowParams
+import org.apache.predictionio.controller.Engine
+import org.apache.predictionio.controller.Params
+import org.apache.predictionio.controller.PDataSource
+import org.apache.predictionio.controller.P2LAlgorithm
+import org.apache.predictionio.controller.IdentityPreparator
+import org.apache.predictionio.controller.IEngineFactory
+import org.apache.predictionio.controller.LAverageServing
+import org.apache.predictionio.controller.MeanSquareError
+import org.apache.predictionio.controller.Utils
+import org.apache.predictionio.controller.Workflow
+import org.apache.predictionio.controller.WorkflowParams
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._

@@ -68,12 +68,12 @@ Create an engine instance project base on the default Item Recommendation
 Engine.
 
 ```
-$ $PIO_HOME/bin/pio instance io.prediction.engines.itemrec
-$ cd io.prediction.engines.itemrec
+$ $PIO_HOME/bin/pio instance org.apache.predictionio.engines.itemrec
+$ cd org.apache.predictionio.engines.itemrec
 $ $PIO_HOME/bin/pio register
 ```
 where `$PIO_HOME` is your installation path of PredictionIO.
-Under the directory `io.prediction.engines.itemrec`, you will see a
+Under the directory `org.apache.predictionio.engines.itemrec`, you will see a
 self-contained set of configuation files for an instance of Item Recommendation
 Engine.
 

@@ -1,9 +1,9 @@
 package myorg
 
-import io.prediction.controller.LServing
-import io.prediction.controller.Params
-import io.prediction.engines.itemrec.Prediction
-import io.prediction.engines.itemrec.Query
+import org.apache.predictionio.controller.LServing
+import org.apache.predictionio.controller.Params
+import org.apache.predictionio.engines.itemrec.Prediction
+import org.apache.predictionio.engines.itemrec.Query
 import scala.io.Source
 
 case class TempFilterParams(val filepath: String) extends Params

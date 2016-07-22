@@ -1,11 +1,11 @@
-package io.prediction.examples.java.regression;
+package org.apache.predictionio.examples.java.regression;
 
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 import org.apache.commons.math3.linear.RealVector;
 import java.util.Arrays;
-import io.prediction.controller.java.EmptyParams;
+import org.apache.predictionio.controller.java.EmptyParams;
 
-import io.prediction.controller.java.LJavaAlgorithm;
+import org.apache.predictionio.controller.java.LJavaAlgorithm;
 
 public class OLSAlgorithm
   extends LJavaAlgorithm<EmptyParams, TrainingData, Double[], Double[], Double> {

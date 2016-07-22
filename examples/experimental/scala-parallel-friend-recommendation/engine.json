@@ -1,7 +1,7 @@
 {
   "id": "SimRankParallelEngine",
   "description": "Engine for graph vertex similarity using SimRank",
-  "engineFactory": "io.prediction.examples.pfriendrecommendation.PSimRankEngineFactory",
+  "engineFactory": "org.apache.predictionio.examples.pfriendrecommendation.PSimRankEngineFactory",
 
   "datasource": {
     "name" : "default",

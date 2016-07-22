@@ -1,7 +1,7 @@
-package io.prediction.examples.java.recommendations.tutorial4;
+package org.apache.predictionio.examples.java.recommendations.tutorial4;
 
-import io.prediction.controller.java.LJavaServing;
-import io.prediction.controller.java.EmptyParams;
+import org.apache.predictionio.controller.java.LJavaServing;
+import org.apache.predictionio.controller.java.EmptyParams;
 import java.lang.Iterable;
 
 public class Serving extends LJavaServing<EmptyParams, Query, Float> {

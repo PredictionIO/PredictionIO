@@ -1,7 +1,7 @@
-package io.prediction.examples.java.parallel;
+package org.apache.predictionio.examples.java.parallel;
 
-import io.prediction.controller.java.EmptyParams;
-import io.prediction.controller.java.PJavaPreparator;
+import org.apache.predictionio.controller.java.EmptyParams;
+import org.apache.predictionio.controller.java.PJavaPreparator;
 
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;

@@ -8,9 +8,9 @@ import org.template.recommendation.ALSAlgorithmParams
 import org.template.recommendation.User
 import org.template.recommendation.Item
 
-import io.prediction.controller.IPersistentModel
-import io.prediction.controller.IPersistentModelLoader
-import io.prediction.data.storage.EntityMap
+import org.apache.predictionio.controller.IPersistentModel
+import org.apache.predictionio.controller.IPersistentModelLoader
+import org.apache.predictionio.data.storage.EntityMap
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._

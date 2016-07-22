@@ -1,8 +1,8 @@
-package io.prediction.examples.java.regression;
+package org.apache.predictionio.examples.java.regression;
 
-import io.prediction.controller.java.IJavaEngineFactory;
-import io.prediction.controller.java.JavaEngine;
-import io.prediction.controller.java.JavaEngineBuilder;
+import org.apache.predictionio.controller.java.IJavaEngineFactory;
+import org.apache.predictionio.controller.java.JavaEngine;
+import org.apache.predictionio.controller.java.JavaEngineBuilder;
 
 public class EngineFactory implements IJavaEngineFactory {
   public JavaEngine<TrainingData, Integer, TrainingData, Double[], Double, Double> apply() {

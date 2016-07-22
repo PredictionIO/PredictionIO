@@ -1,7 +1,7 @@
-package io.prediction.examples.pfriendrecommendation
+package org.apache.predictionio.examples.pfriendrecommendation
 
-import io.prediction.controller.IEngineFactory
-import io.prediction.controller.Engine
+import org.apache.predictionio.controller.IEngineFactory
+import org.apache.predictionio.controller.Engine
 
 case class Query(
   val item1: Long,

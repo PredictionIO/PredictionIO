@@ -1,6 +1,6 @@
-package io.prediction.examples.stock
+package org.apache.predictionio.examples.stock
 
-import io.prediction.controller.Params
+import org.apache.predictionio.controller.Params
 
 import org.saddle._
 import org.saddle.index.IndexTime

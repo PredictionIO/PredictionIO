@@ -1,6 +1,6 @@
-package io.prediction.examples.pfriendrecommendation
-import io.prediction.controller.PAlgorithm
-import io.prediction.controller.Params
+package org.apache.predictionio.examples.pfriendrecommendation
+import org.apache.predictionio.controller.PAlgorithm
+import org.apache.predictionio.controller.Params
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._

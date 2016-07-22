@@ -1,7 +1,7 @@
 package org.template.recommendation
 
-import io.prediction.controller.IEngineFactory
-import io.prediction.controller.Engine
+import org.apache.predictionio.controller.IEngineFactory
+import org.apache.predictionio.controller.Engine
 
 case class Query(user: String, num: Int, creationYear: Option[Int] = None)
 

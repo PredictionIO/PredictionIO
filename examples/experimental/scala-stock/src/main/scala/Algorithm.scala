@@ -1,12 +1,12 @@
-package io.prediction.examples.stock
+package org.apache.predictionio.examples.stock
 
-import io.prediction.controller.LAlgorithm
+import org.apache.predictionio.controller.LAlgorithm
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.broadcast.Broadcast
-import io.prediction.controller.EmptyParams
+import org.apache.predictionio.controller.EmptyParams
 import org.saddle._
 
 import scala.reflect._

@@ -1,6 +1,6 @@
 {
-  "id": "io.prediction.examples.java.regression",
+  "id": "org.apache.predictionio.examples.java.regression",
   "version": "0.8.1-SNAPSHOT",
   "name": "Apache Java Regression Engine",
-  "engineFactory": "io.prediction.examples.java.regression.EngineFactory"
+  "engineFactory": "org.apache.predictionio.examples.java.regression.EngineFactory"
 }

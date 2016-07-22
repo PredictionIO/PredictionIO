@@ -4,11 +4,11 @@ assemblySettings
 
 name := "example-scala-stock"
 
-organization := "io.prediction"
+organization := "org.apache.predictionio"
 
 libraryDependencies ++= Seq(
-  "io.prediction"     %% "core"           % "0.9.1" % "provided",
-  "io.prediction"     %% "engines"        % "0.9.1" % "provided",
+  "org.apache.predictionio"     %% "core"           % "0.9.1" % "provided",
+  "org.apache.predictionio"     %% "engines"        % "0.9.1" % "provided",
   "com.github.scopt"  %% "scopt"          % "3.2.0",
   "commons-io"         % "commons-io"     % "2.4",
   "org.apache.commons" % "commons-math3"  % "3.3",

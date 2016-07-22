@@ -28,7 +28,7 @@ training process stops after the TrainingData is printed.
 [INFO] [CoreWorkflow$] TrainingData:
 [INFO] [CoreWorkflow$] ratings: [1501] (List(Rating(3,0,4.0), Rating(3,1,4.0))...)
 ...
-[INFO] [CoreWorkflow$] Training interrupted by io.prediction.workflow.StopAfterReadInterruption.
+[INFO] [CoreWorkflow$] Training interrupted by org.apache.predictionio.workflow.StopAfterReadInterruption.
 ```
 
 Similarly, you can stop the training after the Preparator phase by using
@@ -55,7 +55,7 @@ For example, to print TrainingData to console and check if the `ratings` is empt
 do the following:
 
 ```scala
-import io.prediction.controller.SanityCheck // ADDED
+import org.apache.predictionio.controller.SanityCheck // ADDED
 
 class TrainingData(
   val ratings: RDD[Rating]
@@ -89,8 +89,8 @@ If your data is empty, you should see the following error thrown by the
 Exception in thread "main" java.lang.IllegalArgumentException: requirement failed: ratings cannot be empty!
 	at scala.Predef$.require(Predef.scala:233)
 	at org.template.recommendation.TrainingData.sanityCheck(DataSource.scala:73)
-	at io.prediction.workflow.CoreWorkflow$$anonfun$runTypelessContext$7.apply(Workflow.scala:474)
-	at io.prediction.workflow.CoreWorkflow$$anonfun$runTypelessContext$7.apply(Workflow.scala:465)
+	at org.apache.predictionio.workflow.CoreWorkflow$$anonfun$runTypelessContext$7.apply(Workflow.scala:474)
+	at org.apache.predictionio.workflow.CoreWorkflow$$anonfun$runTypelessContext$7.apply(Workflow.scala:465)
 	at scala.collection.immutable.Map$Map1.foreach(Map.scala:109)
   ...
 ```
@@ -107,7 +107,7 @@ You should see the checking is skipped such as the following output:
 [INFO] [CoreWorkflow$] Data sanity checking is off.
 [INFO] [CoreWorkflow$] Data Source
 ...
-[INFO] [CoreWorkflow$] Training interrupted by io.prediction.workflow.StopAfterReadInterruption.
+[INFO] [CoreWorkflow$] Training interrupted by org.apache.predictionio.workflow.StopAfterReadInterruption.
 ```
 
 ## Engine Status Page
@@ -132,7 +132,7 @@ Note that the Spark context is available as variable `sc` inside the shell.
 For example, to get the events of `MyApp1` using PEventStore API inside the pio-shell and collect them into an array `c`. run the following in the shell:
 
 ```
-> import io.prediction.data.store.PEventStore
+> import org.apache.predictionio.data.store.PEventStore
 > val eventsRDD = PEventStore.find(appName="MyApp1")(sc)
 > val c = eventsRDD.collect()
 ```
@@ -142,5 +142,5 @@ Then you should see following returned in the shell:
 ```
 ...
 15/05/18 14:24:42 INFO DAGScheduler: Job 0 finished: collect at <console>:24, took 1.850779 s
-c: Array[io.prediction.data.storage.Event] = Array(Event(id=Some(AaQUUBsFZxteRpDV_7fDGQAAAU1ZfRW1tX9LSWdZSb0),event=$set,eType=item,eId=i42,tType=None,tId=None,p=DataMap(Map(categories -> JArray(List(JString(c2), JString(c1), JString(c6), JString(c3))))),t=2015-05-15T21:31:19.349Z,tags=List(),pKey=None,ct=2015-05-15T21:31:19.354Z), Event(id=Some(DjvP3Dnci9F4CWmiqoLabQAAAU1ZfROaqdRYO-pZ_no),event=$set,eType=user,eId=u9,tType=None,tId=None,p=DataMap(Map()),t=2015-05-15T21:31:18.810Z,tags=List(),pKey=None,ct=2015-05-15T21:31:18.817Z), Event(id=Some(DjvP3Dnci9F4CWmiqoLabQAAAU1ZfRq7tsanlemwmZQ),event=view,eType=user,eId=u9,tType=Some(item),tId=Some(i25),p=DataMap(Map()),t=2015-05-15T21:31:20.635Z,tags=List(),pKey=None,ct=2015-05-15T21:31:20.639Z), Event(id=Some(DjvP3Dnci9F4CWmiqoLabQAAAU1ZfR...
+c: Array[org.apache.predictionio.data.storage.Event] = Array(Event(id=Some(AaQUUBsFZxteRpDV_7fDGQAAAU1ZfRW1tX9LSWdZSb0),event=$set,eType=item,eId=i42,tType=None,tId=None,p=DataMap(Map(categories -> JArray(List(JString(c2), JString(c1), JString(c6), JString(c3))))),t=2015-05-15T21:31:19.349Z,tags=List(),pKey=None,ct=2015-05-15T21:31:19.354Z), Event(id=Some(DjvP3Dnci9F4CWmiqoLabQAAAU1ZfROaqdRYO-pZ_no),event=$set,eType=user,eId=u9,tType=None,tId=None,p=DataMap(Map()),t=2015-05-15T21:31:18.810Z,tags=List(),pKey=None,ct=2015-05-15T21:31:18.817Z), Event(id=Some(DjvP3Dnci9F4CWmiqoLabQAAAU1ZfRq7tsanlemwmZQ),event=view,eType=user,eId=u9,tType=Some(item),tId=Some(i25),p=DataMap(Map()),t=2015-05-15T21:31:20.635Z,tags=List(),pKey=None,ct=2015-05-15T21:31:20.639Z), Event(id=Some(DjvP3Dnci9F4CWmiqoLabQAAAU1ZfR...
 ```

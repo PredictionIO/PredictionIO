@@ -1,11 +1,11 @@
-package io.prediction.examples.stock
+package org.apache.predictionio.examples.stock
 
 // YahooDataSource reads PredictionIO event store directly.
 
-import io.prediction.data.storage.Event
-import io.prediction.data.storage.Storage
-import io.prediction.data.view.LBatchView
-import io.prediction.data.storage.DataMap
+import org.apache.predictionio.data.storage.Event
+import org.apache.predictionio.data.storage.Storage
+import org.apache.predictionio.data.view.LBatchView
+import org.apache.predictionio.data.storage.DataMap
 
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
@@ -14,8 +14,8 @@ import com.github.nscala_time.time.Imports._
 import scala.collection.mutable.{ Map => MMap }
 import scala.collection.GenMap
 
-import io.prediction.controller._
-import io.prediction.controller.{ Params => BaseParams }
+import org.apache.predictionio.controller._
+import org.apache.predictionio.controller.{ Params => BaseParams }
 
 
 import org.apache.spark.SparkContext

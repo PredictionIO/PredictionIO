@@ -1,7 +1,7 @@
-package io.prediction.examples.java.recommendations.tutorial4;
+package org.apache.predictionio.examples.java.recommendations.tutorial4;
 
-import io.prediction.controller.java.LJavaPreparator;
-import io.prediction.controller.java.EmptyParams;
+import org.apache.predictionio.controller.java.LJavaPreparator;
+import org.apache.predictionio.controller.java.EmptyParams;
 
 import java.util.Arrays;
 import java.util.Map;

@@ -65,7 +65,7 @@ $ curl -X POST http://localhost:9997/queries.json -d \
 You can evaluate the engine instance too.
 ```
 $  pio eval --batch JavaRegressionEval \
---metrics-class io.prediction.examples.java.regression.MeanSquareMetrics
+--metrics-class org.apache.predictionio.examples.java.regression.MeanSquareMetrics
 
 ...
 2014-09-24 03:23:07,170 INFO  spark.SparkContext - Job finished: collect at Workflow.scala:695, took 0.092829 s

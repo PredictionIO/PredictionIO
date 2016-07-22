@@ -1,19 +1,19 @@
-package io.prediction.examples.mlc
+package org.apache.predictionio.examples.mlc
 
-import io.prediction.engines.itemrec.ItemRecEngine
-import io.prediction.engines.itemrec.EventsDataSourceParams
-import io.prediction.engines.itemrec.PreparatorParams
-import io.prediction.engines.itemrec.NCItemBasedAlgorithmParams
-import io.prediction.engines.itemrec.EvalParams
-import io.prediction.engines.itemrec.ItemRecEvaluator
-import io.prediction.engines.itemrec.ItemRecEvaluatorParams
-import io.prediction.engines.itemrec.MeasureType
-import io.prediction.engines.base.EventsSlidingEvalParams
-import io.prediction.engines.base.BinaryRatingParams
+import org.apache.predictionio.engines.itemrec.ItemRecEngine
+import org.apache.predictionio.engines.itemrec.EventsDataSourceParams
+import org.apache.predictionio.engines.itemrec.PreparatorParams
+import org.apache.predictionio.engines.itemrec.NCItemBasedAlgorithmParams
+import org.apache.predictionio.engines.itemrec.EvalParams
+import org.apache.predictionio.engines.itemrec.ItemRecEvaluator
+import org.apache.predictionio.engines.itemrec.ItemRecEvaluatorParams
+import org.apache.predictionio.engines.itemrec.MeasureType
+import org.apache.predictionio.engines.base.EventsSlidingEvalParams
+import org.apache.predictionio.engines.base.BinaryRatingParams
 
-import io.prediction.controller.EngineParams
-import io.prediction.controller.Workflow
-import io.prediction.controller.WorkflowParams
+import org.apache.predictionio.controller.EngineParams
+import org.apache.predictionio.controller.Workflow
+import org.apache.predictionio.controller.WorkflowParams
 
 import com.github.nscala_time.time.Imports._
 

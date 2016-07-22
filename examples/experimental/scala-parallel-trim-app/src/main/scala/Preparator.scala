@@ -1,7 +1,7 @@
-package io.prediction.examples.experimental.trimapp
+package org.apache.predictionio.examples.experimental.trimapp
 
-import io.prediction.controller.PPreparator
-import io.prediction.data.storage.Event
+import org.apache.predictionio.controller.PPreparator
+import org.apache.predictionio.data.storage.Event
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._

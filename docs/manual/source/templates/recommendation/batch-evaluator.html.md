@@ -60,15 +60,15 @@ Note that output directory is specified by the variable `outputDir`.
 ```scala
 package org.template.recommendation
 
-import io.prediction.controller.EmptyEvaluationInfo
-import io.prediction.controller.Engine
-import io.prediction.controller.EngineParams
-import io.prediction.controller.EngineParamsGenerator
-import io.prediction.controller.Evaluation
-import io.prediction.controller.Params
-import io.prediction.core.BaseEvaluator
-import io.prediction.core.BaseEvaluatorResult
-import io.prediction.workflow.WorkflowParams
+import org.apache.predictionio.controller.EmptyEvaluationInfo
+import org.apache.predictionio.controller.Engine
+import org.apache.predictionio.controller.EngineParams
+import org.apache.predictionio.controller.EngineParamsGenerator
+import org.apache.predictionio.controller.Evaluation
+import org.apache.predictionio.controller.Params
+import org.apache.predictionio.core.BaseEvaluator
+import org.apache.predictionio.core.BaseEvaluatorResult
+import org.apache.predictionio.workflow.WorkflowParams
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
@@ -153,9 +153,9 @@ Modify the appName parameter in `DataSourceParams` to match your app name.
 ```scala
 package org.template.recommendation
 
-import io.prediction.controller.EngineParamsGenerator
-import io.prediction.controller.EngineParams
-import io.prediction.controller.Evaluation
+import org.apache.predictionio.controller.EngineParamsGenerator
+import org.apache.predictionio.controller.EngineParams
+import org.apache.predictionio.controller.Evaluation
 
 object BatchEvaluation extends Evaluation {
   // Define Engine and Evaluator used in Evaluation

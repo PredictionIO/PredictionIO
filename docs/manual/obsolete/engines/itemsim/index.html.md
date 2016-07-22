@@ -104,7 +104,7 @@ puts predictions
 ```java
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.prediction.EngineClient;
+import org.apache.predictionio.EngineClient;
 
 EngineClient engineClient = new EngineClient("http://localhost:9997");
 engineClient.sendQuery(ImmutableMap.<String, Object>of(

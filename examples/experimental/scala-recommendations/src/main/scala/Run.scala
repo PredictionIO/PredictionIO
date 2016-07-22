@@ -1,17 +1,17 @@
 package org.apache.spark.mllib.recommendation.engine
 
-import io.prediction.controller.Engine
-import io.prediction.controller.IEngineFactory
-import io.prediction.controller.IPersistentModel
-import io.prediction.controller.IPersistentModelLoader
-import io.prediction.controller.PDataSource
-import io.prediction.controller.Params
-import io.prediction.controller.PAlgorithm
-import io.prediction.controller.PIdentityPreparator
-import io.prediction.controller.LFirstServing
-import io.prediction.controller.Utils
-import io.prediction.controller.Workflow
-import io.prediction.controller.WorkflowParams
+import org.apache.predictionio.controller.Engine
+import org.apache.predictionio.controller.IEngineFactory
+import org.apache.predictionio.controller.IPersistentModel
+import org.apache.predictionio.controller.IPersistentModelLoader
+import org.apache.predictionio.controller.PDataSource
+import org.apache.predictionio.controller.Params
+import org.apache.predictionio.controller.PAlgorithm
+import org.apache.predictionio.controller.PIdentityPreparator
+import org.apache.predictionio.controller.LFirstServing
+import org.apache.predictionio.controller.Utils
+import org.apache.predictionio.controller.Workflow
+import org.apache.predictionio.controller.WorkflowParams
 
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext

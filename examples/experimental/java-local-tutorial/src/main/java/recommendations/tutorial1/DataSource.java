@@ -1,6 +1,6 @@
-package io.prediction.examples.java.recommendations.tutorial1;
+package org.apache.predictionio.examples.java.recommendations.tutorial1;
 
-import io.prediction.controller.java.LJavaDataSource;
+import org.apache.predictionio.controller.java.LJavaDataSource;
 import scala.Tuple2;
 import scala.Tuple3;
 import java.io.File;

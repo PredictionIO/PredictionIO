@@ -1,6 +1,6 @@
-package io.prediction.examples.experimental.trimapp
+package org.apache.predictionio.examples.experimental.trimapp
 
-import io.prediction.controller.LServing
+import org.apache.predictionio.controller.LServing
 
 class Serving
   extends LServing[Query, PredictedResult] {

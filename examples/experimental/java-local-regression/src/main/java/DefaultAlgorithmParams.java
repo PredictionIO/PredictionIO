@@ -1,6 +1,6 @@
-package io.prediction.examples.java.regression;
+package org.apache.predictionio.examples.java.regression;
 
-import io.prediction.controller.java.JavaParams;
+import org.apache.predictionio.controller.java.JavaParams;
 
 public class DefaultAlgorithmParams implements JavaParams {
   public final double v;

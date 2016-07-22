@@ -1,6 +1,6 @@
-package io.prediction.examples.java.regression;
+package org.apache.predictionio.examples.java.regression;
 
-import io.prediction.controller.java.LJavaPreparator;
+import org.apache.predictionio.controller.java.LJavaPreparator;
 
 // This Preparator is just a proof-of-concept. It removes a fraction of the
 // training data to make training more "efficient".

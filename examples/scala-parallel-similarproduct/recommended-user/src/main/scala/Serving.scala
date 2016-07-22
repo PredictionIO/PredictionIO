@@ -1,6 +1,6 @@
 package org.template.recommendeduser
 
-import io.prediction.controller.LServing
+import org.apache.predictionio.controller.LServing
 
 class Serving
   extends LServing[Query, PredictedResult] {

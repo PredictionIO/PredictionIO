@@ -1,7 +1,7 @@
-package io.prediction.examples.experimental.trimapp
+package org.apache.predictionio.examples.experimental.trimapp
 
-import io.prediction.controller.P2LAlgorithm
-import io.prediction.controller.Params
+import org.apache.predictionio.controller.P2LAlgorithm
+import org.apache.predictionio.controller.Params
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._

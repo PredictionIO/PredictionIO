@@ -160,11 +160,11 @@ $ pio deploy -- --driver-memory 8G
 
 ## Building PredictionIO
 
-### Q: How to resolve "Error: Could not find or load main class io.prediction.tools.Console" after ./make_distribution.sh?
+### Q: How to resolve "Error: Could not find or load main class org.apache.predictionio.tools.Console" after ./make_distribution.sh?
 
 ```
 $ bin/pio app
-Error: Could not find or load main class io.prediction.tools.Console
+Error: Could not find or load main class org.apache.predictionio.tools.Console
 ```
 
 When PredictionIO bumps a version, it creates another JAR file with the new

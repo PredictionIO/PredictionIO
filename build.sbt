@@ -16,9 +16,9 @@ import UnidocKeys._
 
 name := "pio"
 
-version in ThisBuild := "0.9.6"
+version in ThisBuild := "0.9.7-SNAPSHOT"
 
-organization in ThisBuild := "io.prediction"
+organization in ThisBuild := "org.apache.predictionio"
 
 scalaVersion in ThisBuild := "2.10.5"
 
@@ -45,7 +45,7 @@ lazy val pioBuildInfoSettings = buildInfoSettings ++ Seq(
     scalaVersion,
     sbtVersion,
     sparkVersion),
-  buildInfoPackage := "io.prediction.core")
+  buildInfoPackage := "org.apache.predictionio.core")
 
 lazy val conf = file(".") / "conf"
 
@@ -97,12 +97,12 @@ scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
     "akka",
     "breeze",
     "html",
-    "io.prediction.annotation",
-    "io.prediction.controller.html",
-    "io.prediction.data.api",
-    "io.prediction.data.view",
-    "io.prediction.workflow",
-    "io.prediction.tools",
+    "org.apache.predictionio.annotation",
+    "org.apache.predictionio.controller.html",
+    "org.apache.predictionio.data.api",
+    "org.apache.predictionio.data.view",
+    "org.apache.predictionio.workflow",
+    "org.apache.predictionio.tools",
     "org",
     "scalikejdbc").mkString(":"),
   "-doc-title",
@@ -114,31 +114,31 @@ scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
 
 javacOptions in (JavaUnidoc, unidoc) := Seq(
   "-subpackages",
-  "io.prediction",
+  "org.apache.predictionio",
   "-exclude",
   Seq(
-    "io.prediction.controller.html",
-    "io.prediction.data.api",
-    "io.prediction.data.view",
-    "io.prediction.data.webhooks.*",
-    "io.prediction.workflow",
-    "io.prediction.tools",
+    "org.apache.predictionio.controller.html",
+    "org.apache.predictionio.data.api",
+    "org.apache.predictionio.data.view",
+    "org.apache.predictionio.data.webhooks.*",
+    "org.apache.predictionio.workflow",
+    "org.apache.predictionio.tools",
     "org.apache.hadoop").mkString(":"),
   "-windowtitle",
   "PredictionIO Javadoc " + version.value,
   "-group",
   "Java Controllers",
   Seq(
-    "io.prediction.controller.java",
-    "io.prediction.data.store.java").mkString(":"),
+    "org.apache.predictionio.controller.java",
+    "org.apache.predictionio.data.store.java").mkString(":"),
   "-group",
   "Scala Base Classes",
   Seq(
-    "io.prediction.controller",
-    "io.prediction.core",
-    "io.prediction.data.storage",
-    "io.prediction.data.storage.*",
-    "io.prediction.data.store").mkString(":"),
+    "org.apache.predictionio.controller",
+    "org.apache.predictionio.core",
+    "org.apache.predictionio.data.storage",
+    "org.apache.predictionio.data.storage.*",
+    "org.apache.predictionio.data.store").mkString(":"),
   "-overview",
   "docs/javadoc/javadoc-overview.html",
   "-noqualifier",

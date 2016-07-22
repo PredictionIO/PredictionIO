@@ -1,7 +1,7 @@
-package io.prediction.examples.java.parallel;
+package org.apache.predictionio.examples.java.parallel;
 
-import io.prediction.controller.java.EmptyParams;
-import io.prediction.controller.java.PJavaDataSource;
+import org.apache.predictionio.controller.java.EmptyParams;
+import org.apache.predictionio.controller.java.PJavaDataSource;
 
 import java.util.List;
 import java.util.ArrayList;

@@ -1,8 +1,8 @@
-package io.prediction.examples.java.recommendations.tutorial1;
+package org.apache.predictionio.examples.java.recommendations.tutorial1;
 
-import io.prediction.controller.java.IJavaEngineFactory;
-import io.prediction.controller.java.JavaSimpleEngine;
-import io.prediction.controller.java.JavaSimpleEngineBuilder;
+import org.apache.predictionio.controller.java.IJavaEngineFactory;
+import org.apache.predictionio.controller.java.JavaSimpleEngine;
+import org.apache.predictionio.controller.java.JavaSimpleEngineBuilder;
 
 public class EngineFactory implements IJavaEngineFactory {
   public JavaSimpleEngine<TrainingData, Object, Query, Float, Object> apply() {

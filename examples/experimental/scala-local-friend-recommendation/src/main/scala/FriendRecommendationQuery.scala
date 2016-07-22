@@ -1,4 +1,4 @@
-package io.prediction.examples.friendrecommendation
+package org.apache.predictionio.examples.friendrecommendation
 
 class FriendRecommendationQuery (
   // To align with the KDD 2012 scenario

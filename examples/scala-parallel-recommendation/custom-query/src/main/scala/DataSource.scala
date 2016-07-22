@@ -1,10 +1,10 @@
 package org.template.recommendation
 
-import io.prediction.controller.PDataSource
-import io.prediction.controller.EmptyEvaluationInfo
-import io.prediction.controller.EmptyActualResult
-import io.prediction.controller.Params
-import io.prediction.data.storage.{DataMap, Event, Storage}
+import org.apache.predictionio.controller.PDataSource
+import org.apache.predictionio.controller.EmptyEvaluationInfo
+import org.apache.predictionio.controller.EmptyActualResult
+import org.apache.predictionio.controller.Params
+import org.apache.predictionio.data.storage.{DataMap, Event, Storage}
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD

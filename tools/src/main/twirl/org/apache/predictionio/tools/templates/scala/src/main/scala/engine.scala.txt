@@ -1,0 +1,76 @@
+package myorg
+
+// Pulls in necessary PredictionIO controller components
+import org.apache.predictionio.controller.EmptyActualResult
+import org.apache.predictionio.controller.EmptyEvaluationInfo
+import org.apache.predictionio.controller.IEngineFactory
+import org.apache.predictionio.controller.LAlgorithm
+import org.apache.predictionio.controller.LDataSource
+import org.apache.predictionio.controller.Params
+import org.apache.predictionio.controller.SimpleEngine
+
+// All data classes must be an instance of Serializable
+class MyTrainingData(
+  val multiplier: Int
+) extends Serializable
+
+class MyQuery(
+  val multiplicand: Int
+) extends Serializable
+
+class MyModel(
+  val multiplier: Int
+) extends Serializable {
+  override def toString = s"MyModel's multiplier: ${multiplier.toString}"
+}
+
+class MyPredictedResult(
+  val product: Int
+) extends Serializable
+
+case class MyDataSourceParams(
+  val multiplier: Int
+) extends Params
+
+// Your controller components
+class MyDataSource(val dsp: MyDataSourceParams) extends LDataSource[
+    MyTrainingData,
+    EmptyEvaluationInfo,
+    MyQuery,
+    EmptyActualResult] {
+
+  /** Implement readTraining() when you are not concerned about evaluation.
+    *
+    */
+  override def readTraining(): MyTrainingData = {
+    new MyTrainingData(dsp.multiplier)
+  }
+}
+
+class MyAlgorithm extends LAlgorithm[
+    MyTrainingData,
+    MyModel,
+    MyQuery,
+    MyPredictedResult] {
+
+  override def train(pd: MyTrainingData): MyModel = {
+    // Our model is simply one integer...
+    new MyModel(pd.multiplier)
+  }
+
+  override def predict(model: MyModel, query: MyQuery): MyPredictedResult = {
+    new MyPredictedResult(query.multiplicand * model.multiplier)
+  }
+}
+
+/** Engine factory that pieces everything together. SimpleEngine only requires
+  * one DataSource and one Algorithm. Preparator is an identity function, and
+  * Serving simply outputs Algorithm's prediction without further processing.
+  */
+object MyEngineFactory extends IEngineFactory {
+  override def apply() = {
+    new SimpleEngine(
+      classOf[MyDataSource],
+      classOf[MyAlgorithm])
+  }
+}

@@ -1,9 +1,9 @@
-package io.prediction.examples.java.recommendations.tutorial4;
+package org.apache.predictionio.examples.java.recommendations.tutorial4;
 
-import io.prediction.controller.java.EmptyParams;
-import io.prediction.controller.java.IJavaEngineFactory;
-import io.prediction.controller.java.JavaEngine;
-import io.prediction.controller.java.JavaEngineBuilder;
+import org.apache.predictionio.controller.java.EmptyParams;
+import org.apache.predictionio.controller.java.IJavaEngineFactory;
+import org.apache.predictionio.controller.java.JavaEngine;
+import org.apache.predictionio.controller.java.JavaEngineBuilder;
 
 public class EngineFactory implements IJavaEngineFactory {
   public JavaEngine<TrainingData, EmptyParams, PreparedData, Query, Float, Object> apply() {

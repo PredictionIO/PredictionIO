@@ -1,15 +1,15 @@
-package io.prediction.examples.pfriendrecommendation
+package org.apache.predictionio.examples.pfriendrecommendation
 
-import io.prediction.controller.EmptyParams
-import io.prediction.controller.PPreparator
-import io.prediction.controller.EmptyPreparatorParams
+import org.apache.predictionio.controller.EmptyParams
+import org.apache.predictionio.controller.PPreparator
+import org.apache.predictionio.controller.EmptyPreparatorParams
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 
 import scala.io.Source // ADDED
-import io.prediction.controller.Params // ADDED
+import org.apache.predictionio.controller.Params // ADDED
 
  // ADDED CustomPreparatorParams case class
 case class CustomPreparatorParams(

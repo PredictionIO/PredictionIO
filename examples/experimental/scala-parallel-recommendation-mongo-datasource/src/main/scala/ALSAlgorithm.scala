@@ -1,8 +1,8 @@
 package org.template.recommendation
 
-import io.prediction.controller.PAlgorithm
-import io.prediction.controller.Params
-import io.prediction.data.storage.BiMap
+import org.apache.predictionio.controller.PAlgorithm
+import org.apache.predictionio.controller.Params
+import org.apache.predictionio.data.storage.BiMap
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._

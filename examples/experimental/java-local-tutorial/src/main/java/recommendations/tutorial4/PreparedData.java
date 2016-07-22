@@ -1,4 +1,4 @@
-package io.prediction.examples.java.recommendations.tutorial4;
+package org.apache.predictionio.examples.java.recommendations.tutorial4;
 
 import java.util.Map;
 import org.apache.commons.math3.linear.RealVector;

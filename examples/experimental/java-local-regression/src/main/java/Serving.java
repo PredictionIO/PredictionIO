@@ -1,7 +1,7 @@
-package io.prediction.examples.java.regression;
+package org.apache.predictionio.examples.java.regression;
 
-import io.prediction.controller.java.LJavaServing;
-import io.prediction.controller.java.EmptyParams;
+import org.apache.predictionio.controller.java.LJavaServing;
+import org.apache.predictionio.controller.java.EmptyParams;
 
 import java.lang.Iterable;
 

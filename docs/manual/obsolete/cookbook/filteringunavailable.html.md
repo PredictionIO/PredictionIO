@@ -21,7 +21,7 @@ When a Query comes in, it is passed to the Algorithm components for making Predi
 Predictions into one, and returns it.
 
 The ItemRec Engine's component can be found it its static factory class
-`io.prediction.engines.itemrec.ItemRecEngine`. It looks like the following:
+`org.apache.predictionio.engines.itemrec.ItemRecEngine`. It looks like the following:
 
 ```scala
 object ItemRecEngine extends IEngineFactory {
@@ -75,7 +75,7 @@ You can create new engine project in any directory.
 $ $PIO_HOME/bin/pio new scala-local-movielens-filtering
 # Copy ItemRec Engine default settings to the same directory
 $ $PIO_HOME/bin/pio instance --directory-name scala-local-movielens-filtering \
-    io.prediction.engines.itemrec
+    org.apache.predictionio.engines.itemrec
 $ cd scala-local-movielens-filtering
 ```
 
@@ -145,7 +145,7 @@ This project depends on the builtin engines, hence in `build.sbt` under project 
 ```scala
 libraryDependencies ++= Seq(
   ...
-  "io.prediction"    %% "engines"       % "0.8.2" % "provided",
+  "org.apache.predictionio"    %% "engines"       % "0.8.2" % "provided",
   ...
 ```
 

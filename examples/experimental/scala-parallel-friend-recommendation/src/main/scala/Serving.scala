@@ -1,7 +1,7 @@
-package io.prediction.examples.pfriendrecommendation
+package org.apache.predictionio.examples.pfriendrecommendation
 
-import io.prediction.controller.LServing
-import io.prediction.controller.EmptyServingParams
+import org.apache.predictionio.controller.LServing
+import org.apache.predictionio.controller.EmptyServingParams
 
 class Serving
   extends LServing[Query, Double] {

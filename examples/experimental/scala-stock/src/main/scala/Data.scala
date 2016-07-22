@@ -1,4 +1,4 @@
-package io.prediction.examples.stock
+package org.apache.predictionio.examples.stock
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._

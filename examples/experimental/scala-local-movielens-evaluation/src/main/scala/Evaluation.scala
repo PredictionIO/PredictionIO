@@ -1,18 +1,18 @@
-package io.prediction.examples.mlc
+package org.apache.predictionio.examples.mlc
 
-import io.prediction.engines.itemrank.PreparatorParams
-import io.prediction.engines.itemrank.EventsDataSourceParams
-import io.prediction.engines.itemrank.ItemRankEngine
-import io.prediction.engines.itemrank.ItemRankDetailedEvaluator
-import io.prediction.engines.itemrank.DetailedEvaluatorParams
-import io.prediction.engines.itemrank.MeasureType
-import io.prediction.engines.itemrank.mahout.ItemBasedAlgoParams
-import io.prediction.engines.base.AttributeNames
-import io.prediction.engines.base.EventsSlidingEvalParams
-import io.prediction.engines.base.BinaryRatingParams
-import io.prediction.controller.WorkflowParams
-import io.prediction.controller.Workflow
-import io.prediction.controller.EngineParams
+import org.apache.predictionio.engines.itemrank.PreparatorParams
+import org.apache.predictionio.engines.itemrank.EventsDataSourceParams
+import org.apache.predictionio.engines.itemrank.ItemRankEngine
+import org.apache.predictionio.engines.itemrank.ItemRankDetailedEvaluator
+import org.apache.predictionio.engines.itemrank.DetailedEvaluatorParams
+import org.apache.predictionio.engines.itemrank.MeasureType
+import org.apache.predictionio.engines.itemrank.mahout.ItemBasedAlgoParams
+import org.apache.predictionio.engines.base.AttributeNames
+import org.apache.predictionio.engines.base.EventsSlidingEvalParams
+import org.apache.predictionio.engines.base.BinaryRatingParams
+import org.apache.predictionio.controller.WorkflowParams
+import org.apache.predictionio.controller.Workflow
+import org.apache.predictionio.controller.EngineParams
 
 import com.github.nscala_time.time.Imports._
 

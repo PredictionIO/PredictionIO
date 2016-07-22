@@ -1,18 +1,18 @@
-package io.prediction.examples.regression.local
+package org.apache.predictionio.examples.regression.local
 
-import io.prediction.controller.EmptyParams
-import io.prediction.controller.Engine
-import io.prediction.controller.IEngineFactory
-import io.prediction.controller.EngineParams
-import io.prediction.controller.LFirstServing
-import io.prediction.controller.LAlgorithm
-import io.prediction.controller.LDataSource
-import io.prediction.controller.LPreparator
-import io.prediction.controller.MeanSquareError
-import io.prediction.controller.Params
-import io.prediction.controller.Utils
-import io.prediction.controller.Workflow
-import io.prediction.controller.WorkflowParams
+import org.apache.predictionio.controller.EmptyParams
+import org.apache.predictionio.controller.Engine
+import org.apache.predictionio.controller.IEngineFactory
+import org.apache.predictionio.controller.EngineParams
+import org.apache.predictionio.controller.LFirstServing
+import org.apache.predictionio.controller.LAlgorithm
+import org.apache.predictionio.controller.LDataSource
+import org.apache.predictionio.controller.LPreparator
+import org.apache.predictionio.controller.MeanSquareError
+import org.apache.predictionio.controller.Params
+import org.apache.predictionio.controller.Utils
+import org.apache.predictionio.controller.Workflow
+import org.apache.predictionio.controller.WorkflowParams
 
 import breeze.linalg.DenseMatrix
 import breeze.linalg.DenseVector

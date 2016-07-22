@@ -1,8 +1,8 @@
-package io.prediction.examples.stock
+package org.apache.predictionio.examples.stock
 
-import io.prediction.controller.Params
-import io.prediction.controller.Evaluator
-import io.prediction.controller.NiceRendering
+import org.apache.predictionio.controller.Params
+import org.apache.predictionio.controller.Evaluator
+import org.apache.predictionio.controller.NiceRendering
 import com.github.nscala_time.time.Imports._
 import scala.collection.mutable.{ Map => MMap, ArrayBuffer }
 
@@ -12,7 +12,7 @@ import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization
 //import org.json4s.native.Serialization.{read, write}
 
-import io.prediction.engines.util.{ EvaluatorVisualization => MV }
+import org.apache.predictionio.engines.util.{ EvaluatorVisualization => MV }
 
 import breeze.stats.{ mean, meanAndVariance, MeanAndVariance }
 

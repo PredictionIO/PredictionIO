@@ -2,8 +2,8 @@ This is the API documentation of PredictionIO.
 
 == Package Structure ==
 
- - [[io.prediction.controller]] - The common starting point. Building blocks of a prediction engine.
- - [[io.prediction.data.store]] - Event Store API.
+ - [[org.apache.predictionio.controller]] - The common starting point. Building blocks of a prediction engine.
+ - [[org.apache.predictionio.data.store]] - Event Store API.
 
 == Experimental Features ==
 

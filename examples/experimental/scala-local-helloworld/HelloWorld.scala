@@ -1,6 +1,6 @@
 package org.sample.helloworld
 
-import io.prediction.controller._
+import org.apache.predictionio.controller._
 
 import scala.io.Source
 import scala.collection.immutable.HashMap

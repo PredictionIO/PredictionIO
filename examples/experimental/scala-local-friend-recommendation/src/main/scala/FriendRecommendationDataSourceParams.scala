@@ -1,6 +1,6 @@
-package io.prediction.examples.friendrecommendation
+package org.apache.predictionio.examples.friendrecommendation
 
-import io.prediction.controller._
+import org.apache.predictionio.controller._
 
 class FriendRecommendationDataSourceParams(
   val itemFilePath: String,

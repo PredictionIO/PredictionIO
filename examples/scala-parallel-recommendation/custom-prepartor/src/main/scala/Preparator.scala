@@ -1,13 +1,13 @@
 package org.template.recommendation
 
-import io.prediction.controller.PPreparator
+import org.apache.predictionio.controller.PPreparator
 
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 
 import scala.io.Source // ADDED
-import io.prediction.controller.Params // ADDED
+import org.apache.predictionio.controller.Params // ADDED
 
 // ADDED CustomPreparatorParams case class
 case class CustomPreparatorParams(

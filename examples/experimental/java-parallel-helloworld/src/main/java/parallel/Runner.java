@@ -1,14 +1,14 @@
-package io.prediction.examples.java.parallel;
+package org.apache.predictionio.examples.java.parallel;
 
-import io.prediction.controller.IEngineFactory;
-import io.prediction.controller.java.EmptyParams;
-import io.prediction.controller.java.IJavaEngineFactory;
-import io.prediction.controller.java.JavaEngineParams;
-import io.prediction.controller.java.JavaEngineParamsBuilder;
-import io.prediction.controller.java.JavaWorkflow;
-import io.prediction.controller.java.PJavaEngine;
-import io.prediction.controller.java.PJavaEngineBuilder;
-import io.prediction.controller.java.WorkflowParamsBuilder;
+import org.apache.predictionio.controller.IEngineFactory;
+import org.apache.predictionio.controller.java.EmptyParams;
+import org.apache.predictionio.controller.java.IJavaEngineFactory;
+import org.apache.predictionio.controller.java.JavaEngineParams;
+import org.apache.predictionio.controller.java.JavaEngineParamsBuilder;
+import org.apache.predictionio.controller.java.JavaWorkflow;
+import org.apache.predictionio.controller.java.PJavaEngine;
+import org.apache.predictionio.controller.java.PJavaEngineBuilder;
+import org.apache.predictionio.controller.java.WorkflowParamsBuilder;
 
 import java.util.HashMap;
 

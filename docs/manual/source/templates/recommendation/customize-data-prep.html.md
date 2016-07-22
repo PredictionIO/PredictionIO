@@ -138,7 +138,7 @@ Modify `src/main/scala/Preparator.scala` again in the *MyRecommendation*
 directory to:
 
 ```scala
-import io.prediction.controller.Params // ADDED
+import org.apache.predictionio.controller.Params // ADDED
 
  // ADDED CustomPreparatorParams case class
 case class CustomPreparatorParams(

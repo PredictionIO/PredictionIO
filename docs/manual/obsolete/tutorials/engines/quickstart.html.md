@@ -41,12 +41,12 @@ specific programming language:
 <div class="tabs">
   <div data-tab="PHP SDK" data-lang="php">
 <p>To use the PredictionIO PHP SDK, we are going to install it with Composer:</p>
-<p>1. Create a file called ``composer.json`` in your project directory, which adds predictionio/predictionio as a dependency. It should look like this:</p>
+<p>1. Create a file called ``composer.json`` in your project directory, which adds predictionorg.apache.predictionioio as a dependency. It should look like this:</p>
 
 ```json
 {
     "require": {
-        "predictionio/predictionio": "~0.8.0"
+        "predictionorg.apache.predictionioio": "~0.8.0"
     }
 }
 ```
@@ -85,7 +85,7 @@ section of your project's <code>pom.xml</code> file:
 ```bash
 <dependencies>
   <dependency>
-    <groupId>io.prediction</groupId>
+    <groupId>org.apache.predictionio</groupId>
     <artifactId>client</artifactId>
     <version>0.8.0</version>
   </dependency>
@@ -248,16 +248,16 @@ $ ruby import.rb
   </div>
   <div data-tab="Java SDK" data-lang="java">
 <p><em>QuickstartImport.java</em> is located under
-PredictionIO-Java-SDK/examples/quickstart_import/src/main/java/io/prediction/samples/.
+PredictionIO-Java-SDK/examples/quickstart_import/src/main/java/org.apache.predictionio/samples/.
 Replace <code>your_app_id</code> with your app id (integer).</p>
 
 ```java
-package io.prediction.samples;
+package org.apache.predictionio.samples;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import io.prediction.EventClient;
+import org.apache.predictionio.EventClient;
 
 import java.io.IOException;
 import java.util.Map;
@@ -327,8 +327,8 @@ To deploy an engine instance for *quickstartapp*, first create an engine
 instance project:
 
 ```bash
-$ $PIO_HOME/bin/pio instance io.prediction.engines.itemrank
-$ cd io.prediction.engines.itemrank
+$ $PIO_HOME/bin/pio instance org.apache.predictionio.engines.itemrank
+$ cd org.apache.predictionio.engines.itemrank
 $ $PIO_HOME/bin/pio register
 ```
 
@@ -455,14 +455,14 @@ $ ruby show.rb
   </div>
   <div data-tab="Java SDK" data-lang="java">
 <p><em>QuickstartShow.java</em> is located under
-PredictionIO-Java-SDK/examples/quickstart_show/src/main/java/io/prediction/samples/.</p>
+PredictionIO-Java-SDK/examples/quickstart_show/src/main/java/org.apache.predictionio/samples/.</p>
 
 ```java
-package io.prediction.samples;
+package org.apache.predictionio.samples;
 
 import com.google.common.collect.ImmutableList;
 
-import io.prediction.EngineClient;
+import org.apache.predictionio.EngineClient;
 
 import java.io.IOException;
 import java.util.HashMap;

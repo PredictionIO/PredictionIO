@@ -1,6 +1,6 @@
-package io.prediction.examples.java.regression;
+package org.apache.predictionio.examples.java.regression;
 
-import io.prediction.controller.java.LJavaDataSource;
+import org.apache.predictionio.controller.java.LJavaDataSource;
 
 import scala.Tuple2;
 import scala.Tuple3;

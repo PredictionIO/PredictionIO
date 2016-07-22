@@ -1,8 +1,8 @@
 package org.template.recommendeduser
 
 import grizzled.slf4j.Logger
-import io.prediction.controller.{P2LAlgorithm, Params}
-import io.prediction.data.storage.BiMap
+import org.apache.predictionio.controller.{P2LAlgorithm, Params}
+import org.apache.predictionio.data.storage.BiMap
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.mllib.recommendation.{ALS, Rating => MLlibRating}

@@ -1,6 +1,6 @@
 package org.template.recommendation
 
-import io.prediction.{Event, EventClient
+import org.apache.predictionio.{Event, EventClient
 }
 import scala.collection.JavaConverters._
 

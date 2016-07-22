@@ -280,8 +280,8 @@ supported.
 
 It is quite straightforward to implement support of other backends. A good
 starting point is to reference the JDBC implementation inside the
-[io.prediction.data.storage.jdbc
-package](https://github.com/PredictionIO/PredictionIO/tree/develop/data/src/main/scala/io/prediction/data/storage/jdbc).
+[org.apache.predictionio.data.storage.jdbc
+package](https://github.com/PredictionIO/PredictionIO/tree/develop/data/src/main/scala/org.apache.predictionio/data/storage/jdbc).
 
 Contributions of different backends implementation is highly encouraged. To
 start contributing, please refer to [this guide](/community/contribute-code/).

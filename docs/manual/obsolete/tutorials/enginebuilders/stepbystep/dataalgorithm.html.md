@@ -78,7 +78,7 @@ the path of file containing the rating data.
 Note that each controller component (*DataSource, Preparator, Algorithm, Serving
 and Metrics*) is restricted to having empty constructor or constructor which
 takes exactly one argument which must implement the
-`io.prediction.controller.java.JavaParams` interface.
+`org.apache.predictionio.controller.java.JavaParams` interface.
 
 We can define the DataSource parameter class as following (in
 `DataSourceParams.java`):
@@ -94,7 +94,7 @@ public class DataSourceParams implements JavaParams {
 ```
 
 The *DataSource* component must extend
-`io.prediction.controller.java.LJavaDataSource`:
+`org.apache.predictionio.controller.java.LJavaDataSource`:
 
 ```java
 public abstract class LJavaDataSource<DSP extends Params,DP,TD,Q,A>
@@ -185,7 +185,7 @@ public class Model implements Serializable {
 ```
 
 The *Algorithm* component must extend
-`io.prediction.controller.java.LJavaAlgorithm`.
+`org.apache.predictionio.controller.java.LJavaAlgorithm`.
 
 ```java
 public abstract class LJavaAlgorithm<AP extends Params,PD,M,Q,P>
@@ -238,7 +238,7 @@ PredictionIO framework requires an *Engine Factory* which returns an *Engine*
 with the controller components defined.
 
 The *Engine Factory* must implement the
-`io.prediction.controller.java.IJavaEngineFactory` interface and implement the
+`org.apache.predictionio.controller.java.IJavaEngineFactory` interface and implement the
 `apply()` method (as shown in `EngineFactory.java`):
 
 ```java
@@ -286,10 +286,10 @@ An engine manifest `engine.json` is needed to describe the Engine:
 
 ```json
 {
-  "id": "io.prediction.examples.java.recommendations.tutorial1.EngineFactory",
+  "id": "org.apache.predictionio.examples.java.recommendations.tutorial1.EngineFactory",
   "version": "0.8.2",
   "name": "Simple Recommendations Engine",
-  "engineFactory": "io.prediction.examples.java.recommendations.tutorial1.EngineFactory"
+  "engineFactory": "org.apache.predictionio.examples.java.recommendations.tutorial1.EngineFactory"
 }
 ```
 

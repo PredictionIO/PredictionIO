@@ -108,7 +108,7 @@ Configurations...*. Click on the **+** button and select *Application*. Name it
 `pio train` and put in the following.
 
 ```
-Main class: io.prediction.workflow.CreateWorkflow
+Main class: org.apache.predictionio.workflow.CreateWorkflow
 VM options: -Dspark.master=local -Dlog4j.configuration=file:/**replace_with_your_PredictionIO_path**/conf/log4j.properties
 Program arguments: --engine-id dummy --engine-version dummy --engine-variant engine.json
 ```
@@ -156,7 +156,7 @@ For `pio deploy`, simply duplicate the previous configuration and replace with
 the following.
 
 ```
-Main class: io.prediction.workflow.CreateServer
+Main class: org.apache.predictionio.workflow.CreateServer
 Program Arguments: --engineInstanceId **replace_with_the_id_from_pio_train**
 ```
 

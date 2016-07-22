@@ -88,7 +88,7 @@ event_client.set_user('id_1',
   <div data-tab="Java SDK" data-lang="java">
 ```java
 import com.google.common.collect.ImmutableMap;
-import io.prediction.EventClient;
+import org.apache.predictionio.EventClient;
 import org.joda.time.DateTime;
 
 EventClient eventClient = new EventClient(1);
@@ -155,7 +155,7 @@ event_client.set_item('id_3',
 ```java
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.prediction.EventClient;
+import org.apache.predictionio.EventClient;
 import java.util.Map;
 import org.joda.time.DateTime;
 
@@ -223,7 +223,7 @@ event_client.record_user_action_on_item('view', 'id_1', 'id_3',
   <div data-tab="Java SDK" data-lang="java">
 ```java
 import com.google.common.collect.ImmutableMap;
-import io.prediction.EventClient;
+import org.apache.predictionio.EventClient;
 import org.joda.time.DateTime;
 
 eventClient.userActionItem("view", "id_1", "id_3", ImmutableMap.<String, Object>of(),
@@ -288,7 +288,7 @@ event_client.record_user_action_on_item('view', 'id_1', 'id_3',
   <div data-tab="Java SDK" data-lang="java">
 ```java
 import com.google.common.collect.ImmutableMap;
-import io.prediction.EventClient;
+import org.apache.predictionio.EventClient;
 import java.util.Map;
 import org.joda.time.DateTime;
 
@@ -442,7 +442,7 @@ puts predictions
 ```java
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.prediction.EngineClient;
+import org.apache.predictionio.EngineClient;
 import org.joda.time.DateTime;
 
 EngineClient engineClient = new EngineClient(apiURL);

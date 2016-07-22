@@ -1,6 +1,6 @@
 package org.sample.java.helloworld;
 
-import io.prediction.controller.java.*;
+import org.apache.predictionio.controller.java.*;
 
 public class MyEngineFactory implements IJavaEngineFactory {
   public JavaSimpleEngine<MyTrainingData, EmptyDataParams, MyQuery,

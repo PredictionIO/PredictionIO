@@ -1,6 +1,6 @@
-package io.prediction.examples.java.regression;
+package org.apache.predictionio.examples.java.regression;
 
-import io.prediction.controller.java.JavaParams;
+import org.apache.predictionio.controller.java.JavaParams;
 
 public class PreparatorParams implements JavaParams {
   // Take the r-fraction of data in training.

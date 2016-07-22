@@ -45,13 +45,13 @@ NOTE: The following changes are not required for using 0.9.2 but it's recommende
 - remove this line of code:
 
     ```scala
-    import io.prediction.data.storage.Storage
+    import org.apache.predictionio.data.storage.Storage
     ```
 
     and replace it by
 
     ```scala
-    import io.prediction.data.store.PEventStore
+    import org.apache.predictionio.data.store.PEventStore
     ```
 
 - Change `appId: Int` to `appName: String` in DataSourceParams
@@ -94,9 +94,9 @@ NOTE: The following changes are not required for using 0.9.2 but it's recommende
 
 If Storage.getLEvents() is also used in Algorithm (such as ALSAlgorithm of E-Commerce Recommendation template), you also need to do following:
 
-NOTE: If `io.prediction.data.storage.Storage` is not used at all (such as Recommendation, Similar Product, Classification, Lead Scoring, Product Ranking template), there is no need to change Algorithm and can go to the later **engine.json** section.
+NOTE: If `org.apache.predictionio.data.storage.Storage` is not used at all (such as Recommendation, Similar Product, Classification, Lead Scoring, Product Ranking template), there is no need to change Algorithm and can go to the later **engine.json** section.
 
-- remove `import io.prediction.data.storage.Storage` and replace it by `import io.prediction.data.store.LEventStore`
+- remove `import org.apache.predictionio.data.storage.Storage` and replace it by `import org.apache.predictionio.data.store.LEventStore`
 - change `appId` to `appName` in the XXXAlgorithmParams class.
 - remove this line of code: `@transient lazy val lEventsDb = Storage.getLEvents()`
 - locate where `LEventStore.findByEntity()` is used, change it to `LEventStore.findByEntity()`:
@@ -230,22 +230,22 @@ Follow instructions below to modify existing engine templates to be compatible w
     import org.apache.spark.SparkContext
     ```
 
-2. Modify the file `build.sbt` in your template directory to use `pioVersion.value` as the version of io.prediction.core dependency:
+2. Modify the file `build.sbt` in your template directory to use `pioVersion.value` as the version of org.apache.predictionio.core dependency:
 
     Under your template's root directory, you should see a file `build.sbt` which has the following content:
 
     ```
     libraryDependencies ++= Seq(
-      "io.prediction"    %% "core"          % "0.8.6" % "provided",
+      "org.apache.predictionio"    %% "core"          % "0.8.6" % "provided",
       "org.apache.spark" %% "spark-core"    % "1.2.0" % "provided",
       "org.apache.spark" %% "spark-mllib"   % "1.2.0" % "provided")
     ```
 
-    Change the version of `"io.prediction" && "core"` to `pioVersion.value`:
+    Change the version of `"org.apache.predictionio" && "core"` to `pioVersion.value`:
 
     ```
     libraryDependencies ++= Seq(
-      "io.prediction"    %% "core"          % pioVersion.value % "provided",
+      "org.apache.predictionio"    %% "core"          % pioVersion.value % "provided",
       "org.apache.spark" %% "spark-core"    % "1.2.0" % "provided",
       "org.apache.spark" %% "spark-mllib"   % "1.2.0" % "provided")
     ```
@@ -253,7 +253,7 @@ Follow instructions below to modify existing engine templates to be compatible w
 3. Create a new file `pio-build.sbt` in template's **project/** directory with the following content:
 
     ```
-    addSbtPlugin("io.prediction" % "pio-build" % "0.9.0")
+    addSbtPlugin("org.apache.predictionio" % "pio-build" % "0.9.0")
     ```
 
     Then, you should see the following two files in the **project/** directory:
@@ -404,5 +404,5 @@ Replace by the returned app ID: ( is the original app ID used in 0.8.0/0.8.2.)
 $ set -a
 $ source conf/pio-env.sh
 $ set +a
-$ sbt/sbt "data/run-main io.prediction.data.storage.hbase.upgrade.Upgrade <from app ID>" "<to app ID>"
+$ sbt/sbt "data/run-main org.apache.predictionio.data.storage.hbase.upgrade.Upgrade <from app ID>" "<to app ID>"
 ```

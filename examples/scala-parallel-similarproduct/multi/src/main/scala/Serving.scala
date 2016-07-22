@@ -1,6 +1,6 @@
 package org.template.similarproduct
 
-import io.prediction.controller.LServing
+import org.apache.predictionio.controller.LServing
 
 import breeze.stats.mean
 import breeze.stats.meanAndVariance

@@ -1,11 +1,11 @@
-package io.prediction.examples.stock
+package org.apache.predictionio.examples.stock
 
-import io.prediction.controller.Workflow
-import io.prediction.controller.WorkflowParams
-import io.prediction.controller.PIdentityPreparator
-import io.prediction.controller.EmptyParams
-import io.prediction.controller.LFirstServing
-import io.prediction.controller.Params
+import org.apache.predictionio.controller.Workflow
+import org.apache.predictionio.controller.WorkflowParams
+import org.apache.predictionio.controller.PIdentityPreparator
+import org.apache.predictionio.controller.EmptyParams
+import org.apache.predictionio.controller.LFirstServing
+import org.apache.predictionio.controller.Params
 import com.github.nscala_time.time.Imports._
 import scala.collection.immutable.HashMap
 import java.io.File

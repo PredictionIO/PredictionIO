@@ -1,6 +1,6 @@
-package io.prediction.examples.java.regression;
+package org.apache.predictionio.examples.java.regression;
 
-import io.prediction.controller.java.LJavaAlgorithm;
+import org.apache.predictionio.controller.java.LJavaAlgorithm;
 
 // This algorithm is for illustration only. It returns a constant.
 public class DefaultAlgorithm

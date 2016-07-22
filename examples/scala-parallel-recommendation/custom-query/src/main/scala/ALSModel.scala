@@ -1,8 +1,8 @@
 package org.template.recommendation
 
-import io.prediction.controller.IPersistentModel
-import io.prediction.controller.IPersistentModelLoader
-import io.prediction.data.storage.BiMap
+import org.apache.predictionio.controller.IPersistentModel
+import org.apache.predictionio.controller.IPersistentModelLoader
+import org.apache.predictionio.data.storage.BiMap
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD

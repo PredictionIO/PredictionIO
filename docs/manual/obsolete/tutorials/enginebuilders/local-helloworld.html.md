@@ -250,7 +250,7 @@ Create a new file <code>src/main/java/MyDataSource.java</code>:
 ```java
 package myorg;
 
-import io.prediction.controller.java.*;
+import org.apache.predictionio.controller.java.*;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -329,7 +329,7 @@ Create a new file <code>src/main/java/MyAlgorithm.java</code>:
 ```java
 package myorg;
 
-import io.prediction.controller.java.*;
+import org.apache.predictionio.controller.java.*;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -402,7 +402,7 @@ Create a new file <code>src/main/java/MyEngineFactory.java</code>:
 ```java
 package myorg;
 
-import io.prediction.controller.java.*;
+import org.apache.predictionio.controller.java.*;
 
 public class MyEngineFactory implements IJavaEngineFactory {
   public JavaSimpleEngine<MyTrainingData, EmptyDataParams, MyQuery, MyPredictedResult,

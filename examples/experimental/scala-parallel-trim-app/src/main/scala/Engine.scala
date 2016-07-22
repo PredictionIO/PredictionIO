@@ -1,8 +1,8 @@
-package io.prediction.examples.experimental.trimapp
+package org.apache.predictionio.examples.experimental.trimapp
 
-import io.prediction.controller.IEngineFactory
-import io.prediction.controller.Engine
-import io.prediction.controller._
+import org.apache.predictionio.controller.IEngineFactory
+import org.apache.predictionio.controller.Engine
+import org.apache.predictionio.controller._
 
 case class Query(q: String) extends Serializable
 

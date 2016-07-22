@@ -86,10 +86,10 @@ Running Evaluation Metrics
 To run evaluation metrics, use the following command.
 ```
 $ cd $PIO_HOME/examples/scala-local-regression
-$ ../../bin/pio eval --metrics-class io.prediction.controller.MeanSquareError
+$ ../../bin/pio eval --metrics-class org.apache.predictionio.controller.MeanSquareError
 ```
 Notice the extra required argument `--metrics-class
-io.prediction.controller.MeanSquareError` for the `eval` command. This instructs
+org.apache.predictionio.controller.MeanSquareError` for the `eval` command. This instructs
 PredictionIO to run the specified metrics during evaluation. When you look at
 the console output again, you should be able to see a mean square error
 computed, like the following.

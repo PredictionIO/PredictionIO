@@ -1,8 +1,8 @@
-package io.prediction.examples.java.recommendations.tutorial3;
+package org.apache.predictionio.examples.java.recommendations.tutorial3;
 
-import io.prediction.examples.java.recommendations.tutorial1.Query;
-import io.prediction.controller.java.JavaEvaluator;
-import io.prediction.controller.java.EmptyParams;
+import org.apache.predictionio.examples.java.recommendations.tutorial1.Query;
+import org.apache.predictionio.controller.java.JavaEvaluator;
+import org.apache.predictionio.controller.java.EmptyParams;
 
 import scala.Tuple2;
 import java.util.Arrays;

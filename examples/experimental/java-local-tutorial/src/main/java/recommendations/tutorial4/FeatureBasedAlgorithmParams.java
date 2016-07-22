@@ -1,6 +1,6 @@
-package io.prediction.examples.java.recommendations.tutorial4;
+package org.apache.predictionio.examples.java.recommendations.tutorial4;
 
-import io.prediction.controller.java.JavaParams;
+import org.apache.predictionio.controller.java.JavaParams;
 
 // actual score = (rating - drift) / scale if min <= rating <= max
 // if rating is outside [min, max], that scoring will not be used.

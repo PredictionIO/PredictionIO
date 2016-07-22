@@ -1,4 +1,4 @@
-package io.prediction.examples.java.parallel;
+package org.apache.predictionio.examples.java.parallel;
 
 import java.io.Serializable;
 import java.lang.StringBuilder;

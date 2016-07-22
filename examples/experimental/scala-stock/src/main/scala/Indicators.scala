@@ -1,4 +1,4 @@
-package io.prediction.examples.stock
+package org.apache.predictionio.examples.stock
 
 import org.saddle._
 import org.saddle.index.IndexTime

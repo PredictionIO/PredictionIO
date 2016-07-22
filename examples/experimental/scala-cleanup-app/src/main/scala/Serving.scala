@@ -1,6 +1,6 @@
-package io.prediction.examples.experimental.cleanupapp
+package org.apache.predictionio.examples.experimental.cleanupapp
 
-import io.prediction.controller.LServing
+import org.apache.predictionio.controller.LServing
 
 class Serving
   extends LServing[Query, PredictedResult] {

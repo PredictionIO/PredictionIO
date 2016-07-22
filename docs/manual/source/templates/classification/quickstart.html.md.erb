@@ -150,8 +150,8 @@ client.create_event(
   <div data-tab="Java SDK" data-lang="java">
 ```java
 import com.google.common.collect.ImmutableMap;
-import io.prediction.Event;
-import io.prediction.EventClient;
+import org.apache.predictionio.Event;
+import org.apache.predictionio.EventClient;
 
 EventClient client = new EventClient(<ACCESS KEY>, <URL OF EVENTSERVER>);
 
@@ -429,7 +429,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 
-import io.prediction.EngineClient;
+import org.apache.predictionio.EngineClient;
 
 EngineClient engineClient = new EngineClient(<ENGINE DEPLOY URL>);
 

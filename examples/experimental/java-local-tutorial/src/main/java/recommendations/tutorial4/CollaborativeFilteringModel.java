@@ -1,4 +1,4 @@
-package io.prediction.examples.java.recommendations.tutorial4;
+package org.apache.predictionio.examples.java.recommendations.tutorial4;
 
 import java.io.Serializable;
 import java.util.Map;

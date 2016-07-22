@@ -1,8 +1,8 @@
-package io.prediction.examples.java.regression;
+package org.apache.predictionio.examples.java.regression;
 
-import io.prediction.controller.java.JavaEvaluator;
+import org.apache.predictionio.controller.java.JavaEvaluator;
 import java.lang.Iterable;
-import io.prediction.controller.java.EmptyParams;
+import org.apache.predictionio.controller.java.EmptyParams;
 import scala.Tuple2;
 import java.util.List;
 import java.util.ArrayList;

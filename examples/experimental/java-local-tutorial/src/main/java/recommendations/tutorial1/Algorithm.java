@@ -1,6 +1,6 @@
-package io.prediction.examples.java.recommendations.tutorial1;
+package org.apache.predictionio.examples.java.recommendations.tutorial1;
 
-import io.prediction.controller.java.LJavaAlgorithm;
+import org.apache.predictionio.controller.java.LJavaAlgorithm;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.OpenMapRealVector;

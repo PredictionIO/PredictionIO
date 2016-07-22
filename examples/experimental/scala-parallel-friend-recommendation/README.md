@@ -14,7 +14,7 @@ Prerequisite: GraphX package.
 
 Parameter Explained
 -------------------
-datasource - graphEdgelistPath : The edge-list passed to GraphX's graph loader. For efficient memory storage of intermediate SimRank score calculations, the vertex ids should be in a contiguous range from 0 to (#Vertex-1). There is a utility function for re-mapping the vertex Id values : io.prediction.examples.pfriendrecommendation.DeltaSimRankRDD.normalizeGraph. 
+datasource - graphEdgelistPath : The edge-list passed to GraphX's graph loader. For efficient memory storage of intermediate SimRank score calculations, the vertex ids should be in a contiguous range from 0 to (#Vertex-1). There is a utility function for re-mapping the vertex Id values : org.apache.predictionio.examples.pfriendrecommendation.DeltaSimRankRDD.normalizeGraph. 
 
 The provided DataSource class uses the GraphLoader provided by GraphX. Graphs can be specified by a tab-separated edge list, where each line specifies one edge.
 The the user can refer to the provided example edge list at `$EXAMPLE_HOME/data/edge_list_small.txt` for a graph specification with 10 vertices and 20 edges.

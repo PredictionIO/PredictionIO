@@ -18,8 +18,8 @@ based on the default Item Recommendation Engine. The new project will contain
 configuration for your engine instance.
 
 ```
-$ $PIO_HOME/bin/pio instance io.prediction.engines.itemrec
-$ cd io.prediction.engines.itemrec
+$ $PIO_HOME/bin/pio instance org.apache.predictionio.engines.itemrec
+$ cd org.apache.predictionio.engines.itemrec
 $ $PIO_HOME/bin/pio register
 ```
 where `$PIO_HOME` is your installation path of PredictionIO.

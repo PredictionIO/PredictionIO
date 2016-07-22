@@ -1,9 +1,9 @@
-package io.prediction.examples.java.parallel;
+package org.apache.predictionio.examples.java.parallel;
 
-import io.prediction.controller.java.IJavaEngineFactory;
-import io.prediction.controller.java.LJavaFirstServing;
-import io.prediction.controller.java.PJavaEngine;
-import io.prediction.controller.java.PJavaEngineBuilder;
+import org.apache.predictionio.controller.java.IJavaEngineFactory;
+import org.apache.predictionio.controller.java.LJavaFirstServing;
+import org.apache.predictionio.controller.java.PJavaEngine;
+import org.apache.predictionio.controller.java.PJavaEngineBuilder;
 
 import java.util.HashMap;
 

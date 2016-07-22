@@ -1,10 +1,10 @@
 package myorg
 
-import io.prediction.controller.Engine
-import io.prediction.controller.IEngineFactory
-import io.prediction.engines.itemrec.EventsDataSource
-import io.prediction.engines.itemrec.ItemRecPreparator
-import io.prediction.engines.itemrec.NCItemBasedAlgorithm
+import org.apache.predictionio.controller.Engine
+import org.apache.predictionio.controller.IEngineFactory
+import org.apache.predictionio.engines.itemrec.EventsDataSource
+import org.apache.predictionio.engines.itemrec.ItemRecPreparator
+import org.apache.predictionio.engines.itemrec.NCItemBasedAlgorithm
 
 object TempFilterEngine extends IEngineFactory {
   def apply() = {

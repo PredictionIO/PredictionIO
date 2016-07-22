@@ -1,7 +1,7 @@
 {
   "id": "default",
   "description": "Default settings",
-  "engineFactory": "io.prediction.examples.experimental.trimapp.VanillaEngine",
+  "engineFactory": "org.apache.predictionio.examples.experimental.trimapp.VanillaEngine",
   "datasource": {
     "params" : {
       "srcAppId": 13,

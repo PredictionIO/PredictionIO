@@ -16,7 +16,7 @@ modify `DataSource.java` to do a random split of the rating data to generate
 the *Test Set*. For demonstration purpose, the modified `DataSource.java` is put
 under directory `tutorial3/`.
 
-Recall that `io.prediction.controller.java.LJavaDataSource` takes the
+Recall that `org.apache.predictionio.controller.java.LJavaDataSource` takes the
 following type parameters:
 
 ```java
@@ -68,7 +68,7 @@ result by the *Evaluator*.
 
 We will implement a Root Mean Square Error (RMSE) evaluator. You can find the
 implementation in `Evaluator.java`. The *Evaluator* extends
-`io.prediction.controller.java.JavaEvaluator`, which requires the following type
+`org.apache.predictionio.controller.java.JavaEvaluator`, which requires the following type
 parameters:
 
 ```java
@@ -167,7 +167,7 @@ Execute the following command:
 
 ```
 $ cd $PIO_HOME/examples/java-local-tutorial
-$ ../../bin/pio run io.prediction.examples.java.recommendations.tutorial3.Runner3 -- -- data/test/ratings.csv
+$ ../../bin/pio run org.apache.predictionio.examples.java.recommendations.tutorial3.Runner3 -- -- data/test/ratings.csv
 ```
 where `$PIO_HOME` is the root directory of the PredictionIO code tree.
 
@@ -206,16 +206,16 @@ $ ./fetch.sh
 Re-run `Runner3` with the `ml-100k` data set:
 
 ```
-$ ../../bin/pio run io.prediction.examples.java.recommendations.tutorial3.Runner3 -- -- `pwd`/data/ml-100k/u.data
+$ ../../bin/pio run org.apache.predictionio.examples.java.recommendations.tutorial3.Runner3 -- -- `pwd`/data/ml-100k/u.data
 ```
 
 You should see the following output when it finishes running.
 
 ```
 2014-09-30 17:06:34,033 INFO  spark.SparkContext - Job finished: collect at Workflow.scala:597, took 0.103821 s
-2014-09-30 17:06:34,033 INFO  workflow.CoreWorkflow$ - DataSourceParams: io.prediction.examples.java.recommendations.tutorial1.DataSourceParams@3b9f69ce
+2014-09-30 17:06:34,033 INFO  workflow.CoreWorkflow$ - DataSourceParams: org.apache.predictionio.examples.java.recommendations.tutorial1.DataSourceParams@3b9f69ce
 2014-09-30 17:06:34,033 INFO  workflow.CoreWorkflow$ - PreparatorParams: Empty
-2014-09-30 17:06:34,034 INFO  workflow.CoreWorkflow$ - Algo: 0 Name: MyRecommendationAlgo Params: io.prediction.examples.java.recommendations.tutorial1.AlgoParams@76171b1
+2014-09-30 17:06:34,034 INFO  workflow.CoreWorkflow$ - Algo: 0 Name: MyRecommendationAlgo Params: org.apache.predictionio.examples.java.recommendations.tutorial1.AlgoParams@76171b1
 2014-09-30 17:06:34,034 INFO  workflow.CoreWorkflow$ - ServingParams: Empty
 2014-09-30 17:06:34,035 INFO  workflow.CoreWorkflow$ - EvaluatorParams: Empty
 2014-09-30 17:06:34,035 INFO  workflow.CoreWorkflow$ - [(null,1.052046904037191), (null,1.042766938101085), (null,1.0490312745374106)]

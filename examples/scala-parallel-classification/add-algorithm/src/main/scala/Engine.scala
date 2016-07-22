@@ -1,7 +1,7 @@
 package org.template.classification
 
-import io.prediction.controller.IEngineFactory
-import io.prediction.controller.Engine
+import org.apache.predictionio.controller.IEngineFactory
+import org.apache.predictionio.controller.Engine
 
 class Query(
   val features: Array[Double]

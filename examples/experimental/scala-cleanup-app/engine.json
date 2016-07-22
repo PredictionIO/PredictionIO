@@ -1,7 +1,7 @@
 {
   "id": "default",
   "description": "Default settings",
-  "engineFactory": "io.prediction.examples.experimental.cleanupapp.VanillaEngine",
+  "engineFactory": "org.apache.predictionio.examples.experimental.cleanupapp.VanillaEngine",
   "datasource": {
     "params" : {
       "appId": 1000000000,
