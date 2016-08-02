@@ -116,7 +116,7 @@ limitations under the License.
         <parameters>
             <parameter name="regex">(?m)^(\s*)/[*][*].*$(\r|)\n^\1 [*]</parameter>
         </parameters>
-        <customMessage>Use Javadoc style indentation for multiline comments</customMessage>
+        <customMessage>Use Scaladoc style indentation for multiline comments</customMessage>
     </check>
 
     <!-- Do not enable ScalaDocChecker below. This forces all the classes,-->
