@@ -110,4 +110,19 @@ limitations under the License.
     <check level="error"
            class="org.scalastyle.scalariform.SpaceAfterCommentStartChecker"
            enabled="true"/>
+    <check customId="NoJavaDoc" class="org.scalastyle.file.RegexChecker"
+           enabled="true"
+           level="error">
+        <parameters>
+            <parameter name="regex">(?m)^(\s*)/[*][*].*$(\r|)\n^\1 [*]</parameter>
+        </parameters>
+        <customMessage>Use Javadoc style indentation for multiline comments</customMessage>
+    </check>
+
+    <!-- Do not enable ScalaDocChecker below. This forces all the classes,-->
+    <!-- traits, methods, types and properties to have documentation which-->
+    <!-- is overwhelming.-->
+    <check level="error"
+           class="org.scalastyle.scalariform.ScalaDocChecker"
+           enabled="false"/>
 </scalastyle>

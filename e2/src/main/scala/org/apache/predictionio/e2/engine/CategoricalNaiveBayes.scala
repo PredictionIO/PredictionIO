@@ -20,15 +20,13 @@ package org.apache.predictionio.e2.engine
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 
-/**
- * Class for training a naive Bayes model with categorical variables
- */
+/** Class for training a naive Bayes model with categorical variables */
 object CategoricalNaiveBayes {
-  /**
-   * Train with data points and return the model
-   *
-   * @param points training data points
-   */
+
+  /** Train with data points and return the model
+    *
+    * @param points training data points
+    */
   def train(points: RDD[LabeledPoint]): CategoricalNaiveBayesModel = {
     val labelCountFeatureLikelihoods = points.map { p =>
       (p.label, p.features)
@@ -82,27 +80,25 @@ object CategoricalNaiveBayes {
   }
 }
 
-/**
- * Model for naive Bayes classifiers with categorical variables.
- *
- * @param priors log prior probabilities
- * @param likelihoods log likelihood probabilities
- */
+/** Model for naive Bayes classifiers with categorical variables.
+  *
+  * @param priors log prior probabilities
+  * @param likelihoods log likelihood probabilities
+  */
 case class CategoricalNaiveBayesModel(
   priors: Map[String, Double],
   likelihoods: Map[String, Array[Map[String, Double]]]) extends Serializable {
 
   val featureCount = likelihoods.head._2.size
 
-  /**
-   * Calculate the log score of having the given features and label
-   *
-   * @param point label and features
-   * @param defaultLikelihood a function that calculates the likelihood when a
-   *                          feature value is not present. The input to the
-   *                          function is the other feature value likelihoods.
-   * @return log score when label is present. None otherwise.
-   */
+  /** Calculate the log score of having the given features and label
+    *
+    * @param point label and features
+    * @param defaultLikelihood a function that calculates the likelihood when a
+    *                          feature value is not present. The input to the
+    *                          function is the other feature value likelihoods.
+    * @return log score when label is present. None otherwise.
+    */
   def logScore(
     point: LabeledPoint,
     defaultLikelihood: (Seq[Double]) => Double = ls => Double.NegativeInfinity
@@ -137,12 +133,11 @@ case class CategoricalNaiveBayesModel(
     prior + likelihoodScores.sum
   }
 
-  /**
-   * Return the label that yields the highest score
-   *
-   * @param features features for classification
-   *
-   */
+  /** Return the label that yields the highest score
+    *
+    * @param features features for classification
+    *
+    */
   def predict(features: Array[String]): String = {
     priors.keySet.map { label =>
       (label, logScoreInternal(label, features))
@@ -154,12 +149,11 @@ case class CategoricalNaiveBayesModel(
   }
 }
 
-/**
- * Class that represents the features and labels of a data point.
- *
- * @param label Label of this data point
- * @param features Features of this data point
- */
+/** Class that represents the features and labels of a data point.
+  *
+  * @param label Label of this data point
+  * @param features Features of this data point
+  */
 case class LabeledPoint(label: String, features: Array[String]) {
   override def toString: String = {
     val featuresString = features.mkString("[", ",", "]")

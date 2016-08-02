@@ -23,9 +23,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 
-/**
- * :: Experimental ::
- */
+/** :: Experimental :: */
 @Experimental
 class EntityIdIxMap(val idToIx: BiMap[String, Long]) extends Serializable {
 

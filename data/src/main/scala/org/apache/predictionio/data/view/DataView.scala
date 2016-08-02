@@ -34,9 +34,7 @@ import scala.reflect.ClassTag
 import scala.reflect.runtime.universe._
 import scala.util.hashing.MurmurHash3
 
-/**
- * :: Experimental ::
- */
+/** :: Experimental :: */
 @Experimental
 object DataView {
   /**
