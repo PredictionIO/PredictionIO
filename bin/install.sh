@@ -290,7 +290,7 @@ echo -e "\033[1;36mStarting PredictionIO setup in:\033[0m $pio_dir"
 cd ${TEMP_DIR}
 if [[ ! -e ${PIO_FILE} ]]; then
   echo "Downloading PredictionIO..."
-  curl -OL https://github.com/PredictionIO/PredictionIO/releases/download/v${PIO_VERSION}/${PIO_FILE}
+  curl -OL https://github.com/apache/incubator-predictionio/releases/download/v${PIO_VERSION}/${PIO_FILE}
 fi
 tar zxf ${PIO_FILE}
 rm -rf ${pio_dir}
