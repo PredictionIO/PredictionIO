@@ -118,7 +118,7 @@ case class ItemScore(
 Again, now you need to go through all the places where `ItemScore` is created and fix compiler errors.
 
 Result is initially created by the `Algorithm` component and then is passed to the `Serving` component.
-Take a look on a place where object of class ItemScore is initially created in file [ALSAlgorithm.scala#L171](https://github.com/apache/incubator-predictionio/blob/develop/examples/scala-parallel-similarproduct/add-and-return-item-properties/src/main/scala/ALSAlgorithm.scala#L173).
+Take a look on a place where object of class ItemScore is initially created in file [ALSAlgorithm.scala#L171](https://github.com/apache/incubator-predictionio/blob/develop/examples/scala-parallel-similarproduct/add-and-return-item-properties/src/main/scala/ALSAlgorithm.scala#L171).
 ```scala
 new ItemScore(
 	item = model.itemIntStringMap(i),
