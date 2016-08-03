@@ -4,7 +4,7 @@
 
 ###v0.9.6
 
-November, 2015 | [Release Notes](https://github.com/apache/incubator-predictionio/blob/develop/RELEASE.md) have been moved to Github and you are reading them. For a detailed list of commits check [this page](https://github.com/apache/incubator-predictionio/commits/develop)
+November, 2015 | [Release Notes](https://github.com/apache/incubator-predictionio/blob/master/RELEASE.md) have been moved to Github and you are reading them. For a detailed list of commits check [this page](https://github.com/apache/incubator-predictionio/commits/master)
 
 - Upgrade components for install/runtime to Hbase 1, Spark 1.5.2 PIO still runs on older HBase and Spark back to 1.3.1, upgrading install of Elaticsearch to 1.5.2 since pio run well on it but also runs on older versions.
 - Support for maintaining a moving window of events by discarding old events from the EventStore
@@ -12,7 +12,7 @@ November, 2015 | [Release Notes](https://github.com/apache/incubator-predictioni
 
 ###v0.9.5 
 
-October 14th, 2015 | [Release Notes](https://github.com/apache/incubator-predictionio/blob/develop/RELEASE.md) have been moved to Github and you are reading them. For a detailed list of commits check [this page](https://github.com/apache/incubator-predictionio/commits/v0.9.5)
+October 14th, 2015 | [Release Notes](https://github.com/apache/incubator-predictionio/blob/master/RELEASE.md) have been moved to Github and you are reading them. For a detailed list of commits check [this page](https://github.com/apache/incubator-predictionio/commits/v0.9.5)
 
 - Support batches of events sent to the EventServer as json arrays
 - Support creating an Elasticsearch StorageClient created for an Elasticsearch cluster from variables in pio-env.sh
