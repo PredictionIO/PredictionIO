@@ -338,7 +338,7 @@ object Console extends Logging {
           opt[Int]("admin-server-port") action { (x, c) =>
             c.copy(adminServer = c.adminServer.copy(port = x))
           } text("Admin server port. Default: 7071"),
-          opt[String]("admin-server-port") action { (x, c) =>
+          opt[String]("admin-server-ip") action { (x, c) =>
           c.copy(adminServer = c.adminServer.copy(ip = x))
           } text("Admin server IP. Default: localhost"),
           opt[String]("accesskey") action { (x, c) =>
