@@ -60,6 +60,26 @@ else
   exit 1
 fi
 
+#PGSQL
+pgsqlStatus="$(ps auxwww | grep postgres | wc -l)"
+if [[ "$pgsqlStatus" < 5 ]]; then
+  # Detect OS
+  OS=`uname`
+  if [[ "$OS" = "Darwin" ]]; then
+    pg_cmd=`which pg_ctl`
+    if [[ "$pg_cmd" != "" ]]; then
+      pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
+    fi
+  elif [[ "$OS" = "Linux" ]]; then
+    sudo service postgresql start
+  else
+    echo -e "\033[1;31mYour OS $OS is not yet supported for automatic postgresql startup:(\033[0m"
+    echo -e "\033[1;31mPlease do a manual startup!\033[0m"
+    ${PIO_HOME}/bin/pio-stop-all
+    exit 1
+  fi
+fi
+
 # PredictionIO Event Server
 echo "Waiting 10 seconds for HBase to fully initialize..."
 sleep 10

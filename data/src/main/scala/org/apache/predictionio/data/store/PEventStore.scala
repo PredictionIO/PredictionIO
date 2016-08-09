@@ -27,6 +27,8 @@ import org.joda.time.DateTime
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
+import scala.concurrent.ExecutionContext
+
 /** This object provides a set of operation to access Event Store
   * with Spark's parallelization
   */

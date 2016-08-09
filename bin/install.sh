@@ -18,11 +18,11 @@
 #
 
 OS=`uname`
-PIO_VERSION=0.9.6
-SPARK_VERSION=1.6.0
+PIO_VERSION=0.10.0-snapshot
+SPARK_VERSION=1.6.2
 # Looks like support for Elasticsearch 2.0 will require 2.0 so deferring
-ELASTICSEARCH_VERSION=1.7.3
-HBASE_VERSION=1.1.2
+ELASTICSEARCH_VERSION=1.7.5
+HBASE_VERSION=1.2.2
 POSTGRES_VERSION=9.4-1204.jdbc41
 MYSQL_VERSION=5.1.37
 PIO_DIR=$HOME/PredictionIO
@@ -35,6 +35,7 @@ DISTRO_OTHER="Other"
 
 PGSQL="PostgreSQL"
 MYSQL="MySQL"
+ES_PGSQL="Elasticsearch + PostgreSQL"
 ES_HB="Elasticsearch + HBase"
 
 # Ask a yes/no question, with a default of "yes".
@@ -102,9 +103,8 @@ if [[ "$OS" = "Linux" && $(cat /proc/1/cgroup) == *cpu:/docker/* ]]; then
   # Java Install
   echo -e "\033[1;36mStarting Java install...\033[0m"
 
-  sudo add-apt-repository -y ppa:openjdk-r/ppa
   sudo apt-get update
-  sudo apt-get install openjdk-8-jdk libgfortran3 -y
+  sudo apt-get install openjdk-7-jdk libgfortran3 -y
 
   echo -e "\033[1;32mJava install done!\033[0m"
 
@@ -136,9 +136,8 @@ elif [[ "$1" == "-y" ]]; then
   echo -e "\033[1;36mStarting Java install...\033[0m"
 
   # todo: make java installation platform independent
-  sudo add-apt-repository -y ppa:openjdk-r/ppa
   sudo apt-get update
-  sudo apt-get install openjdk-8-jdk libgfortran3 python-pip -y
+  sudo apt-get install openjdk-7-jdk libgfortran3 python-pip -y
   sudo pip install predictionio
 
   echo -e "\033[1;32mJava install done!\033[0m"
@@ -154,13 +153,16 @@ else
     read -e -p "Vendor path ($pio_dir/vendors): " vendors_dir
     vendors_dir=${vendors_dir:-$pio_dir/vendors}
 
-    echo -e "\033[1mPlease choose between the following sources (1, 2 or 3):\033[0m"
-    select source_setup in "$PGSQL" "$MYSQL" "$ES_HB"; do
+    echo -e "\033[1mPlease choose between the following sources (1, 2, 3 or 4):\033[0m"
+    select source_setup in "$PGSQL" "$MYSQL" "$ES_PGSQL" "$ES_HB"; do
       case ${source_setup} in
         "$PGSQL")
           break
           ;;
         "$MYSQL")
+          break
+          ;;
+        "$ES_PGSQL")
           break
           ;;
         "$ES_HB")
@@ -208,6 +210,11 @@ else
         # MySQL installed by apt-get so no path is printed beforehand
         break
         ;;
+      "$ES_PGSQL")
+        # PostgreSQL installed by apt-get so no path is printed beforehand
+        echo "Elasticsearch: $elasticsearch_dir"
+        break
+        ;;
       "$ES_HB")
         echo "Elasticsearch: $elasticsearch_dir"
         echo "HBase: $hbase_dir"
@@ -244,9 +251,8 @@ else
         echo -e "\033[33mThis script requires superuser access!\033[0m"
         echo -e "\033[33mYou will be prompted for your password by sudo:\033[0m"
 
-        sudo add-apt-repository -y ppa:openjdk-r/ppa
         sudo apt-get update
-        sudo apt-get install openjdk-8-jdk libgfortran3 python-pip -y
+        sudo apt-get install openjdk-7-jdk libgfortran3 python-pip -y
         sudo pip install predictionio
 
         echo -e "\033[1;32mJava install done!\033[0m"
@@ -287,11 +293,25 @@ echo "JAVA_HOME is now set to: $JAVA_HOME"
 
 # PredictionIO
 echo -e "\033[1;36mStarting PredictionIO setup in:\033[0m $pio_dir"
+
 cd ${TEMP_DIR}
+
 if [[ ! -e ${PIO_FILE} ]]; then
   echo "Downloading PredictionIO..."
-  curl -OL https://github.com/PredictionIO/PredictionIO/releases/download/v${PIO_VERSION}/${PIO_FILE}
+  curl -OL https://codeload.github.com/actionml/PredictionIO/tar.gz/master
+
+  mv master v${PIO_VERSION}.tar.gz
+
+  tar zxf v${PIO_VERSION}.tar.gz
+
+
+  mv PredictionIO-master PredictionIO-${PIO_VERSION}
+
+  sh PredictionIO-${PIO_VERSION}/make-distribution.sh
+  cp PredictionIO-${PIO_VERSION}/${PIO_FILE} ${TEMP_DIR}
+  rm -r PredictionIO-${PIO_VERSION}
 fi
+
 tar zxf ${PIO_FILE}
 rm -rf ${pio_dir}
 mv PredictionIO-${PIO_VERSION} ${pio_dir}
@@ -312,7 +332,7 @@ mkdir ${vendors_dir}
 echo -e "\033[1;36mStarting Spark setup in:\033[0m $spark_dir"
 if [[ ! -e spark-${SPARK_VERSION}-bin-hadoop2.6.tgz ]]; then
   echo "Downloading Spark..."
-  curl -O http://d3kbcqa49mib13.cloudfront.net/spark-${SPARK_VERSION}-bin-hadoop2.6.tgz
+  curl -O http://www-us.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.6.tgz
 fi
 tar xf spark-${SPARK_VERSION}-bin-hadoop2.6.tgz
 rm -rf ${spark_dir}
@@ -323,11 +343,10 @@ ${SED_CMD} "s|SPARK_HOME=.*|SPARK_HOME=$spark_dir|g" ${pio_dir}/conf/pio-env.sh
 
 echo -e "\033[1;32mSpark setup done!\033[0m"
 
-case $source_setup in
-  "$PGSQL")
-    if [[ ${distribution} = "$DISTRO_DEBIAN" ]]; then
+installPGSQL () {
+  if [[ ${distribution} = "$DISTRO_DEBIAN" ]]; then
       echo -e "\033[1;36mInstalling PostgreSQL...\033[0m"
-      sudo apt-get install postgresql -y
+      sudo apt-get install postgresql-9.4 -y
       echo -e "\033[1;36mPlease use the default password 'pio' when prompted to enter one\033[0m"
       sudo -u postgres createdb pio
       sudo -u postgres createuser -P pio
@@ -339,6 +358,34 @@ case $source_setup in
     fi
     curl -O https://jdbc.postgresql.org/download/postgresql-${POSTGRES_VERSION}.jar
     mv postgresql-${POSTGRES_VERSION}.jar ${PIO_DIR}/lib/
+
+    echo "Updating: $pio_dir/conf/pio-env.sh"
+    ${SED_CMD} "s|PIO_STORAGE_REPOSITORIES_METADATA_SOURCE=PGSQL|PIO_STORAGE_REPOSITORIES_METADATA_SOURCE=ELASTICSEARCH|" ${pio_dir}/conf/pio-env.sh
+    echo -e "\033[1;32mPGSQL setup done!\033[0m"
+}
+
+installES() {
+    echo -e "\033[1;36mStarting Elasticsearch setup in:\033[0m $elasticsearch_dir"
+    if [[ -e elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz ]]; then
+      if confirm "Delete existing elasticsearch-$ELASTICSEARCH_VERSION.tar.gz?"; then
+        rm elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
+      fi
+    fi
+    if [[ ! -e elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz ]]; then
+      echo "Downloading Elasticsearch..."
+      curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
+    fi
+    tar zxf elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
+    rm -rf ${elasticsearch_dir}
+    mv elasticsearch-${ELASTICSEARCH_VERSION} ${elasticsearch_dir}
+
+    echo "Updating: $elasticsearch_dir/config/elasticsearch.yml"
+    echo 'network.host: 127.0.0.1' >> ${elasticsearch_dir}/config/elasticsearch.yml
+}
+
+case $source_setup in
+  "$PGSQL")
+    installPGSQL
     ;;
   "$MYSQL")
     if [[ ${distribution} = "$DISTRO_DEBIAN" ]]; then
@@ -362,18 +409,7 @@ case $source_setup in
     ;;
   "$ES_HB")
     # Elasticsearch
-    echo -e "\033[1;36mStarting Elasticsearch setup in:\033[0m $elasticsearch_dir"
-    if [[ ! -e elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz ]]; then
-      echo "Downloading Elasticsearch..."
-      curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
-    fi
-    tar zxf elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
-    rm -rf ${elasticsearch_dir}
-    mv elasticsearch-${ELASTICSEARCH_VERSION} ${elasticsearch_dir}
-
-    echo "Updating: $elasticsearch_dir/config/elasticsearch.yml"
-    echo 'network.host: 127.0.0.1' >> ${elasticsearch_dir}/config/elasticsearch.yml
-
+    installES
     echo "Updating: $pio_dir/conf/pio-env.sh"
     ${SED_CMD} "s|PIO_STORAGE_REPOSITORIES_METADATA_SOURCE=PGSQL|PIO_STORAGE_REPOSITORIES_METADATA_SOURCE=ELASTICSEARCH|" ${pio_dir}/conf/pio-env.sh
     ${SED_CMD} "s|PIO_STORAGE_REPOSITORIES_MODELDATA_SOURCE=PGSQL|PIO_STORAGE_REPOSITORIES_MODELDATA_SOURCE=LOCALFS|" ${pio_dir}/conf/pio-env.sh
@@ -382,7 +418,6 @@ case $source_setup in
     ${SED_CMD} "s|# PIO_STORAGE_SOURCES_LOCALFS|PIO_STORAGE_SOURCES_LOCALFS|" ${pio_dir}/conf/pio-env.sh
     ${SED_CMD} "s|# PIO_STORAGE_SOURCES_ELASTICSEARCH_TYPE|PIO_STORAGE_SOURCES_ELASTICSEARCH_TYPE|" ${pio_dir}/conf/pio-env.sh
     ${SED_CMD} "s|# PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME=.*|PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME=$elasticsearch_dir|" ${pio_dir}/conf/pio-env.sh
-
     echo -e "\033[1;32mElasticsearch setup done!\033[0m"
 
     # HBase

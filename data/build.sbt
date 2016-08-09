@@ -47,9 +47,9 @@ libraryDependencies ++= Seq(
   "org.json4s"             %% "json4s-native"  % json4sVersion.value,
   "org.json4s"             %% "json4s-ext"     % json4sVersion.value,
   "org.postgresql"          % "postgresql"     % "9.4-1204-jdbc41",
-  "org.scalatest"          %% "scalatest"      % "2.1.6" % "test",
-  "org.scalikejdbc"        %% "scalikejdbc"    % "2.3.2",
-  "org.slf4j"               % "slf4j-log4j12"  % "1.7.13",
+  "org.scalatest"          %% "scalatest"      % "2.1.7" % "test",
+  "org.scalikejdbc"        %% "scalikejdbc"    % "2.3.5",
+  "org.slf4j"               % "slf4j-log4j12"  % "1.7.18",
   "org.spark-project.akka" %% "akka-actor"     % "2.3.4-spark",
   "org.specs2"             %% "specs2"         % "2.3.13" % "test")
 

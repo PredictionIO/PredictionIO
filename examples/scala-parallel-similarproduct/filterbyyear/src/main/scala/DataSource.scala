@@ -17,6 +17,9 @@
 
 package com.test
 
+import org.apache.predictionio.core.SelfCleaningDataSource
+import org.apache.predictionio.core.EventWindow
+
 import org.apache.predictionio.controller.PDataSource
 import org.apache.predictionio.controller.EmptyEvaluationInfo
 import org.apache.predictionio.controller.EmptyActualResult
@@ -30,16 +33,21 @@ import org.apache.spark.rdd.RDD
 
 import grizzled.slf4j.Logger
 
-case class DataSourceParams(appId: Int) extends Params
+case class DataSourceParams(appName: String, eventWindow: Option[EventWindow], appId: Int) extends Params
 
 class DataSource(val dsp: DataSourceParams)
   extends PDataSource[TrainingData,
-      EmptyEvaluationInfo, Query, EmptyActualResult] {
+      EmptyEvaluationInfo, Query, EmptyActualResult] with SelfCleaningDataSource {
 
-  @transient lazy val logger = Logger[this.type]
+  @transient override lazy val logger = Logger[this.type]
+
+  override def appName = dsp.appName
+  override def eventWindow = dsp.eventWindow
 
   override
   def readTraining(sc: SparkContext): TrainingData = {
+    val events = cleanPersistedPEvents(sc)
+
     val eventsDb = Storage.getPEvents()
 
     // create a RDD of (entityID, User)

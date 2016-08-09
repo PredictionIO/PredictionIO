@@ -81,3 +81,6 @@ class ModelSerializer extends CustomSerializer[Model](
         Nil)
   }
 ))
+
+// Use where models are saved outside the usual methods in pio
+case class NullModel()

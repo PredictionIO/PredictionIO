@@ -15,11 +15,14 @@
  * limitations under the License.
  */
 
+
+import SonatypeKeys._
+
 import UnidocKeys._
 
 name := "pio"
 
-version in ThisBuild := "0.9.7-SNAPSHOT"
+version in ThisBuild := "0.10.0-snapshot"
 
 organization in ThisBuild := "org.apache.predictionio"
 
@@ -48,7 +51,7 @@ lazy val pioBuildInfoSettings = buildInfoSettings ++ Seq(
     scalaVersion,
     sbtVersion,
     sparkVersion),
-  buildInfoPackage := "org.apache.predictionio.core")
+  buildInfoPackage := "io.prediction.core")
 
 lazy val conf = file(".") / "conf"
 
@@ -60,18 +63,21 @@ lazy val root = project in file(".") aggregate(
   e2)
 
 lazy val common = (project in file("common")).
+  settings(sonatypeSettings: _*).
   settings(unmanagedClasspath in Test += conf)
 
 lazy val core = (project in file("core")).
   dependsOn(data).
   settings(genjavadocSettings: _*).
   settings(pioBuildInfoSettings: _*).
+  settings(sonatypeSettings: _*).
   enablePlugins(SbtTwirl).
   settings(unmanagedClasspath in Test += conf)
 
 lazy val data = (project in file("data")).
   dependsOn(common).
   settings(genjavadocSettings: _*).
+  settings(sonatypeSettings: _*).
   settings(unmanagedClasspath in Test += conf)
 
 lazy val tools = (project in file("tools")).
@@ -82,6 +88,7 @@ lazy val tools = (project in file("tools")).
 
 lazy val e2 = (project in file("e2")).
   settings(genjavadocSettings: _*).
+  settings(sonatypeSettings: _*).
   settings(unmanagedClasspath in Test += conf)
 
 scalaJavaUnidocSettings
@@ -100,12 +107,12 @@ scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
     "akka",
     "breeze",
     "html",
-    "org.apache.predictionio.annotation",
-    "org.apache.predictionio.controller.html",
-    "org.apache.predictionio.data.api",
-    "org.apache.predictionio.data.view",
-    "org.apache.predictionio.workflow",
-    "org.apache.predictionio.tools",
+    "io.prediction.annotation",
+    "io.prediction.controller.html",
+    "io.prediction.data.api",
+    "io.prediction.data.view",
+    "io.prediction.workflow",
+    "io.prediction.tools",
     "org",
     "scalikejdbc").mkString(":"),
   "-doc-title",
@@ -117,31 +124,31 @@ scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
 
 javacOptions in (JavaUnidoc, unidoc) := Seq(
   "-subpackages",
-  "org.apache.predictionio",
+  "io.prediction",
   "-exclude",
   Seq(
-    "org.apache.predictionio.controller.html",
-    "org.apache.predictionio.data.api",
-    "org.apache.predictionio.data.view",
-    "org.apache.predictionio.data.webhooks.*",
-    "org.apache.predictionio.workflow",
-    "org.apache.predictionio.tools",
+    "io.prediction.controller.html",
+    "io.prediction.data.api",
+    "io.prediction.data.view",
+    "io.prediction.data.webhooks.*",
+    "io.prediction.workflow",
+    "io.prediction.tools",
     "org.apache.hadoop").mkString(":"),
   "-windowtitle",
   "PredictionIO Javadoc " + version.value,
   "-group",
   "Java Controllers",
   Seq(
-    "org.apache.predictionio.controller.java",
-    "org.apache.predictionio.data.store.java").mkString(":"),
+    "io.prediction.controller.java",
+    "io.prediction.data.store.java").mkString(":"),
   "-group",
   "Scala Base Classes",
   Seq(
-    "org.apache.predictionio.controller",
-    "org.apache.predictionio.core",
-    "org.apache.predictionio.data.storage",
-    "org.apache.predictionio.data.storage.*",
-    "org.apache.predictionio.data.store").mkString(":"),
+    "io.prediction.controller",
+    "io.prediction.core",
+    "io.prediction.data.storage",
+    "io.prediction.data.storage.*",
+    "io.prediction.data.store").mkString(":"),
   "-overview",
   "docs/javadoc/javadoc-overview.html",
   "-noqualifier",
@@ -162,25 +169,25 @@ pioUnidoc := {
 }
 
 pomExtra in ThisBuild := {
-  <url>http://predictionio.incubator.apache.org</url>
-  <licenses>
-    <license>
-      <name>Apache 2</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    </license>
-  </licenses>
-  <scm>
-    <connection>scm:git:github.com/apache/incubator-predictionio</connection>
-    <developerConnection>scm:git:git@github.com:apache/incubator-predictionio.git</developerConnection>
-    <url>github.com/apache/incubator-predictionio</url>
-  </scm>
-  <developers>
-    <developer>
-      <id>pio</id>
-      <name>The PredictionIO Team</name>
-      <url>http://predictionio.incubator.apache.org</url>
-    </developer>
-  </developers>
+  <url>http://prediction.io</url>
+    <licenses>
+      <license>
+        <name>Apache 2</name>
+        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      </license>
+    </licenses>
+    <scm>
+      <connection>scm:git:github.com/PredictionIO/PredictionIO</connection>
+      <developerConnection>scm:git:git@github.com:PredictionIO/PredictionIO.git</developerConnection>
+      <url>github.com/PredictionIO/PredictionIO</url>
+    </scm>
+    <developers>
+      <developer>
+        <id>pio</id>
+        <name>The PredictionIO Team</name>
+        <url>http://prediction.io</url>
+      </developer>
+    </developers>
 }
 
 concurrentRestrictions in Global := Seq(
@@ -190,3 +197,8 @@ concurrentRestrictions in Global := Seq(
   Tags.limitAll( 1 )
 )
 
+parallelExecution := false
+
+parallelExecution in Global := false
+
+testOptions in Test += Tests.Argument("-oDF")
