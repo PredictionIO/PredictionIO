@@ -19,7 +19,7 @@ import UnidocKeys._
 
 name := "pio"
 
-version in ThisBuild := "0.9.7-SNAPSHOT"
+version in ThisBuild := "0.10.0-SNAPSHOT"
 
 organization in ThisBuild := "org.apache.predictionio"
 
@@ -190,3 +190,8 @@ concurrentRestrictions in Global := Seq(
   Tags.limitAll( 1 )
 )
 
+parallelExecution := false
+
+parallelExecution in Global := false
+
+testOptions in Test += Tests.Argument("-oDF")

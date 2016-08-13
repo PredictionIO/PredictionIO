@@ -46,3 +46,18 @@ if [ -e ${PIDFILE} ]; then
   cat ${PIDFILE} | xargs kill
   rm ${PIDFILE}
 fi
+
+#PGSQL
+OS=`uname`
+if [[ "$OS" = "Darwin" ]]; then
+  pg_cmd=`which pg_ctl`
+  if [[ "$pg_cmd" != "" ]]; then
+    pg_ctl -D /usr/local/var/postgres stop -s -m fast
+  fi
+elif [[ "$OS" = "Linux" ]]; then
+  sudo service postgresql stop
+else
+  echo -e "\033[1;31mYour OS $OS is not yet supported for automatic postgresql startup:(\033[0m"
+  echo -e "\033[1;31mPlease do a manual shutdown!\033[0m"
+  exit 1
+fi

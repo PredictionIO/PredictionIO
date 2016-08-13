@@ -27,6 +27,7 @@ import org.apache.spark.rdd.{JdbcRDD, RDD}
 import org.apache.spark.sql.{SQLContext, SaveMode}
 import org.json4s.JObject
 import org.json4s.native.Serialization
+import scalikejdbc._
 
 /** JDBC implementation of [[PEvents]] */
 class JDBCPEvents(client: String, config: StorageClientConfig, namespace: String) extends PEvents {
@@ -159,5 +160,21 @@ class JDBCPEvents(client: String, config: StorageClientConfig, namespace: String
     prop.setProperty("user", config.properties("USERNAME"))
     prop.setProperty("password", config.properties("PASSWORD"))
     eventDF.write.mode(SaveMode.Append).jdbc(client, tableName, prop)
+  }
+
+  def delete(eventIds: RDD[String], appId: Int, channelId: Option[Int])(sc: SparkContext): Unit = {
+
+    eventIds.foreachPartition{ iter =>
+
+      iter.foreach { eventId =>
+        DB localTx { implicit session =>
+        val tableName = JDBCUtils.eventTableName(namespace, appId, channelId)
+        sql"""
+        delete from $tableName where id = $eventId
+        """.update().apply()
+        true
+        }
+      }
+    }
   }
 }
