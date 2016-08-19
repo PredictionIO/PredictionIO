@@ -19,6 +19,9 @@
 set -e
 
 if [[ $BUILD_TYPE == Unit ]]; then
+  # Run license check
+  ./tests/check_license.sh
+
   # Prepare pio environment variables
   set -a
   source conf/pio-env.sh.travis
