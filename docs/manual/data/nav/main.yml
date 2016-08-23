@@ -165,7 +165,7 @@ root:
     children:
       -
         body: 'Browse'
-        url: 'http://templates.prediction.io'
+        url: '/templates'
       -
         body: 'Submit your Engine as a Template'
         url: '/community/submit-template/'
