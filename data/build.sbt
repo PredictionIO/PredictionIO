@@ -26,11 +26,11 @@ libraryDependencies ++= Seq(
   "mysql"                   % "mysql-connector-java" % "5.1.37",
   "org.apache.hadoop"       % "hadoop-common"  % "2.6.2"
     exclude("javax.servlet", "servlet-api"),
-  "org.apache.hbase"        % "hbase-common"   % "0.98.5-hadoop2",
-  "org.apache.hbase"        % "hbase-client"   % "0.98.5-hadoop2"
+  "org.apache.hbase"        % "hbase-common"   % "1.1.1",
+  "org.apache.hbase"        % "hbase-client"   % "1.1.1"
     exclude("org.apache.zookeeper", "zookeeper"),
   // added for Parallel storage interface
-  "org.apache.hbase"        % "hbase-server"   % "0.98.5-hadoop2"
+  "org.apache.hbase"        % "hbase-server"   % "1.1.1"
     exclude("org.apache.hbase", "hbase-client")
     exclude("org.apache.zookeeper", "zookeeper")
     exclude("javax.servlet", "servlet-api")
