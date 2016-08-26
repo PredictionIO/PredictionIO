@@ -42,8 +42,10 @@ class HBLEvents(val client: HBClient, config: StorageClientConfig, val namespace
   def resultToEvent(result: Result, appId: Int): Event =
     HBEventsUtil.resultToEvent(result, appId)
 
-  def getTable(appId: Int, channelId: Option[Int] = None): Table =
-    client.connection.getTable(TableName.valueOf(HBEventsUtil.tableName(namespace, appId, channelId)))
+  def getTable(appId: Int, channelId: Option[Int] = None): Table = {
+    val table = TableName.valueOf(HBEventsUtil.tableName(namespace, appId, channelId))
+    client.connection.getTable(table)
+  }
 
   override
   def init(appId: Int, channelId: Option[Int] = None): Boolean = {
