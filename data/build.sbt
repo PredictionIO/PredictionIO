@@ -18,6 +18,7 @@
 name := "data"
 
 libraryDependencies ++= Seq(
+  "com.google.guava"        % "guava"          % "12.0.1",
   "com.github.nscala-time" %% "nscala-time"    % "2.6.0",
   "commons-codec"           % "commons-codec"  % "1.9",
   "io.spray"               %% "spray-can"      % "1.3.3",
@@ -26,11 +27,11 @@ libraryDependencies ++= Seq(
   "mysql"                   % "mysql-connector-java" % "5.1.37",
   "org.apache.hadoop"       % "hadoop-common"  % "2.6.2"
     exclude("javax.servlet", "servlet-api"),
-  "org.apache.hbase"        % "hbase-common"   % "0.98.5-hadoop2",
-  "org.apache.hbase"        % "hbase-client"   % "0.98.5-hadoop2"
+  "org.apache.hbase"        % "hbase-common"   % "1.1.1",
+  "org.apache.hbase"        % "hbase-client"   % "1.1.1"
     exclude("org.apache.zookeeper", "zookeeper"),
   // added for Parallel storage interface
-  "org.apache.hbase"        % "hbase-server"   % "0.98.5-hadoop2"
+  "org.apache.hbase"        % "hbase-server"   % "1.1.1"
     exclude("org.apache.hbase", "hbase-client")
     exclude("org.apache.zookeeper", "zookeeper")
     exclude("javax.servlet", "servlet-api")

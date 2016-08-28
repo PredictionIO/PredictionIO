@@ -25,16 +25,17 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.HBaseConfiguration
 import org.apache.hadoop.hbase.MasterNotRunningException
 import org.apache.hadoop.hbase.ZooKeeperConnectionException
-import org.apache.hadoop.hbase.client.HConnectionManager
-import org.apache.hadoop.hbase.client.HConnection
+import org.apache.hadoop.hbase.client.ConnectionFactory
+import org.apache.hadoop.hbase.client.Connection
+import org.apache.hadoop.hbase.client.Admin
 import org.apache.hadoop.hbase.client.HBaseAdmin
 
 import grizzled.slf4j.Logging
 
 case class HBClient(
   val conf: Configuration,
-  val connection: HConnection,
-  val admin: HBaseAdmin
+  val connection: Connection,
+  val admin: Admin
 )
 
 class StorageClient(val config: StorageClientConfig)
@@ -73,12 +74,12 @@ class StorageClient(val config: StorageClientConfig)
     }
   }
 
-  val connection = HConnectionManager.createConnection(conf)
+  val connection = ConnectionFactory.createConnection(conf)
 
   val client = HBClient(
     conf = conf,
     connection = connection,
-    admin = new HBaseAdmin(connection)
+    admin = connection.getAdmin()
   )
 
   override
