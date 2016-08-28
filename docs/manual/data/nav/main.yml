@@ -165,7 +165,7 @@ root:
     children:
       -
         body: 'Browse'
-        url: '/templates'
+        url: '/gallery/template-gallery/'
       -
         body: 'Submit your Engine as a Template'
         url: '/community/submit-template/'
