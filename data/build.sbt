@@ -18,6 +18,7 @@
 name := "data"
 
 libraryDependencies ++= Seq(
+  "com.google.guava"        % "guava"          % "12.0.1",
   "com.github.nscala-time" %% "nscala-time"    % "2.6.0",
   "commons-codec"           % "commons-codec"  % "1.9",
   "io.spray"               %% "spray-can"      % "1.3.3",
