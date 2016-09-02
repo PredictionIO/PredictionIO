@@ -32,7 +32,7 @@ search() {
   echo ${i}
 }
 
-export PIO_HOME="$(cd `dirname $0`/..; pwd)"
+export PIO_HOME="$(cd $(dirname $(readlink -f $0))/..; pwd)"
 
 export PIO_CONF_DIR="${PIO_HOME}/conf"
 
