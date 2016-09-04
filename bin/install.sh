@@ -305,7 +305,7 @@ echo "export PATH=\$PATH:$pio_dir/bin" >> ${USER_PROFILE}
 
 echo -e "\033[1;32mPredictionIO setup done!\033[0m"
 
-mkdir ${vendors_dir}
+mkdir -p ${vendors_dir}
 
 # Spark
 echo -e "\033[1;36mStarting Spark setup in:\033[0m $spark_dir"
