@@ -622,3 +622,15 @@
     license: "-"
     status: requested
     pio_min_version: "-"
+    
+- template:
+    name: Sentiment Analysis - Bag of words model
+    repo: "https://github.com/peoplehum/BagOfWords_SentimentAnalysis_Template"
+    description: |-
+      This Sentiment analysis template follows Bag of words model. Given text, engine will return sentiment as 1.0(positive) or 0.0(negative) along with it's score referring how much it is +ve or -ve.
+    tags: [nlp]
+    type: Parallel
+    language: Scala
+    license: "Apache Licence 2.0"
+    status: stable
+    pio_min_version: 0.9.7
