@@ -23,7 +23,12 @@ version in ThisBuild := "0.10.0-SNAPSHOT"
 
 organization in ThisBuild := "org.apache.predictionio"
 
-scalaVersion in ThisBuild := "2.10.5"
+scalaVersion in ThisBuild := "2.11.8"
+
+lazy val oldScalaVersion = "2.10.5"
+lazy val newScalaVersion = "2.11.8"
+
+crossScalaVersions := Seq(oldScalaVersion, newScalaVersion)
 
 scalacOptions in ThisBuild ++= Seq("-deprecation", "-unchecked", "-feature")
 
@@ -38,7 +43,29 @@ elasticsearchVersion in ThisBuild := "1.4.4"
 
 json4sVersion in ThisBuild := "3.2.10"
 
-sparkVersion in ThisBuild := "1.4.0"
+sparkVersion in ThisBuild := getSparkVersion(scalaVersion.value)
+
+def getSparkVersion(scalaVersion: String) = scalaVersion match {
+  case `oldScalaVersion` => "1.6.2"
+  case `newScalaVersion` => "2.0.0"
+}
+
+akkaVersion in ThisBuild := getAkkaVersion(scalaVersion.value)
+
+def getAkkaVersion(scalaVersion: String) = scalaVersion match {
+  case `oldScalaVersion` => "2.3.15"
+  case `newScalaVersion` => "2.4.9"
+}
+
+hadoopVersion in ThisBuild := getHadoopVersion(scalaVersion.value)
+
+def getHadoopVersion(scalaVersion: String) = scalaVersion match {
+  case `oldScalaVersion` => "2.6.4"
+  case `newScalaVersion` => "2.7.3"
+}
+
+def scalaVersionPrefix(versionString: String) =
+  versionString.split('.').take(2).mkString(".")
 
 lazy val pioBuildInfoSettings = buildInfoSettings ++ Seq(
   sourceGenerators in Compile <+= buildInfo,
@@ -47,8 +74,14 @@ lazy val pioBuildInfoSettings = buildInfoSettings ++ Seq(
     version,
     scalaVersion,
     sbtVersion,
-    sparkVersion),
+    sparkVersion,
+    hadoopVersion),
   buildInfoPackage := "org.apache.predictionio.core")
+
+// Used temporarily to modify genjavadoc version to "0.10" until unidoc updates it
+lazy val genjavadocSettings: Seq[sbt.Def.Setting[_]] = Seq(
+  libraryDependencies += compilerPlugin("com.typesafe.genjavadoc" %% "genjavadoc-plugin" % "0.10" cross CrossVersion.full),
+    scalacOptions <+= target map (t => "-P:genjavadoc:out=" + (t / "java")))
 
 lazy val conf = file(".") / "conf"
 
@@ -72,7 +105,14 @@ lazy val core = (project in file("core")).
 lazy val data = (project in file("data")).
   dependsOn(common).
   settings(genjavadocSettings: _*).
-  settings(unmanagedClasspath in Test += conf)
+  settings(unmanagedClasspath in Test += conf).
+  settings(fullClasspath in Test ++= Seq(
+    baseDirectory.value / s"../core/target/scala-${scalaVersionPrefix(scalaVersion.value)}/classes",
+    baseDirectory.value / s"../core/target/scala-${scalaVersionPrefix(scalaVersion.value)}/test-classes"))
+    // Paths added above are required for the tests, since thread pools initialized
+    // in unit tests of data subproject are used later in spark jobs executed in core.
+    // They need to have properly configured classloaders to load core classes for spark
+    // in subsequent tests.
 
 lazy val tools = (project in file("tools")).
   dependsOn(core).

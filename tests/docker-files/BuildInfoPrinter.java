@@ -15,10 +15,16 @@
  * limitations under the License.
  */
 
-name := "common"
-libraryDependencies ++= Seq(
-  "io.spray"               %% "spray-can"        % "1.3.3",
-  "io.spray"               %% "spray-routing"    % "1.3.3",
-  "com.typesafe.akka"      %% "akka-actor"     % akkaVersion.value,
-  "com.typesafe.akka"      %% "akka-slf4j"     % akkaVersion.value
-)
+import org.apache.predictionio.core.BuildInfo;
+import java.util.Map;
+import java.lang.Iterable;
+
+class BuildInfoPrinter {
+  public static void main(String[] args) {
+    System.out.println("PIO_VERSION=" + BuildInfo.version());
+    System.out.println("PIO_SCALA_VERSION=" + BuildInfo.scalaVersion());
+    System.out.println("PIO_SBT_VERSION=" + BuildInfo.sbtVersion());
+    System.out.println("PIO_SPARK_VERSION=" + BuildInfo.sparkVersion());
+    System.out.println("PIO_HADOOP_VERSION=" + BuildInfo.hadoopVersion());
+  }
+}

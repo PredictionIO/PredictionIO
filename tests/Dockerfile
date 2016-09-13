@@ -17,7 +17,8 @@
 
 from ubuntu
 
-ENV SPARK_VERSION 1.4.0
+ENV SPARK_VERSION 2.0.0
+ENV SPARK_VERSION_OLD 1.6.2
 ENV ELASTICSEARCH_VERSION 1.4.4
 ENV HBASE_VERSION 1.0.0
 
@@ -40,12 +41,17 @@ RUN pip3 install --upgrade urllib3
 
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/jre
 
-RUN echo "== Installing Spark =="
+RUN echo "== Installing Spark $SPARK_VERSION =="
 RUN mkdir vendors
-RUN wget http://d3kbcqa49mib13.cloudfront.net/spark-${SPARK_VERSION}-bin-hadoop2.6.tgz
-RUN tar zxvfC spark-${SPARK_VERSION}-bin-hadoop2.6.tgz /vendors
-RUN rm spark-${SPARK_VERSION}-bin-hadoop2.6.tgz
-ENV SPARK_HOME /vendors/spark-${SPARK_VERSION}-bin-hadoop2.6
+RUN wget http://d3kbcqa49mib13.cloudfront.net/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz
+RUN tar zxvfC spark-${SPARK_VERSION}-bin-hadoop2.7.tgz /vendors
+RUN rm spark-${SPARK_VERSION}-bin-hadoop2.7.tgz
+ENV SPARK_HOME /vendors/spark-${SPARK_VERSION}-bin-hadoop2.7
+
+RUN echo "== Installing Spark $SPARK_VERSION_OLD =="
+RUN wget http://d3kbcqa49mib13.cloudfront.net/spark-${SPARK_VERSION_OLD}-bin-hadoop2.6.tgz
+RUN tar zxvfC spark-${SPARK_VERSION_OLD}-bin-hadoop2.6.tgz /vendors
+RUN rm spark-${SPARK_VERSION_OLD}-bin-hadoop2.6.tgz
 
 RUN echo "== Installing Elasticsearch =="
 RUN wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
@@ -61,7 +67,7 @@ ENV HBASE_HOME /vendors/hbase-${HBASE_VERSION}
 
 RUN echo "== Downloading database drivers =="
 RUN mkdir drivers
-RUN wget https://jdbc.postgresql.org/download/postgresql-9.4-1204.jdbc41.jar -P /drivers
+RUN wget https://jdbc.postgresql.org/download/postgresql-9.4.1209.jar -P /drivers
 
 RUN mkdir PredictionIO
 ENV PIO_HOME /PredictionIO
@@ -73,6 +79,9 @@ COPY docker-files/init.sh init.sh
 COPY docker-files/env-conf/spark-env.sh ${SPARK_HOME}/conf/spark-env.sh
 COPY docker-files/env-conf/hbase-site.xml ${HBASE_HOME}/conf/hbase-site.xml
 COPY docker-files/env-conf/pio-env.sh /pio-env.sh
+
+RUN mkdir utils
+COPY docker-files/BuildInfoPrinter.java /utils/BuildInfoPrinter.java
 
 # Default repositories setup
 ENV PIO_STORAGE_REPOSITORIES_METADATA_SOURCE PGSQL

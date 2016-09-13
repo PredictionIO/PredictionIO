@@ -22,15 +22,21 @@ if [[ $BUILD_TYPE == Unit ]]; then
   # Run license check
   ./tests/check_license.sh
 
+  if [[ $PIO_SCALA_VERSION == 2.10.5 ]]; then
+    export SPARK_HOME=`pwd`/vendors/spark-1.6.2-bin-hadoop2.6
+  else
+    export SPARK_HOME=`pwd`/vendors/spark-2.0.0-bin-hadoop2.7
+  fi
+
   # Prepare pio environment variables
   set -a
   source conf/pio-env.sh.travis
   set +a
 
   # Run stylecheck
-  sbt scalastyle
+  sbt ++$PIO_SCALA_VERSION scalastyle
   # Run all unit tests
-  sbt test
+  sbt ++$PIO_SCALA_VERSION test
 
 else
   REPO=`pwd`

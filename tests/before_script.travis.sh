@@ -21,11 +21,18 @@ set -e
 if [[ $BUILD_TYPE == Unit ]]; then
   # Download spark, hbase
   mkdir vendors
-  wget http://d3kbcqa49mib13.cloudfront.net/spark-1.3.0-bin-hadoop2.4.tgz
-  tar zxfC spark-1.3.0-bin-hadoop2.4.tgz vendors
+  if [[ $PIO_SCALA_VERSION == 2.10.5 ]]; then
+    wget http://d3kbcqa49mib13.cloudfront.net/spark-1.6.2-bin-hadoop2.6.tgz
+    tar zxfC spark-1.6.2-bin-hadoop2.6.tgz vendors
+    export SPARK_HOME=`pwd`/vendors/spark-1.6.2-bin-hadoop2.6
+  else
+    wget http://d3kbcqa49mib13.cloudfront.net/spark-2.0.0-bin-hadoop2.7.tgz
+    tar zxfC spark-2.0.0-bin-hadoop2.7.tgz vendors
+    export SPARK_HOME=`pwd`/vendors/spark-2.0.0-bin-hadoop2.7
+  fi
+
   wget http://archive.apache.org/dist/hbase/hbase-1.0.0/hbase-1.0.0-bin.tar.gz
   tar zxfC hbase-1.0.0-bin.tar.gz vendors
-
   # Prepare pio environment variables
   set -a
   source conf/pio-env.sh.travis
@@ -36,5 +43,5 @@ if [[ $BUILD_TYPE == Unit ]]; then
   ./bin/travis/pio-start-travis
 
 else # Integration Tests
-  ./make-distribution.sh
+  ./make-distribution.sh $PIO_SCALA_VERSION
 fi

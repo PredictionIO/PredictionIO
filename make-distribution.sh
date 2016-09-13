@@ -23,11 +23,16 @@ FWDIR="$(cd `dirname $0`; pwd)"
 DISTDIR="${FWDIR}/dist"
 
 VERSION=$(grep version ${FWDIR}/build.sbt | grep ThisBuild | grep -o '".*"' | sed 's/"//g')
+if ! [ -z "$1" ]; then
+  SCALA_VERSION="++$1"
+else
+  SCALA_VERSION=""
+fi
 
 echo "Building binary distribution for PredictionIO $VERSION..."
 
 cd ${FWDIR}
-sbt/sbt common/publishLocal core/publishLocal data/publishLocal e2/publishLocal tools/assembly
+sbt/sbt ${SCALA_VERSION} common/publishLocal core/publishLocal data/publishLocal e2/publishLocal tools/assembly
 
 cd ${FWDIR}
 rm -rf ${DISTDIR}

@@ -18,6 +18,27 @@
 
 set -e
 
+echo '== Copying distribution to PIO_HOME... =='
+DISTRIBUTION_TAR=`find /pio_host -maxdepth 1 -name PredictionIO*SNAPSHOT.tar.gz | head -1`
+tar zxvfC $DISTRIBUTION_TAR /
+DIR_NAME=/`basename $DISTRIBUTION_TAR`
+DIR_NAME=${DIR_NAME%.tar.gz}
+mv $DIR_NAME/* $PIO_HOME/
+mv /pio-env.sh $PIO_HOME/conf/pio-env.sh
+
+echo '== Setting environment variables... =='
+ASSEMBLY_JAR=`find $PIO_HOME/lib -maxdepth 1 -name pio-assembly-*SNAPSHOT.jar`
+javac -cp $ASSEMBLY_JAR /utils/BuildInfoPrinter.java
+java -cp $ASSEMBLY_JAR:/utils/ BuildInfoPrinter > /tmp/envs.sh
+set -a
+. /tmp/envs.sh
+set +a
+cat /tmp/envs.sh
+rm -fr /tmp/envs.sh
+rm -fr /utils/BuildInfoPrinter.java
+HADOOP_MINOR=`echo $PIO_HADOOP_VERSION | awk -F. '{print $1 "." $2}'`
+export SPARK_HOME=/vendors/spark-${PIO_SPARK_VERSION}-bin-hadoop${HADOOP_MINOR}
+
 echo '== Setting up Postgres... =='
 service postgresql start
 runuser postgres -c 'createuser -s root'
@@ -38,14 +59,6 @@ $SPARK_HOME/sbin/start-all.sh
 
 echo '== Starting Elasticsearch... =='
 $ELASTICSEARCH_HOME/bin/elasticsearch -d -p $PIO_HOME/es.pid
-
-echo '== Copying distribution to PIO_HOME... =='
-DISTRIBUTION_TAR=`find /pio_host -maxdepth 1 -name PredictionIO*SNAPSHOT.tar.gz | head -1`
-tar zxvfC $DISTRIBUTION_TAR /
-DIR_NAME=/`basename $DISTRIBUTION_TAR`
-DIR_NAME=${DIR_NAME%.tar.gz}
-mv $DIR_NAME/* $PIO_HOME/
-mv /pio-env.sh $PIO_HOME/conf/pio-env.sh
 
 echo '== Copying tests to a separate directory =='
 mkdir /tests

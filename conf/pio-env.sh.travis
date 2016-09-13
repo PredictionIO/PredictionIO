@@ -24,7 +24,8 @@
 # you need to change these to fit your site.
 
 # SPARK_HOME: Apache Spark is a hard dependency and must be configured.
-SPARK_HOME=$PIO_HOME/vendors/spark-1.3.0-bin-hadoop2.4
+# it is set up in script.travis.sh
+SPARK_HOME=$SPARK_HOME
 
 # Filesystem paths where PredictionIO uses as block storage.
 PIO_FS_BASEDIR=$HOME/.pio_store

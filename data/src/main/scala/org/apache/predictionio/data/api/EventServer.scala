@@ -48,8 +48,7 @@ import spray.httpx.Json4sSupport
 import spray.routing._
 import spray.routing.authentication.Authentication
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Try, Success, Failure}
 
 class  EventServiceActor(
@@ -635,7 +634,7 @@ object EventServer {
 }
 
 object Run {
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     EventServer.createEventServer(EventServerConfig(
       ip = "0.0.0.0",
       port = 7070))

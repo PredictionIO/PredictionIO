@@ -15,10 +15,16 @@
  * limitations under the License.
  */
 
-name := "common"
-libraryDependencies ++= Seq(
-  "io.spray"               %% "spray-can"        % "1.3.3",
-  "io.spray"               %% "spray-routing"    % "1.3.3",
-  "com.typesafe.akka"      %% "akka-actor"     % akkaVersion.value,
-  "com.typesafe.akka"      %% "akka-slf4j"     % akkaVersion.value
-)
+
+package org.apache.predictionio.data
+
+import org.apache.spark.SparkContext
+import org.apache.spark.sql.SQLContext
+
+object SparkVersionDependent {
+
+  def sqlSession(sc: SparkContext): SQLContext = {
+    return new SQLContext(sc)
+  }
+
+}
