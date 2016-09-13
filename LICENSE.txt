@@ -208,7 +208,7 @@ PredictionIO Subcomponents:
 
 The PredictionIO project contains subcomponents with separate copyright notices
 and license terms. Your use of the source code for these subcomponents is
-subject to the terms and conditions of the following licenses.
+subject to the terms and conditions of their licenses.
 
 
 ================================================================================
@@ -299,3 +299,4 @@ This work is licensed under a Creative Commons
 Attribution-NonCommercial-ShareAlike 3.0 Unported License.
 
 http://creativecommons.org/licenses/by-nc-sa/3.0/
+
