@@ -22,12 +22,12 @@ set -e
 FWDIR="$(cd `dirname $0`; pwd)"
 DISTDIR="${FWDIR}/dist"
 
-VERSION=$(grep version ${FWDIR}/build.sbt | grep ThisBuild | grep -o '".*"' | sed 's/"//g')
+VERSION=$(grep ^version ${FWDIR}/build.sbt | grep ThisBuild | grep -o '".*"' | sed 's/"//g')
 
 echo "Building binary distribution for PredictionIO $VERSION..."
 
 cd ${FWDIR}
-sbt/sbt common/publishLocal core/publishLocal data/publishLocal e2/publishLocal tools/assembly
+sbt/sbt "$@" common/publishLocal core/publishLocal data/publishLocal e2/publishLocal tools/assembly
 
 cd ${FWDIR}
 rm -rf ${DISTDIR}

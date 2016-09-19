@@ -17,7 +17,8 @@
 
 name := "common"
 libraryDependencies ++= Seq(
-  "io.spray"               %% "spray-can"        % "1.3.2",
-  "io.spray"               %% "spray-routing"    % "1.3.2",
-  "org.spark-project.akka" %% "akka-actor"     % "2.3.4-spark"
+  "io.spray"               %% "spray-can"      % "1.3.3",
+  "io.spray"               %% "spray-routing"  % "1.3.3",
+  "com.typesafe.akka"      %% "akka-actor"     % akkaVersion.value,
+  "com.typesafe.akka"      %% "akka-slf4j"     % akkaVersion.value
 )

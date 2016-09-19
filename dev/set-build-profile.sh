@@ -16,29 +16,17 @@
 # limitations under the License.
 #
 
+# This script reads specification of the chosen profile from sbt config
+# and exports variables with versions of the dependencies, e.g:
+# SPARK_VERSION=2.0.0
+
 set -e
 
-if [[ $BUILD_TYPE == Unit ]]; then
-  # Run license check
-  ./tests/check_license.sh
-
-  source dev/set-build-profile.sh $BUILD_PROFILE
-  source conf/vendors.sh
-  export SPARK_HOME=`pwd`/vendors/$SPARK_DIRNAME
-
-  # Prepare pio environment variables
-  set -a
-  source conf/pio-env.sh.travis
-  set +a
-
-  # Run stylecheck
-  sbt -Dbuild.profile=$BUILD_PROFILE scalastyle
-  # Run all unit tests
-  sbt -Dbuild.profile=$BUILD_PROFILE test
-
-else
-  REPO=`pwd`
-
-  ./tests/run_docker.sh $METADATA_REP $EVENTDATA_REP $MODELDATA_REP \
-    $REPO 'python3 /tests/pio_tests/tests.py'
+if [[ "$#" -ne 1 ]]; then
+  echo "Usage: set-build-profile.sh <build-profile>"
+  exit 1
 fi
+
+set -a
+eval `sbt --warn --error 'set showSuccess := false' -Dbuild.profile=$1 printProfile | grep '.*_VERSION=.*'`
+set +a

@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-import AssemblyKeys._
+import org.apache.predictionio.core.BuildInfo;
+import java.util.Map;
+import java.lang.Iterable;
 
-assemblySettings
-
-scalaVersion in ThisBuild := sys.env.getOrElse("PIO_SCALA_VERSION", "2.11.8")
-
-name := "template-scala-parallel-recommendation"
-
-organization := "org.apache.predictionio"
-
-libraryDependencies ++= Seq(
-  "org.apache.predictionio"    %% "core" % pioVersion.value % "provided",
-  "org.apache.spark" %% "spark-core"    % sys.env.getOrElse("PIO_SPARK_VERSION", "2.0.0") % "provided",
-  "org.apache.spark" %% "spark-mllib"   % sys.env.getOrElse("PIO_SPARK_VERSION", "2.0.0") % "provided")
+class BuildInfoPrinter {
+  public static void main(String[] args) {
+    System.out.println("PIO_VERSION=" + BuildInfo.version());
+    System.out.println("PIO_SCALA_VERSION=" + BuildInfo.scalaVersion());
+    System.out.println("PIO_SBT_VERSION=" + BuildInfo.sbtVersion());
+    System.out.println("PIO_SPARK_VERSION=" + BuildInfo.sparkVersion());
+    System.out.println("PIO_HADOOP_VERSION=" + BuildInfo.hadoopVersion());
+    System.out.println("PIO_ELASTICSEARCH_VERSION=" + BuildInfo.elasticsearchVersion());
+  }
+}

@@ -15,17 +15,16 @@
  * limitations under the License.
  */
 
-import AssemblyKeys._
 
-assemblySettings
+package org.apache.predictionio.data
 
-scalaVersion in ThisBuild := sys.env.getOrElse("PIO_SCALA_VERSION", "2.11.8")
+import org.apache.spark.SparkContext
+import org.apache.spark.sql.SparkSession
 
-name := "template-scala-parallel-recommendation"
+object SparkVersionDependent {
 
-organization := "org.apache.predictionio"
+  def sqlSession(sc: SparkContext): SparkSession = {
+    SparkSession.builder().getOrCreate()
+  }
 
-libraryDependencies ++= Seq(
-  "org.apache.predictionio"    %% "core" % pioVersion.value % "provided",
-  "org.apache.spark" %% "spark-core"    % sys.env.getOrElse("PIO_SPARK_VERSION", "2.0.0") % "provided",
-  "org.apache.spark" %% "spark-mllib"   % sys.env.getOrElse("PIO_SPARK_VERSION", "2.0.0") % "provided")
+}

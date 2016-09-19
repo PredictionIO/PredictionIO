@@ -18,27 +18,29 @@
 
 set -e
 
-if [[ $BUILD_TYPE == Unit ]]; then
-  # Run license check
-  ./tests/check_license.sh
-
-  source dev/set-build-profile.sh $BUILD_PROFILE
-  source conf/vendors.sh
-  export SPARK_HOME=`pwd`/vendors/$SPARK_DIRNAME
-
-  # Prepare pio environment variables
-  set -a
-  source conf/pio-env.sh.travis
-  set +a
-
-  # Run stylecheck
-  sbt -Dbuild.profile=$BUILD_PROFILE scalastyle
-  # Run all unit tests
-  sbt -Dbuild.profile=$BUILD_PROFILE test
-
-else
-  REPO=`pwd`
-
-  ./tests/run_docker.sh $METADATA_REP $EVENTDATA_REP $MODELDATA_REP \
-    $REPO 'python3 /tests/pio_tests/tests.py'
+if [[ "$#" -ne 1 ]]; then
+  echo "Usage: docker-build.sh <image-name>"
+  exit 1
 fi
+
+cd `dirname $(dirname $0)`
+
+source ./dev/set-build-profile.sh scala-2.10
+SPARK_VERSION_OLD=$SPARK_VERSION
+HADOOP_VERSION_OLD=$HADOOP_VERSION
+
+source ./dev/set-build-profile.sh scala-2.11
+
+HBASE_VERSION=1.0.0
+
+cp ./conf/vendors.sh ./tests/docker-files/
+
+docker build -t $1 ./tests \
+  --build-arg SPARK_VERSION=$SPARK_VERSION \
+  --build-arg SPARK_VERSION_OLD=$SPARK_VERSION_OLD \
+  --build-arg HADOOP_VERSION=$HADOOP_VERSION \
+  --build-arg HADOOP_VERSION_OLD=$HADOOP_VERSION_OLD \
+  --build-arg ELASTICSEARCH_VERSION=$ELASTICSEARCH_VERSION \
+  --build-arg HBASE_VERSION=$HBASE_VERSION
+
+rm -fr ./tests/docker-files/vendors.sh

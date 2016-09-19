@@ -18,14 +18,23 @@
 
 set -e
 
+HBASE_VERSION=1.0.0
+
 if [[ $BUILD_TYPE == Unit ]]; then
   # Download spark, hbase
   mkdir vendors
-  wget http://d3kbcqa49mib13.cloudfront.net/spark-1.3.0-bin-hadoop2.4.tgz
-  tar zxfC spark-1.3.0-bin-hadoop2.4.tgz vendors
-  wget http://archive.apache.org/dist/hbase/hbase-1.0.0/hbase-1.0.0-bin.tar.gz
-  tar zxfC hbase-1.0.0-bin.tar.gz vendors
+  set -a
+  source dev/set-build-profile.sh $BUILD_PROFILE
+  source conf/vendors.sh
+  set +a
 
+  dev/retry_command.sh wget $SPARK_DOWNLOAD
+  tar zxfC $SPARK_ARCHIVE vendors
+  export SPARK_HOME=`pwd`/vendors/$SPARK_DIRNAME
+
+  dev/retry_command.sh wget $HBASE_DOWNLOAD
+  tar zxfC $HBASE_ARCHIVE vendors
+  export HBASE_HOME=`pwd`/vendors/$HBASE_DIRNAME
   # Prepare pio environment variables
   set -a
   source conf/pio-env.sh.travis
@@ -36,5 +45,5 @@ if [[ $BUILD_TYPE == Unit ]]; then
   ./bin/travis/pio-start-travis
 
 else # Integration Tests
-  ./make-distribution.sh
+  dev/retry_command.sh ./make-distribution.sh -Dbuild.profile=$BUILD_PROFILE
 fi

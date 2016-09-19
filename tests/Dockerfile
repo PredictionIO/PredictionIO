@@ -17,9 +17,19 @@
 
 from ubuntu
 
-ENV SPARK_VERSION 1.4.0
-ENV ELASTICSEARCH_VERSION 1.4.4
-ENV HBASE_VERSION 1.0.0
+ARG SPARK_VERSION=2.0.0
+ARG HADOOP_VERSION=2.7.3
+ARG SPARK_VERSION_OLD=1.6.2
+ARG HADOOP_VERSION_OLD=2.6.4
+ARG ELASTICSEARCH_VERSION=1.4.4
+ARG HBASE_VERSION=1.0.0
+
+ENV SPARK_VERSION ${SPARK_VERSION}
+ENV HADOOP_VERSION ${HADOOP_VERSION}
+ENV SPARK_VERSION_OLD ${SPARK_VERSION_OLD}
+ENV HADOOP_VERSION_OLD ${HADOOP_VERSION_OLD}
+ENV ELASTICSEARCH_VERSION ${ELASTICSEARCH_VERSION}
+ENV HBASE_VERSION ${HBASE_VERSION}
 
 RUN echo "== Updating system =="
 RUN apt-get update -y
@@ -40,28 +50,16 @@ RUN pip3 install --upgrade urllib3
 
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/jre
 
-RUN echo "== Installing Spark =="
-RUN mkdir vendors
-RUN wget http://d3kbcqa49mib13.cloudfront.net/spark-${SPARK_VERSION}-bin-hadoop2.6.tgz
-RUN tar zxvfC spark-${SPARK_VERSION}-bin-hadoop2.6.tgz /vendors
-RUN rm spark-${SPARK_VERSION}-bin-hadoop2.6.tgz
-ENV SPARK_HOME /vendors/spark-${SPARK_VERSION}-bin-hadoop2.6
-
-RUN echo "== Installing Elasticsearch =="
-RUN wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
-RUN tar zxvfC elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz /vendors
-RUN rm elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
-ENV ELASTICSEARCH_HOME /vendors/elasticsearch-${ELASTICSEARCH_VERSION}
-
-RUN echo "== Installing HBase =="
-RUN wget http://archive.apache.org/dist/hbase/hbase-${HBASE_VERSION}/hbase-${HBASE_VERSION}-bin.tar.gz
-RUN tar zxvfC hbase-${HBASE_VERSION}-bin.tar.gz /vendors
-RUN rm hbase-${HBASE_VERSION}-bin.tar.gz
-ENV HBASE_HOME /vendors/hbase-${HBASE_VERSION}
+RUN echo "== Installing vendors =="
+RUN mkdir /vendors
+RUN mkdir /utils
+COPY docker-files/vendors.sh /utils/
+COPY docker-files/install-vendors.sh /utils/
+RUN /utils/install-vendors.sh /vendors /utils/vendors.sh
 
 RUN echo "== Downloading database drivers =="
 RUN mkdir drivers
-RUN wget https://jdbc.postgresql.org/download/postgresql-9.4-1204.jdbc41.jar -P /drivers
+RUN wget https://jdbc.postgresql.org/download/postgresql-9.4.1209.jar -P /drivers
 
 RUN mkdir PredictionIO
 ENV PIO_HOME /PredictionIO
@@ -73,6 +71,8 @@ COPY docker-files/init.sh init.sh
 COPY docker-files/env-conf/spark-env.sh ${SPARK_HOME}/conf/spark-env.sh
 COPY docker-files/env-conf/hbase-site.xml ${HBASE_HOME}/conf/hbase-site.xml
 COPY docker-files/env-conf/pio-env.sh /pio-env.sh
+
+COPY docker-files/BuildInfoPrinter.java /utils/BuildInfoPrinter.java
 
 # Default repositories setup
 ENV PIO_STORAGE_REPOSITORIES_METADATA_SOURCE PGSQL

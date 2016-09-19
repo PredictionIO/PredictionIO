@@ -20,6 +20,7 @@ package org.apache.predictionio.data.view
 
 import org.apache.predictionio.annotation.Experimental
 import org.apache.predictionio.data.storage.Event
+import org.apache.predictionio.data.SparkVersionDependent
 
 import grizzled.slf4j.Logger
 import org.apache.predictionio.data.store.PEventStore
@@ -27,7 +28,7 @@ import org.apache.predictionio.data.store.PEventStore
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.SaveMode
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.SparkContext
 import org.joda.time.DateTime
 
 import scala.reflect.ClassTag
@@ -64,11 +65,11 @@ object DataView {
     untilTime: Option[DateTime] = None,
     conversionFunction: Event => Option[E],
     name: String = "",
-    version: String = "")(sqlContext: SQLContext): DataFrame = {
+    version: String = "")(sc: SparkContext): DataFrame = {
 
     @transient lazy val logger = Logger[this.type]
 
-    val sc = sqlContext.sparkContext
+    val sqlSession = SparkVersionDependent.sqlSession(sc)
 
     val beginTime = startTime match {
       case Some(t) => t
@@ -85,7 +86,7 @@ object DataView {
     val baseDir = s"${sys.env("PIO_FS_BASEDIR")}/view"
     val fileName = s"$baseDir/$name-$appName-$hash.parquet"
     try {
-      sqlContext.read.parquet(fileName)
+      sqlSession.read.parquet(fileName)
     } catch {
       case e: java.io.FileNotFoundException =>
         logger.info("Cached copy not found, reading from DB.")
@@ -96,11 +97,11 @@ object DataView {
             startTime = startTime,
             untilTime = Some(endTime))(sc)
           .flatMap((e) => conversionFunction(e))
-        import sqlContext.implicits._ // needed for RDD.toDF()
+        import sqlSession.implicits._ // needed for RDD.toDF()
         val resultDF = result.toDF()
 
         resultDF.write.mode(SaveMode.ErrorIfExists).parquet(fileName)
-        sqlContext.read.parquet(fileName)
+        sqlSession.read.parquet(fileName)
       case e: java.lang.RuntimeException =>
         if (e.toString.contains("is not a Parquet file")) {
           logger.error(s"$fileName does not contain a valid Parquet file. " +

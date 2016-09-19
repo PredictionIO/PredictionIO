@@ -16,29 +16,23 @@
 # limitations under the License.
 #
 
-set -e
+# This script retries the provided command $RETRIES_NUMBER times (3 by default).
 
-if [[ $BUILD_TYPE == Unit ]]; then
-  # Run license check
-  ./tests/check_license.sh
-
-  source dev/set-build-profile.sh $BUILD_PROFILE
-  source conf/vendors.sh
-  export SPARK_HOME=`pwd`/vendors/$SPARK_DIRNAME
-
-  # Prepare pio environment variables
-  set -a
-  source conf/pio-env.sh.travis
-  set +a
-
-  # Run stylecheck
-  sbt -Dbuild.profile=$BUILD_PROFILE scalastyle
-  # Run all unit tests
-  sbt -Dbuild.profile=$BUILD_PROFILE test
-
-else
-  REPO=`pwd`
-
-  ./tests/run_docker.sh $METADATA_REP $EVENTDATA_REP $MODELDATA_REP \
-    $REPO 'python3 /tests/pio_tests/tests.py'
+if [ -n $RETRIES_NUMBER ]; then
+  RETRIES_NUMBER=3
 fi
+
+COMMAND_RESULT=1
+n=0
+until [ $COMMAND_RESULT -eq 0 ] || [ $n -eq $RETRIES_NUMBER ]; do
+  echo -- $((n+1))/$RETRIES_NUMBER Trying cmd: \""$@"\"
+  eval $@
+  COMMAND_RESULT=$?
+  n=$[$n+1]
+done
+
+if [ $COMMAND_RESULT -ne 0 ]; then
+  echo -- Cmd \""$@"\" failed $RETRIES_NUMBER times!
+fi
+
+exit $COMMAND_RESULT
