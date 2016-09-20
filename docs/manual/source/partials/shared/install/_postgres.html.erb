@@ -22,6 +22,13 @@ If you get an error of the form `could not connect to server: No such file or di
 $ pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
 ```
 
+You also need to download JDBC driver from [JDBC-postgresql](https://jdbc.postgresql.org/download.html).
+Put in `/lib` directory and change settings in PredictionIO-0.9.6/conf/pio-env.sh.
+
+```
+POSTGRES_JDBC_DRIVER=$PIO_HOME/lib/postgresql-9.4.1210.jre7.jar
+```
+
 Finally use the command:
 
 ```
