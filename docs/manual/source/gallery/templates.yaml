@@ -123,6 +123,20 @@
     license: "Apache Licence 2.0"
     status: stable
     pio_min_version: 0.9.2
+    
+- template:
+    name: Classification
+    repo: "https://github.com/haricharan123/PredictionIo-lingpipe-MultiLabelClassification"
+    description: |-
+      This engine template is an almost-complete implementation of an engine meant to used with PredictionIO. This multi label Classification Engine Template has integrated Lingpipe (http://alias-i.com/lingpipe/) algorithm by default.
+    tags: [classification]
+    type: Parallel
+    language: Java
+    license: "Apache Licence 2.0"
+    status: stable
+    pio_min_version: 0.9.5
+    
+    
 
 - template:
     name: Content Based SVD Item Similarity Engine
