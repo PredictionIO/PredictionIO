@@ -48,13 +48,17 @@ NOTE: You can customize to use other event.
 
 Next, let's collect some training data. By default,
 the Recommendation Engine Template supports 2 types of events: **rate** and
-**buy**. A user can give a rating score to an item or he can buy an item. This template requires user-view-item and user-buy-item events.
+**buy**. A user can give a rating score to an item or buy an item. This template requires user-view-item and user-buy-item events.
 
 INFO: This template can easily be customized to consider more user events such as *like*, *dislike* etc.
 
 <%= partial 'shared/quickstart/collect_data' %>
 
-For example, when a user with ID "u0" rate an item with ID "i0" with rating of 5 on time `2014-11-02T09:39:45.618-08:00` (current time will be used if eventTime is not specified), you can send the following "rate" event. Run the following `curl` command:
+### Example **rate** event
+
+A user (ID "u0") gives an item (ID "i0") a rating of 5 at `2014-11-02T09:39:45.618-08:00` (current time will be used if eventTime is not specified)
+
+Run the following `curl` command to send the `rate` event:
 
 <div class="tabs">
   <div data-tab="REST API" data-lang="json">
@@ -156,7 +160,11 @@ client.createEvent(rateEvent);
   </div>
 </div>
 
-When a user with ID "u1" buy an item with ID "i2" on time `2014-11-10T12:34:56.123-08:00` (current time will be used if eventTime is not specified), you can send the following "rate" event. Run the following `curl` command:
+### Example **buy** event
+    
+A user (ID "u1") buys an item (ID "i2") at `2014-11-10T12:34:56.123-08:00` (current time will be used if eventTime is not specified) 
+    
+Run the following `curl` command to send the `buy` event:
 
 <div class="tabs">
   <div data-tab="REST API" data-lang="json">
