@@ -17,9 +17,9 @@
 
 import UnidocKeys._
 
-name := "pio"
+name := "apache-predictionio-parent"
 
-version in ThisBuild := "0.10.0-SNAPSHOT"
+version in ThisBuild := "0.10.0-incubating"
 
 organization in ThisBuild := "org.apache.predictionio"
 
@@ -161,26 +161,35 @@ pioUnidoc := {
     IO.read(baseDirectory.value / "docs" / "scaladoc" / "api-docs.js"))
 }
 
-pomExtra in ThisBuild := {
-  <url>http://predictionio.incubator.apache.org</url>
-  <licenses>
-    <license>
-      <name>Apache 2</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    </license>
-  </licenses>
+homepage := Some(url("http://predictionio.incubator.apache.org"))
+
+pomExtra := {
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>18</version>
+  </parent>
   <scm>
     <connection>scm:git:github.com/apache/incubator-predictionio</connection>
-    <developerConnection>scm:git:git@github.com:apache/incubator-predictionio.git</developerConnection>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/incubator-predictionio.git</developerConnection>
     <url>github.com/apache/incubator-predictionio</url>
   </scm>
   <developers>
     <developer>
-      <id>pio</id>
-      <name>The PredictionIO Team</name>
+      <id>donald</id>
+      <name>Donald Szeto</name>
       <url>http://predictionio.incubator.apache.org</url>
+      <email>donald@apache.org</email>
     </developer>
   </developers>
+}
+
+childrenPomExtra in ThisBuild := {
+  <parent>
+    <groupId>org.apache.predictionio</groupId>
+    <artifactId>predictionio-parent_{scalaBinaryVersion.value}</artifactId>
+    <version>{version.value}</version>
+  </parent>
 }
 
 concurrentRestrictions in Global := Seq(

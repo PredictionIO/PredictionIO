@@ -1,3 +1,6 @@
+# Bower
+/bower_components
+
 # Bundler
 /.bundle
 

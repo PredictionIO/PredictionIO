@@ -17,6 +17,7 @@ unidoc.sbt
 spark-defaults.conf
 Gemfile.lock
 templates.yaml
+semver.sh
 
 PredictionIO-.*/*
 bower_components/*

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-name := "core"
+name := "apache-predictionio-core"
 
 libraryDependencies ++= Seq(
   "com.github.scopt"       %% "scopt"            % "3.3.0",
@@ -43,3 +43,5 @@ libraryDependencies ++= Seq(
 //testOptions := Seq(Tests.Filter(s => Seq("Dev").exists(s.contains(_))))
 
 parallelExecution in Test := false
+
+pomExtra := childrenPomExtra.value

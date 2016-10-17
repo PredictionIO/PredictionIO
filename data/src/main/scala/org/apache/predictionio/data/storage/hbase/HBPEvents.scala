@@ -15,20 +15,15 @@
  * limitations under the License.
  */
 
-
 package org.apache.predictionio.data.storage.hbase
 
-import org.apache.predictionio.data.storage.Event
-import org.apache.predictionio.data.storage.PEvents
-import org.apache.predictionio.data.storage.StorageClientConfig
-import org.apache.hadoop.hbase.{TableName, HBaseConfiguration}
-import org.apache.hadoop.hbase.client.{HTable, Delete, Result}
+import org.apache.hadoop.hbase.HBaseConfiguration
+import org.apache.hadoop.hbase.client.{Delete, HTable, Result}
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
-import org.apache.hadoop.hbase.mapreduce.PIOHBaseUtil
-import org.apache.hadoop.hbase.mapreduce.TableInputFormat
-import org.apache.hadoop.hbase.mapreduce.TableOutputFormat
+import org.apache.hadoop.hbase.mapreduce.{TableInputFormat, TableOutputFormat}
 import org.apache.hadoop.io.Writable
 import org.apache.hadoop.mapreduce.OutputFormat
+import org.apache.predictionio.data.storage.{Event, PEvents, StorageClientConfig}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.joda.time.DateTime

@@ -1,12 +1,13 @@
 {
-  "name": "docs.prediction.io",
+  "name": "predictionio.incubator.apache.org",
   "version": "2.0.0",
   "authors": [
-    "David Singer <david@ramaboo.com>"
+    "David Singer <david@ramaboo.com>",
+    "Donald Szeto <donald@apache.org>"
   ],
-  "description": "PredictionIO Docs",
-  "license": "Apache 2",
-  "homepage": "docs.prediction.io",
+  "description": "Apache PredictionIO (incubating) Documentation",
+  "license": "Apache-2.0",
+  "homepage": "predictionio.incubator.apache.org",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -16,6 +17,7 @@
     "jquery": "~2.1.1",
     "normalize.css": "~3.0.2",
     "Slidebars": "~0.10.2",
-    "Tabslet": "~1.4.8"
+    "Tabslet": "~1.4.8",
+    "jcarousel": "~0.3.3"
   }
 }

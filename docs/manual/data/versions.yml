@@ -1,4 +1,4 @@
-pio: 0.9.6
+pio: 0.10.0-incubating
 spark: 1.5.2
 spark_download_filename: spark-1.5.1-bin-hadoop2.6
 elasticsearch_download_filename: elasticsearch-1.4.4

@@ -1,1 +1,0 @@
-Don't use the development version in your production site. Instead, use the latest version in the distribution directory.

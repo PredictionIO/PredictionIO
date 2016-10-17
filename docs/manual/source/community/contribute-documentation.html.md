@@ -29,8 +29,9 @@ Front end code with [Bower](http://bower.io/).
 Requires [Ruby](https://www.ruby-lang.org/en/) 2.1 or greater. We recommend
 [RVM](http://rvm.io/) or [rbenv](https://github.com/sstephenson/rbenv).
 
-WARNING: **OS X** users you will need to install [Xcode Command Line Tools](https://developer.apple.com/xcode/downloads/)
-with: `$ xcode-select --install` first.
+WARNING: **OS X** users you will need to install [Xcode Command Line
+Tools](https://developer.apple.com/xcode/downloads/) with: `$ xcode-select
+--install` first.
 
 You can install everything with the following commands:
 
@@ -38,6 +39,8 @@ You can install everything with the following commands:
 $ cd docs/manual
 $ gem install bundler
 $ bundle install
+$ npm install -g bower
+$ bower install
 ```
 
 
@@ -192,4 +195,5 @@ The `rake check` task parses each HTML page in the `build` folder and checks it 
 
 ## License
 
-Documentation is under a [Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License](http://creativecommons.org/licenses/by-nc-sa/3.0/).
+Documentation is under a [Apache License Version
+2.0](https://www.apache.org/licenses/LICENSE-2.0).

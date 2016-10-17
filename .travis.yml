@@ -24,10 +24,8 @@
 #
 
 branches:
-  only:
-    - master
-    - develop
-    - testing-infrastructure
+  except:
+    - livedoc
 
 language: scala
 
@@ -48,13 +46,15 @@ services:
 
 sudo: required
 
-cache:
-  directories:
-    - $HOME/.ivy2/cache
-    - $HOME/.sbt/boot
-before_cache:
-  - find $HOME/.ivy2 -name "ivydata-*.properties" -delete
-  - find $HOME/.sbt -name "*.lock" -delete
+# cache:
+#   directories:
+#     - $HOME/.ivy2/cache
+#     - $HOME/.sbt/boot
+# before_cache:
+#   - find $HOME/.ivy2 -name "ivydata-*.properties" -delete
+#   - find $HOME/.sbt -name "*.lock" -delete
+
+cache: false
 
 env:
   global:
@@ -68,7 +68,7 @@ env:
 
 before_install:
   - unset SBT_OPTS JVM_OPTS
-  - docker pull ziemin/pio-testing
+  - docker pull predictionio/pio-testing
   - service haveged start
 
 before_script:

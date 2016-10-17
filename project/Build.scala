@@ -28,4 +28,7 @@ object PIOBuild extends Build {
   val sparkVersion = SettingKey[String](
     "spark-version",
     "The version of Apache Spark used for building.")
+  val childrenPomExtra = SettingKey[scala.xml.NodeSeq](
+    "children-pom-extra",
+    "Extra POM data for children projects.")
 }

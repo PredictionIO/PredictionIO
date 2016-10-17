@@ -1,8 +1,0 @@
-{
-  "name": "jcarousel",
-  "version": "0.3.3",
-  "main": "./dist/jquery.jcarousel.js",
-  "dependencies": {
-    "jquery": ">=1.7"
-  }
-}

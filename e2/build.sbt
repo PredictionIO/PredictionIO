@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-name := "e2"
+name := "apache-predictionio-e2"
 
 parallelExecution in Test := false
 
@@ -24,3 +24,5 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-mllib" % sparkVersion.value % "provided",
   "org.clapper" %% "grizzled-slf4j" % "1.0.2",
   "org.scalatest" %% "scalatest" % "2.2.5" % "test")
+
+pomExtra := childrenPomExtra.value

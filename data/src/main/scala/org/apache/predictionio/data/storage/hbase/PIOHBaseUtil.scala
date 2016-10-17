@@ -15,17 +15,18 @@
  * limitations under the License.
  */
 
-
-package org.apache.hadoop.hbase.mapreduce
-
-/* Pretends to be hbase.mapreduce package in order to expose its
- * Package-accessible only static function convertScanToString()
- */
+package org.apache.predictionio.data.storage.hbase
 
 import org.apache.hadoop.hbase.client.Scan
+import org.apache.hadoop.hbase.protobuf.ProtobufUtil
+import org.apache.hadoop.hbase.util.Base64
 
 object PIOHBaseUtil {
+  /*
+   * Copying this from Apache HBase because of its restrictive scope in 0.98.x
+   */
   def convertScanToString(scan: Scan): String = {
-    TableMapReduceUtil.convertScanToString(scan)
+    val proto = ProtobufUtil.toScan(scan)
+    Base64.encodeBytes(proto.toByteArray)
   }
 }
