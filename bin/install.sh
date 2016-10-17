@@ -18,7 +18,7 @@
 #
 
 OS=`uname`
-PIO_VERSION=0.10.0-SNAPSHOT
+PIO_VERSION=0.11.0-SNAPSHOT
 SPARK_VERSION=1.6.2
 # Looks like support for Elasticsearch 2.0 will require 2.0 so deferring
 ELASTICSEARCH_VERSION=1.7.5
