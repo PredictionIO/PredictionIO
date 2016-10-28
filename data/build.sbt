@@ -51,7 +51,8 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc"        %% "scalikejdbc"    % "2.3.5",
   "org.slf4j"               % "slf4j-log4j12"  % "1.7.18",
   "org.spark-project.akka" %% "akka-actor"     % "2.3.4-spark",
-  "org.specs2"             %% "specs2"         % "2.3.13" % "test")
+  "org.specs2"             %% "specs2"         % "2.3.13" % "test",
+  "com.typesafe.akka" %% "akka-slf4j" % "2.3.6")
 
 parallelExecution in Test := false
 
