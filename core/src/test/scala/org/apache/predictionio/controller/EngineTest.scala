@@ -315,6 +315,66 @@ class EngineTrainSuite extends FunSuite with SharedSparkContext {
       PAlgo0.Model(2, pd), PAlgo1.Model(3, pd), PAlgo0.Model(4, pd))
   }
 
+  test("Empty Algos Sequence") {
+    val models = Engine.train(
+      sc,
+      new PDataSource0(0),
+      new PPreparator0(1),
+      Seq(),
+      defaultWorkflowParams
+    )
+
+    models should not be null
+  }
+
+  test("Null defaultWorkflowParams") {
+
+    an [NullPointerException] should be thrownBy Engine.train(
+      sc,
+      new PDataSource0(0),
+      new PPreparator0(1),
+      Seq(
+        new PAlgo0(2),
+        new PAlgo1(3),
+        new PAlgo0(4)),
+      null
+    )
+  }
+
+  test("Null Spark Context") {
+    // Shouldn't we check if Spark Context is empty ?
+    val models = Engine.train(
+      null,
+      new PDataSource0(0),
+      new PPreparator0(1),
+      Seq(
+        new PAlgo0(2),
+        new PAlgo1(3),
+        new PAlgo0(4)),
+      defaultWorkflowParams
+    )
+
+    val pd = ProcessedData(1, TrainingData(0))
+
+    models should contain theSameElementsAs Seq(
+      PAlgo0.Model(2, pd), PAlgo1.Model(3, pd), PAlgo0.Model(4, pd))
+  }
+
+  test("Null DataSource") {
+    // Shouldn't we check if Spark Context is empty ?
+    an [NullPointerException] should be thrownBy Engine.train(
+      sc,
+      null,
+      new PPreparator0(1),
+      Seq(
+        new PAlgo0(2),
+        new PAlgo1(3),
+        new PAlgo0(4)),
+      defaultWorkflowParams
+    )
+  }
+
+
   test("Local DS/P/Algos") {
     val models = Engine.train(
       sc,
