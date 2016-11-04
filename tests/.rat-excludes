@@ -19,7 +19,6 @@ Gemfile.lock
 templates.yaml
 semver.sh
 
-obsolete/*
 PredictionIO-.*/*
 target/*
 /source
