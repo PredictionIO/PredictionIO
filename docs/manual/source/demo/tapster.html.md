@@ -334,7 +334,7 @@ queryPIO: function() {
 ```
 ### Rails
 
-On the Rails side all the fun things happen in the episodes controller locates at: `app/controllers/episodes_controller` [View on GitHub](https://github.com/PredictionIO/Demo-Tapster/blob/master/app/controllers/episodes_controller.rb).
+On the Rails side all the fun things happen in the episodes controller located at: `app/controllers/episodes_controller` [View on GitHub](https://github.com/PredictionIO/Demo-Tapster/blob/master/app/controllers/episodes_controller.rb).
 
 ```
 def query
