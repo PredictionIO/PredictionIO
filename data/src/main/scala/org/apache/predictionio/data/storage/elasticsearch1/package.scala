@@ -15,30 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.predictionio.data.storage.elasticsearch
 
-import org.apache.http.HttpHost
-import org.apache.predictionio.data.storage.BaseStorageClient
-import org.apache.predictionio.data.storage.StorageClientConfig
-import org.apache.predictionio.data.storage.StorageClientException
-import org.elasticsearch.client.RestClient
+package org.apache.predictionio.data.storage
 
-import grizzled.slf4j.Logging
-
-case class ESClient(hosts: Seq[HttpHost]) {
-  def open(): RestClient = {
-    try {
-      RestClient.builder(hosts: _*).build()
-    } catch {
-      case e: Throwable =>
-        throw new StorageClientException(e.getMessage, e)
-    }
-  }
-}
-
-class StorageClient(val config: StorageClientConfig) extends BaseStorageClient
-    with Logging {
-  override val prefix = "ES"
-
-  val client = ESClient(ESUtils.getHttpHosts(config))
-}
+/** Elasticsearch implementation of storage traits, supporting meta data only
+  *
+  * @group Implementation
+  */
+package object elasticsearch1 {}

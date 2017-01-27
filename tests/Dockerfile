@@ -18,7 +18,8 @@
 from ubuntu
 
 ENV SPARK_VERSION 1.4.0
-ENV ELASTICSEARCH_VERSION 1.4.4
+#ENV ELASTICSEARCH_VERSION 1.4.4
+ENV ELASTICSEARCH_VERSION 5.1.2
 ENV HBASE_VERSION 1.0.0
 
 RUN echo "== Updating system =="
@@ -49,7 +50,8 @@ RUN rm spark-${SPARK_VERSION}-bin-hadoop2.6.tgz
 ENV SPARK_HOME /vendors/spark-${SPARK_VERSION}-bin-hadoop2.6
 
 RUN echo "== Installing Elasticsearch =="
-RUN wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
+#RUN wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
+RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
 RUN tar zxvfC elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz /vendors
 RUN rm elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
 ENV ELASTICSEARCH_HOME /vendors/elasticsearch-${ELASTICSEARCH_VERSION}

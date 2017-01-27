@@ -18,18 +18,18 @@
 
 USAGE=$"Usage: run_docer <meta> <event> <model> <pio> <command>
   Where:
-    meta         = [PGSQL,ELASTICSEARCH]
+    meta         = [PGSQL,ELASTICSEARCH,ELASTICSEARCH1]
     event        = [PGSQL,HBASE]
     model        = [PGSQL,LOCALFS,HDFS]
     pio          = path to PredictionIO directory
     command      = command to run in the container"
 
-if ! [[ "$1" =~ ^(PGSQL|ELASTICSEARCH)$ ]]; then
+if ! [[ "$1" =~ ^(PGSQL|ELASTICSEARCH|ELASTICSEARCH1)$ ]]; then
   echo "$USAGE"
   exit 1
 fi
 
-if ! [[ "$2" =~ ^(PGSQL|HBASE)$ ]]; then
+if ! [[ "$2" =~ ^(PGSQL|HBASE|ELASTICSEARCH)$ ]]; then
   echo "$USAGE"
   exit 1
 fi
