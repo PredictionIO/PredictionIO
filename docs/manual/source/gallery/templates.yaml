@@ -526,3 +526,20 @@
     license: "Apache Licence 2.0"
     status: beta
     pio_min_version: 0.9.0
+
+- template:
+    name: Linear Regression BFGS
+    repo: "https://github.com/mgcdanny/pio-linear-regression-bfgs"
+    description: |-
+      Use for:
+
+        * Modeling the relationship between a dependent variable, y, and one or more explanatory variables, denoted X. 
+
+    Forked from apache/incubator-predictionio-template-skeleton
+
+    tags: [regression]
+    type: Parallel
+    language: Scala
+    license: "Apache Licence 2.0"
+    status: beta
+    pio_min_version: 0.10.0
