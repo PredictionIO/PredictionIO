@@ -208,7 +208,7 @@ class Engine[TD, EI, PD, Q, P, A](
       Doer(algorithmClassMap(algoName), algoParams)
     }
 
-    val models = if (persistedModels.exists(m => m.isInstanceOf[Unit.type])) {
+    val models = if (persistedModels.exists(m => m.isInstanceOf[Unit])) {
       // If any of persistedModels is Unit, we need to re-train the model.
       logger.info("Some persisted models are Unit, need to re-train.")
       val (dataSourceName, dataSourceParams) = engineParams.dataSourceParams
@@ -222,7 +222,7 @@ class Engine[TD, EI, PD, Q, P, A](
 
       val models = algorithms.zip(persistedModels).map { case (algo, m) =>
         m match {
-          case Unit => algo.trainBase(sc, pd)
+          case () => algo.trainBase(sc, pd)
           case _ => m
         }
       }

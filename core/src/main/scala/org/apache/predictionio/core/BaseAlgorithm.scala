@@ -112,7 +112,7 @@ abstract class BaseAlgorithm[PD, M, Q, P]
     sc: SparkContext,
     modelId: String,
     algoParams: Params,
-    bm: Any): Any = Unit
+    bm: Any): Any = ()
 
   /** :: DeveloperApi ::
     * Obtains the type signature of query for this algorithm

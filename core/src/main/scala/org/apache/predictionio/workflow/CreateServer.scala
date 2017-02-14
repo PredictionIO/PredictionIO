@@ -268,7 +268,7 @@ class MasterActor (
         .param(ServerKey.param, ServerKey.get)
         .method("POST").asString.code
       code match {
-        case 200 => Unit
+        case 200 => ()
         case 404 => log.error(
           s"Another process is using $serverUrl. Unable to undeploy.")
         case _ => log.error(
