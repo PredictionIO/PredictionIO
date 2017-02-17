@@ -69,6 +69,9 @@ trait AccessKeys {
     val sr = SecureRandom.getInstanceStrong
     val srBytes = Array.fill(48)(0.toByte)
     sr.nextBytes(srBytes)
-    Base64.encodeBase64URLSafeString(srBytes)
+    Base64.encodeBase64URLSafeString(srBytes) match {
+      case x if x startsWith "-" => generateKey
+      case x => x
+    }
   }
 }
