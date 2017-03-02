@@ -50,6 +50,7 @@ object EventJson4sSupport {
       // use getOpt() if not required in json
       try {
         val event = fields.get[String]("event")
+        val eventId = fields.getOpt[String]("eventId")
         val entityType = fields.get[String]("entityType")
         val entityId = fields.get[String]("entityId")
         val targetEntityType = fields.getOpt[String]("targetEntityType")
@@ -88,6 +89,7 @@ object EventJson4sSupport {
 
 
         val newEvent = Event(
+          eventId=eventId,
           event = event,
           entityType = entityType,
           entityId = entityId,
