@@ -104,21 +104,19 @@ object ESEventsUtil {
     )
   }
 
-  def eventToPut(event: Event, appId: Int): Seq[Map[String, Any]] = {
-    Seq(
-      Map(
-        "eventId" -> event.eventId,
-        "event" -> event.event,
-        "entityType" -> event.entityType,
-        "entityId" -> event.entityId,
-        "targetEntityType" -> event.targetEntityType,
-        "targetEntityId" -> event.targetEntityId,
-        "properties" -> event.properties,
-        "eventTime" -> event.eventTime,
-        "tags" -> event.tags,
-        "prId" -> event.prId,
-        "creationTime" -> event.creationTime
-      )
+  def eventToPut(event: Event, appId: Int): Map[String, Any] = {
+    Map(
+      "eventId" -> event.eventId,
+      "event" -> event.event,
+      "entityType" -> event.entityType,
+      "entityId" -> event.entityId,
+      "targetEntityType" -> event.targetEntityType,
+      "targetEntityId" -> event.targetEntityId,
+      "properties" -> event.properties.toJObject,
+      "eventTime" -> event.eventTime.toString,
+      "tags" -> event.tags,
+      "prId" -> event.prId,
+      "creationTime" -> event.creationTime.toString
     )
   }
 

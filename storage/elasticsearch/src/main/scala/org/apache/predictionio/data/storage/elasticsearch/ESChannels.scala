@@ -121,7 +121,7 @@ class ESChannels(client: ESClient, config: StorageClientConfig, index: String)
       val response = restClient.performRequest(
         "POST",
         s"/$index/$estype/$id",
-        Map.empty[String, String].asJava,
+        Map("refresh" -> "true").asJava,
         entity)
       val json = parse(EntityUtils.toString(response.getEntity))
       val result = (json \ "result").extract[String]
@@ -147,7 +147,7 @@ class ESChannels(client: ESClient, config: StorageClientConfig, index: String)
       val response = restClient.performRequest(
         "DELETE",
         s"/$index/$estype/$id",
-        Map.empty[String, String].asJava)
+        Map("refresh" -> "true").asJava)
       val jsonResponse = parse(EntityUtils.toString(response.getEntity))
       val result = (jsonResponse \ "result").extract[String]
       result match {

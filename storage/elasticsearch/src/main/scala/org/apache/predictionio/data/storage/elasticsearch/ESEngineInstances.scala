@@ -92,7 +92,7 @@ class ESEngineInstances(client: ESClient, config: StorageClientConfig, index: St
       val response = restClient.performRequest(
         "POST",
         s"/$index/$estype/",
-        Map.empty[String, String].asJava,
+        Map("refresh" -> "true").asJava,
         entity)
       val jsonResponse = parse(EntityUtils.toString(response.getEntity))
       val result = (jsonResponse \ "result").extract[String]
@@ -206,7 +206,7 @@ class ESEngineInstances(client: ESClient, config: StorageClientConfig, index: St
       val response = restClient.performRequest(
         "POST",
         s"/$index/$estype/$id",
-        Map.empty[String, String].asJava,
+        Map("refresh" -> "true").asJava,
         entity)
       val jsonResponse = parse(EntityUtils.toString(response.getEntity))
       val result = (jsonResponse \ "result").extract[String]
@@ -230,7 +230,7 @@ class ESEngineInstances(client: ESClient, config: StorageClientConfig, index: St
       val response = restClient.performRequest(
         "DELETE",
         s"/$index/$estype/$id",
-        Map.empty[String, String].asJava)
+        Map("refresh" -> "true").asJava)
       val json = parse(EntityUtils.toString(response.getEntity))
       val result = (json \ "result").extract[String]
       result match {

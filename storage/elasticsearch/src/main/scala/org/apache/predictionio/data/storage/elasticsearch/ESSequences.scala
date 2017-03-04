@@ -57,7 +57,7 @@ class ESSequences(client: ESClient, config: StorageClientConfig, index: String) 
       val response = restClient.performRequest(
         "POST",
         s"/$index/$estype/$name",
-        Map.empty[String, String].asJava,
+        Map("refresh" -> "true").asJava,
         entity)
       val jsonResponse = parse(EntityUtils.toString(response.getEntity))
       val result = (jsonResponse \ "result").extract[String]

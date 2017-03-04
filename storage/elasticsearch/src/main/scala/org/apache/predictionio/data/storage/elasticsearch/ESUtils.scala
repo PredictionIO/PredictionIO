@@ -38,6 +38,23 @@ import org.apache.http.HttpHost
 object ESUtils {
   val scrollLife = "1m"
 
+  def get[T: Manifest](
+    client: RestClient,
+    index: String,
+    estype: String,
+    query: String,
+    size: Int)(
+      implicit formats: Formats): Seq[T] = {
+    val response = client.performRequest(
+      "POST",
+      s"/$index/$estype/_search",
+      Map("size" -> s"${size}"),
+      new StringEntity(query))
+    val responseJValue = parse(EntityUtils.toString(response.getEntity))
+    val hits = (responseJValue \ "hits" \ "hits").extract[Seq[JValue]]
+    hits.map(h => (h \ "_source").extract[T])
+  }
+
   def getAll[T: Manifest](
     client: RestClient,
     index: String,
@@ -132,7 +149,7 @@ object ESUtils {
       untilTime.map(x => {
         val v = DateTimeFormat
           .forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").print(x.withZone(DateTimeZone.UTC))
-        s"""{"range":{"eventTime":{"gte":"${v}"}}}"""
+        s"""{"range":{"eventTime":{"lt":"${v}"}}}"""
       }),
       entityType.map(x => s"""{"term":{"entityType":"${x}"}}"""),
       entityId.map(x => s"""{"term":{"entityId":"${x}"}}"""),
@@ -141,12 +158,16 @@ object ESUtils {
       eventNames
         .map { xx => xx.map(x => "\"%s\"".format(x)) }
         .map(x => s"""{"terms":{"event":[${x.mkString(",")}]}}""")).flatten.mkString(",")
+    val query = mustQueries.isEmpty match {
+      case true => """query":{"match_all":{}}"""
+      case _ => s"""query":{"bool":{"must":[${mustQueries}]}}"""
+    }
     val sortOrder = reversed.map(x => x match {
       case true => "desc"
       case _ => "asc"
-    })
+    }).getOrElse("asc")
     s"""{
-       |"query":{"bool":{"must":[${mustQueries}]}},
+       |"${query},
        |"sort":[{"eventTime":{"order":"${sortOrder}"}}]
        |}""".stripMargin
   }

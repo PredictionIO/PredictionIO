@@ -17,11 +17,13 @@
 
 FROM predictionio/pio
 
-ENV SPARK_VERSION 1.4.0
-ENV ELASTICSEARCH_VERSION 1.4.4
+ENV SPARK_VERSION 1.6.3
+ENV ELASTICSEARCH_VERSION 5.2.1
 ENV HBASE_VERSION 1.0.0
 
 ADD docker-files/spark-${SPARK_VERSION}-bin-hadoop2.6.tgz /vendors
+# WORKAROUND: es-hadoop stops on RDD#take(1)
+RUN echo "spark.locality.wait.node 0s" > /vendors/spark-${SPARK_VERSION}-bin-hadoop2.6/conf/spark-defaults.conf
 ENV SPARK_HOME /vendors/spark-${SPARK_VERSION}-bin-hadoop2.6
 
 COPY docker-files/postgresql-9.4-1204.jdbc41.jar /drivers/postgresql-9.4-1204.jdbc41.jar
@@ -30,6 +32,10 @@ COPY docker-files/env-conf/hbase-site.xml ${PIO_HOME}/conf/hbase-site.xml
 COPY docker-files/env-conf/pio-env.sh ${PIO_HOME}/conf/pio-env.sh
 COPY docker-files/pgpass /root/.pgpass
 RUN chmod 600 /root/.pgpass
+
+# Python
+RUN pip install python-dateutil
+RUN pip install pytz
 
 # Default repositories setup
 ENV PIO_STORAGE_REPOSITORIES_METADATA_SOURCE PGSQL

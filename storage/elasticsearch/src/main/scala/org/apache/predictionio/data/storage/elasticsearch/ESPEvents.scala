@@ -58,10 +58,8 @@ class ESPEvents(client: ESClient, config: StorageClientConfig, index: String)
       map(_.split(",").toSeq).getOrElse(Seq("localhost"))
     val ports = config.properties.get("PORTS").
       map(_.split(",").toSeq.map(_.toInt)).getOrElse(Seq(9200))
-    val schemes = config.properties.get("SCHEMES").
-      map(_.split(",").toSeq).getOrElse(Seq("http"))
-    (hosts, ports, schemes).zipped.map(
-      (h, p, s) => s"$s://$h:$p").mkString(",")
+    (hosts, ports).zipped.map(
+      (h, p) => s"$h:$p").mkString(",")
   }
 
   override def find(
@@ -99,9 +97,10 @@ class ESPEvents(client: ESClient, config: StorageClientConfig, index: String)
     events: RDD[Event],
     appId: Int, channelId: Option[Int])(sc: SparkContext): Unit = {
     val estype = getEsType(appId, channelId)
+    val conf = Map("es.resource" -> s"$index/$estype", "es.nodes" -> getESNodes())
     events.map { event =>
       ESEventsUtil.eventToPut(event, appId)
-    }.saveToEs(s"$index/$estype")
+    }.saveToEs(conf)
   }
 
   override def delete(
@@ -121,7 +120,7 @@ class ESPEvents(client: ESClient, config: StorageClientConfig, index: String)
             val response = restClient.performRequest(
               "POST",
               s"/$index/$estype/_delete_by_query",
-              Map.empty[String, String].asJava)
+              Map("refresh" -> "true").asJava)
             val jsonResponse = parse(EntityUtils.toString(response.getEntity))
             val result = (jsonResponse \ "result").extract[String]
             result match {

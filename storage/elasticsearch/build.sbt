@@ -22,8 +22,12 @@ elasticsearchVersion := "5.2.1"
 libraryDependencies ++= Seq(
   "org.apache.predictionio" %% "apache-predictionio-core" % version.value % "provided",
   "org.apache.predictionio" %% "apache-predictionio-data" % version.value % "provided",
+  "org.apache.spark"        %% "spark-core"     % sparkVersion.value % "provided",
+  "org.apache.spark"        %% "spark-sql"      % sparkVersion.value % "provided",
   "org.elasticsearch.client" % "rest"           % elasticsearchVersion.value,
-  "org.elasticsearch"       %% "elasticsearch-spark-13" % elasticsearchVersion.value % "provided",
+  "org.elasticsearch"       %% "elasticsearch-spark-13" % elasticsearchVersion.value
+    exclude("org.apache.spark", "spark-sql_2.10")
+    exclude("org.apache.spark", "spark-streaming_2.10"),
   "org.elasticsearch"        % "elasticsearch-hadoop-mr" % elasticsearchVersion.value,
   "org.scalatest"           %% "scalatest"      % "2.1.7" % "test",
   "org.specs2"              %% "specs2"         % "2.3.13" % "test")
@@ -49,5 +53,5 @@ assemblyShadeRules in assembly := Seq(
 // skip test in assembly
 test in assembly := {}
 
-outputPath in assembly := baseDirectory.value.getAbsoluteFile.getParentFile.getParentFile / "assembly" / "extra" / ("pio-data-elasticsearch-assembly-" + version.value + ".jar")
+outputPath in assembly := baseDirectory.value.getAbsoluteFile.getParentFile.getParentFile / "assembly" / "spark" / ("pio-data-elasticsearch-assembly-" + version.value + ".jar")
 

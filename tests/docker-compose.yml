@@ -16,7 +16,7 @@
 version: "2"
 services:
   elasticsearch:
-    image: elasticsearch:1-alpine
+    image: elasticsearch:5-alpine
   hbase:
     image: harisekhon/hbase:1.0
   postgres:

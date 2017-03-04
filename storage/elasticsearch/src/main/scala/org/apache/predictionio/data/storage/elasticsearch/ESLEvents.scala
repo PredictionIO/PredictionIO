@@ -34,11 +34,13 @@ import org.joda.time.DateTime
 import org.json4s._
 import org.json4s.JsonDSL._
 import org.json4s.native.JsonMethods._
+import org.json4s.native.Serialization.read
 import org.json4s.native.Serialization.write
 import org.json4s.ext.JodaTimeSerializers
 
 import grizzled.slf4j.Logging
 import org.elasticsearch.client.ResponseException
+import org.apache.http.entity.StringEntity
 
 class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: String)
     extends LEvents with Logging {
@@ -99,7 +101,7 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
       restClient.performRequest(
         "POST",
         s"/$index/$estype/_delete_by_query",
-        Map.empty[String, String].asJava,
+        Map("refresh" -> "true").asJava,
         entity).getStatusLine.getStatusCode match {
           case 200 => true
           case _ =>
@@ -137,7 +139,7 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
         val response = restClient.performRequest(
           "POST",
           s"/$index/$estype/$id",
-          Map.empty[String, String].asJava,
+          Map("refresh" -> "true").asJava,
           entity)
         val jsonResponse = parse(EntityUtils.toString(response.getEntity))
         val result = (jsonResponse \ "result").extract[String]
@@ -233,7 +235,7 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
         val response = restClient.performRequest(
           "POST",
           s"/$index/$estype/_delete_by_query",
-          Map.empty[String, String].asJava)
+          Map("refresh" -> "true").asJava)
         val jsonResponse = parse(EntityUtils.toString(response.getEntity))
         val result = (jsonResponse \ "result").extract[String]
         result match {
@@ -271,8 +273,11 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
       try {
         val query = ESUtils.createEventQuery(
           startTime, untilTime, entityType, entityId,
-          eventNames, targetEntityType, targetEntityId, None)
-        ESUtils.getAll[Event](restClient, index, estype, query).toIterator
+          eventNames, targetEntityType, targetEntityId, reversed)
+        limit.getOrElse(20) match {
+          case -1 => ESUtils.getAll[Event](restClient, index, estype, query).toIterator
+          case size => ESUtils.get[Event](restClient, index, estype, query, size).toIterator
+        }
       } catch {
         case e: IOException =>
           error(e.getMessage)
