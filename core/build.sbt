@@ -32,7 +32,6 @@ libraryDependencies ++= Seq(
   "org.apache.spark"       %% "spark-core"       % sparkVersion.value % "provided",
   "org.apache.spark"       %% "spark-sql"        % sparkVersion.value % "provided",
   "org.clapper"            %% "grizzled-slf4j"   % "1.0.2",
-  "org.elasticsearch"       % "elasticsearch"    % elasticsearchVersion.value,
   "org.json4s"             %% "json4s-native"    % json4sVersion.value,
   "org.json4s"             %% "json4s-ext"       % json4sVersion.value,
   "org.scalaj"             %% "scalaj-http"      % "1.1.6",

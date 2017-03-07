@@ -19,6 +19,8 @@ import unittest
 import requests
 import json
 import argparse
+import dateutil.parser
+import pytz
 from subprocess import Popen
 from utils import AppEngine, pjoin
 from pio_tests.integration import BaseTestCase, AppContext
@@ -155,7 +157,8 @@ class EventserverTest(BaseTestCase):
       'reversed': 'true' }
     r = self.app.get_events(params=params)
     self.assertEqual(5, len(r.json()))
-    self.assertEqual('2014-11-05T09:39:45.618-08:00', r.json()[0]['eventTime'])
+    event_time = dateutil.parser.parse(r.json()[0]['eventTime']).astimezone(pytz.utc)
+    self.assertEqual('2014-11-05 17:39:45.618000+00:00', str(event_time))
 
   def tearDown(self):
     self.log.info("Deleting all app data")

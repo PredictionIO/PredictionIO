@@ -24,7 +24,7 @@
 # you need to change these to fit your site.
 
 # SPARK_HOME: Apache Spark is a hard dependency and must be configured.
-SPARK_HOME=$PIO_HOME/vendors/spark-1.5.1-bin-hadoop2.6
+SPARK_HOME=$PIO_HOME/vendors/spark-1.6.3-bin-hadoop2.6
 
 POSTGRES_JDBC_DRIVER=$PIO_HOME/lib/postgresql-9.4-1204.jdbc41.jar
 MYSQL_JDBC_DRIVER=$PIO_HOME/lib/mysql-connector-java-5.1.37.jar
@@ -85,10 +85,16 @@ PIO_STORAGE_SOURCES_PGSQL_PASSWORD=pio
 
 # Elasticsearch Example
 # PIO_STORAGE_SOURCES_ELASTICSEARCH_TYPE=elasticsearch
+# PIO_STORAGE_SOURCES_ELASTICSEARCH_HOSTS=localhost
+# PIO_STORAGE_SOURCES_ELASTICSEARCH_PORTS=9200
+# PIO_STORAGE_SOURCES_ELASTICSEARCH_SCHEMES=http
+# PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME=$PIO_HOME/vendors/elasticsearch-5.2.1
+# Elasticsearch 1.x Example
+# PIO_STORAGE_SOURCES_ELASTICSEARCH_TYPE=elasticsearch
 # PIO_STORAGE_SOURCES_ELASTICSEARCH_CLUSTERNAME=<elasticsearch_cluster_name>
 # PIO_STORAGE_SOURCES_ELASTICSEARCH_HOSTS=localhost
 # PIO_STORAGE_SOURCES_ELASTICSEARCH_PORTS=9300
-# PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME=$PIO_HOME/vendors/elasticsearch-1.4.4
+# PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME=$PIO_HOME/vendors/elasticsearch-1.7.6
 
 # Local File System Example
 # PIO_STORAGE_SOURCES_LOCALFS_TYPE=localfs

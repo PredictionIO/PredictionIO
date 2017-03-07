@@ -17,9 +17,9 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-if [ ! -f $DIR/docker-files/spark-1.4.0-bin-hadoop2.6.tgz ]; then
-  wget http://d3kbcqa49mib13.cloudfront.net/spark-1.4.0-bin-hadoop2.6.tgz
-  mv spark-1.4.0-bin-hadoop2.6.tgz $DIR/docker-files/
+if [ ! -f $DIR/docker-files/spark-1.6.3-bin-hadoop2.6.tgz ]; then
+  wget http://d3kbcqa49mib13.cloudfront.net/spark-1.6.3-bin-hadoop2.6.tgz
+  mv spark-1.6.3-bin-hadoop2.6.tgz $DIR/docker-files/
 fi
 
 if [ ! -f $DIR/docker-files/postgresql-9.4-1204.jdbc41.jar ]; then
@@ -33,6 +33,8 @@ pushd $DIR/..
 sbt/sbt clean
 mkdir assembly
 cp dist/lib/*.jar assembly/
+mkdir -p lib/spark
+cp dist/lib/spark/*.jar lib/spark
 docker build -t predictionio/pio .
 popd
 docker build -t predictionio/pio-testing $DIR

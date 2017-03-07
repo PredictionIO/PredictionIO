@@ -27,13 +27,15 @@ VERSION=$(grep version ${FWDIR}/build.sbt | grep ThisBuild | grep -o '".*"' | se
 echo "Building binary distribution for PredictionIO $VERSION..."
 
 cd ${FWDIR}
-sbt/sbt common/publishLocal data/publishLocal core/publishLocal e2/publishLocal tools/assembly
+sbt/sbt common/publishLocal data/publishLocal core/publishLocal e2/publishLocal dataElasticsearch1/assembly dataElasticsearch/assembly dataHbase/assembly dataHdfs/assembly dataJdbc/assembly dataLocalfs/assembly tools/assembly
 
 cd ${FWDIR}
 rm -rf ${DISTDIR}
 mkdir -p ${DISTDIR}/bin
 mkdir -p ${DISTDIR}/conf
 mkdir -p ${DISTDIR}/lib
+mkdir -p ${DISTDIR}/lib/spark
+mkdir -p ${DISTDIR}/lib/extra
 mkdir -p ${DISTDIR}/project
 mkdir -p ${DISTDIR}/sbt
 
@@ -42,6 +44,8 @@ cp ${FWDIR}/conf/* ${DISTDIR}/conf
 cp ${FWDIR}/project/build.properties ${DISTDIR}/project
 cp ${FWDIR}/sbt/sbt ${DISTDIR}/sbt
 cp ${FWDIR}/assembly/*assembly*jar ${DISTDIR}/lib
+cp ${FWDIR}/assembly/spark/*jar ${DISTDIR}/lib/spark
+cp ${FWDIR}/assembly/extra/*jar ${DISTDIR}/lib/extra
 
 rm -f ${DISTDIR}/lib/*javadoc.jar
 rm -f ${DISTDIR}/lib/*sources.jar

@@ -160,7 +160,8 @@ object Runner extends EitherLogging {
     val sparkSubmitCommand =
       Seq(Seq(sparkHome, "bin", "spark-submit").mkString(File.separator))
 
-    val sparkSubmitJarsList = WorkflowUtils.thirdPartyJars ++ deployedJars
+    val sparkSubmitJarsList = WorkflowUtils.thirdPartyJars ++ deployedJars ++
+      Common.jarFilesForSpark(pioHome).map(_.toURI)
     val sparkSubmitJars = if (sparkSubmitJarsList.nonEmpty) {
       Seq("--jars", sparkSubmitJarsList.map(_.toString).mkString(","))
     } else {
