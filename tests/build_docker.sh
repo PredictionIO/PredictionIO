@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -ex
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -21,10 +21,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 docker pull predictionio/pio-testing-base
 
 pushd $DIR/..
-./make-distribution.sh -Dbuild.profile=${BUILD_PROFILE}
-sbt/sbt clean
-mkdir assembly
-cp dist/lib/*.jar assembly/
 
 source conf/set_build_profile.sh ${BUILD_PROFILE}
 source conf/pio-vendors.sh
@@ -37,6 +33,19 @@ if [ ! -f $DIR/docker-files/${SPARK_ARCHIVE} ]; then
   mv $SPARK_ARCHIVE $DIR/docker-files/
 fi
 
+if [ -z "$ES_VERSION" ]; then
+  ./make-distribution.sh -Dbuild.profile=${BUILD_PROFILE}
+else
+  ./make-distribution.sh --with-es=$ES_VERSION -Dbuild.profile=${BUILD_PROFILE}
+fi
+sbt/sbt clean
+mkdir assembly
+cp dist/lib/*.jar assembly/
+mkdir -p lib/spark
+if [ -e dist/lib/spark/*.jar ]; then
+  cp dist/lib/spark/*.jar lib/spark
+fi
+
 docker build -t predictionio/pio .
 popd
 docker build -t predictionio/pio-testing $DIR \
@@ -46,4 +55,3 @@ docker build -t predictionio/pio-testing $DIR \
   --build-arg BUILD_PROFILE=$BUILD_PROFILE \
   --build-arg PIO_SCALA_VERSION=$PIO_SCALA_VERSION \
   --build-arg PIO_SPARK_VERSION=$PIO_SPARK_VERSION
-

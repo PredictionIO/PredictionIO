@@ -23,18 +23,16 @@ lazy val profiles: Map[String, Profile] =
     "scala-2.10" -> Profile(
       name="scala-2.10",
       scalaVersion="2.10.5",
-      sparkVersion="1.6.2",
+      sparkVersion="1.6.3",
       hadoopVersion="2.6.4",
-      akkaVersion="2.3.15",
-      elasticsearchVersion="1.4.4"),
+      akkaVersion="2.3.15"),
 
     "scala-2.11" -> Profile(
       name="scala-2.11",
       scalaVersion="2.11.8",
       sparkVersion="2.0.2",
       hadoopVersion="2.7.3",
-      akkaVersion="2.4.10",
-      elasticsearchVersion="1.4.4"))
+      akkaVersion="2.4.10"))
 
 lazy val defaultProfile = "scala-2.10"
 
@@ -89,8 +87,6 @@ fork in (ThisBuild, run) := true
 javacOptions in (ThisBuild, compile) ++= Seq("-source", "1.7", "-target", "1.7",
   "-Xlint:deprecation", "-Xlint:unchecked")
 
-elasticsearchVersion in ThisBuild := buildProfile.value.elasticsearchVersion
-
 akkaVersion in ThisBuild := buildProfile.value.akkaVersion
 
 json4sVersion in ThisBuild := "3.2.10"
@@ -107,8 +103,7 @@ val pioBuildInfoSettings = buildInfoSettings ++ Seq(
     scalaVersion,
     sbtVersion,
     sparkVersion,
-    hadoopVersion,
-    elasticsearchVersion),
+    hadoopVersion),
   buildInfoPackage := "org.apache.predictionio.core")
 
 // Used temporarily to modify genjavadoc version to "0.10" until unidoc updates it
@@ -140,6 +135,30 @@ val data = (project in file("data")).
   settings(genjavadocSettings: _*).
   settings(unmanagedSourceDirectories in Compile +=
     sourceDirectory.value / s"main/spark-${versionMajor(sparkVersion.value)}")
+
+val dataElasticsearch1 = (project in file("storage/elasticsearch1")).
+  settings(commonSettings: _*).
+  settings(genjavadocSettings: _*)
+
+val dataElasticsearch = (project in file("storage/elasticsearch")).
+  settings(commonSettings: _*).
+  settings(genjavadocSettings: _*)
+
+val dataHbase = (project in file("storage/hbase")).
+  settings(commonSettings: _*).
+  settings(genjavadocSettings: _*)
+
+val dataHdfs = (project in file("storage/hdfs")).
+  settings(commonSettings: _*).
+  settings(genjavadocSettings: _*)
+
+val dataJdbc = (project in file("storage/jdbc")).
+  settings(commonSettings: _*).
+  settings(genjavadocSettings: _*)
+
+val dataLocalfs = (project in file("storage/localfs")).
+  settings(commonSettings: _*).
+  settings(genjavadocSettings: _*)
 
 val core = (project in file("core")).
   dependsOn(data).
@@ -222,6 +241,12 @@ val root = (project in file(".")).
     common,
     core,
     data,
+    dataElasticsearch1,
+    dataElasticsearch,
+    dataHbase,
+    dataHdfs,
+    dataJdbc,
+    dataLocalfs,
     tools,
     e2)
 
@@ -290,5 +315,4 @@ printProfile := {
   println(s"PIO_SPARK_VERSION=${profile.sparkVersion}")
   println(s"PIO_HADOOP_VERSION=${profile.hadoopVersion}")
   println(s"PIO_AKKA_VERSION=${profile.akkaVersion}")
-  println(s"PIO_ELASTICSEARCH_VERSION=${profile.elasticsearchVersion}")
 }

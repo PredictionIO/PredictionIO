@@ -124,7 +124,7 @@ abstract class LAlgorithm[PD, M : ClassTag, Q, P]
         modelId, algoParams, sc)) {
         PersistentModelManifest(className = m.getClass.getName)
       } else {
-        Unit
+        ()
       }
     } else {
       m

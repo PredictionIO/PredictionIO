@@ -27,7 +27,7 @@ FWDIR="$(cd `dirname $0`/..; pwd)"
 # Build up classpath
 CLASSPATH="${FWDIR}/conf"
 
-CLASSPATH="$CLASSPATH:${FWDIR}/plugins/*"
+CLASSPATH="$CLASSPATH:${FWDIR}/plugins/*:${FWDIR}/lib/spark/*"
 
 ASSEMBLY_DIR="${FWDIR}/assembly"
 

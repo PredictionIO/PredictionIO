@@ -26,3 +26,4 @@ Here are the pages that show you how you can customize the Recommendation engine
 - [Customize Data Preparator](/templates/recommendation/customize-data-prep/)
 - [Customize Serving](/templates/recommendation/customize-serving/)
 - [Filter Recommended Items by Blacklist in Query](/templates/recommendation/blacklist-items/)
+- [Batch Persistable Evaluator](/templates/recommendation/batch-evaluator/)

@@ -24,6 +24,7 @@ name := "example-scala-local-helloworld"
 organization := "org.sample"
 
 libraryDependencies ++= Seq(
-  "org.apache.predictionio" %% "core" % "0.9.1" % "provided",
-  "org.apache.predictionio" %% "data" % "0.9.1" % "provided",
+  "org.slf4j" % "slf4j-api" % "1.6.1",
+  "org.apache.predictionio" %% "apache-predictionio-data" % "0.10.0-incubating",
+  "org.apache.predictionio" %% "apache-predictionio-core" % "0.10.0-incubating",
   "org.apache.spark" %% "spark-core" % "1.2.0" % "provided")

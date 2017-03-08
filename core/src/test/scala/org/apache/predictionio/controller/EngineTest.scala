@@ -60,7 +60,7 @@ extends FunSuite with Inside with SharedSparkContext {
 
     // PAlgo2.Model doesn't have IPersistentModel trait implemented. Hence the
     // model extract after train is Unit.
-    models should contain theSameElementsAs Seq(Unit)
+    models should contain theSameElementsAs Seq(())
   }
 
   test("Engine.train persisting PAlgo.Model") {
@@ -96,7 +96,7 @@ extends FunSuite with Inside with SharedSparkContext {
     val pModel21 = PersistentModelManifest(model21.getClass.getName)
     val pModel22 = PersistentModelManifest(model22.getClass.getName)
     
-    models should contain theSameElementsAs Seq(Unit, pModel21, pModel22)
+    models should contain theSameElementsAs Seq((), pModel21, pModel22)
   }
 
   test("Engine.train persisting LAlgo.Model") {
@@ -181,7 +181,7 @@ extends FunSuite with Inside with SharedSparkContext {
     val pModel23 = PersistentModelManifest(model23.getClass.getName)
     
     models should contain theSameElementsAs Seq(
-      Unit, pModel21, pModel22, pModel23, model24, model25)
+      (), pModel21, pModel22, pModel23, model24, model25)
   }
 
   test("Engine.eval") {

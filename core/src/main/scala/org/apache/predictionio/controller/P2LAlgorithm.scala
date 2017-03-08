@@ -115,7 +115,7 @@ abstract class P2LAlgorithm[PD, M: ClassTag, Q: ClassTag, P]
         modelId, algoParams, sc)) {
         PersistentModelManifest(className = m.getClass.getName)
       } else {
-        Unit
+        ()
       }
     } else {
       m

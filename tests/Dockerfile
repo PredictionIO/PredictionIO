@@ -28,7 +28,9 @@ ENV BUILD_PROFILE=$BUILD_PROFILE
 ENV PIO_SCALA_VERSION=$PIO_SCALA_VERSION
 ENV PIO_SPARK_VERSION=$PIO_SPARK_VERSION
 
+# WORKAROUND: es-hadoop stops on RDD#take(1)
 ADD docker-files/${SPARK_ARCHIVE} /vendors
+RUN echo "spark.locality.wait.node 0s" > /vendors/${SPARK_DIR}/conf/spark-defaults.conf
 ENV SPARK_HOME /vendors/${SPARK_DIR}
 
 COPY docker-files/${PGSQL_JAR} /drivers/${PGSQL_JAR}
@@ -38,6 +40,10 @@ COPY docker-files/env-conf/hbase-site.xml ${PIO_HOME}/conf/hbase-site.xml
 COPY docker-files/env-conf/pio-env.sh ${PIO_HOME}/conf/pio-env.sh
 COPY docker-files/pgpass /root/.pgpass
 RUN chmod 600 /root/.pgpass
+
+# Python
+RUN pip install python-dateutil
+RUN pip install pytz
 
 # Default repositories setup
 ENV PIO_STORAGE_REPOSITORIES_METADATA_SOURCE PGSQL

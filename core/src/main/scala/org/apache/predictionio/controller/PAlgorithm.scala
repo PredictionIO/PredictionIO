@@ -120,10 +120,10 @@ abstract class PAlgorithm[PD, M, Q, P]
         modelId, algoParams, sc)) {
         PersistentModelManifest(className = m.getClass.getName)
       } else {
-        Unit
+        ()
       }
     } else {
-      Unit
+      ()
     }
   }
 }

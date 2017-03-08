@@ -74,7 +74,7 @@
 
 - template:
     name: Topic Labelling with Wikipedia
-    repo: "https://github.com/peoplehum/template-Labelling-LDA-Topics-with-wikipedia"
+    repo: "https://github.com/peoplehum/template-Labelling-Topics-with-wikipedia"
     description: |-
       This template will label topics (e.g. topic generated through LDA topic modeling) with relevant category by referring to Wikipedia as a knowledge base.
     tags: [clustering, nlp]
@@ -84,7 +84,7 @@
     status: stable
     pio_min_version: 0.10.0-incubating
     apache_pio_convesion_required: "already compatible"
-    support_link: '<a href="https://github.com/peoplehum/template-Labelling-LDA-Topics-with-wikipedia/issues">Github issues</a>'
+    support_link: '<a href="https://github.com/peoplehum/template-Labelling-Topics-with-wikipedia/issues">Github issues</a>'
 
 # Recommenders
 
@@ -559,17 +559,17 @@
 
 - template:
     name: OpenNLP Sentiment Analysis Template
-    repo: "https://github.com/vshwnth2/OpenNLP-SentimentAnalysis-Template"
+    repo: "https://github.com/infoquestsolutions/OpenNLP-SentimentAnalysis-Template"
     description: |-
       Given a sentence, this engine will return a score between 0 and 4. This is the sentiment of the sentence. The lower the number the more negative the sentence is. It uses the OpenNLP library.
     tags: [nlp]
     type: Parallel
     language: Scala
     license: "Apache Licence 2.0"
-    status: alpha
-    pio_min_version: "-"
-    apache_pio_convesion_required: "requires conversion"
-    support_link: '<a href="https://github.com/vshwnth2/OpenNLP-SentimentAnalysis-Template/issues">Github issues</a>'
+    status: beta
+    pio_min_version: "0.10.0-incubating"
+    apache_pio_convesion_required: "already compatible"
+    support_link: '<a href="https://github.com/infoquestsolutions/OpenNLP-SentimentAnalysis-Template/issues">Github issues</a>'
 
 - template:
     name: Sentiment analysis
@@ -684,3 +684,20 @@
     pio_min_version: 0.9.2
     apache_pio_convesion_required: "already compatible"
     support_link: '<a href="http://predictionio.incubator.apache.org/support/">Apache PredictionIO mailing lists</a>'
+
+- template:
+    name: Linear Regression BFGS
+    repo: "https://github.com/mgcdanny/pio-linear-regression-bfgs"
+    description: |-
+      Use for:
+
+        * Modeling the relationship between a dependent variable, y, and one or more explanatory variables, denoted X.
+
+    Forked from apache/incubator-predictionio-template-skeleton
+
+    tags: [regression]
+    type: Parallel
+    language: Scala
+    license: "Apache Licence 2.0"
+    status: beta
+    pio_min_version: 0.10.0

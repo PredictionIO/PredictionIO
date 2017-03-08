@@ -42,11 +42,17 @@ class MyPredictedResult(
   val temperature: Double
 ) extends Serializable
 
-// controller components
-class MyDataSource extends LDataSource[EmptyDataSourceParams, EmptyDataParams,
-  MyTrainingData, MyQuery, EmptyActualResult] {
+case class MyDataSourceParams(val multiplier: Int
+                             ) extends Params
+
+class MyDataSource extends LDataSource[
+  MyTrainingData,
+  EmptyEvaluationInfo,
+  MyQuery,
+  EmptyActualResult] {
 
   /* override this to return Training Data only */
+
   override
   def readTraining(): MyTrainingData = {
     val lines = Source.fromFile("../data/helloworld/data.csv").getLines()
@@ -59,8 +65,12 @@ class MyDataSource extends LDataSource[EmptyDataSourceParams, EmptyDataParams,
   }
 }
 
-class MyAlgorithm extends LAlgorithm[EmptyAlgorithmParams, MyTrainingData,
-  MyModel, MyQuery, MyPredictedResult] {
+class MyAlgorithm extends LAlgorithm[
+  MyTrainingData,
+  MyModel,
+  MyQuery,
+  MyPredictedResult] {
+
 
   override
   def train(pd: MyTrainingData): MyModel = {

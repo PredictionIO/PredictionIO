@@ -16,7 +16,9 @@
 version: "2"
 services:
   elasticsearch:
-    image: elasticsearch:1-alpine
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.2.2
+    environment:
+      - xpack.security.enabled=false
   hbase:
     image: harisekhon/hbase:1.0
   postgres:

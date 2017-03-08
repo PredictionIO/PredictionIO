@@ -23,8 +23,7 @@ case class Profile(
   scalaVersion: String,
   sparkVersion: String,
   hadoopVersion: String,
-  akkaVersion: String,
-  elasticsearchVersion: String)
+  akkaVersion: String)
 
 object PIOBuild extends Build {
   val elasticsearchVersion = SettingKey[String](

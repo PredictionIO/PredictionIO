@@ -297,7 +297,9 @@ object Engine extends EitherLogging {
     val extraFiles = WorkflowUtils.thirdPartyConfFiles
     val jarFiles = jarFilesForScala(engineDirPath)
     jarFiles foreach { f => info(s"Found JAR: ${f.getName}") }
-    val allJarFiles = jarFiles.map(_.getCanonicalPath)
+    val jarPluginFiles = jarFilesForSpark(pioHome)
+    jarPluginFiles foreach { f => info(s"Found JAR: ${f.getName}") }
+    val allJarFiles = jarFiles.map(_.getCanonicalPath) ++ jarPluginFiles.map(_.getCanonicalPath)
 
     val cmd = s"${getSparkHome(sparkArgs.sparkHome)}/bin/spark-submit --jars " +
       s"${allJarFiles.mkString(",")} " +

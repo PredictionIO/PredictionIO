@@ -160,6 +160,95 @@ root:
         body: 'Using Another Data Store'
         url: '/system/anotherdatastore/'
   -
+    body: 'PredictionIO Official Templates'
+    url: '#'
+    children:
+      -
+        body: 'Intro'
+        url: '/templates/'
+      -
+        body: 'Recommendation'
+        children:
+          -
+            body: 'Quick Start'
+            url: '/templates/recommendation/quickstart/'
+          -
+            body: 'DASE'
+            url: '/templates/recommendation/dase/'
+          -
+            body: 'Evaluation Explained'
+            url: '/templates/recommendation/evaluation/'
+          -
+            body: 'How-To'
+            url: '/templates/recommendation/how-to/'
+          -
+            body: 'Read Custom Events'
+            url: '/templates/recommendation/reading-custom-events/'
+          -
+            body: 'Customize Data Preparator'
+            url: '/templates/recommendation/customize-data-prep/'
+          -
+            body: 'Customize Serving'
+            url: '/templates/recommendation/customize-serving/'
+          -
+            body: 'Train with Implicit Preference'
+            url: '/templates/recommendation/training-with-implicit-preference/'
+          -
+            body: 'Filter Recommended Items by Blacklist in Query'
+            url: '/templates/recommendation/blacklist-items/'
+          -
+            body: 'Batch Persistable Evaluator'
+            url: '/templates/recommendation/batch-evaluator/'
+      -
+        body: 'E-Commerce Recommendation'
+        children:
+          -
+            body: 'Quick Start'
+            url: '/templates/ecommercerecommendation/quickstart/'
+          -
+            body: 'DASE'
+            url: '/templates/ecommercerecommendation/dase/'
+          -
+            body: 'How-To'
+            url: '/templates/ecommercerecommendation/how-to/'
+          -
+            body: 'Train with Rate Event'
+            url: '/templates/ecommercerecommendation/train-with-rate-event/'
+      -
+        body: 'Similar Product'
+        children:
+          -
+            body: 'Quick Start'
+            url: '/templates/similarproduct/quickstart/'
+          -
+            body: 'DASE'
+            url: '/templates/similarproduct/dase/'
+          -
+            body: 'How-To'
+            url: '/templates/similarproduct/how-to/'
+          -
+            body: 'Multiple Events and Multiple Algorithms'
+            url: '/templates/similarproduct/multi-events-multi-algos/'
+
+      -
+        body: 'Classfication'
+        children:
+          -
+            body: 'Quick Start'
+            url: '/templates/classification/quickstart/'
+          -
+            body: 'DASE'
+            url: '/templates/classification/dase/'
+          -
+            body: 'How-To'
+            url: '/templates/classification/how-to/'
+          -
+            body: 'Use Alternative Algorithm'
+            url: '/templates/classification/add-algorithm/'
+          -
+            body: 'Read Custom Properties'
+            url: '/templates/classification/reading-custom-properties/'
+  -
     body: 'Engine Template Gallery'
     url: '#'
     children:
