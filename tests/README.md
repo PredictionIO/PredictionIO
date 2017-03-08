@@ -34,6 +34,12 @@ To download the image run:
 $ docker pull predictionio/pio-testing
 ```
 
+To build the image use the script:
+```
+$ tests/docker-build.sh <image_name>
+```
+This is necessary to infer proper versions of dependencies e.g. Spark to be included in the image.
+
 The most convenient way to make use of it is to execute ***run_docker.sh*** script passing it the configuration, the path to PredictionIO's repository with archived snapshot and the command to run. When no command is provided it opens a bash shell inside the docker image. Example of usage:
 ```sh
 $ ./run_docker.sh ELASTICSEARCH HBASE LOCALFS \

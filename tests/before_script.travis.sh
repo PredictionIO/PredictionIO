@@ -16,4 +16,4 @@
 # limitations under the License.
 #
 
-tests/build-docker.sh
+./tests/build_docker.sh

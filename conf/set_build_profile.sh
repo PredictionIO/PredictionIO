@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -16,20 +16,16 @@
 # limitations under the License.
 #
 
-pushd /PredictionIO
+# Sets version of profile dependencies from sbt configuration.
+# eg. Run `source ./set_build_profile.sh scala-2.11`
 
-# Run license check
-./tests/check_license.sh
+set -e
 
-# Prepare pio environment variables
+if [[ "$#" -ne 1 ]]; then
+  echo "Usage: set-build-profile.sh <build-profile>"
+  exit 1
+fi
+
 set -a
-source ./conf/pio-env.sh
+eval `sbt/sbt --error 'set showSuccess := false' -Dbuild.profile=$1 printProfile | grep '.*_VERSION=.*'`
 set +a
-
-# Run stylecheck
-sbt/sbt -Dbuild.profile=$1 scalastyle
-
-# Run all unit tests
-sbt/sbt -Dbuild.profile=$1 test
-
-popd

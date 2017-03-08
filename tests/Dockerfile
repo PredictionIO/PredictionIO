@@ -17,17 +17,25 @@
 
 FROM predictionio/pio
 
-ENV SPARK_VERSION 1.6.3
-ENV ELASTICSEARCH_VERSION 5.2.1
-ENV HBASE_VERSION 1.0.0
+ARG SPARK_ARCHIVE
+ARG SPARK_DIR
+ARG PGSQL_JAR
+ARG BUILD_PROFILE
+ARG PIO_SCALA_VERSION
+ARG PIO_SPARK_VERSION
 
-ADD docker-files/spark-${SPARK_VERSION}-bin-hadoop2.6.tgz /vendors
+ENV BUILD_PROFILE=$BUILD_PROFILE
+ENV PIO_SCALA_VERSION=$PIO_SCALA_VERSION
+ENV PIO_SPARK_VERSION=$PIO_SPARK_VERSION
+
 # WORKAROUND: es-hadoop stops on RDD#take(1)
-RUN echo "spark.locality.wait.node 0s" > /vendors/spark-${SPARK_VERSION}-bin-hadoop2.6/conf/spark-defaults.conf
-ENV SPARK_HOME /vendors/spark-${SPARK_VERSION}-bin-hadoop2.6
+ADD docker-files/${SPARK_ARCHIVE} /vendors
+RUN echo "spark.locality.wait.node 0s" > /vendors/${SPARK_DIR}/conf/spark-defaults.conf
+ENV SPARK_HOME /vendors/${SPARK_DIR}
 
-COPY docker-files/postgresql-9.4-1204.jdbc41.jar /drivers/postgresql-9.4-1204.jdbc41.jar
+COPY docker-files/${PGSQL_JAR} /drivers/${PGSQL_JAR}
 COPY docker-files/init.sh init.sh
+COPY docker-files/set_build_profile.sh set_build_profile.sh
 COPY docker-files/env-conf/hbase-site.xml ${PIO_HOME}/conf/hbase-site.xml
 COPY docker-files/env-conf/pio-env.sh ${PIO_HOME}/conf/pio-env.sh
 COPY docker-files/pgpass /root/.pgpass

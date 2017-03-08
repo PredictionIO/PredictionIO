@@ -16,20 +16,16 @@
 # limitations under the License.
 #
 
-pushd /PredictionIO
+# IMPORTANT: PIO_*_VERSION for dependencies must be set before envoking this script.
+# `source conf/set_build_profile.sh $BUILD_PROFILE` to get the proper versions
 
-# Run license check
-./tests/check_license.sh
+PGSQL_JAR=postgresql-9.4-1204.jdbc41.jar
+PGSQL_DOWNLOAD=https://jdbc.postgresql.org/download/${PGSQL_JAR}
 
-# Prepare pio environment variables
-set -a
-source ./conf/pio-env.sh
-set +a
-
-# Run stylecheck
-sbt/sbt -Dbuild.profile=$1 scalastyle
-
-# Run all unit tests
-sbt/sbt -Dbuild.profile=$1 test
-
-popd
+HADOOP_MAJOR=`echo $PIO_HADOOP_VERSION | awk -F. '{print $1 "." $2}'`
+SPARK_DIR=spark-${PIO_SPARK_VERSION}-bin-hadoop${HADOOP_MAJOR}
+SPARK_ARCHIVE=${SPARK_DIR}.tgz
+SPARK_DOWNLOAD=http://d3kbcqa49mib13.cloudfront.net/${SPARK_ARCHIVE}
+# ELASTICSEARCH_DOWNLOAD
+#   5.x https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${PIO_ELASTICSEARCH_VERSION}.tar.gz
+#   1.x https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${PIO_ELASTICSEARCH_VERSION}.tar.gz

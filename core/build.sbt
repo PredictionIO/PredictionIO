@@ -18,9 +18,9 @@
 name := "apache-predictionio-core"
 
 libraryDependencies ++= Seq(
-  "com.github.scopt"       %% "scopt"            % "3.3.0",
+  "com.github.scopt"       %% "scopt"            % "3.5.0",
   "com.google.code.gson"    % "gson"             % "2.5",
-  "com.google.guava"        % "guava"            % "18.0",
+  "com.google.guava"        % "guava"            % "19.0",
   "com.twitter"            %% "chill"            % "0.7.2"
     exclude("com.esotericsoftware.minlog", "minlog"),
   "com.twitter"            %% "chill-bijection"  % "0.7.2",
@@ -38,8 +38,6 @@ libraryDependencies ++= Seq(
   "org.scalatest"          %% "scalatest"        % "2.1.7" % "test",
   "org.slf4j"               % "slf4j-log4j12"    % "1.7.18",
   "org.specs2"             %% "specs2"           % "2.3.13" % "test")
-
-//testOptions := Seq(Tests.Filter(s => Seq("Dev").exists(s.contains(_))))
 
 parallelExecution in Test := false
 

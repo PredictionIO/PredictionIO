@@ -51,7 +51,6 @@ import spray.routing._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.concurrent.future
 import scala.language.existentials
 import scala.util.{Failure, Random, Success}
 import scalaj.http.HttpOptions
@@ -548,7 +547,7 @@ class ServerActor[Q, P](
                     "prediction" -> prediction)) ++ queryPrId
                 // At this point args.accessKey should be Some(String).
                 val accessKey = args.accessKey.getOrElse("")
-                val f: Future[Int] = future {
+                val f: Future[Int] = Future {
                   scalaj.http.Http(
                     s"http://${args.eventServerIp}:${args.eventServerPort}/" +
                     s"events.json?accessKey=$accessKey").postData(

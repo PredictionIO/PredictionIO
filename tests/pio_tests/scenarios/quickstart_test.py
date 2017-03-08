@@ -89,8 +89,8 @@ class QuickStartTest(BaseTestCase):
     self.app.build(engine_dir=engine_path)
     self.log.info("Training...")
     self.app.train(engine_dir=engine_path)
-    self.log.info("Deploying and waiting 15s for it to start...")
-    self.app.deploy(wait_time=15, engine_dir=engine_path)
+    self.log.info("Deploying and waiting 30s for it to start...")
+    self.app.deploy(wait_time=30, engine_dir=engine_path)
 
     self.log.info("Sending a single query and checking results")
     user_query = { "user": 1, "num": 4 }
@@ -153,8 +153,8 @@ class QuickStartTest(BaseTestCase):
     self.app.build()
     self.log.info("Training...")
     self.app.train()
-    self.log.info("Deploying and waiting 15s for it to start...")
-    self.app.deploy(wait_time=15)
+    self.log.info("Deploying and waiting 35s for it to start...")
+    self.app.deploy(wait_time=35)
 
     self.log.info("Testing pio commands outside of engine directory")
     self.engine_dir_test()

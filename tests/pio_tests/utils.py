@@ -151,10 +151,11 @@ def import_events_batch(events, test_context, appid, channel=None):
   try:
       with open(file_path, 'w') as f:
           f.write(contents)
-      srun('pio import --appid {} --input {} {}'.format(
+      srun('pio import --appid {} --input {} {} -- {}'.format(
           appid,
           file_path,
-          '--channel {}'.format(channel) if channel else ''))
+          '--channel {}'.format(channel) if channel else '',
+          '--conf spark.sql.warehouse.dir=file:///tmp/spark-warehouse'))
   finally:
       os.remove(file_path)
 
