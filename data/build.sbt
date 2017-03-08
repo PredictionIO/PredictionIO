@@ -44,6 +44,9 @@ libraryDependencies ++= Seq(
   "org.apache.spark"       %% "spark-sql"      % sparkVersion.value % "provided",
   "org.clapper"            %% "grizzled-slf4j" % "1.0.2",
   "org.elasticsearch"       % "elasticsearch"  % elasticsearchVersion.value,
+//  "org.elasticsearch" % "elasticsearch-spark-13_2.10" % "5.0.0",
+  "org.elasticsearch" % "elasticsearch-spark_2.10" % "2.4.3" % "provided",
+  "org.elasticsearch" % "elasticsearch-hadoop-mr" % "2.4.3",
   "org.json4s"             %% "json4s-native"  % json4sVersion.value,
   "org.json4s"             %% "json4s-ext"     % json4sVersion.value,
   "org.postgresql"          % "postgresql"     % "9.4-1204-jdbc41",
@@ -56,3 +59,4 @@ libraryDependencies ++= Seq(
 parallelExecution in Test := false
 
 pomExtra := childrenPomExtra.value
+

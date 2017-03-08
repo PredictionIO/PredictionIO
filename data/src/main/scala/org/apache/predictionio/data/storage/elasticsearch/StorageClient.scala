@@ -38,6 +38,7 @@ class StorageClient(val config: StorageClientConfig) extends BaseStorageClient
     val settings = ImmutableSettings.settingsBuilder()
       .put("cluster.name", config.properties.getOrElse("CLUSTERNAME", "elasticsearch"))
     val transportClient = new TransportClient(settings)
+    // TODO: バージョンによってクライアントの生成方法が変わる（リフレクションするなど）
     (hosts zip ports) foreach { hp =>
       transportClient.addTransportAddress(
         new InetSocketTransportAddress(hp._1, hp._2))

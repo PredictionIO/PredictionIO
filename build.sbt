@@ -34,11 +34,11 @@ fork in (ThisBuild, run) := true
 javacOptions in (ThisBuild, compile) ++= Seq("-source", "1.7", "-target", "1.7",
   "-Xlint:deprecation", "-Xlint:unchecked")
 
-elasticsearchVersion in ThisBuild := "1.4.4"
+elasticsearchVersion in ThisBuild := "1.4.4" // TODO 2.3.5
 
 json4sVersion in ThisBuild := "3.2.10"
 
-sparkVersion in ThisBuild := "1.4.0"
+sparkVersion in ThisBuild := "1.4.0" // TODO 1.6.2 1系最新？
 
 val pioBuildInfoSettings = buildInfoSettings ++ Seq(
   sourceGenerators in Compile <+= buildInfo,

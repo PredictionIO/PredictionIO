@@ -89,7 +89,7 @@ object Pio extends Logging {
   def train(
     ea: EngineArgs,
     wa: WorkflowArgs,
-    sa: SparkArgs,
+    sa: SparkArgs, //TODO Sparkに渡したいデバッグのコード
     pioHome: String,
     verbose: Boolean = false): Int =
       processAwaitAndClean(Engine.train(ea, wa, sa, pioHome, verbose))
