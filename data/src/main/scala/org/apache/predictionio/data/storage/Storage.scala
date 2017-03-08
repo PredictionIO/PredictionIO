@@ -303,10 +303,12 @@ object Storage extends Logging {
     }
     val constructor = clazz.getConstructors()(0)
     try {
+      // TODO ストレージのクライアントのインスタンスを返す
       constructor.newInstance(ctorArgs: _*).
         asInstanceOf[T]
     } catch {
       case e: IllegalArgumentException =>
+        // TODO: コンストラクタ引数の数のエラーメッセージのみで、型が合わないケースについて言及してないのイケてない
         error(
           "Unable to instantiate data object with class '" +
           constructor.getDeclaringClass.getName + " because its constructor" +
