@@ -18,16 +18,14 @@
 
 package org.apache.predictionio.data.storage.elasticsearch
 
-import org.apache.hadoop.io.DoubleWritable
-import org.apache.hadoop.io.LongWritable
 import org.apache.hadoop.io.MapWritable
 import org.apache.hadoop.io.Text
 import org.apache.predictionio.data.storage.DataMap
 import org.apache.predictionio.data.storage.Event
-import org.apache.predictionio.data.storage.EventValidation
 import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
 import org.json4s._
+import org.json4s.native.Serialization.read
+import org.json4s.native.Serialization.write
 
 object ESEventsUtil {
 
@@ -53,23 +51,8 @@ object ESEventsUtil {
       }
     }
 
-    val tmp = result
-      .get(new Text("properties")).asInstanceOf[MapWritable]
-      .get(new Text("fields")).asInstanceOf[MapWritable]
-      .get(new Text("rating"))
-
-    val rating =
-      if (tmp.isInstanceOf[DoubleWritable]) tmp.asInstanceOf[DoubleWritable]
-      else if (tmp.isInstanceOf[LongWritable]) {
-        new DoubleWritable(tmp.asInstanceOf[LongWritable].get().toDouble)
-      }
-      else null
-
-    val properties: DataMap =
-      if (rating != null) DataMap(s"""{"rating":${rating.get().toString}}""")
-      else DataMap()
-
-
+    val properties: DataMap = getOptStringCol("properties")
+      .map(s => DataMap(read[JObject](s))).getOrElse(DataMap())
     val eventId = Some(getStringCol("eventId"))
     val event = getStringCol("event")
     val entityType = getStringCol("entityType")
@@ -77,17 +60,8 @@ object ESEventsUtil {
     val targetEntityType = getOptStringCol("targetEntityType")
     val targetEntityId = getOptStringCol("targetEntityId")
     val prId = getOptStringCol("prId")
-    val eventTimeZone = getOptStringCol("eventTimeZone")
-      .map(DateTimeZone.forID(_))
-      .getOrElse(EventValidation.defaultTimeZone)
-    val eventTime = new DateTime(
-      getStringCol("eventTime"), eventTimeZone)
-    val creationTimeZone = getOptStringCol("creationTimeZone")
-      .map(DateTimeZone.forID(_))
-      .getOrElse(EventValidation.defaultTimeZone)
-    val creationTime: DateTime = new DateTime(
-      getStringCol("creationTime"), creationTimeZone)
-
+    val eventTime: DateTime = ESUtils.parseUTCDateTime(getStringCol("eventTime"))
+    val creationTime: DateTime = ESUtils.parseUTCDateTime(getStringCol("creationTime"))
 
     Event(
       eventId = eventId,
@@ -112,11 +86,11 @@ object ESEventsUtil {
       "entityId" -> event.entityId,
       "targetEntityType" -> event.targetEntityType,
       "targetEntityId" -> event.targetEntityId,
-      "properties" -> event.properties.toJObject,
-      "eventTime" -> event.eventTime.toString,
+      "properties" -> write(event.properties.toJObject),
+      "eventTime" -> ESUtils.formatUTCDateTime(event.eventTime),
       "tags" -> event.tags,
       "prId" -> event.prId,
-      "creationTime" -> event.creationTime.toString
+      "creationTime" -> ESUtils.formatUTCDateTime(event.creationTime)
     )
   }
 

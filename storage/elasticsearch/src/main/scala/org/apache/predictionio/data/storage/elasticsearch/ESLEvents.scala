@@ -72,17 +72,11 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
             ("entityId" -> ("type" -> "keyword")) ~
             ("targetEntityType" -> ("type" -> "keyword")) ~
             ("targetEntityId" -> ("type" -> "keyword")) ~
-            ("properties" ->
-              ("type" -> "nested") ~
-              ("properties" ->
-                ("fields" -> ("type" -> "nested") ~
-                  ("properties" ->
-                    ("user" -> ("type" -> "long")) ~
-                    ("num" -> ("type" -> "long")))))) ~
-                    ("eventTime" -> ("type" -> "date")) ~
-                    ("tags" -> ("type" -> "keyword")) ~
-                    ("prId" -> ("type" -> "keyword")) ~
-                    ("creationTime" -> ("type" -> "date"))))
+            ("properties" -> ("type" -> "keyword")) ~
+            ("eventTime" -> ("type" -> "date")) ~
+            ("tags" -> ("type" -> "keyword")) ~
+            ("prId" -> ("type" -> "keyword")) ~
+            ("creationTime" -> ("type" -> "date"))))
       ESUtils.createMapping(restClient, index, estype, compact(render(json)))
     } finally {
       restClient.close()
@@ -134,8 +128,19 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
           while (exists(restClient, estype, roll)) roll = seq.genNext(seqName)
           roll.toString
         }
-        val json = write(event.copy(eventId = Some(id)))
-        val entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
+        val json =
+          ("eventId" -> id) ~
+          ("event" -> event.event) ~
+          ("entityType" -> event.entityType) ~
+          ("entityId" -> event.entityId) ~
+          ("targetEntityType" -> event.targetEntityType) ~
+          ("targetEntityId" -> event.targetEntityId) ~
+          ("eventTime" -> ESUtils.formatUTCDateTime(event.eventTime)) ~
+          ("tags" -> event.tags) ~
+          ("prId" -> event.prId) ~
+          ("creationTime" -> ESUtils.formatUTCDateTime(event.creationTime)) ~
+          ("properties" -> write(event.properties.toJObject))
+        val entity = new NStringEntity(compact(render(json)), ContentType.APPLICATION_JSON);
         val response = restClient.performRequest(
           "POST",
           s"/$index/$estype/$id",
@@ -275,8 +280,8 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
           startTime, untilTime, entityType, entityId,
           eventNames, targetEntityType, targetEntityId, reversed)
         limit.getOrElse(20) match {
-          case -1 => ESUtils.getAll[Event](restClient, index, estype, query).toIterator
-          case size => ESUtils.get[Event](restClient, index, estype, query, size).toIterator
+          case -1 => ESUtils.getEventAll(restClient, index, estype, query).toIterator
+          case size => ESUtils.getEvents(restClient, index, estype, query, size).toIterator
         }
       } catch {
         case e: IOException =>

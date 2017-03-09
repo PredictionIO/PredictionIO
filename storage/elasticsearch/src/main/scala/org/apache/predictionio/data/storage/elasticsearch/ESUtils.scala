@@ -34,17 +34,72 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.DateTimeZone
 import org.apache.predictionio.data.storage.StorageClientConfig
 import org.apache.http.HttpHost
+import org.apache.predictionio.data.storage.Event
+import org.apache.predictionio.data.storage.DataMap
 
 object ESUtils {
   val scrollLife = "1m"
 
-  def get[T: Manifest](
+  def toEvent(value: JValue)(
+    implicit formats: Formats): Event = {
+    def getString(s: String): String = {
+      (value \ s) match {
+        case x if x == JNothing => null
+        case x => x.extract[String]
+      }
+    }
+
+    def getOptString(s: String): Option[String] = {
+      getString(s) match {
+        case null => None
+        case x => Some(x)
+      }
+    }
+
+    val properties: DataMap = getOptString("properties")
+      .map(s => DataMap(read[JObject](s))).getOrElse(DataMap())
+    val eventId = getOptString("eventId")
+    val event = getString("event")
+    val entityType = getString("entityType")
+    val entityId = getString("entityId")
+    val targetEntityType = getOptString("targetEntityType")
+    val targetEntityId = getOptString("targetEntityId")
+    val prId = getOptString("prId")
+    val eventTime: DateTime = ESUtils.parseUTCDateTime(getString("eventTime"))
+    val creationTime: DateTime = ESUtils.parseUTCDateTime(getString("creationTime"))
+    val tags = (value \ "tags").extract[Seq[String]]
+
+    Event(
+      eventId = eventId,
+      event = event,
+      entityType = entityType,
+      entityId = entityId,
+      targetEntityType = targetEntityType,
+      targetEntityId = targetEntityId,
+      properties = properties,
+      eventTime = eventTime,
+      tags = tags,
+      prId = prId,
+      creationTime = creationTime)
+  }
+
+  def getEvents(
     client: RestClient,
     index: String,
     estype: String,
     query: String,
     size: Int)(
-      implicit formats: Formats): Seq[T] = {
+      implicit formats: Formats): Seq[Event] = {
+    getDocList(client, index, estype, query, size).map(x => toEvent(x))
+  }
+
+  def getDocList(
+    client: RestClient,
+    index: String,
+    estype: String,
+    query: String,
+    size: Int)(
+      implicit formats: Formats): Seq[JValue] = {
     val response = client.performRequest(
       "POST",
       s"/$index/$estype/_search",
@@ -52,7 +107,7 @@ object ESUtils {
       new StringEntity(query))
     val responseJValue = parse(EntityUtils.toString(response.getEntity))
     val hits = (responseJValue \ "hits" \ "hits").extract[Seq[JValue]]
-    hits.map(h => (h \ "_source").extract[T])
+    hits.map(h => (h \ "_source"))
   }
 
   def getAll[T: Manifest](
@@ -61,9 +116,27 @@ object ESUtils {
     estype: String,
     query: String)(
       implicit formats: Formats): Seq[T] = {
+    getDocAll(client, index, estype, query).map(x => x.extract[T])
+  }
+
+  def getEventAll(
+    client: RestClient,
+    index: String,
+    estype: String,
+    query: String)(
+      implicit formats: Formats): Seq[Event] = {
+    getDocAll(client, index, estype, query).map(x => toEvent(x))
+  }
+
+  def getDocAll(
+    client: RestClient,
+    index: String,
+    estype: String,
+    query: String)(
+      implicit formats: Formats): Seq[JValue] = {
 
     @scala.annotation.tailrec
-    def scroll(scrollId: String, hits: Seq[JValue], results: Seq[T]): Seq[T] = {
+    def scroll(scrollId: String, hits: Seq[JValue], results: Seq[JValue]): Seq[JValue] = {
       if (hits.isEmpty) results
       else {
         val json = ("scroll" -> scrollLife) ~ ("scroll_id" -> scrollId)
@@ -76,7 +149,7 @@ object ESUtils {
         val responseJValue = parse(EntityUtils.toString(response.getEntity))
         scroll((responseJValue \ "_scroll_id").extract[String],
           (responseJValue \ "hits" \ "hits").extract[Seq[JValue]],
-          hits.map(h => (h \ "_source").extract[T]) ++ results)
+          hits.map(h => (h \ "_source").extract[JValue]) ++ results)
       }
     }
 
@@ -87,8 +160,8 @@ object ESUtils {
       new StringEntity(query))
     val responseJValue = parse(EntityUtils.toString(response.getEntity))
     scroll((responseJValue \ "_scroll_id").extract[String],
-        (responseJValue \ "hits" \ "hits").extract[Seq[JValue]],
-        Nil)
+      (responseJValue \ "hits" \ "hits").extract[Seq[JValue]],
+      Nil)
   }
 
   def createIndex(
@@ -131,6 +204,16 @@ object ESUtils {
       }
   }
 
+  def formatUTCDateTime(dt: DateTime): String = {
+    DateTimeFormat
+      .forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").print(dt.withZone(DateTimeZone.UTC))
+  }
+
+  def parseUTCDateTime(str: String): DateTime = {
+    DateTimeFormat
+      .forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parseDateTime(str)
+  }
+
   def createEventQuery(
     startTime: Option[DateTime] = None,
     untilTime: Option[DateTime] = None,
@@ -142,13 +225,11 @@ object ESUtils {
     reversed: Option[Boolean] = None): String = {
     val mustQueries = Seq(
       startTime.map(x => {
-        val v = DateTimeFormat
-          .forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").print(x.withZone(DateTimeZone.UTC))
+        val v = formatUTCDateTime(x)
         s"""{"range":{"eventTime":{"gte":"${v}"}}}"""
       }),
       untilTime.map(x => {
-        val v = DateTimeFormat
-          .forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").print(x.withZone(DateTimeZone.UTC))
+        val v = formatUTCDateTime(x)
         s"""{"range":{"eventTime":{"lt":"${v}"}}}"""
       }),
       entityType.map(x => s"""{"term":{"entityType":"${x}"}}"""),
