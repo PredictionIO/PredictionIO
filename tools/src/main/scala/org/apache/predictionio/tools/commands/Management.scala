@@ -170,7 +170,7 @@ object Management extends EitherLogging {
         } getOrElse {
           "No properly configured storage backend sources."
         }
-        return logAndFail(errStr + sources)
+        return logOnFail(errStr + sources, e)
     }
     info("Your system is all ready to go.")
     Right(pioStatus)
