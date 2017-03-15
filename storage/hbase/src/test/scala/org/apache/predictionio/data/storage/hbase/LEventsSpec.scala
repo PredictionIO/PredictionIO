@@ -16,8 +16,9 @@
  */
 
 
-package org.apache.predictionio.data.storage
+package org.apache.predictionio.data.storage.hbase
 
+import org.apache.predictionio.data.storage.{Event, LEvents, PropertyMap, Storage}
 import org.specs2._
 import org.specs2.specification.Step
 
@@ -28,7 +29,6 @@ class LEventsSpec extends Specification with TestEvents {
 
     Events can be implemented by:
     - HBLEvents ${hbEvents}
-    - JDBCLEvents ${jdbcLEvents}
 
   """
 
@@ -37,13 +37,6 @@ class LEventsSpec extends Specification with TestEvents {
     HBLEvents should
     - behave like any LEvents implementation ${events(hbDO)}
     - (table cleanup) ${Step(StorageTestUtils.dropHBaseNamespace(dbName))}
-
-  """
-
-  def jdbcLEvents = sequential ^ s2"""
-
-    JDBCLEvents should
-    - behave like any LEvents implementation ${events(jdbcDO)}
 
   """
 
@@ -74,8 +67,6 @@ class LEventsSpec extends Specification with TestEvents {
     StorageTestUtils.hbaseSourceName,
     dbName
   )
-
-  def jdbcDO = Storage.getDataObject[LEvents](StorageTestUtils.jdbcSourceName, dbName)
 
   def initDefault(eventClient: LEvents) = {
     eventClient.init(appId)

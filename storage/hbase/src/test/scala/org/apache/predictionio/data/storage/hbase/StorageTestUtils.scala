@@ -16,14 +16,12 @@
  */
 
 
-package org.apache.predictionio.data.storage
+package org.apache.predictionio.data.storage.hbase
 
-import org.apache.predictionio.data.storage.hbase.HBLEvents
-import scalikejdbc._
+import org.apache.predictionio.data.storage.{LEvents, Storage}
 
 object StorageTestUtils {
   val hbaseSourceName = "HBASE"
-  val jdbcSourceName = "PGSQL"
 
   def dropHBaseNamespace(namespace: String): Unit = {
     val eventDb = Storage.getDataObject[LEvents](hbaseSourceName, namespace)
@@ -35,11 +33,8 @@ object StorageTestUtils {
       admin.deleteTable(name)
     }
 
-    //Only empty namespaces (no tables) can be removed.
+    // Only empty namespaces (no tables) can be removed.
     admin.deleteNamespace(namespace)
   }
 
-  def dropJDBCTable(table: String): Unit = DB autoCommit { implicit s =>
-    SQL(s"drop table $table").execute().apply()
-  }
 }

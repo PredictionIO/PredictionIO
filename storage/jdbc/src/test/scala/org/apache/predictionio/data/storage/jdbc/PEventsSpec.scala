@@ -16,14 +16,13 @@
  */
 
 
-package org.apache.predictionio.data.storage
+package org.apache.predictionio.data.storage.jdbc
 
+import org.apache.predictionio.data.storage._
+import org.apache.spark.SparkContext
+import org.apache.spark.rdd.RDD
 import org.specs2._
 import org.specs2.specification.Step
-
-import org.apache.spark.SparkContext
-import org.apache.spark.SparkContext._
-import org.apache.spark.rdd.RDD
 
 class PEventsSpec extends Specification with TestEvents {
 
@@ -34,16 +33,6 @@ class PEventsSpec extends Specification with TestEvents {
   val appId = 1
   val channelId = 6
   val dbName = "test_pio_storage_events_" + hashCode
-
-  def hbLocal = Storage.getDataObject[LEvents](
-    StorageTestUtils.hbaseSourceName,
-    dbName
-  )
-
-  def hbPar = Storage.getDataObject[PEvents](
-    StorageTestUtils.hbaseSourceName,
-    dbName
-  )
 
   def jdbcLocal = Storage.getDataObject[LEvents](
     StorageTestUtils.jdbcSourceName,
@@ -64,17 +53,8 @@ class PEventsSpec extends Specification with TestEvents {
   PredictionIO Storage PEvents Specification
 
     PEvents can be implemented by:
-    - HBPEvents ${hbPEvents}
     - JDBCPEvents ${jdbcPEvents}
     - (stop Spark) ${Step(sc.stop())}
-
-  """
-
-  def hbPEvents = sequential ^ s2"""
-
-    HBPEvents should
-    - behave like any PEvents implementation ${events(hbLocal, hbPar)}
-    - (table cleanup) ${Step(StorageTestUtils.dropHBaseNamespace(dbName))}
 
   """
 
