@@ -2,7 +2,7 @@
 title: Filter Recommended Items by Blacklist in Query (Recommendation)
 ---
 
-Let's say you want to supply a backList for each query to exclude some items from recommendation (For example, in the browsing session, the user just added some items to shopping cart, or you have a list of items you want to filter out, you may want to supply blackList in Query). This how-to will demonstrate how you can do it.
+Let's say you want to supply a blackList for each query to exclude some items from recommendation (For example, in the browsing session, the user just added some items to shopping cart, or you have a list of items you want to filter out, you may want to supply blackList in Query). This how-to will demonstrate how you can do it.
 
 Note that you may also use [E-Commerce Recommendation Template](/gallery/template-gallery#recommender-systems) which supports this feature by default.
 
