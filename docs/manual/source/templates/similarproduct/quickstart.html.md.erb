@@ -36,6 +36,7 @@ You can offer features like "Customers Who Bought This Item Also Bought....".
 - List of ItemIDs, which are the targeted products
 - N (number of items to be recommended)
 - List of white-listed item categories (optional)
+- List of black-listed item categories (optional)
 - List of white-listed ItemIds (optional)
 - List of black-listed ItemIds (optional)
 
@@ -477,7 +478,7 @@ http://localhost:8000/queries.json
 {"itemScores":[{"item":"i21","score":1.1153550716504106},{"item":"i26","score":1.0773502691896257}]}
 ```
 
-### Recommend items not in the blackList:
+### Recommend items not in the item blackList:
 
 ```
 curl -H "Content-Type: application/json" \
@@ -490,6 +491,20 @@ curl -H "Content-Type: application/json" \
 http://localhost:8000/queries.json
 
 {"itemScores":[{"item":"i39","score":1.0773502691896257},{"item":"i44","score":1.0773502691896257},{"item":"i14","score":1.0773502691896257},{"item":"i45","score":0.7886751345948129},{"item":"i47","score":0.7618016810571367},{"item":"i6","score":0.7618016810571367},{"item":"i28","score":0.7618016810571367},{"item":"i9","score":0.7618016810571367},{"item":"i29","score":0.6220084679281463},{"item":"i30","score":0.5386751345948129}]}
+```
+
+### Recommend items not in the category blackList:
+
+```
+curl -H "Content-Type: application/json" \
+-d '{
+  "items": ["i1"],
+  "num": 2,
+  "categoryBlackList": ["c2","c4"]
+}' \
+http://localhost:8000/queries.json
+
+{"itemScores":[{"item":"i43","score":0.5954677866335736},{"item":"i3","score":0.4273817248904073}]}
 ```
 
 #### [Next: DASE Components Explained](/templates/similarproduct/dase/)
