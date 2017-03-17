@@ -22,31 +22,17 @@ import java.io.File
 import java.net.URI
 
 import grizzled.slf4j.Logging
-import org.apache.commons.io.FileUtils
-import org.apache.predictionio.controller.Utils
 import org.apache.predictionio.core.BuildInfo
-import org.apache.predictionio.data.api.{EventServer, EventServerConfig}
-import org.apache.predictionio.data.storage
-import org.apache.predictionio.tools.{RunServer, RunWorkflow, Common}
 import org.apache.predictionio.tools.commands.{
   DashboardArgs, AdminServerArgs, ImportArgs, ExportArgs,
   BuildArgs, EngineArgs}
 import org.apache.predictionio.tools.{
   EventServerArgs, SparkArgs, WorkflowArgs, ServerArgs, DeployArgs}
-import org.apache.predictionio.tools.EventServerArgs
-import org.apache.predictionio.tools.admin.{AdminServer, AdminServerConfig}
-import org.apache.predictionio.tools.dashboard.{Dashboard, DashboardConfig}
-import org.apache.predictionio.tools.commands
 import org.apache.predictionio.workflow.{JsonExtractorOption, WorkflowUtils}
-import org.apache.predictionio.workflow.JsonExtractorOption.JsonExtractorOption
 import org.json4s._
 import org.json4s.native.JsonMethods._
-import semverfi._
 
-import scala.collection.JavaConversions._
 import scala.io.Source
-import scala.sys.process._
-import scalaj.http.Http
 
 case class ConsoleArgs(
   build: BuildArgs = BuildArgs(),

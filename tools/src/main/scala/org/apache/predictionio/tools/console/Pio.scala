@@ -19,25 +19,15 @@ package org.apache.predictionio.tools.console
 
 import org.apache.predictionio.tools.{
   EventServerArgs, SparkArgs, WorkflowArgs, ServerArgs, DeployArgs}
-import org.apache.predictionio.tools.commands.Management
 import org.apache.predictionio.tools.commands.{
   DashboardArgs, AdminServerArgs, ImportArgs, ExportArgs,
-  BuildArgs, EngineArgs, AppDescription}
-import org.apache.predictionio.tools.commands.Engine
-import org.apache.predictionio.tools.commands.{
+  BuildArgs, EngineArgs, Management, Engine, Import, Export,
   App => AppCmd, AccessKey => AccessKeysCmd}
 import org.apache.predictionio.tools.ReturnTypes._
-import org.apache.predictionio.tools.commands.Import
-import org.apache.predictionio.tools.commands.Export
 
 import grizzled.slf4j.Logging
-import scala.concurrent.{Future, ExecutionContext, Await}
-import scala.concurrent.duration._
 import scala.language.implicitConversions
 import scala.sys.process._
-import java.io.File
-
-import akka.actor.ActorSystem
 
 object Pio extends Logging {
 

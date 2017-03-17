@@ -18,12 +18,8 @@
 package org.apache.predictionio.tools.commands
 
 import org.apache.predictionio.data.storage
-import org.apache.predictionio.tools
 import org.apache.predictionio.tools.EitherLogging
 import org.apache.predictionio.tools.ReturnTypes._
-
-import grizzled.slf4j.Logging
-import scala.util.Either
 
 object AccessKey extends EitherLogging {
 

@@ -66,9 +66,19 @@ VERSION=$(grep version ${FWDIR}/build.sbt | grep ThisBuild | grep -o '".*"' | se
 echo "Building binary distribution for PredictionIO $VERSION..."
 
 cd ${FWDIR}
-sbt/sbt common/publishLocal data/publishLocal core/publishLocal e2/publishLocal dataElasticsearch1/assembly dataElasticsearch/assembly dataHbase/assembly dataHdfs/assembly dataJdbc/assembly dataLocalfs/assembly tools/assembly
+sbt/sbt clean +common/publishLocal +data/publishLocal +core/publishLocal +e2/publishLocal
+sbt/sbt +dataElasticsearch1/assembly
+sbt/sbt +dataElasticsearch/assembly
+sbt/sbt +dataHbase/assembly
+sbt/sbt +dataHdfs/hadoop26:assembly
+sbt/sbt +dataHdfs/hadoop27:assembly
+sbt/sbt +dataJdbc/assembly
+sbt/sbt +dataLocalfs/assembly
+sbt/sbt +tools/assembly
 
 cd ${FWDIR}
+for scalaBinaryVersion in `find ${FWDIR}/assembly -maxdepth 1 -mindepth 1 -type d -exec basename {} \;`
+do
 rm -rf ${DISTDIR}
 mkdir -p ${DISTDIR}/bin
 mkdir -p ${DISTDIR}/conf
@@ -82,8 +92,8 @@ cp ${FWDIR}/bin/* ${DISTDIR}/bin || :
 cp ${FWDIR}/conf/* ${DISTDIR}/conf
 cp ${FWDIR}/project/build.properties ${DISTDIR}/project
 cp ${FWDIR}/sbt/sbt ${DISTDIR}/sbt
-cp ${FWDIR}/assembly/*assembly*jar ${DISTDIR}/lib
-cp ${FWDIR}/assembly/spark/*jar ${DISTDIR}/lib/spark
+cp ${FWDIR}/assembly/$scalaBinaryVersion/*assembly*jar ${DISTDIR}/lib
+cp ${FWDIR}/assembly/$scalaBinaryVersion/spark/*jar ${DISTDIR}/lib/spark
 
 if [ "$ES_VERSION" = "5" ]
 then
@@ -92,6 +102,8 @@ else
     mv ${DISTDIR}/lib/spark/pio-data-elasticsearch-assembly-*.jar ${DISTDIR}/lib/extra
 fi
 
+mv ${DISTDIR}/lib/spark/pio-data-hdfs27-assembly-*.jar ${DISTDIR}/lib/extra
+
 rm -f ${DISTDIR}/lib/*javadoc.jar
 rm -f ${DISTDIR}/lib/*sources.jar
 rm -f ${DISTDIR}/conf/pio-env.sh
@@ -99,7 +111,7 @@ mv ${DISTDIR}/conf/pio-env.sh.template ${DISTDIR}/conf/pio-env.sh
 
 touch ${DISTDIR}/RELEASE
 
-TARNAME="PredictionIO-$VERSION.tar.gz"
+TARNAME="PredictionIO_$scalaBinaryVersion-$VERSION.tar.gz"
 TARDIR="PredictionIO-$VERSION"
 cp -r ${DISTDIR} ${TARDIR}
 
@@ -107,3 +119,4 @@ tar zcvf ${TARNAME} ${TARDIR}
 rm -rf ${TARDIR}
 
 echo -e "\033[0;32mPredictionIO binary distribution created at $TARNAME\033[0m"
+done

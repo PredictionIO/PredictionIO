@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-import UnidocKeys._
-
 name := "apache-predictionio-parent"
 
-version in ThisBuild := "0.11.0-SNAPSHOT"
+version in ThisBuild := "0.11.0-v1-SNAPSHOT"
 
 organization in ThisBuild := "org.apache.predictionio"
 
 scalaVersion in ThisBuild := "2.10.5"
+
+crossScalaVersions in ThisBuild := Seq(scalaVersion.value, "2.11.8")
 
 scalacOptions in ThisBuild ++= Seq("-deprecation", "-unchecked", "-feature")
 
@@ -36,16 +36,18 @@ javacOptions in (ThisBuild, compile) ++= Seq("-source", "1.7", "-target", "1.7",
 
 json4sVersion in ThisBuild := "3.2.10"
 
-sparkVersion in ThisBuild := "1.6.3"
+sparkVersion in ThisBuild := {
+  scalaBinaryVersion.value match {
+    case "2.10" => "1.6.3"
+    case _ => "2.1.0"
+  }
+}
 
 val pioBuildInfoSettings = buildInfoSettings ++ Seq(
   sourceGenerators in Compile <+= buildInfo,
   buildInfoKeys := Seq[BuildInfoKey](
-    name,
     version,
-    scalaVersion,
-    sbtVersion,
-    sparkVersion),
+    scalaBinaryVersion),
   buildInfoPackage := "org.apache.predictionio.core")
 
 val conf = file("conf")
@@ -56,59 +58,58 @@ val commonSettings = Seq(
 
 val common = (project in file("common")).
   settings(commonSettings: _*).
-  settings(genjavadocSettings: _*)
+  enablePlugins(GenJavadocPlugin)
 
 val data = (project in file("data")).
   dependsOn(common).
   settings(commonSettings: _*).
-  settings(genjavadocSettings: _*)
+  enablePlugins(GenJavadocPlugin)
 
 val dataElasticsearch1 = (project in file("storage/elasticsearch1")).
   settings(commonSettings: _*).
-  settings(genjavadocSettings: _*)
+  enablePlugins(GenJavadocPlugin)
 
 val dataElasticsearch = (project in file("storage/elasticsearch")).
   settings(commonSettings: _*).
-  settings(genjavadocSettings: _*)
+  enablePlugins(GenJavadocPlugin)
 
 val dataHbase = (project in file("storage/hbase")).
   settings(commonSettings: _*).
-  settings(genjavadocSettings: _*)
+  enablePlugins(GenJavadocPlugin)
 
 val dataHdfs = (project in file("storage/hdfs")).
   settings(commonSettings: _*).
-  settings(genjavadocSettings: _*)
+  enablePlugins(GenJavadocPlugin)
 
 val dataJdbc = (project in file("storage/jdbc")).
   settings(commonSettings: _*).
-  settings(genjavadocSettings: _*)
+  enablePlugins(GenJavadocPlugin)
 
 val dataLocalfs = (project in file("storage/localfs")).
   settings(commonSettings: _*).
-  settings(genjavadocSettings: _*)
+  enablePlugins(GenJavadocPlugin)
 
 val core = (project in file("core")).
   dependsOn(data).
   settings(commonSettings: _*).
-  settings(genjavadocSettings: _*).
+  enablePlugins(GenJavadocPlugin).
   settings(pioBuildInfoSettings: _*).
   enablePlugins(SbtTwirl)
 
 val tools = (project in file("tools")).
-  dependsOn(core).
-  dependsOn(data).
   settings(commonSettings: _*).
-  settings(genjavadocSettings: _*).
+  enablePlugins(GenJavadocPlugin).
   enablePlugins(SbtTwirl)
 
 val e2 = (project in file("e2")).
   settings(commonSettings: _*).
-  settings(genjavadocSettings: _*)
+  enablePlugins(GenJavadocPlugin)
 
 val root = (project in file(".")).
   settings(commonSettings: _*).
+  enablePlugins(ScalaUnidocPlugin).
+  enablePlugins(JavaUnidocPlugin).
   // settings(scalaJavaUnidocSettings: _*).
-  settings(unidocSettings: _*).
   settings(
     scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
       "-groups",

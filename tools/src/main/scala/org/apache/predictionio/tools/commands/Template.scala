@@ -21,13 +21,11 @@ import java.io.File
 
 import scala.io.Source
 
-import grizzled.slf4j.Logging
 import org.apache.predictionio.core.BuildInfo
 import org.apache.predictionio.tools.EitherLogging
 import org.apache.predictionio.tools.ReturnTypes._
 import org.json4s._
 import org.json4s.native.JsonMethods._
-import org.json4s.native.Serialization.{write, read}
 import semverfi._
 
 case class TemplateMetaData(

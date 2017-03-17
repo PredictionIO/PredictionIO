@@ -17,27 +17,41 @@
 
 name := "apache-predictionio-data-hdfs"
 
-libraryDependencies ++= Seq(
-  "org.apache.predictionio" %% "apache-predictionio-core" % version.value % "provided",
-  "org.apache.predictionio" %% "apache-predictionio-data" % version.value % "provided",
-  "org.scalatest"           %% "scalatest"      % "2.1.7" % "test",
-  "org.specs2"              %% "specs2"         % "2.3.13" % "test")
+val Hadoop27 = config("hadoop27") extend Compile
+val Hadoop26 = config("hadoop26") extend Compile
 
-parallelExecution in Test := false
+configs(Hadoop27, Hadoop26)
+
+libraryDependencies ++= Seq(
+  "org.apache.hadoop"       % "hadoop-common" % "2.7.3" % "hadoop27" exclude("commons-beanutils", "*"),
+  "org.apache.hadoop"       % "hadoop-common" % "2.6.5" % "hadoop26" exclude("commons-beanutils", "*"),
+  "org.apache.predictionio" %% "apache-predictionio-data" % version.value,
+  "org.scalatest"           %% "scalatest"      % "2.1.7" % "test")
+
+compile in Compile := inc.Analysis.Empty
+
+lazy val customAssemblySettings: Seq[Def.Setting[_]] =
+  inConfig(Hadoop27)(
+    Classpaths.configSettings ++ Defaults.configTasks ++ baseAssemblySettings ++ Seq(
+      assemblyOption in assembly := (assemblyOption in assembly).value.copy(
+        includeScala = false,
+        excludedJars = (fullClasspath in assembly).value.filter {_.data.getName startsWith "apache-predictionio"}
+      ),
+      assemblyOutputPath in assembly := baseDirectory.value.getAbsoluteFile.getParentFile.getParentFile /
+        "assembly" / scalaBinaryVersion.value / "spark" / s"pio-data-hdfs27-assembly-${version.value}.jar"
+    )
+  ) ++
+  inConfig(Hadoop26)(
+    Classpaths.configSettings ++ Defaults.configTasks ++ baseAssemblySettings ++ Seq(
+      assemblyOption in assembly := (assemblyOption in assembly).value.copy(
+        includeScala = false,
+        excludedJars = (fullClasspath in assembly).value.filter {_.data.getName startsWith "apache-predictionio"}
+      ),
+      assemblyOutputPath in assembly := baseDirectory.value.getAbsoluteFile.getParentFile.getParentFile /
+        "assembly" / scalaBinaryVersion.value / "spark" / s"pio-data-hdfs26-assembly-${version.value}.jar"
+    )
+  )
+
+Seq(customAssemblySettings: _*)
 
 pomExtra := childrenPomExtra.value
-
-assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false, includeDependency = true)
-
-assemblyMergeStrategy in assembly := {
-  case PathList("META-INF", "LICENSE.txt") => MergeStrategy.concat
-  case PathList("META-INF", "NOTICE.txt")  => MergeStrategy.concat
-  case x =>
-    val oldStrategy = (assemblyMergeStrategy in assembly).value
-    oldStrategy(x)
-}
-
-// skip test in assembly
-test in assembly := {}
-
-assemblyOutputPath in assembly := baseDirectory.value.getAbsoluteFile.getParentFile.getParentFile / "assembly" / "spark" / ("pio-data-hdfs-assembly-" + version.value + ".jar")

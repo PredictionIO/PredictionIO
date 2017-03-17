@@ -36,6 +36,9 @@ else
 fi
 sbt/sbt clean
 mkdir assembly
+# TODO: Now, existing pattern flows only
+rm -rf dist/* \
+  && tar zxvf `find . -name 'PredictionIO_2.10-*.tar.gz' -type f` -C dist --strip-components 1
 cp dist/lib/*.jar assembly/
 mkdir -p lib/spark
 cp dist/lib/spark/*.jar lib/spark

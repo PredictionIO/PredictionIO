@@ -22,7 +22,6 @@ package org.apache.predictionio.tools.dashboard
 
 import spray.http.{HttpMethods, HttpMethod, HttpResponse, AllOrigins}
 import spray.http.HttpHeaders._
-import spray.http.HttpMethods._
 import spray.http.HttpEntity
 import spray.routing._
 import spray.http.StatusCodes

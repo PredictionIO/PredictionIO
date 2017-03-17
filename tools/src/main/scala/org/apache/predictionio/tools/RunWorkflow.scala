@@ -18,19 +18,13 @@
 package org.apache.predictionio.tools
 
 import org.apache.predictionio.tools.console.Console
-import org.apache.predictionio.tools.Runner
 import org.apache.predictionio.tools.Common._
 import org.apache.predictionio.tools.ReturnTypes._
-import org.apache.predictionio.workflow.{WorkflowUtils, JsonExtractorOption}
+import org.apache.predictionio.workflow.JsonExtractorOption
 import org.apache.predictionio.workflow.JsonExtractorOption.JsonExtractorOption
 
 import java.io.File
-import java.net.URI
 import grizzled.slf4j.Logging
-
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.FileSystem
-import org.apache.hadoop.fs.Path
 
 import scala.sys.process._
 
