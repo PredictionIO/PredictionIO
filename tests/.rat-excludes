@@ -20,6 +20,7 @@ templates.yaml
 semver.sh
 pgpass
 
+obsolete/*
 PredictionIO-.*/*
 target/*
 /source
