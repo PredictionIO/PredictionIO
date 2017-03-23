@@ -31,10 +31,6 @@ pomExtra := childrenPomExtra.value
 
 assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
 
-assemblyOption in assembly := (assemblyOption in assembly).value.copy(
-  includeScala = false,
-  excludedJars = (fullClasspath in assembly).value.filter {_.data.getName startsWith "apache-predictionio"})
-
 // skip test in assembly
 test in assembly := {}
 

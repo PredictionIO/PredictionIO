@@ -27,8 +27,6 @@ libraryDependencies ++= Seq(
   "io.spray"               %% "spray-testkit"  % "1.3.3" % "test",
   "org.specs2"             %% "specs2"         % "2.3.13" % "test")
 
-dependencyOverrides += "org.slf4j" % "slf4j-log4j12" % "1.7.18"
-
 assemblyMergeStrategy in assembly := {
   case PathList("META-INF", "LICENSE.txt") => MergeStrategy.concat
   case PathList("META-INF", "NOTICE.txt")  => MergeStrategy.concat
