@@ -32,6 +32,7 @@ packageDescription := "Apache PredictionIO is an open source Machine Learning Se
 version in Rpm := version.value.replace("-", "_")
 rpmRelease := "1"
 rpmVendor := "apache"
+rpmGroup := Some("Applications/System")
 rpmUrl := Some("http://predictionio.incubator.apache.org/")
 rpmLicense := Some("Apache License Version 2.0")
 
