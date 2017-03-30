@@ -38,8 +38,7 @@ fi
     -Dhadoop.version=$PIO_HADOOP_VERSION \
     -Delasticsearch.version=$PIO_ELASTICSEARCH_VERSION
 sbt/sbt clean storage/clean
-rm -rf assembly
-mkdir assembly
+rm -rf assembly/*.jar
 cp dist/lib/*.jar assembly/
 rm -rf lib/spark
 mkdir -p lib/spark

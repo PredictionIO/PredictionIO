@@ -24,6 +24,9 @@ usage ()
     echo "Usage: $0 [-h|--help]"
     echo ""
     echo "  -h|--help    Show usage"
+    echo ""
+    echo "  --with-rpm   Build distribution for RPM package"
+    echo "  --with-deb   Build distribution for DEB package"
 }
 
 JAVA_PROPS=()
@@ -38,6 +41,14 @@ case $i in
     ;;
     -D*)
     JAVA_PROPS+=("$i")
+    shift
+    ;;
+    --with-rpm)
+    RPM_BUILD=true
+    shift
+    ;;
+    --with-deb)
+    DEB_BUILD=true
     shift
     ;;
     *)
@@ -59,6 +70,13 @@ set -x
 sbt/sbt "${JAVA_PROPS[@]}" clean
 sbt/sbt "${JAVA_PROPS[@]}" printBuildInfo
 sbt/sbt "${JAVA_PROPS[@]}" publishLocal assembly storage/assembly
+sbt/sbt "${JAVA_PROPS[@]}" assembly/clean assembly/universal:packageBin assembly/universal:packageZipTarball
+if [ x$RPM_BUILD = "xtrue" ] ; then
+    sbt/sbt "${JAVA_PROPS[@]}" assembly/rpm:packageBin
+fi
+if [ x$DEB_BUILD = "xtrue" ] ; then
+    sbt/sbt "${JAVA_PROPS[@]}" assembly/debian:packageBin
+fi
 set +x
 
 cd ${FWDIR}
@@ -75,8 +93,8 @@ cp ${FWDIR}/bin/* ${DISTDIR}/bin || :
 cp ${FWDIR}/conf/* ${DISTDIR}/conf
 cp ${FWDIR}/project/build.properties ${DISTDIR}/project
 cp ${FWDIR}/sbt/sbt ${DISTDIR}/sbt
-cp ${FWDIR}/assembly/*assembly*jar ${DISTDIR}/lib
-cp ${FWDIR}/assembly/spark/*jar ${DISTDIR}/lib/spark
+cp ${FWDIR}/assembly/src/universal/lib/*assembly*jar ${DISTDIR}/lib
+cp ${FWDIR}/assembly/src/universal/lib/spark/*jar ${DISTDIR}/lib/spark
 
 rm -f ${DISTDIR}/lib/*javadoc.jar
 rm -f ${DISTDIR}/lib/*sources.jar

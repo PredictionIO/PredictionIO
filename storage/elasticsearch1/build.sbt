@@ -34,4 +34,5 @@ assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeSca
 test in assembly := {}
 
 assemblyOutputPath in assembly := baseDirectory.value.getAbsoluteFile.getParentFile.getParentFile /
-  "assembly" / "spark" / s"pio-data-elasticsearch1-assembly-${version.value}.jar"
+  "assembly" / "src" / "universal" / "lib" / "spark" /
+  s"pio-data-elasticsearch1-assembly-${version.value}.jar"

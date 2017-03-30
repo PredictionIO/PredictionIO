@@ -32,28 +32,38 @@ search() {
   echo ${i}
 }
 
-PIO_FILE=$(readlink -f $0 2>/dev/null)
-if [ $? = 0 ] ; then 
-  export PIO_HOME="$(cd $(dirname $PIO_FILE)/..; pwd)"
-else
-  CURRENT_DIR=`pwd`
-  TARGET_FILE="$0"
-  cd "$(dirname "$TARGET_FILE")"
-  TARGET_FILE=$(basename "$TARGET_FILE")
-
-  while [ -L "$TARGET_FILE" ]
-  do
-    TARGET_FILE=$(readlink "$TARGET_FILE")
+if [ -z $PIO_HOME ] ; then
+  PIO_FILE=$(readlink -f $0 2>/dev/null)
+  if [ $? = 0 ] ; then
+    export PIO_HOME="$(cd $(dirname $PIO_FILE)/..; pwd)"
+  else
+    CURRENT_DIR=`pwd`
+    TARGET_FILE="$0"
     cd "$(dirname "$TARGET_FILE")"
     TARGET_FILE=$(basename "$TARGET_FILE")
-  done
 
-  export PIO_HOME="$(cd $(dirname "$TARGET_FILE")/..; pwd -P)"
-  cd "$CURRENT_DIR"
+    while [ -L "$TARGET_FILE" ]
+    do
+      TARGET_FILE=$(readlink "$TARGET_FILE")
+      cd "$(dirname "$TARGET_FILE")"
+      TARGET_FILE=$(basename "$TARGET_FILE")
+    done
+
+    export PIO_HOME="$(cd $(dirname "$TARGET_FILE")/..; pwd -P)"
+    cd "$CURRENT_DIR"
+  fi
 fi
 
-
-export PIO_CONF_DIR="${PIO_HOME}/conf"
+if [ -z $PIO_CONF_DIR ] ; then
+  export PIO_CONF_DIR="${PIO_HOME}/conf"
+  if [ ! -d $PIO_CONF_DIR ] ; then
+    export PIO_CONF_DIR="/etc/predictionio"
+    if [ ! -d $PIO_CONF_DIR ] ; then
+      echo "PIO_CONF_DIR is not found."
+      exit 1
+    fi
+  fi
+fi
 
 FIRST_SEP=$(search "--" $@)
 

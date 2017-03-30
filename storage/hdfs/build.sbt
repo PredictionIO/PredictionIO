@@ -35,4 +35,5 @@ assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeSca
 test in assembly := {}
 
 assemblyOutputPath in assembly := baseDirectory.value.getAbsoluteFile.getParentFile.getParentFile /
-  "assembly" / "spark" / ("pio-data-hdfs-assembly-" + version.value + ".jar")
+  "assembly" / "src" / "universal" / "lib" / "spark" /
+  ("pio-data-hdfs-assembly-" + version.value + ".jar")

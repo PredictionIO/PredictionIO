@@ -12,7 +12,6 @@ core/data
 examples/data/ml-*
 fs/
 supervisord.conf
-assembly/
 /dist
 pio.log
 *.tar.gz
@@ -20,6 +19,10 @@ pio.log
 # Ignore source files whose name prefixed with "Private"
 Private*.scala
 quickstartapp/
+# Eclipse
+.project
+.classpath
+.settings/
 # IntelliJ
 *.iml
 .idea/
@@ -31,3 +34,5 @@ apache-rat-0.11.jar
 tests/dist
 tests/docker-files/*.jar
 tests/docker-files/*.tgz
+assembly/*.jar
+assembly/src/universal/

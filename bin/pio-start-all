@@ -25,63 +25,78 @@ export PIO_HOME="$(cd `dirname $0`/..; pwd)"
 
 . ${PIO_HOME}/bin/load-pio-env.sh
 
+SOURCE_TYPE=$PIO_STORAGE_REPOSITORIES_METADATA_SOURCE
+SOURCE_TYPE=$SOURCE_TYPE$PIO_STORAGE_REPOSITORIES_EVENTDATA_SOURCE
+SOURCE_TYPE=$SOURCE_TYPE$PIO_STORAGE_REPOSITORIES_MODELDATA_SOURCE
+
 # Elasticsearch
-echo "Starting Elasticsearch..."
-if [ -n "$PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME" ]; then
-  if [ -n "$JAVA_HOME" ]; then
-    JPS=`$JAVA_HOME/bin/jps`
-  else
-    JPS=`jps`
+if [ `echo $SOURCE_TYPE | grep -i elasticsearch | wc -l` != 0 ] ; then
+  echo "Starting Elasticsearch..."
+  if [ -n "$PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME" ]; then
+    ELASTICSEARCH_HOME=$PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME
+  elif [ -n "$PIO_STORAGE_SOURCES_ELASTICSEARCH5_HOME" ]; then
+    ELASTICSEARCH_HOME=$PIO_STORAGE_SOURCES_ELASTICSEARCH5_HOME
   fi
-  if [[ ${JPS} =~ "Elasticsearch" ]]; then
-    echo -e "\033[0;31mElasticsearch is already running. Please use pio-stop-all to try stopping it first.\033[0m"
-    echo -e "\033[0;31mNote: If you started Elasticsearch manually, you will need to kill it manually.\033[0m"
-    echo -e "\033[0;31mAborting...\033[0m"
+  if [ -n "$ELASTICSEARCH_HOME" ]; then
+    if [ -n "$JAVA_HOME" ]; then
+      JPS=`$JAVA_HOME/bin/jps`
+    else
+      JPS=`jps`
+    fi
+    if [[ ${JPS} =~ "Elasticsearch" ]]; then
+      echo -e "\033[0;31mElasticsearch is already running. Please use pio-stop-all to try stopping it first.\033[0m"
+      echo -e "\033[0;31mNote: If you started Elasticsearch manually, you will need to kill it manually.\033[0m"
+      echo -e "\033[0;31mAborting...\033[0m"
+      exit 1
+    else
+      $ELASTICSEARCH_HOME/bin/elasticsearch -d -p $PIO_HOME/es.pid
+    fi
+  else
+    echo -e "\033[0;31mPlease set PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME in conf/pio-env.sh, or in your environment.\033[0m"
+    echo -e "\033[0;31mCannot start Elasticsearch. Aborting...\033[0m"
     exit 1
-  else
-    $PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME/bin/elasticsearch -d -p $PIO_HOME/es.pid
   fi
-else
-  echo -e "\033[0;31mPlease set PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME in conf/pio-env.sh, or in your environment.\033[0m"
-  echo -e "\033[0;31mCannot start Elasticsearch. Aborting...\033[0m"
-  exit 1
 fi
 
 # HBase
-echo "Starting HBase..."
-if [ -n "$PIO_STORAGE_SOURCES_HBASE_HOME" ]; then
-  $PIO_STORAGE_SOURCES_HBASE_HOME/bin/start-hbase.sh
-else
-  echo -e "\033[0;31mPlease set PIO_STORAGE_SOURCES_HBASE_HOME in conf/pio-env.sh, or in your environment.\033[0m"
-  # Kill everything for cleanliness
-  echo -e "\033[0;31mCannot start HBase. Aborting...\033[0m"
-  sleep 3
-  ${PIO_HOME}/bin/pio-stop-all
-  exit 1
-fi
-
-#PGSQL
-pgsqlStatus="$(ps auxwww | grep postgres | wc -l)"
-if [[ "$pgsqlStatus" < 5 ]]; then
-  # Detect OS
-  OS=`uname`
-  if [[ "$OS" = "Darwin" ]]; then
-    pg_cmd=`which pg_ctl`
-    if [[ "$pg_cmd" != "" ]]; then
-      pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
-    fi
-  elif [[ "$OS" = "Linux" ]]; then
-    sudo service postgresql start
+if [ `echo $SOURCE_TYPE | grep -i hbase | wc -l` != 0 ] ; then
+  echo "Starting HBase..."
+  if [ -n "$PIO_STORAGE_SOURCES_HBASE_HOME" ]; then
+    $PIO_STORAGE_SOURCES_HBASE_HOME/bin/start-hbase.sh
   else
-    echo -e "\033[1;31mYour OS $OS is not yet supported for automatic postgresql startup:(\033[0m"
-    echo -e "\033[1;31mPlease do a manual startup!\033[0m"
+    echo -e "\033[0;31mPlease set PIO_STORAGE_SOURCES_HBASE_HOME in conf/pio-env.sh, or in your environment.\033[0m"
+    # Kill everything for cleanliness
+    echo -e "\033[0;31mCannot start HBase. Aborting...\033[0m"
+    sleep 3
     ${PIO_HOME}/bin/pio-stop-all
     exit 1
   fi
 fi
 
+#PGSQL
+if [ `echo $SOURCE_TYPE | grep -i pgsql | wc -l` != 0 ] ; then
+  pgsqlStatus="$(ps auxwww | grep postgres | wc -l)"
+  if [[ "$pgsqlStatus" < 5 ]]; then
+    # Detect OS
+    OS=`uname`
+    if [[ "$OS" = "Darwin" ]]; then
+      pg_cmd=`which pg_ctl`
+      if [[ "$pg_cmd" != "" ]]; then
+        pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
+      fi
+    elif [[ "$OS" = "Linux" ]]; then
+      sudo service postgresql start
+    else
+      echo -e "\033[1;31mYour OS $OS is not yet supported for automatic postgresql startup:(\033[0m"
+      echo -e "\033[1;31mPlease do a manual startup!\033[0m"
+      ${PIO_HOME}/bin/pio-stop-all
+      exit 1
+    fi
+  fi
+fi
+
 # PredictionIO Event Server
-echo "Waiting 10 seconds for HBase to fully initialize..."
+echo "Waiting 10 seconds for Storage Repositories to fully initialize..."
 sleep 10
 echo "Starting PredictionIO Event Server..."
 ${PIO_HOME}/bin/pio-daemon ${PIO_HOME}/eventserver.pid eventserver --ip 0.0.0.0

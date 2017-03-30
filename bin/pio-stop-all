@@ -25,6 +25,10 @@ export PIO_HOME="$(cd `dirname $0`/..; pwd)"
 
 . ${PIO_HOME}/bin/load-pio-env.sh
 
+SOURCE_TYPE=$PIO_STORAGE_REPOSITORIES_METADATA_SOURCE
+SOURCE_TYPE=$SOURCE_TYPE$PIO_STORAGE_REPOSITORIES_EVENTDATA_SOURCE
+SOURCE_TYPE=$SOURCE_TYPE$PIO_STORAGE_REPOSITORIES_MODELDATA_SOURCE
+
 # PredictionIO Event Server
 echo "Stopping PredictionIO Event Server..."
 PIDFILE=${PIO_HOME}/eventserver.pid
@@ -34,30 +38,38 @@ if [ -e ${PIDFILE} ]; then
 fi
 
 # HBase
-echo "Stopping HBase..."
-if [ -n "$PIO_STORAGE_SOURCES_HBASE_HOME" ]; then
-  $PIO_STORAGE_SOURCES_HBASE_HOME/bin/stop-hbase.sh
+if [ `echo $SOURCE_TYPE | grep -i hbase | wc -l` != 0 ] ; then
+  echo "Stopping HBase..."
+  if [ -n "$PIO_STORAGE_SOURCES_HBASE_HOME" ]; then
+    $PIO_STORAGE_SOURCES_HBASE_HOME/bin/stop-hbase.sh
+  fi
 fi
 
 # Elasticsearch
-echo "Stopping Elasticsearch..."
-PIDFILE=${PIO_HOME}/es.pid
-if [ -e ${PIDFILE} ]; then
-  cat ${PIDFILE} | xargs kill
-  rm ${PIDFILE}
+if [ `echo $SOURCE_TYPE | grep -i elasticsearch | wc -l` != 0 ] ; then
+  echo "Stopping Elasticsearch..."
+  PIDFILE=${PIO_HOME}/es.pid
+  if [ -e ${PIDFILE} ]; then
+    cat ${PIDFILE} | xargs kill
+    rm ${PIDFILE}
+  fi
 fi
 
 #PGSQL
-OS=`uname`
-if [[ "$OS" = "Darwin" ]]; then
-  pg_cmd=`which pg_ctl`
-  if [[ "$pg_cmd" != "" ]]; then
-    pg_ctl -D /usr/local/var/postgres stop -s -m fast
+if [ `echo $SOURCE_TYPE | grep -i pgsql | wc -l` != 0 ] ; then
+  if [ -n "$PIO_STORAGE_SOURCES_PGSQL_TYPE" ]; then
+    OS=`uname`
+    if [[ "$OS" = "Darwin" ]]; then
+      pg_cmd=`which pg_ctl`
+      if [[ "$pg_cmd" != "" ]]; then
+        pg_ctl -D /usr/local/var/postgres stop -s -m fast
+      fi
+    elif [[ "$OS" = "Linux" ]]; then
+      sudo service postgresql stop
+    else
+      echo -e "\033[1;31mYour OS $OS is not yet supported for automatic postgresql startup:(\033[0m"
+      echo -e "\033[1;31mPlease do a manual shutdown!\033[0m"
+      exit 1
+    fi
   fi
-elif [[ "$OS" = "Linux" ]]; then
-  sudo service postgresql stop
-else
-  echo -e "\033[1;31mYour OS $OS is not yet supported for automatic postgresql startup:(\033[0m"
-  echo -e "\033[1;31mPlease do a manual shutdown!\033[0m"
-  exit 1
 fi

@@ -44,4 +44,5 @@ assemblyShadeRules in assembly := Seq(
 test in assembly := {}
 
 assemblyOutputPath in assembly := baseDirectory.value.getAbsoluteFile.getParentFile.getParentFile /
-  "assembly" / "spark" / s"pio-data-elasticsearch-assembly-${version.value}.jar"
+  "assembly" / "src" / "universal" / "lib" / "spark" /
+  s"pio-data-elasticsearch-assembly-${version.value}.jar"

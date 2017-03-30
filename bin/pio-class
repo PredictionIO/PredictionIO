@@ -40,8 +40,8 @@ if [ -z "$1" ]; then
 fi
 
 # Warn if log4j.properties is not present
-if [ ! -f "$FWDIR/conf/log4j.properties" ]; then
-  echo -e "\033[0;35mWarning: log4j.properties is missing from $FWDIR/conf\033[0m"
+if [ ! -f "$PIO_CONF_DIR/log4j.properties" ]; then
+  echo -e "\033[0;35mWarning: log4j.properties is missing from $PIO_CONF_DIR\033[0m"
 fi
 
 # Make sure the Apache Spark version meets the prerequisite if it is a binary
@@ -84,6 +84,19 @@ else
   CLASSPATH=${classpath_output}
 fi
 
+if [ -z $PIO_LOG_DIR ] ; then
+  PIO_LOG_DIR=$PIO_HOME/log
+  touch $PIO_LOG_DIR/pio.log > /dev/null 2>&1
+  if [ $? != 0 ] ; then
+    PIO_LOG_DIR=/var/log/predictionio
+    touch $PIO_LOG_DIR/pio.log > /dev/null 2>&1
+    if [ $? != 0 ] ; then
+      PIO_LOG_DIR=$HOME
+    fi
+  fi
+fi
+
 export CLASSPATH
+export JAVA_OPTS="$JAVA_OPTS -Dpio.log.dir=$PIO_LOG_DIR"
 
 exec "$RUNNER" -cp "$CLASSPATH" $JAVA_OPTS "$@"

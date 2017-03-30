@@ -25,7 +25,7 @@ FWDIR="$(cd `dirname $0`/..; pwd)"
 . ${FWDIR}/bin/load-pio-env.sh
 
 # Build up classpath
-CLASSPATH="${FWDIR}/conf"
+CLASSPATH="${PIO_CONF_DIR}"
 
 CLASSPATH="$CLASSPATH:${FWDIR}/plugins/*:${FWDIR}/lib/spark/*"
 
