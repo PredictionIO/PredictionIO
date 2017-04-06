@@ -66,7 +66,7 @@ trait AccessKeys {
 
   /** Default implementation of key generation */
   def generateKey: String = {
-    val sr = SecureRandom.getInstanceStrong
+    val sr = new SecureRandom
     val srBytes = Array.fill(48)(0.toByte)
     sr.nextBytes(srBytes)
     Base64.encodeBase64URLSafeString(srBytes) match {
