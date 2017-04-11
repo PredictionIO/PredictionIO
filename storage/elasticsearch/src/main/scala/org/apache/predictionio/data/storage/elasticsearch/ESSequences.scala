@@ -41,7 +41,9 @@ class ESSequences(client: ESClient, config: StorageClientConfig, index: String) 
 
   val restClient = client.open()
   try {
-    ESUtils.createIndex(restClient, index)
+    ESUtils.createIndex(restClient, index,
+      client.getNumberOfShards(index.toUpperCase),
+      client.getNumberOfReplicas(index.toUpperCase))
     val mappingJson =
       (estype ->
         ("_all" -> ("enabled" -> 0)))

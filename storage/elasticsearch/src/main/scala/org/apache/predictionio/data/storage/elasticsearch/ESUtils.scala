@@ -166,16 +166,23 @@ object ESUtils {
 
   def createIndex(
     client: RestClient,
-    index: String): Unit = {
+    index: String,
+    numberOfShards: Option[Int],
+    numberOfReplicas: Option[Int]): Unit = {
     client.performRequest(
       "HEAD",
       s"/$index",
       Map.empty[String, String].asJava).getStatusLine.getStatusCode match {
         case 404 =>
+          val json = ("settings" ->
+            ("number_of_shards" -> numberOfShards) ~
+            ("number_of_replicas" -> numberOfReplicas))
+          val entity = new NStringEntity(compact(render(json)), ContentType.APPLICATION_JSON)
           client.performRequest(
             "PUT",
             s"/$index",
-            Map.empty[String, String].asJava)
+            Map.empty[String, String].asJava,
+            entity)
         case 200 =>
         case _ =>
           throw new IllegalStateException(s"/$index is invalid.")
