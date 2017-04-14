@@ -61,8 +61,8 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
     val restClient = client.open()
     try {
       ESUtils.createIndex(restClient, index,
-        client.getNumberOfShards(index.toUpperCase),
-        client.getNumberOfReplicas(index.toUpperCase))
+        ESUtils.getNumberOfShards(config, index.toUpperCase),
+        ESUtils.getNumberOfReplicas(config, index.toUpperCase))
       val json =
         (estype ->
           ("_all" -> ("enabled" -> 0)) ~

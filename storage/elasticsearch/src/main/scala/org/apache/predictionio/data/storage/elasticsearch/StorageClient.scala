@@ -25,7 +25,7 @@ import org.elasticsearch.client.RestClient
 
 import grizzled.slf4j.Logging
 
-case class ESClient(hosts: Seq[HttpHost], config: StorageClientConfig) {
+case class ESClient(hosts: Seq[HttpHost]) {
   def open(): RestClient = {
     try {
       RestClient.builder(hosts: _*).build()
@@ -34,19 +34,11 @@ case class ESClient(hosts: Seq[HttpHost], config: StorageClientConfig) {
         throw new StorageClientException(e.getMessage, e)
     }
   }
-
-  def getNumberOfShards(index: String): Option[Int] = {
-    config.properties.get(s"${index}_NUM_OF_SHARDS").map(_.toInt)
-  }
-
-  def getNumberOfReplicas(index: String): Option[Int] = {
-    config.properties.get(s"${index}_NUM_OF_REPLICAS").map(_.toInt)
-  }
 }
 
 class StorageClient(val config: StorageClientConfig) extends BaseStorageClient
     with Logging {
   override val prefix = "ES"
 
-  val client = ESClient(ESUtils.getHttpHosts(config), config)
+  val client = ESClient(ESUtils.getHttpHosts(config))
 }
