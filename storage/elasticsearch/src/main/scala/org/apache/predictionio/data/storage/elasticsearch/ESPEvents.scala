@@ -120,7 +120,7 @@ class ESPEvents(client: ESClient, config: StorageClientConfig, index: String)
             val response = restClient.performRequest(
               "POST",
               s"/$index/$estype/_delete_by_query",
-              Map("refresh" -> client.getEventDataRefresh()).asJava)
+              Map("refresh" -> ESUtils.getEventDataRefresh(config)).asJava)
             val jsonResponse = parse(EntityUtils.toString(response.getEntity))
             val result = (jsonResponse \ "result").extract[String]
             result match {

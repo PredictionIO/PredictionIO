@@ -262,4 +262,8 @@ object ESUtils {
       map(_.split(",").toSeq).getOrElse(Seq("http"))
     (hosts, ports, schemes).zipped.map((h, p, s) => new HttpHost(h, p, s))
   }
+
+  def getEventDataRefresh(config: StorageClientConfig): String = {
+    config.properties.getOrElse("EVENTDATA_REFRESH", "true")
+  }
 }
