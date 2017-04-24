@@ -74,7 +74,7 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
             ("entityId" -> ("type" -> "keyword")) ~
             ("targetEntityType" -> ("type" -> "keyword")) ~
             ("targetEntityId" -> ("type" -> "keyword")) ~
-            ("properties" -> ("type" -> "keyword")) ~
+            ("properties" -> ("enabled" -> 0)) ~
             ("eventTime" -> ("type" -> "date")) ~
             ("tags" -> ("type" -> "keyword")) ~
             ("prId" -> ("type" -> "keyword")) ~
