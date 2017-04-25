@@ -25,6 +25,7 @@ import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.predictionio.tools.ReturnTypes._
 import org.apache.predictionio.workflow.WorkflowUtils
 
+import scala.collection.mutable
 import scala.sys.process._
 
 case class SparkArgs(
@@ -93,6 +94,92 @@ object Runner extends EitherLogging {
         arg
       }
     }
+  }
+
+  /** Group argument values by argument names
+    *
+    * This only works with long argument names immediately followed by a value
+    *
+    * Input:
+    * Seq("--foo", "bar", "--flag", "--dead", "beef baz", "n00b", "--foo", "jeez")
+    *
+    * Output:
+    * Map("--foo" -> Seq("bar", "jeez"), "--dead"- > "beef baz")
+    *
+    * @param arguments Sequence of argument names and values
+    * @return A map with argument values keyed by the same argument name
+    */
+  def groupByArgumentName(arguments: Seq[String]): Map[String, Seq[String]] = {
+    val argumentMap = mutable.HashMap.empty[String, Seq[String]]
+    arguments.foldLeft("") { (prev, current) =>
+      if (prev.startsWith("--") && !current.startsWith("--")) {
+        if (argumentMap.contains(prev)) {
+          argumentMap(prev) = argumentMap(prev) :+ current
+        } else {
+          argumentMap(prev) = Seq(current)
+        }
+      }
+      current
+    }
+    argumentMap.toMap
+  }
+
+  /** Remove argument names and values
+    *
+    * This only works with long argument names immediately followed by a value
+    *
+    * Input:
+    * Seq("--foo", "bar", "--flag", "--dead", "beef baz", "n00b", "--foo", "jeez")
+    * Set("--flag", "--foo")
+    *
+    * Output:
+    * Seq("--flag", "--dead", "beef baz", "n00b")
+    *
+    * @param arguments Sequence of argument names and values
+    * @param remove Name of argument and associated values to remove
+    * @return Sequence of argument names and values with targets removed
+    */
+  def removeArguments(arguments: Seq[String], remove: Set[String]): Seq[String] = {
+    if (remove.isEmpty) {
+      arguments
+    } else {
+      arguments.foldLeft(Seq.empty[String]) { (ongoing, current) =>
+        if (ongoing.isEmpty) {
+          Seq(current)
+        } else {
+          if (remove.contains(ongoing.last) && !current.startsWith("--")) {
+            ongoing.take(ongoing.length - 1)
+          } else {
+            ongoing :+ current
+          }
+        }
+      }
+    }
+  }
+
+  /** Combine repeated arguments together
+    *
+    * Input:
+    * Seq("--foo", "bar", "--flag", "--dead", "beef baz", "n00b", "--foo", "jeez")
+    * Map("--foo", (_ + _))
+    *
+    * Output:
+    * Seq("--flag", "--dead", "beef baz", "n00b", "--foo", "bar jeez")
+    *
+    * @param arguments Sequence of argument names and values
+    * @param combinators Map of argument name to combinator function
+    * @return Sequence of argument names and values with specific argument values combined
+    */
+  def combineArguments(
+      arguments: Seq[String],
+      combinators: Map[String, (String, String) => String]): Seq[String] = {
+    val argumentsToCombine: Map[String, Seq[String]] =
+      groupByArgumentName(arguments).filterKeys(combinators.keySet.contains(_))
+    val argumentsMinusToCombine = removeArguments(arguments, combinators.keySet)
+    val combinedArguments = argumentsToCombine flatMap { kv =>
+      Seq(kv._1, kv._2.reduce(combinators(kv._1)))
+    }
+    argumentsMinusToCombine ++ combinedArguments
   }
 
   def runOnSpark(
@@ -189,17 +276,23 @@ object Runner extends EitherLogging {
     }
 
     val verboseArg = if (verbose) Seq("--verbose") else Nil
-    val pioLogDir = Option(System.getProperty("pio.log.dir")).getOrElse(s"${pioHome}/log")
+    val pioLogDir = Option(System.getProperty("pio.log.dir")).getOrElse(s"$pioHome/log")
 
-    val sparkSubmit = Seq(
-      sparkSubmitCommand,
+    val sparkSubmitArgs = Seq(
       sa.sparkPassThrough,
       Seq("--class", className),
       sparkSubmitJars,
       sparkSubmitFiles,
       sparkSubmitExtraClasspaths,
       sparkSubmitKryo,
-      Seq("--driver-java-options", s"-Dpio.log.dir=${pioLogDir}"),
+      Seq("--driver-java-options", s"-Dpio.log.dir=$pioLogDir")).flatten
+
+    val whitespaceCombinator = (a: String, b: String) => s"$a $b"
+    val combinators = Map("--driver-java-options" -> whitespaceCombinator)
+
+    val sparkSubmit = Seq(
+      sparkSubmitCommand,
+      combineArguments(sparkSubmitArgs, combinators),
       Seq(mainJar),
       detectFilePaths(fs, sa.scratchUri, classArgs),
       Seq("--env", pioEnvVars),

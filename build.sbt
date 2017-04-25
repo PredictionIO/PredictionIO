@@ -64,7 +64,7 @@ javacOptions in (ThisBuild, compile) ++= Seq("-source", "1.7", "-target", "1.7",
   "-Xlint:deprecation", "-Xlint:unchecked")
 
 // Ignore differentiation of Spark patch levels
-sparkVersion in ThisBuild := sys.props.getOrElse("spark.version", "1.6.3")
+sparkVersion in ThisBuild := sys.props.getOrElse("spark.version", (if (scalaBinaryVersion.value == "2.10") "1.6.3" else "2.1.0"))
 
 sparkBinaryVersion in ThisBuild := binaryVersion(sparkVersion.value)
 
