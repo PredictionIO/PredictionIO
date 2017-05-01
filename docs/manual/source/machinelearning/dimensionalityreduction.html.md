@@ -47,7 +47,7 @@ As a guiding example, a base data set, the [MNIST digit recognition dataset](htt
 Now, we first pull the [classification engine template](/gallery/template-gallery/#classification) via the following bash line
 
 ```
-pio template get apache/incubator-predictionio-template-attribute-based-classifier <Your new engine directory>
+git clone https://github.com/apache/incubator-predictionio-template-attribute-based-classifier.git <Your new engine directory>
 ```
 
 You should immediately be prompted with the following message:
