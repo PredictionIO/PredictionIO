@@ -41,7 +41,18 @@ Launch IPython Notebook with PySpark using the following command, with
 ```
 $ PYSPARK_DRIVER_PYTHON=ipython PYSPARK_DRIVER_PYTHON_OPTS="notebook --pylab inline" $SPARK_HOME/bin/pyspark
 ```
+If you see a error appearing in the console like this:
 
+```
+[E 10:07:53.900 NotebookApp] Support for specifying --pylab on the command line has been removed.
+[E 10:07:53.901 NotebookApp] Please use `%pylab inline` or `%matplotlib inline` in the notebook itself.
+```
+
+Then you can use the following command. 
+
+```
+PYSPARK_DRIVER_PYTHON=ipython PYSPARK_DRIVER_PYTHON_OPTS="notebook --`%pylab inline`" $SPARK_HOME/bin/pyspark
+```
 By default, you should be able to access your IPython Notebook via web browser
 at http://localhost:8888.
 
