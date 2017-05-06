@@ -83,7 +83,7 @@ hadoopVersion in ThisBuild := sys.props.getOrElse(
   scalaSparkDepsVersion(scalaBinaryVersion.value)(sparkBinaryVersion.value)("hadoop"))
 
 val pioBuildInfoSettings = buildInfoSettings ++ Seq(
-  sourceGenerators in Compile <+= buildInfo,
+  sourceGenerators in Compile += buildInfo,
   buildInfoKeys := Seq[BuildInfoKey](
     name,
     version,

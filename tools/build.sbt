@@ -35,7 +35,8 @@ assemblyMergeStrategy in assembly := {
     oldStrategy(x)
 }
 
-assemblyExcludedJars in assembly <<= (fullClasspath in assembly) map { cp =>
+assemblyExcludedJars in assembly := {
+  val cp = (fullClasspath in assembly).value
   cp filter { _.data.getName match {
     case "reflectasm-1.10.1.jar" => true
     case "kryo-3.0.3.jar" => true
@@ -55,7 +56,7 @@ test in assembly := {}
 assemblyOutputPath in assembly := baseDirectory.value.getAbsoluteFile.getParentFile /
   "assembly" / "src" / "universal" / "lib" / s"pio-assembly-${version.value}.jar"
 
-cleanFiles <+= baseDirectory { base => base.getParentFile /
-  "assembly" / "src" / "universal" / "lib" }
+cleanFiles += baseDirectory.value.getParentFile /
+  "assembly" / "src" / "universal" / "lib" 
 
 pomExtra := childrenPomExtra.value
