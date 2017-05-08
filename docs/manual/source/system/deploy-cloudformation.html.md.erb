@@ -110,7 +110,7 @@ use the default values.
 | Parameter | Description |
 |-----------|-------------|
 | AWS-KeyPair | The AWS SSH key pair name that can be used to access all instances in the cluster. |
-| AvailabilityZone | Specify the availability zone that the PredictionIO cluster will be launched in. All instances of the cluster will be launched into the same zone for optimal network performance between one another.
+| AvailabilityZone | Specify the availability zone that the PredictionIO cluster will be launched in. All instances of the cluster will be launched into the same zone. Currently only Zones: us-west-2b, us-west-2a, and us-west-2c are supported |
 | ComputeInstanceType | The EC2 instance type of all compute instances. Memory-optimized EC2 instances are recommended. |
 | ComputeInstanceExtra | Number of extra compute instances besides the core compute instance. This can be increased and decreased. |
 | StorageInstanceExtra | Number of extra storage instances besides core storage instances. **Never decrease this value or you will risk data corruption.** |
