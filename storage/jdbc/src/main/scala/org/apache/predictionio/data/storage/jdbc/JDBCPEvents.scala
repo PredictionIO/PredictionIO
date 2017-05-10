@@ -146,14 +146,7 @@ class JDBCPEvents(client: String, config: StorageClientConfig, namespace: String
       case "postgresql" => eventsColumnNamesInDF.map(_.toLowerCase)
       case _ => eventsColumnNamesInDF
     }
-    val eventDF = events.map(x =>
-                              Event(eventId = None, event = x.event, entityType = x.entityType,
-                              entityId = x.entityId, targetEntityType = x.targetEntityType,
-                              targetEntityId = x.targetEntityId, properties = x.properties,
-                              eventTime = x.eventTime, tags = x.tags, prId = x.prId,
-                              creationTime = x.eventTime)
-                            )
-                        .map { event =>
+    val eventDF = events.map { event =>
       (event.eventId.getOrElse(JDBCUtils.generateId)
         , event.event
         , event.entityType
