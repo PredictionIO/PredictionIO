@@ -37,7 +37,11 @@ services:
 
 sudo: required
 
-cache: false
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt/boot
+    - $HOME/.sbt/launchers
 
 env:
   matrix:
