@@ -25,12 +25,13 @@ import org.apache.predictionio.data.storage.StorageClientConfig
 import scalikejdbc._
 
 /** JDBC implementations of [[EvaluationInstances]] */
-class JDBCEvaluationInstances(client: String, config: StorageClientConfig, prefix: String)
+class JDBCEvaluationInstances(client: String, config: StorageClientConfig, prefix: String, init:Boolean=true)
   extends EvaluationInstances with Logging {
   /** Database table name for this data access object */
   val tableName = JDBCUtils.prefixTableName(prefix, "evaluationinstances")
-  DB autoCommit { implicit session =>
-    sql"""
+  if (init) {
+    DB autoCommit { implicit session =>
+      sql"""
     create table if not exists $tableName (
       id varchar(100) not null primary key,
       status text not null,
@@ -44,8 +45,8 @@ class JDBCEvaluationInstances(client: String, config: StorageClientConfig, prefi
       evaluatorResults text not null,
       evaluatorResultsHTML text not null,
       evaluatorResultsJSON text)""".execute().apply()
+    }
   }
-
   def insert(i: EvaluationInstance): String = DB localTx { implicit session =>
     val id = java.util.UUID.randomUUID().toString
     sql"""

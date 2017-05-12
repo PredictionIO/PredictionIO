@@ -22,15 +22,16 @@ import grizzled.slf4j.Logging
 import org.apache.predictionio.data.storage.AccessKey
 import org.apache.predictionio.data.storage.AccessKeys
 import org.apache.predictionio.data.storage.StorageClientConfig
+import org.apache.predictionio.data.storage.jdbc.{JDBCAccessKeys, JDBCUtils}
 import scalikejdbc._
 
 import scala.util.Random
 
 /** JDBC implementation of [[AccessKeys]] */
 class OJDBCAccessKeys(client: String, config: StorageClientConfig, prefix: String)
-  extends AccessKeys with Logging {
+  extends JDBCAccessKeys(client, config, prefix, false)  {
   /** Database table name for this data access object */
-  val tableName = OJDBCUtils.prefixTableName(prefix, "accesskeys")
+  override val tableName = JDBCUtils.prefixTableName(prefix, "accesskeys")
   var createsql =
     s"""
     create table ${tableName.value} (
@@ -56,51 +57,5 @@ class OJDBCAccessKeys(client: String, config: StorageClientConfig, prefix: Strin
 
   DB autoCommit { implicit session =>
     SQL(ifnotcreate).execute().apply()
-  }
-
-  def insert(accessKey: AccessKey): Option[String] = DB localTx { implicit s =>
-    val key = if (accessKey.key.isEmpty) generateKey else accessKey.key
-    val events = if (accessKey.events.isEmpty) None else Some(accessKey.events.mkString(","))
-    sql"""
-    insert into $tableName values(
-      $key,
-      ${accessKey.appid},
-      $events)""".update().apply()
-    Some(key)
-  }
-
-  def get(key: String): Option[AccessKey] = DB readOnly { implicit session =>
-    sql"SELECT accesskey, appid, events FROM $tableName WHERE accesskey = $key".
-      map(resultToAccessKey).single().apply()
-  }
-
-  def getAll(): Seq[AccessKey] = DB readOnly { implicit session =>
-    sql"SELECT accesskey, appid, events FROM $tableName".map(resultToAccessKey).list().apply()
-  }
-
-  def getByAppid(appid: Int): Seq[AccessKey] = DB readOnly { implicit session =>
-    sql"SELECT accesskey, appid, events FROM $tableName WHERE appid = $appid".
-      map(resultToAccessKey).list().apply()
-  }
-
-  def update(accessKey: AccessKey): Unit = DB localTx { implicit session =>
-    val events = if (accessKey.events.isEmpty) None else Some(accessKey.events.mkString(","))
-    sql"""
-    UPDATE $tableName SET
-      appid = ${accessKey.appid},
-      events = $events
-    WHERE accesskey = ${accessKey.key}""".update().apply()
-  }
-
-  def delete(key: String): Unit = DB localTx { implicit session =>
-    sql"DELETE FROM $tableName WHERE accesskey = $key".update().apply()
-  }
-
-  /** Convert JDBC results to [[AccessKey]] */
-  def resultToAccessKey(rs: WrappedResultSet): AccessKey = {
-    AccessKey(
-      key = rs.string("accesskey"),
-      appid = rs.int("appid"),
-      events = rs.stringOpt("events").map(_.split(",").toSeq).getOrElse(Nil))
   }
 }

@@ -44,6 +44,7 @@ object JDBCUtils {
     driverType(url) match {
       case "postgresql" => sqls"bytea"
       case "mysql" => sqls"longblob"
+      case "oracle" => sqls"blob"
       case _ => sqls"longblob"
     }
   }
@@ -57,6 +58,7 @@ object JDBCUtils {
     driverType(url) match {
       case "postgresql" => "to_timestamp"
       case "mysql" => "from_unixtime"
+      case "oracle" => "TO_DATE('19700101','yyyymmdd') + ((?)/24/60/60)"
       case _ => "from_unixtime"
     }
   }

@@ -25,18 +25,21 @@ import org.apache.predictionio.data.storage.StorageClientConfig
 import scalikejdbc._
 
 /** JDBC implementation of [[Models]] */
-class JDBCModels(client: String, config: StorageClientConfig, prefix: String)
+class JDBCModels(client: String, config: StorageClientConfig, prefix: String, init: Boolean=true)
   extends Models with Logging {
   /** Database table name for this data access object */
+
   val tableName = JDBCUtils.prefixTableName(prefix, "models")
 
-  /** Determines binary column type based on JDBC driver type */
-  val binaryColumnType = JDBCUtils.binaryColumnType(client)
-  DB autoCommit { implicit session =>
-    sql"""
+  if (init) {
+    /** Determines binary column type based on JDBC driver type */
+    val binaryColumnType = JDBCUtils.binaryColumnType(client)
+    DB autoCommit { implicit session =>
+      sql"""
     create table if not exists $tableName (
       id varchar(100) not null primary key,
       models $binaryColumnType not null)""".execute().apply()
+    }
   }
 
   def insert(i: Model): Unit = DB localTx { implicit session =>

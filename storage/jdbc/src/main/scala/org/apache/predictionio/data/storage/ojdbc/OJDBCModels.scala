@@ -25,24 +25,25 @@ import grizzled.slf4j.Logging
 import org.apache.predictionio.data.storage.Model
 import org.apache.predictionio.data.storage.Models
 import org.apache.predictionio.data.storage.StorageClientConfig
+import org.apache.predictionio.data.storage.jdbc.{JDBCModels, JDBCUtils}
 import scalikejdbc._
 
 /** JDBC implementation of [[Models]] */
 class OJDBCModels(client: String, config: StorageClientConfig, prefix: String)
-  extends Models with Logging {
+  extends JDBCModels(client, config, prefix, false) {
   /** Database table name for this data access object */
-  val tableName = OJDBCUtils.prefixTableName(prefix, "models")
+  override val tableName = JDBCUtils.prefixTableName(prefix, "models")
 
 
   /** Determines binary column type based on JDBC driver type */
-  val binaryColumnType = OJDBCUtils.binaryColumnType(client).value
+  val binaryColumnType = JDBCUtils.binaryColumnType(client)
 
 
   var createsql =
     s"""
     create table ${tableName.value} (
       id varchar2(100) not null primary key,
-      models $binaryColumnType not null)
+      models ${binaryColumnType.value} not null)
     """.replaceAll("\n", "")
 
   // println(createsql)
@@ -66,21 +67,11 @@ class OJDBCModels(client: String, config: StorageClientConfig, prefix: String)
     SQL(ifnotcreate).execute().apply()
   }
 
-  def insert(i: Model): Unit = DB localTx { implicit session =>
+  override def insert(i: Model): Unit = DB localTx { implicit session =>
     val bytesBinder = ParameterBinder[InputStream](
       value = new ByteArrayInputStream(i.models),
       binder = _.setBinaryStream(_, new ByteArrayInputStream(i.models), i.models.length)
     )
     sql"insert into $tableName values(${i.id}, ${bytesBinder})".update().apply()
-  }
-
-  def get(id: String): Option[Model] = DB readOnly { implicit session =>
-    sql"select id, models from $tableName where id = $id".map { r =>
-      Model(id = r.string("id"), models = r.bytes("models"))
-    }.single().apply()
-  }
-
-  def delete(id: String): Unit = DB localTx { implicit session =>
-    sql"delete from $tableName where id = $id".execute().apply()
   }
 }

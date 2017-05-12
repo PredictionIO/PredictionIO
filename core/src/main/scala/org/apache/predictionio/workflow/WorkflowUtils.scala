@@ -247,6 +247,7 @@ object WorkflowUtils extends Logging {
       "ES_CONF_DIR",
       "POSTGRES_JDBC_DRIVER",
       "MYSQL_JDBC_DRIVER",
+      "ORACLE_JDBC_DRIVER",
       "HADOOP_CONF_DIR",
       "HBASE_CONF_DIR")
     thirdPartyPaths.flatMap(p =>
@@ -257,6 +258,7 @@ object WorkflowUtils extends Logging {
   def thirdPartyJars: Seq[URI] = {
     val thirdPartyPaths = Seq(
       "POSTGRES_JDBC_DRIVER",
+      "ORACLE_JDBC_DRIVER",
       "MYSQL_JDBC_DRIVER")
     thirdPartyPaths.flatMap(p =>
       sys.env.get(p) map { f =>

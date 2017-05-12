@@ -22,13 +22,14 @@ import grizzled.slf4j.Logging
 import org.apache.predictionio.data.storage.EngineInstance
 import org.apache.predictionio.data.storage.EngineInstances
 import org.apache.predictionio.data.storage.StorageClientConfig
+import org.apache.predictionio.data.storage.jdbc.{JDBCEngineInstances, JDBCUtils}
 import scalikejdbc._
 
 /** JDBC implementation of [[EngineInstances]] */
 class OJDBCEngineInstances(client: String, config: StorageClientConfig, prefix: String)
-  extends EngineInstances with Logging {
+  extends JDBCEngineInstances(client, config, prefix, false) {
   /** Database table name for this data access object */
-  val tableName = OJDBCUtils.prefixTableName(prefix, "engineinstances")
+  override val tableName = JDBCUtils.prefixTableName(prefix, "engineinstances")
   var createsql =
   s"""
     create table ${tableName.value} (
@@ -65,151 +66,5 @@ class OJDBCEngineInstances(client: String, config: StorageClientConfig, prefix: 
 
   DB autoCommit { implicit session =>
     SQL(ifnotcreate).execute().apply()
-  }
-
-  def insert(i: EngineInstance): String = DB localTx { implicit session =>
-    val id = java.util.UUID.randomUUID().toString
-    sql"""
-    INSERT INTO $tableName VALUES(
-      $id,
-      ${i.status},
-      ${i.startTime},
-      ${i.endTime},
-      ${i.engineId},
-      ${i.engineVersion},
-      ${i.engineVariant},
-      ${i.engineFactory},
-      ${i.batch},
-      ${OJDBCUtils.mapToString(i.env)},
-      ${OJDBCUtils.mapToString(i.sparkConf)},
-      ${i.dataSourceParams},
-      ${i.preparatorParams},
-      ${i.algorithmsParams},
-      ${i.servingParams})""".update().apply()
-    id
-  }
-
-  def get(id: String): Option[EngineInstance] = DB localTx { implicit session =>
-    sql"""
-    SELECT
-      id,
-      status,
-      startTime,
-      endTime,
-      engineId,
-      engineVersion,
-      engineVariant,
-      engineFactory,
-      batch,
-      env,
-      sparkConf,
-      datasourceParams,
-      preparatorParams,
-      algorithmsParams,
-      servingParams
-    FROM $tableName WHERE id = $id""".map(resultToEngineInstance).
-      single().apply()
-  }
-
-  def getAll(): Seq[EngineInstance] = DB localTx { implicit session =>
-    sql"""
-    SELECT
-      id,
-      status,
-      startTime,
-      endTime,
-      engineId,
-      engineVersion,
-      engineVariant,
-      engineFactory,
-      batch,
-      env,
-      sparkConf,
-      datasourceParams,
-      preparatorParams,
-      algorithmsParams,
-      servingParams
-    FROM $tableName""".map(resultToEngineInstance).list().apply()
-  }
-
-  def getLatestCompleted(
-    engineId: String,
-    engineVersion: String,
-    engineVariant: String): Option[EngineInstance] =
-    getCompleted(engineId, engineVersion, engineVariant).headOption
-
-  def getCompleted(
-    engineId: String,
-    engineVersion: String,
-    engineVariant: String): Seq[EngineInstance] = DB localTx { implicit s =>
-    sql"""
-    SELECT
-      id,
-      status,
-      startTime,
-      endTime,
-      engineId,
-      engineVersion,
-      engineVariant,
-      engineFactory,
-      batch,
-      env,
-      sparkConf,
-      datasourceParams,
-      preparatorParams,
-      algorithmsParams,
-      servingParams
-    FROM $tableName
-    WHERE
-      status = 'COMPLETED' AND
-      engineId = $engineId AND
-      engineVersion = $engineVersion AND
-      engineVariant = $engineVariant
-    ORDER BY startTime DESC""".
-      map(resultToEngineInstance).list().apply()
-  }
-
-  def update(i: EngineInstance): Unit = DB localTx { implicit session =>
-    sql"""
-    update $tableName set
-      status = ${i.status},
-      startTime = ${i.startTime},
-      endTime = ${i.endTime},
-      engineId = ${i.engineId},
-      engineVersion = ${i.engineVersion},
-      engineVariant = ${i.engineVariant},
-      engineFactory = ${i.engineFactory},
-      batch = ${i.batch},
-      env = ${OJDBCUtils.mapToString(i.env)},
-      sparkConf = ${OJDBCUtils.mapToString(i.sparkConf)},
-      datasourceParams = ${i.dataSourceParams},
-      preparatorParams = ${i.preparatorParams},
-      algorithmsParams = ${i.algorithmsParams},
-      servingParams = ${i.servingParams}
-    where id = ${i.id}""".update().apply()
-  }
-
-  def delete(id: String): Unit = DB localTx { implicit session =>
-    sql"DELETE FROM $tableName WHERE id = $id".update().apply()
-  }
-
-  /** Convert JDBC results to [[EngineInstance]] */
-  def resultToEngineInstance(rs: WrappedResultSet): EngineInstance = {
-    EngineInstance(
-      id = rs.string("id"),
-      status = rs.string("status"),
-      startTime = rs.jodaDateTime("startTime"),
-      endTime = rs.jodaDateTime("endTime"),
-      engineId = rs.string("engineId"),
-      engineVersion = rs.string("engineVersion"),
-      engineVariant = rs.string("engineVariant"),
-      engineFactory = rs.string("engineFactory"),
-      batch = rs.string("batch"),
-      env = OJDBCUtils.stringToMap(rs.string("env")),
-      sparkConf = OJDBCUtils.stringToMap(rs.string("sparkConf")),
-      dataSourceParams = rs.string("datasourceParams"),
-      preparatorParams = rs.string("preparatorParams"),
-      algorithmsParams = rs.string("algorithmsParams"),
-      servingParams = rs.string("servingParams"))
   }
 }

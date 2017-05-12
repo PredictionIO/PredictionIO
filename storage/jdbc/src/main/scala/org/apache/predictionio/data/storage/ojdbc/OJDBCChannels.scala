@@ -22,13 +22,14 @@ import grizzled.slf4j.Logging
 import org.apache.predictionio.data.storage.Channel
 import org.apache.predictionio.data.storage.Channels
 import org.apache.predictionio.data.storage.StorageClientConfig
+import org.apache.predictionio.data.storage.jdbc.{JDBCChannels, JDBCUtils}
 import scalikejdbc._
 
 /** JDBC implementation of [[Channels]] */
 class OJDBCChannels(client: String, config: StorageClientConfig, prefix: String)
-  extends Channels with Logging {
+  extends JDBCChannels(client, config, prefix, false) {
   /** Database table name for this data access object */
-  val tableName = OJDBCUtils.prefixTableName(prefix, "channels")
+  override val tableName = JDBCUtils.prefixTableName(prefix, "channels")
   var createsql =
     s"""
     create table ${tableName.value} (
@@ -56,7 +57,7 @@ class OJDBCChannels(client: String, config: StorageClientConfig, prefix: String)
     SQL(ifnotcreate).execute().apply()
   }
 
-  def insert(channel: Channel): Option[Int] = DB localTx { implicit session =>
+  override def insert(channel: Channel): Option[Int] = DB localTx { implicit session =>
     val q = if (channel.id == 0) {
       sql"INSERT INTO $tableName (name, appid) VALUES(${channel.name}, ${channel.appid})"
     } else {
@@ -67,26 +68,5 @@ class OJDBCChannels(client: String, config: StorageClientConfig, prefix: String)
           select id from $tableName where appid = ${channel.appid}
           """.map(rs =>
       rs.int("id")).single().apply()
-  }
-
-  def get(id: Int): Option[Channel] = DB localTx { implicit session =>
-    sql"SELECT id, name, appid FROM $tableName WHERE id = $id".
-      map(resultToChannel).single().apply()
-  }
-
-  def getByAppid(appid: Int): Seq[Channel] = DB localTx { implicit session =>
-    sql"SELECT id, name, appid FROM $tableName WHERE appid = $appid".
-      map(resultToChannel).list().apply()
-  }
-
-  def delete(id: Int): Unit = DB localTx { implicit session =>
-    sql"DELETE FROM $tableName WHERE id = $id".update().apply()
-  }
-
-  def resultToChannel(rs: WrappedResultSet): Channel = {
-    Channel(
-      id = rs.int("id"),
-      name = rs.string("name"),
-      appid = rs.int("appid"))
   }
 }

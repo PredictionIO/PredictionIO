@@ -21,6 +21,7 @@ package org.apache.predictionio.data.storage.ojdbc
 import java.sql.{DriverManager, ResultSet}
 
 import com.github.nscala_time.time.Imports._
+import org.apache.predictionio.data.storage.jdbc.{JDBCPEvents, JDBCUtils}
 import org.apache.predictionio.data.storage.{DataMap, Event, PEvents, StorageClientConfig}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.{JdbcRDD, RDD}
@@ -30,9 +31,9 @@ import org.json4s.native.Serialization
 import scalikejdbc._
 
 /** JDBC implementation of [[PEvents]] */
-class OJDBCPEvents(client: String, config: StorageClientConfig, namespace: String) extends PEvents {
+class OJDBCPEvents(client: String, config: StorageClientConfig, namespace: String) extends JDBCPEvents(client, config, namespace) {
   @transient private implicit lazy val formats = org.json4s.DefaultFormats
-  def find(
+  override def find(
     appId: Int,
     channelId: Option[Int] = None,
     startTime: Option[DateTime] = None,
@@ -75,10 +76,10 @@ class OJDBCPEvents(client: String, config: StorageClientConfig, namespace: Strin
         prId,
         creationTime,
         creationTimeZone
-      from ${OJDBCUtils.eventTableName(namespace, appId, channelId)}
+      from ${JDBCUtils.eventTableName(namespace, appId, channelId)}
       where
-        eventTime >= ${OJDBCUtils.timestampFunction(client)} and
-        eventTime < ${OJDBCUtils.timestampFunction(client)}
+        eventTime >= ${JDBCUtils.timestampFunction(client)} and
+        eventTime < ${JDBCUtils.timestampFunction(client)}
       $entityTypeClause
       $entityIdClause
       $eventNamesClause
@@ -116,67 +117,5 @@ class OJDBCPEvents(client: String, config: StorageClientConfig, namespace: Strin
           creationTime = new DateTime(r.getTimestamp("creationTime").getTime,
             DateTimeZone.forID(r.getString("creationTimeZone"))))
       }).cache()
-  }
-
-  def write(events: RDD[Event], appId: Int, channelId: Option[Int])(sc: SparkContext): Unit = {
-    val sqlContext = new SQLContext(sc)
-
-    import sqlContext.implicits._
-
-    val tableName = OJDBCUtils.eventTableName(namespace, appId, channelId)
-
-    val eventTableColumns = Seq[String](
-        "id"
-      , "event"
-      , "entityType"
-      , "entityId"
-      , "targetEntityType"
-      , "targetEntityId"
-      , "properties"
-      , "eventTime"
-      , "eventTimeZone"
-      , "tags"
-      , "prId"
-      , "creationTime"
-      , "creationTimeZone")
-
-    val eventDF = events.map { event =>
-      (event.eventId.getOrElse(OJDBCUtils.generateId)
-        , event.event
-        , event.entityType
-        , event.entityId
-        , event.targetEntityType.orNull
-        , event.targetEntityId.orNull
-        , if (!event.properties.isEmpty) Serialization.write(event.properties.toJObject) else null
-        , new java.sql.Timestamp(event.eventTime.getMillis)
-        , event.eventTime.getZone.getID
-        , if (event.tags.nonEmpty) Some(event.tags.mkString(",")) else null
-        , event.prId
-        , new java.sql.Timestamp(event.creationTime.getMillis)
-        , event.creationTime.getZone.getID)
-    }.toDF(eventTableColumns:_*)
-
-    // spark version 1.4.0 or higher
-    val prop = new java.util.Properties
-    prop.setProperty("user", config.properties("USERNAME"))
-    prop.setProperty("password", config.properties("PASSWORD"))
-    eventDF.write.mode(SaveMode.Append).jdbc(client, tableName, prop)
-  }
-
-  def delete(eventIds: RDD[String], appId: Int, channelId: Option[Int])(sc: SparkContext): Unit = {
-
-    eventIds.foreachPartition{ iter =>
-
-      iter.foreach { eventId =>
-        DB localTx { implicit session =>
-        val tableName = OJDBCUtils.eventTableName(namespace, appId, channelId)
-        val table = SQLSyntax.createUnsafely(tableName)
-        SQL(s"""
-        delete from $table where id = ?
-        """).bind(eventId).update().apply()
-        true
-        }
-      }
-    }
   }
 }

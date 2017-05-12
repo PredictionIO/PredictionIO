@@ -25,18 +25,19 @@ import org.apache.predictionio.data.storage.StorageClientConfig
 import scalikejdbc._
 
 /** JDBC implementation of [[Channels]] */
-class JDBCChannels(client: String, config: StorageClientConfig, prefix: String)
+class JDBCChannels(client: String, config: StorageClientConfig, prefix: String, init: Boolean=true)
   extends Channels with Logging {
   /** Database table name for this data access object */
   val tableName = JDBCUtils.prefixTableName(prefix, "channels")
-  DB autoCommit { implicit session =>
-    sql"""
+  if (init) {
+    DB autoCommit { implicit session =>
+      sql"""
     create table if not exists $tableName (
       id serial not null primary key,
       name text not null,
       appid integer not null)""".execute().apply()
+    }
   }
-
   def insert(channel: Channel): Option[Int] = DB localTx { implicit session =>
     val q = if (channel.id == 0) {
       sql"INSERT INTO $tableName (name, appid) VALUES(${channel.name}, ${channel.appid})"
