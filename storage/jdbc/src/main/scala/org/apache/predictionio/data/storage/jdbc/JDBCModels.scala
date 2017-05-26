@@ -25,13 +25,13 @@ import org.apache.predictionio.data.storage.StorageClientConfig
 import scalikejdbc._
 
 /** JDBC implementation of [[Models]] */
-class JDBCModels(client: String, config: StorageClientConfig, prefix: String, init: Boolean=true)
+class JDBCModels(client: String, config: StorageClientConfig, prefix: String)
   extends Models with Logging {
   /** Database table name for this data access object */
 
   val tableName = JDBCUtils.prefixTableName(prefix, "models")
 
-  if (init) {
+  def init() {
     /** Determines binary column type based on JDBC driver type */
     val binaryColumnType = JDBCUtils.binaryColumnType(client)
     DB autoCommit { implicit session =>

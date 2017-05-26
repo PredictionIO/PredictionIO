@@ -25,11 +25,11 @@ import org.apache.predictionio.data.storage.StorageClientConfig
 import scalikejdbc._
 
 /** JDBC implementation of [[Channels]] */
-class JDBCChannels(client: String, config: StorageClientConfig, prefix: String, init: Boolean=true)
+class JDBCChannels(client: String, config: StorageClientConfig, prefix: String)
   extends Channels with Logging {
   /** Database table name for this data access object */
   val tableName = JDBCUtils.prefixTableName(prefix, "channels")
-  if (init) {
+  def init() {
     DB autoCommit { implicit session =>
       sql"""
     create table if not exists $tableName (

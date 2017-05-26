@@ -30,25 +30,22 @@ import scalikejdbc._
 
 /** JDBC implementation of [[Models]] */
 class OJDBCModels(client: String, config: StorageClientConfig, prefix: String)
-  extends JDBCModels(client, config, prefix, false) {
-  /** Database table name for this data access object */
-  override val tableName = JDBCUtils.prefixTableName(prefix, "models")
+  extends JDBCModels(client, config, prefix) {
+  override def init() {
+    /** Determines binary column type based on JDBC driver type */
+    val binaryColumnType = JDBCUtils.binaryColumnType(client)
 
 
-  /** Determines binary column type based on JDBC driver type */
-  val binaryColumnType = JDBCUtils.binaryColumnType(client)
-
-
-  var createsql =
-    s"""
+    var createsql =
+      s"""
     create table ${tableName.value} (
       id varchar2(100) not null primary key,
       models ${binaryColumnType.value} not null)
     """.replaceAll("\n", "")
 
-  // println(createsql)
-  var ifnotcreate =
-    s"""
+    // println(createsql)
+    var ifnotcreate =
+      s"""
       declare
       error_code NUMBER;
       begin
@@ -62,9 +59,10 @@ class OJDBCModels(client: String, config: StorageClientConfig, prefix: String)
           end if;
       end;
           """
-  // println(ifnotcreate)
-  DB autoCommit { implicit session =>
-    SQL(ifnotcreate).execute().apply()
+    // println(ifnotcreate)
+    DB autoCommit { implicit session =>
+      SQL(ifnotcreate).execute().apply()
+    }
   }
 
   override def insert(i: Model): Unit = DB localTx { implicit session =>

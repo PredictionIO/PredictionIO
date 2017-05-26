@@ -29,18 +29,18 @@ import scala.util.Random
 
 /** JDBC implementation of [[AccessKeys]] */
 class OJDBCAccessKeys(client: String, config: StorageClientConfig, prefix: String)
-  extends JDBCAccessKeys(client, config, prefix, false)  {
-  /** Database table name for this data access object */
-  override val tableName = JDBCUtils.prefixTableName(prefix, "accesskeys")
-  var createsql =
-    s"""
+  extends JDBCAccessKeys(client, config, prefix) {
+  override def init() {
+
+    var createsql =
+      s"""
     create table ${tableName.value} (
       accesskey varchar2(64) not null primary key,
       appid integer not null,
       events varchar2(4096))"""
 
-  var ifnotcreate =
-    s"""
+    var ifnotcreate =
+      s"""
         declare
         error_code NUMBER;
         begin
@@ -55,7 +55,8 @@ class OJDBCAccessKeys(client: String, config: StorageClientConfig, prefix: Strin
         end;
           """
 
-  DB autoCommit { implicit session =>
-    SQL(ifnotcreate).execute().apply()
+    DB autoCommit { implicit session =>
+      SQL(ifnotcreate).execute().apply()
+    }
   }
 }

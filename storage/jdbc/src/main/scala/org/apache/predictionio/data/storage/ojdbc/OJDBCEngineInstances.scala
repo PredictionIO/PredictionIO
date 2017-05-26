@@ -27,11 +27,10 @@ import scalikejdbc._
 
 /** JDBC implementation of [[EngineInstances]] */
 class OJDBCEngineInstances(client: String, config: StorageClientConfig, prefix: String)
-  extends JDBCEngineInstances(client, config, prefix, false) {
-  /** Database table name for this data access object */
-  override val tableName = JDBCUtils.prefixTableName(prefix, "engineinstances")
-  var createsql =
-  s"""
+  extends JDBCEngineInstances(client, config, prefix) {
+  override def init() {
+    var createsql =
+      s"""
     create table ${tableName.value} (
       id varchar2(100) not null primary key,
       status varchar2(4096) not null,
@@ -48,8 +47,8 @@ class OJDBCEngineInstances(client: String, config: StorageClientConfig, prefix: 
       preparatorParams varchar2(4096) not null,
       algorithmsParams varchar2(4096) not null,
       servingParams varchar2(4096) not null)""".replaceAll("\n", "")
-  var ifnotcreate =
-    s"""
+    var ifnotcreate =
+      s"""
         declare
         error_code NUMBER;
         begin
@@ -64,7 +63,8 @@ class OJDBCEngineInstances(client: String, config: StorageClientConfig, prefix: 
         end;
           """
 
-  DB autoCommit { implicit session =>
-    SQL(ifnotcreate).execute().apply()
+    DB autoCommit { implicit session =>
+      SQL(ifnotcreate).execute().apply()
+    }
   }
 }

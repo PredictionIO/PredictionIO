@@ -306,9 +306,18 @@ object Storage extends Logging {
     }
     val constructor = clazz.getConstructors()(0)
     try {
-      constructor.newInstance(ctorArgs: _*).
+      val instance = constructor.newInstance(ctorArgs: _*).
         asInstanceOf[T]
+      try {
+        val init = instance.getClass.getMethod("init")
+        init.invoke(instance)
+      }
+      catch {
+        case e: NoSuchMethodException => None
+      }
+      instance
     } catch {
+
       case e: IllegalArgumentException =>
         error(
           "Unable to instantiate data object with class '" +

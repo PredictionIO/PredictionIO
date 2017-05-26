@@ -25,11 +25,11 @@ import org.apache.predictionio.data.storage.StorageClientConfig
 import scalikejdbc._
 
 /** JDBC implementation of [[Apps]] */
-class JDBCApps(client: String, config: StorageClientConfig, prefix: String, init: Boolean=true)
+class JDBCApps(client: String, config: StorageClientConfig, prefix: String)
   extends Apps with Logging {
   /** Database table name for this data access object */
   val tableName = JDBCUtils.prefixTableName(prefix, "apps")
-  if (init) {
+  def init() {
     DB autoCommit { implicit session =>
       sql"""
     create table if not exists $tableName (

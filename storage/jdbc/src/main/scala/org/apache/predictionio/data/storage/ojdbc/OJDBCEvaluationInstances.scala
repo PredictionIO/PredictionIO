@@ -27,11 +27,10 @@ import scalikejdbc._
 
 /** JDBC implementations of [[EvaluationInstances]] */
 class OJDBCEvaluationInstances(client: String, config: StorageClientConfig, prefix: String)
-  extends JDBCEvaluationInstances(client, config, prefix, false) {
-  /** Database table name for this data access object */
-  override val tableName = JDBCUtils.prefixTableName(prefix, "evaluationinstances")
-  var createsql =
-  s"""
+  extends JDBCEvaluationInstances(client, config, prefix) {
+  override def init() {
+    var createsql =
+      s"""
     create table ${tableName.value} (
       id varchar2(100) not null primary key,
       status varchar2(4096) not null,
@@ -46,8 +45,8 @@ class OJDBCEvaluationInstances(client: String, config: StorageClientConfig, pref
       evaluatorResultsHTML varchar2(4096) not null,
       evaluatorResultsJSON varchar2(4096))""".replaceAll("\n", "")
 
-  var ifnotcreate =
-    s"""
+    var ifnotcreate =
+      s"""
         declare
         error_code NUMBER;
         begin
@@ -62,7 +61,8 @@ class OJDBCEvaluationInstances(client: String, config: StorageClientConfig, pref
         end;
           """
 
-  DB autoCommit { implicit session =>
-    SQL(ifnotcreate).execute().apply()
+    DB autoCommit { implicit session =>
+      SQL(ifnotcreate).execute().apply()
+    }
   }
 }
