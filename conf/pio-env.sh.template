@@ -29,6 +29,7 @@ SPARK_HOME=$PIO_HOME/vendors/spark-1.6.3-bin-hadoop2.6
 
 POSTGRES_JDBC_DRIVER=$PIO_HOME/lib/postgresql-42.0.0.jar
 MYSQL_JDBC_DRIVER=$PIO_HOME/lib/mysql-connector-java-5.1.41.jar
+ORACLE_JDBC_DRIVER=$PIO_HOME/lib/ojdbc7_g.jar
 
 # ES_CONF_DIR: You must configure this if you have advanced configuration for
 #              your Elasticsearch setup.
@@ -83,6 +84,14 @@ PIO_STORAGE_SOURCES_PGSQL_PASSWORD=pio
 # PIO_STORAGE_SOURCES_MYSQL_URL=jdbc:mysql://localhost/pio
 # PIO_STORAGE_SOURCES_MYSQL_USERNAME=pio
 # PIO_STORAGE_SOURCES_MYSQL_PASSWORD=pio
+
+
+# Oracle Example
+#PIO_STORAGE_SOURCES_ORACLE_TYPE=ojdbc
+#PIO_STORAGE_SOURCES_ORACLE_URL=jdbc:oracle:thin:@//scam13-scan7.us.oracle.com:1521/macpdb2.us.oracle.com
+#PIO_STORAGE_SOURCES_ORACLE_USERNAME=pio
+#PIO_STORAGE_SOURCES_ORACLE_PASSWORD=pio
+
 
 # Elasticsearch Example
 # PIO_STORAGE_SOURCES_ELASTICSEARCH_TYPE=elasticsearch
