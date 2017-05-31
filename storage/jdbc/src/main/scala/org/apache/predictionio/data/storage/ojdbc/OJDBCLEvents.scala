@@ -59,7 +59,7 @@ class OJDBCLEvents(
          entityId varchar2(255) not null,
          targetEntityType varchar2(4096),
          targetEntityId varchar2(4096),
-         properties varchar2(4096),
+         properties clob,
          eventTime timestamp DEFAULT SYSTIMESTAMP,
          eventTimeZone varchar2(50) not null,
          tags varchar2(4096),

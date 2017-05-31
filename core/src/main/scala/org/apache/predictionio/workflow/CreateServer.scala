@@ -198,7 +198,7 @@ object CreateServer extends Logging {
       kryo.invert(modeldata.get(engineInstance.id).get.models).get.
       asInstanceOf[Seq[Any]]
 
-    val batch = if (engineInstance.batch.nonEmpty) {
+    val batch = if (engineInstance.batch != null && engineInstance.batch.nonEmpty) {
       s"${engineInstance.engineFactory} (${engineInstance.batch})"
     } else {
       engineInstance.engineFactory
