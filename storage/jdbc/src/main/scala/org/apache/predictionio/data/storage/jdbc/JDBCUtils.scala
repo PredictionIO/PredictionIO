@@ -105,4 +105,24 @@ object JDBCUtils {
     */
   def eventTableName(namespace: String, appId: Int, channelId: Option[Int]): String =
     s"${namespace}_${appId}${channelId.map("_" + _).getOrElse("")}"
+
+  def ifnotcreate(url: String, sql: String) : String = {
+    driverType(url) match {
+      case "oracle" => s"""
+        declare
+        error_code NUMBER;
+        begin
+        EXECUTE IMMEDIATE '$sql';
+        exception
+        when others then
+          if(SQLCODE = -955) then
+                        NULL;
+          else
+                        RAISE;
+          end if;
+        end;
+          """
+      case _ => sql
+    }
+  }
 }

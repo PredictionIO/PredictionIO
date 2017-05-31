@@ -31,32 +31,15 @@ import scala.util.Random
 class OJDBCAccessKeys(client: String, config: StorageClientConfig, prefix: String)
   extends JDBCAccessKeys(client, config, prefix) {
   override def init() {
-
-    var createsql =
+    val sql =
       s"""
     create table ${tableName.value} (
       accesskey varchar2(64) not null primary key,
       appid integer not null,
       events varchar2(4096))"""
 
-    var ifnotcreate =
-      s"""
-        declare
-        error_code NUMBER;
-        begin
-        EXECUTE IMMEDIATE '$createsql';
-        exception
-        when others then
-          if(SQLCODE = -955) then
-                        NULL;
-          else
-                        RAISE;
-          end if;
-        end;
-          """
-
     DB autoCommit { implicit session =>
-      SQL(ifnotcreate).execute().apply()
+      SQL(JDBCUtils.ifnotcreate(client, sql)).execute().apply()
     }
   }
 }

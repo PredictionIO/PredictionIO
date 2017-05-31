@@ -34,34 +34,15 @@ class OJDBCModels(client: String, config: StorageClientConfig, prefix: String)
   override def init() {
     /** Determines binary column type based on JDBC driver type */
     val binaryColumnType = JDBCUtils.binaryColumnType(client)
-
-
-    var createsql =
+    val sql =
       s"""
     create table ${tableName.value} (
       id varchar2(100) not null primary key,
       models ${binaryColumnType.value} not null)
     """.replaceAll("\n", "")
 
-    // println(createsql)
-    var ifnotcreate =
-      s"""
-      declare
-      error_code NUMBER;
-      begin
-      EXECUTE IMMEDIATE '$createsql';
-      exception
-        when others then
-          if(SQLCODE = -955) then
-            NULL;
-          else
-            RAISE;
-          end if;
-      end;
-          """
-    // println(ifnotcreate)
     DB autoCommit { implicit session =>
-      SQL(ifnotcreate).execute().apply()
+      SQL(JDBCUtils.ifnotcreate(client, sql)).execute().apply()
     }
   }
 

@@ -36,9 +36,9 @@ import scala.concurrent.Future
 
 /** JDBC implementation of [[LEvents]] */
 class OJDBCLEvents(
-                   client: String,
-                   config: StorageClientConfig,
-                   namespace: String) extends JDBCLEvents(client, config, namespace) {
+                    client: String,
+                    config: StorageClientConfig,
+                    namespace: String) extends JDBCLEvents(client, config, namespace) {
   implicit private val formats = org.json4s.DefaultFormats
 
   override def init(appId: Int, channelId: Option[Int] = None): Boolean = {
@@ -50,7 +50,7 @@ class OJDBCLEvents(
     val tableName = JDBCUtils.eventTableName(namespace, appId, channelId)
     val entityIdIndexName = s"idx_${tableName}_ei"
     val entityTypeIndexName = s"idx_${tableName}_et"
-    var createsql =
+    val sql =
       s"""
       create table $tableName (
          id varchar2(32) not null primary key,
@@ -65,32 +65,14 @@ class OJDBCLEvents(
          tags varchar2(4096),
          prId varchar2(4096),
          creationTime timestamp DEFAULT SYSTIMESTAMP,
-         creationTimeZone varchar2(50) not null)
-	""".replaceAll("\n", "")
-    var ifnotcreate =
-      s"""
-        declare
-        error_code NUMBER;
-        begin
-        EXECUTE IMMEDIATE '$createsql';
-        exception
-        when others then
-          if(SQLCODE = -955) then
-		        NULL;
-          else
-		        RAISE;
-          end if;
-        end;
-          """
-    // println(ifnotcreate);
+         creationTimeZone varchar2(50) not null)""".replaceAll("\n", "")
+
     DB autoCommit { implicit session =>
+      SQL(JDBCUtils.ifnotcreate(client, sql)).execute().apply()
       if (useIndex) {
-        SQL(ifnotcreate).execute().apply()
         // create index
         SQL(s"create index $entityIdIndexName on $tableName (entityId)").execute().apply()
         SQL(s"create index $entityTypeIndexName on $tableName (entityType)").execute().apply()
-      } else {
-        SQL(ifnotcreate).execute().apply()
       }
       true
     }

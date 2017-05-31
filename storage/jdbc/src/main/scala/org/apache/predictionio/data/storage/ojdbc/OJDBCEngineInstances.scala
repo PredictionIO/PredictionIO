@@ -29,7 +29,7 @@ import scalikejdbc._
 class OJDBCEngineInstances(client: String, config: StorageClientConfig, prefix: String)
   extends JDBCEngineInstances(client, config, prefix) {
   override def init() {
-    var createsql =
+    val sql =
       s"""
     create table ${tableName.value} (
       id varchar2(100) not null primary key,
@@ -47,24 +47,9 @@ class OJDBCEngineInstances(client: String, config: StorageClientConfig, prefix: 
       preparatorParams varchar2(4096) not null,
       algorithmsParams varchar2(4096) not null,
       servingParams varchar2(4096) not null)""".replaceAll("\n", "")
-    var ifnotcreate =
-      s"""
-        declare
-        error_code NUMBER;
-        begin
-        EXECUTE IMMEDIATE '$createsql';
-        exception
-        when others then
-          if(SQLCODE = -955) then
-                        NULL;
-          else
-                        RAISE;
-          end if;
-        end;
-          """
 
     DB autoCommit { implicit session =>
-      SQL(ifnotcreate).execute().apply()
+      SQL(JDBCUtils.ifnotcreate(client, sql)).execute().apply()
     }
   }
 }
