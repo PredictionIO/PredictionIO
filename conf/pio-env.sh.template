@@ -88,7 +88,7 @@ PIO_STORAGE_SOURCES_PGSQL_PASSWORD=pio
 
 # Oracle Example
 #PIO_STORAGE_SOURCES_ORACLE_TYPE=ojdbc
-#PIO_STORAGE_SOURCES_ORACLE_URL=jdbc:oracle:thin:@//scam13-scan7.us.oracle.com:1521/macpdb2.us.oracle.com
+#PIO_STORAGE_SOURCES_ORACLE_URL=jdbc:oracle:thin:@//localhost:1521/pio
 #PIO_STORAGE_SOURCES_ORACLE_USERNAME=pio
 #PIO_STORAGE_SOURCES_ORACLE_PASSWORD=pio
 
