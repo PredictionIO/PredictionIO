@@ -30,7 +30,7 @@ import scala.util.Random
 /** JDBC implementation of [[AccessKeys]] */
 class OJDBCAccessKeys(client: String, config: StorageClientConfig, prefix: String)
   extends JDBCAccessKeys(client, config, prefix) {
-  override def init() {
+  override def init() = {
     val sql =
       s"""
     create table ${tableName.value} (

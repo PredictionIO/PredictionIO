@@ -28,7 +28,7 @@ import scalikejdbc._
 /** JDBC implementation of [[EngineInstances]] */
 class OJDBCEngineInstances(client: String, config: StorageClientConfig, prefix: String)
   extends JDBCEngineInstances(client, config, prefix) {
-  override def init() {
+  override def init() = {
     val sql =
       s"""
     create table ${tableName.value} (

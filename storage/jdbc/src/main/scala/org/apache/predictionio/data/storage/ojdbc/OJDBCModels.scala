@@ -31,7 +31,7 @@ import scalikejdbc._
 /** JDBC implementation of [[Models]] */
 class OJDBCModels(client: String, config: StorageClientConfig, prefix: String)
   extends JDBCModels(client, config, prefix) {
-  override def init() {
+  override def init() = {
     /** Determines binary column type based on JDBC driver type */
     val binaryColumnType = JDBCUtils.binaryColumnType(client)
     val sql =

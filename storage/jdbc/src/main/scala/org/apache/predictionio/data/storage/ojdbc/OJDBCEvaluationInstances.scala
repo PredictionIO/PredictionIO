@@ -28,7 +28,7 @@ import scalikejdbc._
 /** JDBC implementations of [[EvaluationInstances]] */
 class OJDBCEvaluationInstances(client: String, config: StorageClientConfig, prefix: String)
   extends JDBCEvaluationInstances(client, config, prefix) {
-  override def init() {
+  override def init() = {
     val sql =
       s"""
     create table ${tableName.value} (

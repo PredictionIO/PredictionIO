@@ -29,7 +29,7 @@ class JDBCEvaluationInstances(client: String, config: StorageClientConfig, prefi
   extends EvaluationInstances with Logging {
   /** Database table name for this data access object */
   val tableName = JDBCUtils.prefixTableName(prefix, "evaluationinstances")
-  def init() {
+  def init() = {
     DB autoCommit { implicit session =>
       sql"""
     create table if not exists $tableName (

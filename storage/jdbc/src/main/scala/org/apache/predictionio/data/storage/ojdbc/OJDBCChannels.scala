@@ -28,7 +28,7 @@ import scalikejdbc._
 /** JDBC implementation of [[Channels]] */
 class OJDBCChannels(client: String, config: StorageClientConfig, prefix: String)
   extends JDBCChannels(client, config, prefix) {
-  override def init() {
+  override def init() = {
     val sql =
       s"""
     create table ${tableName.value} (

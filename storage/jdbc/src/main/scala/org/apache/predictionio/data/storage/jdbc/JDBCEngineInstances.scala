@@ -29,7 +29,7 @@ class JDBCEngineInstances(client: String, config: StorageClientConfig, prefix: S
   extends EngineInstances with Logging {
   /** Database table name for this data access object */
   val tableName = JDBCUtils.prefixTableName(prefix, "engineinstances")
-  def init() {
+  def init() = {
     DB autoCommit { implicit session =>
       sql"""
     create table if not exists $tableName (

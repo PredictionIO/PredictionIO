@@ -29,7 +29,7 @@ class JDBCChannels(client: String, config: StorageClientConfig, prefix: String)
   extends Channels with Logging {
   /** Database table name for this data access object */
   val tableName = JDBCUtils.prefixTableName(prefix, "channels")
-  def init() {
+  def init() = {
     DB autoCommit { implicit session =>
       sql"""
     create table if not exists $tableName (

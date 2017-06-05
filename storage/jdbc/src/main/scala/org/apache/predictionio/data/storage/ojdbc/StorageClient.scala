@@ -25,29 +25,7 @@ import org.apache.predictionio.data.storage.StorageClientException
 import scalikejdbc._
 
 /** JDBC implementation of [[BaseStorageClient]] */
-class StorageClient(val config: StorageClientConfig)
-  extends BaseStorageClient with Logging {
+class StorageClient(override val config: StorageClientConfig)
+  extends org.apache.predictionio.data.storage.jdbc.StorageClient(config) {
   override val prefix = "OJDBC"
-
-  if (!config.properties.contains("URL")) {
-    throw new StorageClientException("The URL variable is not set!", null)
-  }
-  if (!config.properties.contains("USERNAME")) {
-    throw new StorageClientException("The USERNAME variable is not set!", null)
-  }
-  if (!config.properties.contains("PASSWORD")) {
-    throw new StorageClientException("The PASSWORD variable is not set!", null)
-  }
-
-  // set max size of connection pool
-  val maxSize: Int = config.properties.getOrElse("CONNECTIONS", "8").toInt
-  val settings = ConnectionPoolSettings(maxSize = maxSize)
-
-  ConnectionPool.singleton(
-    config.properties("URL"),
-    config.properties("USERNAME"),
-    config.properties("PASSWORD"),
-    settings)
-  /** JDBC connection URL. Connections are managed by ScalikeJDBC. */
-  val client = config.properties("URL")
 }

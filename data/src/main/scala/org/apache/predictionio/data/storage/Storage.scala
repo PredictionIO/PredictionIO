@@ -313,7 +313,7 @@ object Storage extends Logging {
         init.invoke(instance)
       }
       catch {
-        case e: NoSuchMethodException => None
+        case e: NoSuchMethodException => ()
       }
       instance
     } catch {

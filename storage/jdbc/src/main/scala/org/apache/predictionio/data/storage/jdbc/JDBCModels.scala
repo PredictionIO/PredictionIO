@@ -31,7 +31,7 @@ class JDBCModels(client: String, config: StorageClientConfig, prefix: String)
 
   val tableName = JDBCUtils.prefixTableName(prefix, "models")
 
-  def init() {
+  def init() = {
     /** Determines binary column type based on JDBC driver type */
     val binaryColumnType = JDBCUtils.binaryColumnType(client)
     DB autoCommit { implicit session =>
