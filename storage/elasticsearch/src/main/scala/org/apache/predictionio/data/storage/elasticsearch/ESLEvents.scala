@@ -22,8 +22,7 @@ import java.io.IOException
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-
-import org.apache.http.entity.ContentType
+import org.apache.http.entity.{ContentType, StringEntity}
 import org.apache.http.nio.entity.NStringEntity
 import org.apache.http.util.EntityUtils
 import org.apache.predictionio.data.storage.Event
@@ -34,13 +33,11 @@ import org.joda.time.DateTime
 import org.json4s._
 import org.json4s.JsonDSL._
 import org.json4s.native.JsonMethods._
-import org.json4s.native.Serialization.read
 import org.json4s.native.Serialization.write
 import org.json4s.ext.JodaTimeSerializers
-
 import grizzled.slf4j.Logging
 import org.elasticsearch.client.ResponseException
-import org.apache.http.entity.StringEntity
+import org.apache.http.message.BasicHeader
 
 class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: String)
     extends LEvents with Logging {
@@ -187,20 +184,23 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
 
           compact(render(commandJson)) + "\n" + compact(render(documentJson))
 
-        }.mkString("\n")
+        }.mkString("", "\n", "\n")
 
-        val entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
+        val entity = new StringEntity(json)
         val response = restClient.performRequest(
           "POST",
           "/_bulk",
           Map("refresh" -> ESUtils.getEventDataRefresh(config)).asJava,
-          entity)
+          entity,
+          new BasicHeader("Content-Type", "application/x-ndjson"))
 
-        val responseLines = EntityUtils.toString(response.getEntity).split("\n")
+        val responseJson = parse(EntityUtils.toString(response.getEntity))
+        val items = (responseJson \ "items").asInstanceOf[JArray]
 
-        responseLines.zip(ids).map { case (line, id) =>
-          val jsonResponse = parse(line)
-          val result = (jsonResponse \ "result").extract[String]
+        items.arr.map { case value: JObject =>
+          val result = (value \ "index" \ "result").extract[String]
+          val id = (value \ "index" \ "_id").extract[String]
+
           result match {
             case "created" => id
             case "updated" => id
