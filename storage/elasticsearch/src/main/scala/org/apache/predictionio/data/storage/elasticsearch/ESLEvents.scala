@@ -22,8 +22,7 @@ import java.io.IOException
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-
-import org.apache.http.entity.ContentType
+import org.apache.http.entity.{ContentType, StringEntity}
 import org.apache.http.nio.entity.NStringEntity
 import org.apache.http.util.EntityUtils
 import org.apache.predictionio.data.storage.Event
@@ -34,13 +33,11 @@ import org.joda.time.DateTime
 import org.json4s._
 import org.json4s.JsonDSL._
 import org.json4s.native.JsonMethods._
-import org.json4s.native.Serialization.read
 import org.json4s.native.Serialization.write
 import org.json4s.ext.JodaTimeSerializers
-
 import grizzled.slf4j.Logging
 import org.elasticsearch.client.ResponseException
-import org.apache.http.entity.StringEntity
+import org.apache.http.message.BasicHeader
 
 class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: String)
     extends LEvents with Logging {
@@ -130,7 +127,7 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
           ("prId" -> event.prId) ~
           ("creationTime" -> ESUtils.formatUTCDateTime(event.creationTime)) ~
           ("properties" -> write(event.properties.toJObject))
-        val entity = new NStringEntity(compact(render(json)), ContentType.APPLICATION_JSON);
+        val entity = new NStringEntity(compact(render(json)), ContentType.APPLICATION_JSON)
         val response = restClient.performRequest(
           "POST",
           s"/$index/$estype/$id",
@@ -149,6 +146,73 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
         case e: IOException =>
           error(s"Failed to update $index/$estype/<id>", e)
           ""
+      }
+    }
+  }
+
+  override def futureInsertBatch(
+    events: Seq[Event],
+    appId: Int,
+    channelId: Option[Int])(implicit ec: ExecutionContext): Future[Seq[String]] = {
+    Future {
+      val estype = getEsType(appId, channelId)
+      try {
+        val ids = events.map { event =>
+          event.eventId.getOrElse(ESEventsUtil.getBase64UUID)
+        }
+
+        val json = events.zip(ids).map { case (event, id) =>
+          val commandJson =
+            ("index" -> (
+              ("_index" -> index) ~
+              ("_type" -> estype) ~
+              ("_id" -> id)
+            ))
+
+          val documentJson =
+            ("eventId" -> id) ~
+            ("event" -> event.event) ~
+            ("entityType" -> event.entityType) ~
+            ("entityId" -> event.entityId) ~
+            ("targetEntityType" -> event.targetEntityType) ~
+            ("targetEntityId" -> event.targetEntityId) ~
+            ("eventTime" -> ESUtils.formatUTCDateTime(event.eventTime)) ~
+            ("tags" -> event.tags) ~
+            ("prId" -> event.prId) ~
+            ("creationTime" -> ESUtils.formatUTCDateTime(event.creationTime)) ~
+            ("properties" -> write(event.properties.toJObject))
+
+          compact(render(commandJson)) + "\n" + compact(render(documentJson))
+
+        }.mkString("", "\n", "\n")
+
+        val entity = new StringEntity(json)
+        val response = restClient.performRequest(
+          "POST",
+          "/_bulk",
+          Map("refresh" -> ESUtils.getEventDataRefresh(config)).asJava,
+          entity,
+          new BasicHeader("Content-Type", "application/x-ndjson"))
+
+        val responseJson = parse(EntityUtils.toString(response.getEntity))
+        val items = (responseJson \ "items").asInstanceOf[JArray]
+
+        items.arr.map { case value: JObject =>
+          val result = (value \ "index" \ "result").extract[String]
+          val id = (value \ "index" \ "_id").extract[String]
+
+          result match {
+            case "created" => id
+            case "updated" => id
+            case _ =>
+              error(s"[$result] Failed to update $index/$estype/$id")
+              ""
+          }
+        }
+      } catch {
+        case e: IOException =>
+          error(s"Failed to update $index/$estype/<id>", e)
+          Nil
       }
     }
   }

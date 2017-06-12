@@ -40,7 +40,7 @@ class JDBCLEvents(
     namespace: String) extends LEvents with Logging {
   implicit private val formats = org.json4s.DefaultFormats
 
-  def init(appId: Int, channelId: Option[Int] = None): Boolean = {
+  override def init(appId: Int, channelId: Option[Int] = None): Boolean = {
 
     // To use index, it must be varchar less than 255 characters on a VARCHAR column
     val useIndex = config.properties.contains("INDEX") &&
@@ -91,7 +91,7 @@ class JDBCLEvents(
     }
   }
 
-  def remove(appId: Int, channelId: Option[Int] = None): Boolean =
+  override def remove(appId: Int, channelId: Option[Int] = None): Boolean =
     DB autoCommit { implicit session =>
       SQL(s"""
       drop table ${JDBCUtils.eventTableName(namespace, appId, channelId)}
@@ -99,9 +99,9 @@ class JDBCLEvents(
       true
     }
 
-  def close(): Unit = ConnectionPool.closeAll()
+  override def close(): Unit = ConnectionPool.closeAll()
 
-  def futureInsert(event: Event, appId: Int, channelId: Option[Int])(
+  override def futureInsert(event: Event, appId: Int, channelId: Option[Int])(
     implicit ec: ExecutionContext): Future[String] = Future {
     DB localTx { implicit session =>
       val id = event.eventId.getOrElse(JDBCUtils.generateId)
@@ -127,7 +127,52 @@ class JDBCLEvents(
     }
   }
 
-  def futureGet(eventId: String, appId: Int, channelId: Option[Int])(
+  override def futureInsertBatch(events: Seq[Event], appId: Int, channelId: Option[Int])(
+    implicit ec: ExecutionContext): Future[Seq[String]] = Future {
+    DB localTx { implicit session =>
+      val ids = events.map(_.eventId.getOrElse(JDBCUtils.generateId))
+      val params = events.zip(ids).map { case (event, id) =>
+        Seq(
+          'id               -> id,
+          'event            -> event.event,
+          'entityType       -> event.entityType,
+          'entityId         -> event.entityId,
+          'targetEntityType -> event.targetEntityType,
+          'targetEntityId   -> event.targetEntityId,
+          'properties       -> write(event.properties.toJObject),
+          'eventTime        -> event.eventTime,
+          'eventTimeZone    -> event.eventTime.getZone.getID,
+          'tags             -> (if(event.tags.nonEmpty) Some(event.tags.mkString(",")) else None),
+          'prId             -> event.prId,
+          'creationTime     -> event.creationTime,
+          'creationTimeZone -> event.creationTime.getZone.getID
+        )
+      }
+
+      val tableName = sqls.createUnsafely(JDBCUtils.eventTableName(namespace, appId, channelId))
+      sql"""
+      insert into $tableName values(
+        {id},
+        {event},
+        {entityType},
+        {entityId},
+        {targetEntityType},
+        {targetEntityId},
+        {properties},
+        {eventTime},
+        {eventTimeZone},
+        {tags},
+        {prId},
+        {creationTime},
+        {creationTimeZone}
+      )
+      """.batchByName(params: _*).apply()
+
+      ids
+    }
+  }
+
+  override def futureGet(eventId: String, appId: Int, channelId: Option[Int])(
     implicit ec: ExecutionContext): Future[Option[Event]] = Future {
     DB readOnly { implicit session =>
       val tableName = sqls.createUnsafely(JDBCUtils.eventTableName(namespace, appId, channelId))
@@ -152,7 +197,7 @@ class JDBCLEvents(
     }
   }
 
-  def futureDelete(eventId: String, appId: Int, channelId: Option[Int])(
+  override def futureDelete(eventId: String, appId: Int, channelId: Option[Int])(
     implicit ec: ExecutionContext): Future[Boolean] = Future {
     DB localTx { implicit session =>
       val tableName = sqls.createUnsafely(JDBCUtils.eventTableName(namespace, appId, channelId))
@@ -163,7 +208,7 @@ class JDBCLEvents(
     }
   }
 
-  def futureFind(
+  override def futureFind(
       appId: Int,
       channelId: Option[Int] = None,
       startTime: Option[DateTime] = None,

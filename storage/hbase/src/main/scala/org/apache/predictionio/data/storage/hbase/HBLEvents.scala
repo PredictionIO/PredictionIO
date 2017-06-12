@@ -110,6 +110,20 @@ class HBLEvents(val client: HBClient, config: StorageClientConfig, val namespace
   }
 
   override
+  def futureInsertBatch(
+    events: Seq[Event], appId: Int, channelId: Option[Int])(implicit ec: ExecutionContext):
+    Future[Seq[String]] = {
+    Future {
+      val table = getTable(appId, channelId)
+      val (puts, rowKeys) = events.map { event => HBEventsUtil.eventToPut(event, appId) }.unzip
+      table.put(puts)
+      table.flushCommits()
+      table.close()
+      rowKeys.map(_.toString)
+    }
+  }
+
+  override
   def futureGet(
     eventId: String, appId: Int, channelId: Option[Int])(implicit ec: ExecutionContext):
     Future[Option[Event]] = {

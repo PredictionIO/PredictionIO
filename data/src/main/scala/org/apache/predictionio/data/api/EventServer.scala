@@ -384,50 +384,70 @@ class  EventServiceActor(
               val appId = authData.appId
               val channelId = authData.channelId
               val allowedEvents = authData.events
-              val handleEvent: PartialFunction[Try[Event], Future[Map[String, Any]]] = {
-                case Success(event) => {
-                  if (allowedEvents.isEmpty || allowedEvents.contains(event.event)) {
-                    pluginContext.inputBlockers.values.foreach(
-                      _.process(EventInfo(
-                        appId = appId,
-                        channelId = channelId,
-                        event = event), pluginContext))
-                    val data = eventClient.futureInsert(event, appId, channelId).map { id =>
-                      pluginsActorRef ! EventInfo(
-                        appId = appId,
-                        channelId = channelId,
-                        event = event)
-                      val status = StatusCodes.Created
-                      val result = Map(
-                        "status" -> status.intValue,
-                        "eventId" -> s"${id}")
-                      if (config.stats) {
-                        statsActorRef ! Bookkeeping(appId, status, event)
-                      }
-                      result
-                    }.recover { case exception =>
-                      Map(
-                        "status" -> StatusCodes.InternalServerError.intValue,
-                        "message" -> s"${exception.getMessage()}")
-                    }
-                    data
-                  } else {
-                    Future.successful(Map(
-                      "status" -> StatusCodes.Forbidden.intValue,
-                      "message" -> s"${event.event} events are not allowed"))
-                  }
-                }
-                case Failure(exception) => {
-                  Future.successful(Map(
-                    "status" -> StatusCodes.BadRequest.intValue,
-                    "message" -> s"${exception.getMessage()}"))
-                }
-              }
 
               entity(as[Seq[Try[Event]]]) { events =>
                 complete {
                   if (events.length <= MaxNumberOfEventsPerBatchRequest) {
-                    Future.traverse(events)(handleEvent)
+                    val eventWithIndex = events.zipWithIndex
+
+                    val taggedEvents = eventWithIndex.collect { case (Success(event), i) =>
+                      if(allowedEvents.isEmpty || allowedEvents.contains(event.event)){
+                        (Right(event), i)
+                      } else {
+                        (Left(event), i)
+                      }
+                    }
+
+                    val insertEvents = taggedEvents.collect { case (Right(event), i) =>
+                      (event, i)
+                    }
+
+                    insertEvents.foreach { case (event, i) =>
+                      pluginContext.inputBlockers.values.foreach(
+                        _.process(EventInfo(
+                          appId = appId,
+                          channelId = channelId,
+                          event = event), pluginContext))
+                    }
+
+                    val f: Future[Seq[Map[String, Any]]] = eventClient.futureInsertBatch(
+                      insertEvents.map(_._1), appId, channelId).map { insertResults =>
+                      val results = insertResults.zip(insertEvents).map { case (id, (event, i)) =>
+                        pluginsActorRef ! EventInfo(
+                          appId = appId,
+                          channelId = channelId,
+                          event = event)
+                        val status = StatusCodes.Created
+                        if (config.stats) {
+                          statsActorRef ! Bookkeeping(appId, status, event)
+                        }
+                        (Map(
+                          "status" -> status.intValue,
+                          "eventId" -> s"${id}"), i)
+                      } ++
+                        // Results of denied events
+                        taggedEvents.collect { case (Left(event), i) =>
+                          (Map(
+                            "status" -> StatusCodes.Forbidden.intValue,
+                            "message" -> s"${event.event} events are not allowed"), i)
+                        } ++
+                        // Results of failed to deserialze events
+                        eventWithIndex.collect { case (Failure(exception), i) =>
+                          (Map(
+                            "status" -> StatusCodes.BadRequest.intValue,
+                            "message" -> s"${exception.getMessage()}"), i)
+                        }
+
+                      // Restore original order
+                      results.sortBy { case (_, i) => i }.map { case (data, _) => data }
+                    }
+
+                    f.recover { case exception =>
+                      Map(
+                        "status" -> StatusCodes.InternalServerError.intValue,
+                        "message" -> s"${exception.getMessage()}")
+                    }
+
                   } else {
                     (StatusCodes.BadRequest,
                       Map("message" -> (s"Batch request must have less than or equal to " +

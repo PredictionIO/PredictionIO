@@ -91,6 +91,27 @@ trait LEvents {
     event: Event, appId: Int, channelId: Option[Int])(implicit ec: ExecutionContext): Future[String]
 
   /** :: DeveloperApi ::
+    * Insert [[Event]]s in a non-blocking fashion.
+    *
+    * Default implementation of this method is calling
+    * [[LEvents.futureInsert(Event, Int, Option[Int])]] per event.
+    * Override in the storage implementation if the storage has
+    * a better way to insert multiple data at once.
+    *
+    * @param events [[Event]]s to be inserted
+    * @param appId App ID for the [[Event]]s to be inserted to
+    * @param channelId Optional channel ID for the [[Event]]s to be inserted to
+    */
+  @DeveloperApi
+  def futureInsertBatch(events: Seq[Event], appId: Int, channelId: Option[Int])
+    (implicit ec: ExecutionContext): Future[Seq[String]] = {
+    val seq = events.map { event =>
+      futureInsert(event, appId, channelId)
+    }
+    Future.sequence(seq)
+  }
+
+  /** :: DeveloperApi ::
     * Get an [[Event]] in a non-blocking fashion.
     *
     * @param eventId ID of the [[Event]]
