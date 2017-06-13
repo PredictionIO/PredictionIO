@@ -24,16 +24,10 @@ import grizzled.slf4j.Logger
 import org.apache.predictionio.data.storage.Storage
 import org.apache.predictionio.data.storage.DataMap
 import org.apache.predictionio.data.storage.hbase.HBLEvents
-import org.apache.predictionio.data.storage.hbase.HBEventsUtil
-
-import scala.collection.JavaConversions._
 
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import org.apache.predictionio.data.storage.LEvents
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
-import java.lang.Thread
 
 object CheckDistribution {
   def entityType(eventClient: LEvents, appId: Int)

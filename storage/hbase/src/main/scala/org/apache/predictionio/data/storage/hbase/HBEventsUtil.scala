@@ -27,7 +27,6 @@ import org.apache.hadoop.hbase.client.Put
 import org.apache.hadoop.hbase.client.Scan
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.hadoop.hbase.filter.FilterList
-import org.apache.hadoop.hbase.filter.RegexStringComparator
 import org.apache.hadoop.hbase.filter.SingleColumnValueFilter
 import org.apache.hadoop.hbase.filter.CompareFilter.CompareOp
 import org.apache.hadoop.hbase.filter.BinaryComparator
@@ -164,11 +163,11 @@ object HBEventsUtil {
     val put = new Put(rowKey.toBytes, event.eventTime.getMillis)
 
     def addStringToE(col: Array[Byte], v: String): Put = {
-      put.add(eBytes, col, Bytes.toBytes(v))
+      put.addColumn(eBytes, col, Bytes.toBytes(v))
     }
 
     def addLongToE(col: Array[Byte], v: Long): Put = {
-      put.add(eBytes, col, Bytes.toBytes(v))
+      put.addColumn(eBytes, col, Bytes.toBytes(v))
     }
 
     addStringToE(colNames("event"), event.event)
