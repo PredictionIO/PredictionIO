@@ -594,14 +594,14 @@ class ServerActor[Q, P](
               }
             } catch {
               case e: MappingException =>
-                log.error(
-                  s"Query '$queryString' is invalid. Reason: ${e.getMessage}")
+                val msg = s"Query:\n$queryString\n\nStack Trace:\n" +
+                  s"${getStackTraceString(e)}\n\n"
+                log.error(msg)
                 args.logUrl map { url =>
                   remoteLog(
                     url,
                     args.logPrefix.getOrElse(""),
-                    s"Query:\n$queryString\n\nStack Trace:\n" +
-                      s"${getStackTraceString(e)}\n\n")
+                    msg)
                   }
                 complete(StatusCodes.BadRequest, e.getMessage)
               case e: Throwable =>
