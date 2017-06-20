@@ -15,15 +15,16 @@
  * limitations under the License.
  */
 
-package org.template.recommendeduser
+package org.apache.predictionio.examples.similarproduct
 
-import grizzled.slf4j.Logger
 import org.apache.predictionio.controller.{EmptyActualResult, EmptyEvaluationInfo, PDataSource, Params}
-import org.apache.predictionio.data.storage.Storage
+import org.apache.predictionio.data.store.PEventStore
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
-case class DataSourceParams(appId: Int) extends Params
+import grizzled.slf4j.Logger
+
+case class DataSourceParams(appName: String) extends Params
 
 class DataSource(val dsp: DataSourceParams)
   extends PDataSource[TrainingData,
@@ -33,11 +34,10 @@ class DataSource(val dsp: DataSourceParams)
 
   override
   def readTraining(sc: SparkContext): TrainingData = {
-    val eventsDb = Storage.getPEvents()
 
     // create a RDD of (entityID, User)
-    val usersRDD: RDD[(String, User)] = eventsDb.aggregateProperties(
-      appId = dsp.appId,
+    val usersRDD: RDD[(String, User)] = PEventStore.aggregateProperties(
+      appName = dsp.appName,
       entityType = "user"
     )(sc).map { case (entityId, properties) =>
       val user = try {
@@ -53,8 +53,8 @@ class DataSource(val dsp: DataSourceParams)
     }.cache()
 
     // get all "user" "follow" "followedUser" events
-    val followEventsRDD: RDD[FollowEvent] = eventsDb.find(
-      appId = dsp.appId,
+    val followEventsRDD: RDD[FollowEvent] = PEventStore.find(
+      appName = dsp.appName,
       entityType = Some("user"),
       eventNames = Some(List("follow")),
       // targetEntityType is optional field of an event.

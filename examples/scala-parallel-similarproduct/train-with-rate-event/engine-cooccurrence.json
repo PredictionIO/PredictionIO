@@ -1,0 +1,18 @@
+{
+  "id": "default",
+  "description": "Default settings",
+  "engineFactory": "org.apache.predictionio.examples.similarproduct.SimilarProductEngine",
+  "datasource": {
+    "params" : {
+      "appName": "MyApp1"
+    }
+  },
+  "algorithms": [
+    {
+      "name": "cooccurrence",
+      "params": {
+        "n": 20
+      }
+    }
+  ]
+}

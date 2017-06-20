@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.template.recommendeduser
+package org.apache.predictionio.examples.similarproduct
 
 import org.apache.predictionio.controller.PPreparator
 import org.apache.spark.SparkContext

@@ -1,10 +1,10 @@
 {
   "id": "default",
   "description": "Default settings",
-  "engineFactory": "org.template.recommendeduser.RecommendedUserEngine",
+  "engineFactory": "org.apache.predictionio.examples.similarproduct.RecommendedUserEngine",
   "datasource": {
     "params" : {
-      "appId": 5
+      "appName": "MyApp1"
     }
   },
   "algorithms": [

@@ -1,8 +1,0 @@
-0,Male,30,College
-0,Female,29,College
-1,Male,30,High School
-1,Female,28,High School
-2,Male,35,No School
-2,Male,40,No School
-2,Female,25,No School
-0,Male,40,College

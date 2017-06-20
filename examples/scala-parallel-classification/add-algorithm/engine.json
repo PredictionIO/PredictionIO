@@ -1,10 +1,10 @@
 {
   "id": "default",
   "description": "Default settings",
-  "engineFactory": "org.template.classification.ClassificationEngine",
+  "engineFactory": "org.apache.predictionio.examples.classification.ClassificationEngine",
   "datasource": {
     "params": {
-      "appId": 2
+      "appName": "MyApp1"
     }
   },
   "algorithms": [

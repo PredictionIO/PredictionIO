@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.template.ecommercerecommendation
+package org.apache.predictionio.examples.ecommercerecommendation
 
 import org.apache.predictionio.controller.PPreparator
 
@@ -30,12 +30,14 @@ class Preparator
     new PreparedData(
       users = trainingData.users,
       items = trainingData.items,
-      rateEvents = trainingData.rateEvents) // MODIFIED
+      rateEvents = trainingData.rateEvents, // MODIFIED
+      buyEvents = trainingData.buyEvents)
   }
 }
 
 class PreparedData(
   val users: RDD[(String, User)],
   val items: RDD[(String, Item)],
-  val rateEvents: RDD[RateEvent] // MODIFIED
+  val rateEvents: RDD[RateEvent], // MODIFIED
+  val buyEvents: RDD[BuyEvent]
 ) extends Serializable

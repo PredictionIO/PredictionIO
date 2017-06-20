@@ -28,13 +28,13 @@ SEED = 3
 def import_events(client):
   random.seed(SEED)
   count = 0
-  print client.get_status()
-  print "Importing data..."
+  print(client.get_status())
+  print("Importing data...")
 
   # generate 10 users, with user ids u1,u2,....,u10
   user_ids = ["u%s" % i for i in range(1, 11)]
   for user_id in user_ids:
-    print "Set user", user_id
+    print("Set user", user_id)
     client.create_event(
       event="$set",
       entity_type="user",
@@ -47,7 +47,7 @@ def import_events(client):
   categories = ["c%s" % i for i in range(1, 7)]
   item_ids = ["i%s" % i for i in range(1, 51)]
   for item_id in item_ids:
-    print "Set item", item_id
+    print("Set item", item_id)
     client.create_event(
       event="$set",
       entity_type="item",
@@ -61,7 +61,7 @@ def import_events(client):
   # each user randomly viewed 10 items
   for user_id in user_ids:
     for viewed_item in random.sample(item_ids, 10):
-      print "User", user_id ,"views item", viewed_item
+      print("User", user_id ,"views item", viewed_item)
       client.create_event(
         event="view",
         entity_type="user",
@@ -73,7 +73,7 @@ def import_events(client):
       # randomly rate some of the viewed items
       if random.choice([True, False]):
         rating = random.choice(range(1,6))
-        print "User", user_id ,"rates item", viewed_item, "rating", rating
+        print("User", user_id ,"rates item", viewed_item, "rating", rating)
         client.create_event(
           event="rate",
           entity_type="user",
@@ -87,7 +87,7 @@ def import_events(client):
         count += 1
       # randomly buy some of the viewed items
       if random.choice([True, False]):
-        print "User", user_id ,"buys item", viewed_item
+        print("User", user_id ,"buys item", viewed_item)
         client.create_event(
           event="buy",
           entity_type="user",
@@ -97,7 +97,7 @@ def import_events(client):
         )
         count += 1
 
-  print "%s events are imported." % count
+  print("%s events are imported." % count)
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(
@@ -106,7 +106,7 @@ if __name__ == '__main__':
   parser.add_argument('--url', default="http://localhost:7070")
 
   args = parser.parse_args()
-  print args
+  print(args)
 
   client = predictionio.EventClient(
     access_key=args.access_key,

@@ -28,13 +28,13 @@ SEED = 3
 def import_events(client):
   random.seed(SEED)
   count = 0
-  print client.get_status()
-  print "Importing data..."
+  print(client.get_status())
+  print("Importing data...")
 
-  # generate 10 users, with user ids u1,u2,....,u50
+  # generate 50 users, with user ids u1,u2,....,u50
   user_ids = ["u%s" % i for i in range(1, 51)]
   for user_id in user_ids:
-    print "Set user", user_id
+    print("Set user", user_id)
     client.create_event(
       event="$set",
       entity_type="user",
@@ -55,7 +55,7 @@ def import_events(client):
       )
       count += 1
 
-  print "%s events are imported." % count
+  print("%s events are imported." % count)
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(
@@ -64,7 +64,7 @@ if __name__ == '__main__':
   parser.add_argument('--url', default="http://localhost:7070")
 
   args = parser.parse_args()
-  print args
+  print(args)
 
   client = predictionio.EventClient(
     access_key=args.access_key,

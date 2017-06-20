@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-package org.template.classification
+package org.apache.predictionio.examples.classification
 
 import org.apache.predictionio.controller.P2LAlgorithm
 import org.apache.predictionio.controller.Params
 
-import org.apache.spark.SparkContext
 import org.apache.spark.mllib.tree.RandomForest // CHANGED
 import org.apache.spark.mllib.tree.model.RandomForestModel // CHANGED
 import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.SparkContext
 
 // CHANGED
 case class RandomForestAlgorithmParams(
@@ -61,7 +61,9 @@ class RandomForestAlgorithm(val ap: RandomForestAlgorithmParams) // CHANGED
     model: RandomForestModel, // CHANGED
     query: Query): PredictedResult = {
 
-    val label = model.predict(Vectors.dense(query.features))
+    val label = model.predict(Vectors.dense(
+      Array(query.attr0, query.attr1, query.attr2)
+    ))
     new PredictedResult(label)
   }
 

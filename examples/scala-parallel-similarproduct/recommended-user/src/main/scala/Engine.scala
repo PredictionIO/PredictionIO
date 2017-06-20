@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package org.template.recommendeduser
+package org.apache.predictionio.examples.similarproduct
 
-import org.apache.predictionio.controller.IEngineFactory
+import org.apache.predictionio.controller.EngineFactory
 import org.apache.predictionio.controller.Engine
 
 case class Query(
@@ -28,15 +28,17 @@ case class Query(
 )
 
 case class PredictedResult(
-  similarUserScores: Array[similarUserScore]
-)
+  similarUserScores: Array[SimilarUserScore]
+){
+  override def toString: String = similarUserScores.mkString(",")
+}
 
-case class similarUserScore(
+case class SimilarUserScore(
   user: String,
   score: Double
 )
 
-object RecommendedUserEngine extends IEngineFactory {
+object RecommendedUserEngine extends EngineFactory {
   def apply() = {
     new Engine(
       classOf[DataSource],

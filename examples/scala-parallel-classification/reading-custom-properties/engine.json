@@ -1,0 +1,18 @@
+{
+  "id": "default",
+  "description": "Default settings",
+  "engineFactory": "org.apache.predictionio.examples.classification.ClassificationEngine",
+  "datasource": {
+    "params": {
+      "appName": "MyApp1"
+    }
+  },
+  "algorithms": [
+    {
+      "name": "naive",
+      "params": {
+        "lambda": 1.0
+      }
+    }
+  ]
+}

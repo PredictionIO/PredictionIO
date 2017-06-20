@@ -15,13 +15,10 @@
  * limitations under the License.
  */
 
-assemblySettings
-
 name := "template-scala-parallel-recommendeduser"
 
 organization := "org.apache.predictionio"
-
+scalaVersion := "2.11.8"
 libraryDependencies ++= Seq(
-  "org.apache.predictionio"    %% "core"          % pioVersion.value % "provided",
-  "org.apache.spark" %% "spark-core"    % "1.2.0" % "provided",
-  "org.apache.spark" %% "spark-mllib"   % "1.2.0" % "provided")
+  "org.apache.predictionio" %% "apache-predictionio-core" % "0.11.0-incubating" % "provided",
+  "org.apache.spark"        %% "spark-mllib"              % "2.1.1" % "provided")

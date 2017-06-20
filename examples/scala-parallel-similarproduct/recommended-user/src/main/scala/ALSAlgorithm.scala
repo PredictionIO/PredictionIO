@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.template.recommendeduser
+package org.apache.predictionio.examples.similarproduct
 
 import grizzled.slf4j.Logger
 import org.apache.predictionio.controller.{P2LAlgorithm, Params}
@@ -175,7 +175,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val topScores = getTopN(filteredScore, query.num)(ord).toArray
 
     val similarUserScores = topScores.map { case (i, s) =>
-      new similarUserScore(
+      new SimilarUserScore(
         user = model.similarUserIntStringMap(i),
         score = s
       )

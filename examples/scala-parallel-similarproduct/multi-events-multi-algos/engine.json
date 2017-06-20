@@ -1,0 +1,30 @@
+{
+  "id": "default",
+  "description": "Default settings",
+  "engineFactory": "org.apache.predictionio.examples.similarproduct.SimilarProductEngine",
+  "datasource": {
+    "params" : {
+      "appName": "MyApp1"
+    }
+  },
+  "algorithms": [
+    {
+      "name": "als",
+      "params": {
+        "rank": 10,
+        "numIterations" : 20,
+        "lambda": 0.01,
+        "seed": 3
+      }
+    },
+    {
+      "name": "likealgo",
+      "params": {
+        "rank": 8,
+        "numIterations" : 15,
+        "lambda": 0.01,
+        "seed": 3
+      }
+    }
+  ]
+}
