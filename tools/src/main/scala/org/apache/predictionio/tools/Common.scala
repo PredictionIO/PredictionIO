@@ -94,9 +94,9 @@ object Common extends EitherLogging {
   }
 
   def jarFilesForSpark(pioHome: String): Array[File] = {
-    def jarFilesAt(path: File): Array[File] = path.listFiles filter {
-      _.getName.toLowerCase.endsWith(".jar")
-    }
+    def jarFilesAt(path: File): Array[File] = path.listFiles
+      .filter { _.getName.toLowerCase.endsWith(".jar") }
+      .sortBy( f => f.getName ) // stable sorting to avoid classpath variability
     jarFilesAt(new File(pioHome, "lib/spark"))
   }
 
@@ -106,7 +106,7 @@ object Common extends EitherLogging {
       if (new File(pioHome + File.separator + "RELEASE").exists) {
         new File(pioHome + File.separator + "lib")
       } else {
-        new File(pioHome + File.separator + "assembly")
+        new File(Seq(pioHome, "assembly", "src", "universal", "lib").mkString(File.separator))
       }
     val coreFile = new File(coreDir, core)
     if (coreFile.exists) {

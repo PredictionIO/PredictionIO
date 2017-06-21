@@ -27,9 +27,9 @@ FWDIR="$(cd `dirname $0`/..; pwd)"
 # Build up classpath
 CLASSPATH="${PIO_CONF_DIR}"
 
-CLASSPATH="$CLASSPATH:${FWDIR}/plugins/*:${FWDIR}/lib/spark/*"
+CLASSPATH="$CLASSPATH:${FWDIR}/plugins/*"
 
-ASSEMBLY_DIR="${FWDIR}/assembly"
+ASSEMBLY_DIR="${FWDIR}/assembly/src/universal/lib"
 
 if [ -n "$JAVA_HOME" ]; then
   JAR_CMD="$JAVA_HOME/bin/jar"
@@ -37,12 +37,20 @@ else
   JAR_CMD="jar"
 fi
 
+lib_spark_classpath=''
 # Use pio-assembly JAR from either RELEASE or assembly directory
 if [ -f "${FWDIR}/RELEASE" ]; then
   assembly_folder="${FWDIR}"/lib
+  lib_spark_jars=`ls "${FWDIR}"/lib/spark/*.jar`
 else
   assembly_folder="${ASSEMBLY_DIR}"
+  lib_spark_jars=`ls "${FWDIR}"/assembly/src/universal/lib/spark/*.jar`
 fi
+# stable classpath for Spark JARs
+for J in $lib_spark_jars; do
+  lib_spark_classpath="${lib_spark_classpath}:${J}"
+done
+CLASSPATH="${CLASSPATH}${lib_spark_classpath}"
 
 ASSEMBLY_JAR=$(ls "${assembly_folder}"/pio-assembly*.jar 2>/dev/null)
 
