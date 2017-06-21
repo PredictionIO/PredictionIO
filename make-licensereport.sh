@@ -31,4 +31,4 @@ rm -rf license-reports
 mkdir license-reports
 
 find . -name "*-licenses.csv" -exec cat {} >> license-reports/licences-concat.csv \;
-cat license-reports/licences-concat.csv | sort | uniq | grep -v Apache | grep -v ASL | grep -v predictionio > license-reports/licences-notice.csv
+cat license-reports/licences-concat.csv | sort | uniq | grep -v Apache | grep -v ASL | grep -v "org.apache" | grep -v "commons-" | grep -v predictionio > license-reports/licences-notice.csv
