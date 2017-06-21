@@ -272,3 +272,99 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON A
 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+================================================================================
+For binary distribution:
+================================================================================
+Binary distribution bundles
+
+  javax.servlet # servlet-api # 2.5
+  javax.servlet.jsp # jsp-api # 2.1
+  javax.activation # activation # 1.1
+  javax.xml.stream # stax-api # 1.0-2
+
+  which are available under the CDDL v1.0 license (https://glassfish.java.net/public/CDDLv1.0.text)
+--------------------------------------------------------------------------------
+Binary distribution bundles
+
+  com.sun.jersey # jersey-core # 1.8 (https://github.com/jersey/jersey-1.x)
+  com.sun.jersey # jersey-json # 1.8 (https://github.com/jersey/jersey-1.x)
+  com.sun.jersey # jersey-server # 1.8 (https://github.com/jersey/jersey-1.x)
+  com.sun.jersey # jersey-core # 1.9 (https://github.com/jersey/jersey-1.x)
+  com.sun.jersey # jersey-json # 1.9 (https://github.com/jersey/jersey-1.x)
+  com.sun.jersey # jersey-server # 1.9 (https://github.com/jersey/jersey-1.x)
+  javax.xml.bind # jaxb-api # 2.2.2
+  com.sun.xml.bind # jaxb-impl # 2.2.3-1
+  org.jvnet.mimepull # mimepull # 1.9.5 (https://github.com/kohsuke/mimepull)
+
+  which are available under the CDDL v1.1 license (https://glassfish.java.net/public/CDDL+GPL_1_1.html)
+--------------------------------------------------------------------------------
+Binary distribution bundles
+
+  junit # junit # 4.11 (http://junit.org/junit4/)
+  
+  which are available under the CPL v1.0 license (https://eclipse.org/legal/cpl-v10.html)
+--------------------------------------------------------------------------------
+Binary distribution bundles
+
+  org.jamon # jamon-runtime # 2.3.1 (http://www.jamon.org/)
+
+  which are available under the MPL v1.1 license (http://www.mozilla.org/MPL/MPL-1.1.txt)
+--------------------------------------------------------------------------------
+Binary distribution bundles
+
+  org.slf4j # slf4j-api # 1.7.18 (https://www.slf4j.org/)
+  org.slf4j # slf4j-api # 1.7.14 (https://www.slf4j.org/)
+  org.slf4j # slf4j-api # 1.7.2 (https://www.slf4j.org/)
+  org.slf4j # slf4j-api # 1.7.5 (https://www.slf4j.org/)
+  org.slf4j # slf4j-api # 1.7.7 (https://www.slf4j.org/)
+  org.slf4j # slf4j-log4j12 # 1.7.18 (https://www.slf4j.org/)
+  org.slf4j # slf4j-log4j12 # 1.7.5 (https://www.slf4j.org/)
+  me.lessis # semverfi_2.10 # 0.1.3 (https://github.com/softprops/semverfi)
+  com.github.scopt # scopt_2.10 # 3.5.0 (https://github.com/scopt/scopt)
+
+  which are available under the MIT license (http://opensource.org/licenses/mit-license.php)
+--------------------------------------------------------------------------------
+Binary distribution bundles
+
+  jline # jline # 0.9.94 (http://jline.sourceforge.net)
+  
+  which is available under the BSD license (http://jline.sourceforge.net/license.html)
+--------------------------------------------------------------------------------
+Binary distribution bundles
+
+  com.esotericsoftware # kryo # 3.0.3 (https://github.com/EsotericSoftware/kryo)
+  com.esotericsoftware # minlog # 1.3.0 (https://github.com/EsotericSoftware/minlog)
+  com.esotericsoftware # reflectasm # 1.10.1 (https://github.com/EsotericSoftware/reflectasm)
+  com.esotericsoftware.kryo # kryo # 2.21 (https://github.com/EsotericSoftware/kryo)
+  com.esotericsoftware.minlog # minlog # 1.2 (https://github.com/EsotericSoftware/minlog)
+  com.esotericsoftware.reflectasm # reflectasm # 1.07 (https://github.com/EsotericSoftware/reflectasm)
+  com.google.protobuf # protobuf-java # 2.5.0 (https://github.com/google/protobuf)
+  com.google.protobuf # protobuf-java # 2.6.1 (https://github.com/google/protobuf)
+  com.thoughtworks.paranamer # paranamer # 2.3 (https://github.com/paul-hammant/paranamer)
+  com.thoughtworks.paranamer # paranamer # 2.6 (https://github.com/paul-hammant/paranamer)
+  org.hamcrest # hamcrest-core # 1.3 (http://hamcrest.org/JavaHamcrest/)
+  asm # asm # 3.1 (http://asm.ow2.org/)
+  org.clapper # grizzled-slf4j_2.10 # 1.0.2 (http://software.clapper.org/grizzled-slf4j/)
+  
+  which is available under the BSD license (http://www.opensource.org/licenses/bsd-license.php)
+--------------------------------------------------------------------------------
+Binary distribution bundles
+
+  com.jcraft # jsch # 0.1.42 (http://www.jcraft.com/jsch/)
+
+  which is available under the BSD license (http://www.jcraft.com/jsch/LICENSE.txt)
+--------------------------------------------------------------------------------
+Binary distribution bundles
+
+  org.scala-lang # scala-library # 2.10.6 (http://scala-lang.org/)
+  org.scala-lang # scala-compiler # 2.10.6 (http://scala-lang.org/)
+  org.scala-lang # scala-reflect # 2.10.6 (http://scala-lang.org/)
+  org.scala-lang # scalap # 2.10.6 (http://scala-lang.org/)
+  
+  which is available under the BSD license (http://www.scala-lang.org/downloads/license.html)
+--------------------------------------------------------------------------------
+The following libraries are from the public domain.
+
+  com.github.stephenc.high-scale-lib # high-scale-lib # 1.1.1 (https://github.com/stephenc/high-scale-lib)
+  org.tukaani # xz # 1.0 (http://tukaani.org/xz/java.html)

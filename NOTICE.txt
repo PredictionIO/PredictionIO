@@ -3,3 +3,7 @@ Copyright 2016 The Apache Software Foundation
 
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
+
+This product depends on third party software that falls under a variety of licenses.
+All dependencies with licenses other than Apache are specified in the LICENSE file.
+Please see LICENSE for additional copyright and licensing information.
