@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import com.typesafe.sbt.license.{LicenseInfo, DepModuleInfo}
 import PIOBuild._
 
 lazy val scalaSparkDepsVersion = Map(
@@ -98,6 +98,7 @@ val conf = file("conf")
 
 val commonSettings = Seq(
   autoAPIMappings := true,
+  licenseConfigurations := Set("compile"),
   unmanagedClasspath in Test += conf,
   unmanagedClasspath in Test += baseDirectory.value.getParentFile / s"storage/jdbc/target/scala-${scalaBinaryVersion.value}/classes")
 
