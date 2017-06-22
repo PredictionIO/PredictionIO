@@ -107,6 +107,9 @@ TARNAME="PredictionIO-$VERSION.tar.gz"
 TARDIR="PredictionIO-$VERSION"
 cp -r ${DISTDIR} ${TARDIR}
 
+cp LICENSE.txt ${TARDIR}
+cp NOTICE.txt ${TARDIR}
+
 tar zcvf ${TARNAME} ${TARDIR}
 rm -rf ${TARDIR}
 
