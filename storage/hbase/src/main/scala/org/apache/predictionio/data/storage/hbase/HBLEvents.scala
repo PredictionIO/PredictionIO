@@ -42,8 +42,9 @@ class HBLEvents(val client: HBClient, config: StorageClientConfig, val namespace
   def resultToEvent(result: Result, appId: Int): Event =
     HBEventsUtil.resultToEvent(result, appId)
 
-  def getTable(appId: Int, channelId: Option[Int] = None): HTableInterface =
-    client.connection.getTable(HBEventsUtil.tableName(namespace, appId, channelId))
+  def getTable(appId: Int, channelId: Option[Int] = None): Table =
+    client.connection.getTable(
+      TableName.valueOf(HBEventsUtil.tableName(namespace, appId, channelId)))
 
   override
   def init(appId: Int, channelId: Option[Int] = None): Boolean = {
@@ -103,7 +104,6 @@ class HBLEvents(val client: HBClient, config: StorageClientConfig, val namespace
       val table = getTable(appId, channelId)
       val (put, rowKey) = HBEventsUtil.eventToPut(event, appId)
       table.put(put)
-      table.flushCommits()
       table.close()
       rowKey.toString
     }
@@ -117,7 +117,6 @@ class HBLEvents(val client: HBClient, config: StorageClientConfig, val namespace
       val table = getTable(appId, channelId)
       val (puts, rowKeys) = events.map { event => HBEventsUtil.eventToPut(event, appId) }.unzip
       table.put(puts)
-      table.flushCommits()
       table.close()
       rowKeys.map(_.toString)
     }

@@ -2,6 +2,6 @@ pio: 0.11.0-incubating
 spark: 1.6.3
 spark_download_filename: spark-1.6.3-bin-hadoop2.6
 elasticsearch_download_filename: elasticsearch-1.7.6
-hbase_version: 1.2.5
-hbase_basename: hbase-1.2.5
+hbase_version: 1.2.6
+hbase_basename: hbase-1.2.6
 hbase_variant: bin
