@@ -51,9 +51,9 @@ version in ThisBuild := "0.11.1-SNAPSHOT"
 
 organization in ThisBuild := "org.apache.predictionio"
 
-scalaVersion in ThisBuild := sys.props.getOrElse("scala.version", "2.10.6")
+scalaVersion in ThisBuild := sys.props.getOrElse("scala.version", "2.11.8")
 
-crossScalaVersions in ThisBuild := Seq(scalaVersion.value, "2.11.8")
+crossScalaVersions in ThisBuild := Seq("2.10.6", "2.11.8")
 
 scalacOptions in ThisBuild ++= Seq("-deprecation", "-unchecked", "-feature")
 
