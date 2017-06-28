@@ -30,33 +30,41 @@ sbt/sbt dumpLicenseReport
 sbt/sbt storage/clean
 sbt/sbt storage/dumpLicenseReport
 
-# Gather and filter reports
+# Clean up
 REPORT_DIR="${FWDIR}/test-reports"
+GATHERED_FILE="${REPORT_DIR}/licences-gathered.csv"
+FILTERED_FILE="${REPORT_DIR}/licences-filtered.csv"
+ERROR_FILE="${REPORT_DIR}/licences-errors.csv"
 mkdir -p ${REPORT_DIR}
-find . -name "*-licenses.csv" -exec cat {} >> "${REPORT_DIR}/licences-concat.csv" \;
+
+rm -f ${GATHERED_FILE}
+rm -f ${FILTERED_FILE}
+rm -f ${ERROR_FILE}
+
+# Gather and filter reports
+find . -name "*-licenses.csv" -exec cat {} >> ${GATHERED_FILE} \;
 cat "${REPORT_DIR}/licences-concat.csv" | sort | uniq | grep -v "Category,License,Dependency,Notes" | \
   grep -v Apache | grep -v ASL | \
   grep -v "org.apache" | grep -v "commons-" | \
   grep -v "org.codehaus.jettison" | \
-  grep -v predictionio > "${REPORT_DIR}/licences-notice.csv"
+  grep -v predictionio > ${FILTERED_FILE}
 
 # Check undocumented
-EXIT_CODE=0
-cat "${REPORT_DIR}/licences-notice.csv" | while read LINE
+cat ${FILTERED_FILE} | while read LINE
 do
   LIBRARY=`echo ${LINE} | cut -d ',' -f 3`
   grep -q "$LIBRARY" LICENSE.txt
   if [ $? -ne 0 ]; then
     echo -e "\033[0;31m[error]\033[0;39m Undocumented dependency: $LINE"
-    EXIT_CODE=1
+    echo $LINE >> ${ERROR_FILE}
   fi
 done
 
-if [ $EXIT_CODE -eq 0 ]; then
-  echo "Library checks passed."
-else 
+if [ -f ${ERROR_FILE} ]; then
   echo "Library checks failed."
+  exit 1
+else 
+  echo "Library checks passed."
+  exit 0
 fi
-
-exit $EXIT_CODE
 
