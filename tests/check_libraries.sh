@@ -21,50 +21,72 @@ FWDIR="$(cd "`dirname "$0"`"/..; pwd)"
 mkdir -p ${FWDIR}/lib
 cd ${FWDIR}
 
-echo "Check library dependencies..."
-
-# Generate license report
-sbt/sbt clean
-sbt/sbt dumpLicenseReport
-
-sbt/sbt storage/clean
-sbt/sbt storage/dumpLicenseReport
-
-# Clean up
 REPORT_DIR="${FWDIR}/test-reports"
 GATHERED_FILE="${REPORT_DIR}/licences-gathered.csv"
 FILTERED_FILE="${REPORT_DIR}/licences-filtered.csv"
 ERROR_FILE="${REPORT_DIR}/licences-errors.csv"
-mkdir -p ${REPORT_DIR}
 
-rm -f ${GATHERED_FILE}
-rm -f ${FILTERED_FILE}
-rm -f ${ERROR_FILE}
+# Extract libraries which are not described in LICENSE.txt
+check_undocumented_libraries() {
+  echo "Check library dependencies..."
+  
+  # Generate license report
+  sbt/sbt clean
+  sbt/sbt dumpLicenseReport
 
-# Gather and filter reports
-find . -name "*-licenses.csv" -exec cat {} >> ${GATHERED_FILE} \;
-cat ${GATHERED_FILE} | sort | uniq | grep -v "Category,License,Dependency,Notes" | \
-  grep -v Apache | grep -v ASL | \
-  grep -v "org.apache" | grep -v "commons-" | grep -v "tomcat" \
-  grep -v "org.codehaus.jettison" | grep -v "xml-apis" | grep -v "org.mortbay.jetty" | grep -v "com.google.guava" \
-  grep -v predictionio > ${FILTERED_FILE}
+  sbt/sbt storage/clean
+  sbt/sbt storage/dumpLicenseReport
 
-# Check undocumented
-cat ${FILTERED_FILE} | while read LINE
-do
-  LIBRARY=`echo ${LINE} | cut -d ',' -f 3`
-  grep -q "$LIBRARY" LICENSE.txt
-  if [ $? -ne 0 ]; then
-    echo -e "\033[0;31m[error]\033[0;39m Undocumented dependency: $LINE"
-    echo $LINE >> ${ERROR_FILE}
-  fi
-done
+  # Clean up
+  mkdir -p ${REPORT_DIR}
 
-if [ -f ${ERROR_FILE} ]; then
-  echo "Library checks failed."
-  exit 1
-else 
-  echo "Library checks passed."
-  exit 0
+  rm -f ${GATHERED_FILE}
+  rm -f ${FILTERED_FILE}
+  rm -f ${ERROR_FILE}
+
+  # Gather and filter reports
+  find . -name "*-licenses.csv" -exec cat {} >> ${GATHERED_FILE} \;
+  cat ${GATHERED_FILE} | sort | uniq | grep -v "Category,License,Dependency,Notes" | \
+    grep -v Apache | grep -v ASL | \
+    grep -v "org.apache" | grep -v "commons-" | grep -v "tomcat" \
+    grep -v "org.codehaus.jettison" | grep -v "xml-apis" | grep -v "org.mortbay.jetty" | grep -v "com.google.guava" \
+    grep -v predictionio > ${FILTERED_FILE}
+
+  # Check undocumented
+  cat ${FILTERED_FILE} | while read LINE
+  do
+    LIBRARY=`echo ${LINE} | cut -d ',' -f 3`
+    grep -q "$LIBRARY" LICENSE.txt
+    if [ $? -ne 0 ]; then
+      echo -e "\033[0;31m[error]\033[0;39m Undocumented dependency: $LINE"
+      echo $LINE >> ${ERROR_FILE}
+    fi
+  done
+
+  if [ -f ${ERROR_FILE} ]; then
+    echo "Library checks failed."
+    exit 1
+  else 
+    echo "Library checks passed."
+    exit 0
+  fi  
+}
+
+# Extract libraries which are described in LICENSE.txt but not exist actually
+check_documented_libraries(){
+  echo "Check libraries described in LICENSE.txt..."
+  
+  cat LICENSE.txt | grep "#" | sed -e 's/(.*)//' | sed -e '/^#/d' | while read LINE
+  do
+    grep -q "$LINE" ${GATHERED_FILE}
+    if [ $? -ne 0 ]; then
+      echo -e "\033[0;31m[error]\033[0;39m Can't find: $LINE"
+    fi
+  done
+}
+
+if [ $1 = "--confirm" ]; then
+  check_documented_libraries
+else
+  check_undocumented_libraries
 fi
-
