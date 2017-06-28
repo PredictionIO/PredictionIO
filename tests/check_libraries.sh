@@ -43,7 +43,7 @@ rm -f ${ERROR_FILE}
 
 # Gather and filter reports
 find . -name "*-licenses.csv" -exec cat {} >> ${GATHERED_FILE} \;
-cat "${REPORT_DIR}/licences-concat.csv" | sort | uniq | grep -v "Category,License,Dependency,Notes" | \
+cat ${GATHERED_FILE} | sort | uniq | grep -v "Category,License,Dependency,Notes" | \
   grep -v Apache | grep -v ASL | \
   grep -v "org.apache" | grep -v "commons-" | \
   grep -v "org.codehaus.jettison" | \
