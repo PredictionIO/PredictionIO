@@ -38,11 +38,14 @@ fi
     -Dhadoop.version=$PIO_HADOOP_VERSION \
     -Delasticsearch.version=$PIO_ELASTICSEARCH_VERSION
 sbt/sbt clean storage/clean
-rm -rf assembly/*.jar
-cp dist/lib/*.jar assembly/
-rm -rf lib/spark
-mkdir -p lib/spark
-cp dist/lib/spark/*.jar lib/spark
+
+assembly_folder=assembly/src/universal/lib
+rm -rf ${assembly_folder}/*.jar
+rm -rf ${assembly_folder}/spark
+mkdir -p ${assembly_folder}/spark
+
+cp dist/lib/*.jar ${assembly_folder}
+cp dist/lib/spark/*.jar ${assembly_folder}/spark
 rm *.tar.gz
 docker build -t predictionio/pio .
 popd

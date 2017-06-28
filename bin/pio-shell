@@ -55,11 +55,10 @@ fi
 if [[ "$1" == "--with-spark" ]]
 then
   echo "Starting the PIO shell with the Apache Spark Shell."
-  # compute the $ASSEMPLY_JAR, the location of the assemply jar, with
-  # bin/compute-classpath.sh
+  # Get paths of assembly jars to pass to spark-shell
   . ${PIO_HOME}/bin/compute-classpath.sh
   shift
-  $SPARK_HOME/bin/spark-shell --jars $ASSEMBLY_JAR $@
+  ${SPARK_HOME}/bin/spark-shell --jars ${ASSEMBLY_JARS} $@
 else
   echo -e "\033[0;33mStarting the PIO shell without Apache Spark.\033[0m"
   echo -e "\033[0;33mIf you need the Apache Spark library, run 'pio-shell --with-spark [spark-submit arguments...]'.\033[0m"
