@@ -21,4 +21,8 @@ limitations under the License.
 
 Here are the pages that show you how you can customize the Similar Product engine template.
 
-- [Multiple Events and Multiple Algorithms](/templates/similarproduct/multi-events-multi-algos)
+- [Multiple Events and Multiple Algorithms](/templates/similarproduct/multi-events-multi-algos/)
+- [Returns Item Properties](/templates/similarproduct/return-item-properties/)
+- [Train with Rate Event](/templates/similarproduct/train-with-rate-event/)
+- [Get Rid of Events for Users](/templates/similarproduct/rid-user-set-event/)
+- [Recommend Users](/templates/similarproduct/recommended-user/)

@@ -1,0 +1,186 @@
+---
+title: Adjust Score (E-Commerce Recommendation)
+---
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+This examples demonstrates how to modify E-Commerce Recommendation template to further adjust score.
+
+By default, items have a weight of 1.0. Giving an item a weight greater than 1.0 will make them appear more often and can be useful for i.e. promoted products. An item can also be given a weight smaller than 1.0 (but bigger than 0), in which case it will be recommended less often than originally. Weight values smaller than 0.0 are invalid.
+
+You can find the complete modified source code [here](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-ecommercerecommendation/adjust-score).
+
+
+## Modification
+
+### ECommAlgorithm.scala
+
+Add a case class to represent each group items which are given the same weight.
+
+```scala
+// ADDED
+case class WeightGroup(
+  items: Set[String],
+  weight: Double
+)
+```
+
+In ECommAlgorithm, add `weightedItems` function to extract the sequence of `WeightGroup`.
+
+```scala
+  // ADDED
+  /** Get the latest constraint weightedItems */
+  def weightedItems: Seq[WeightGroup] = {
+    try {
+      val constr = LEventStore.findByEntity(
+        appName = ap.appName,
+        entityType = "constraint",
+        entityId = "weightedItems",
+        eventNames = Some(Seq("$set")),
+        limit = Some(1),
+        latest = true,
+        timeout = Duration(200, "millis")
+      )
+      if (constr.hasNext) {
+        constr.next.properties.get[Seq[WeightGroup]]("weights")
+      } else {
+        Nil
+      }
+    } catch {
+      case e: scala.concurrent.TimeoutException =>
+        logger.error(s"Timeout when read set weightedItems event." +
+          s" Empty list is used. ${e}")
+        Nil
+      case e: Exception =>
+        logger.error(s"Error when read set weightedItems event: ${e}")
+        throw e
+    }
+  }
+```
+
+Modify the `predictKnownUser()`, `predictDefault()` and `predictSimilar()`:
+
+- add the `weights: Map[Int, Double]` parameter
+- adjust score according to item weights
+
+```scala
+  def predictKnownUser(
+    userFeature: Array[Double],
+    productModels: Map[Int, ProductModel],
+    query: Query,
+    whiteList: Option[Set[Int]],
+    blackList: Set[Int],
+    weights: Map[Int, Double] // ADDED
+  ): Array[(Int, Double)] = {
+
+      ...
+      .map { case (i, pm) =>
+        // NOTE: features must be defined, so can call .get
+        val s = dotProduct(userFeature, pm.features.get)
+        // may customize here to further adjust score
+        // ADDED
+        val adjustedScore = s * weights(i)
+        (i, adjustedScore)
+      }
+      ...
+
+  }
+```
+
+Lastly, modify the `predict()` method. The sequence of `WeightGroup` transforms into a `Map[Int, Double]` that we can easily query to extract the weight given to an item, using its `Int` index.
+
+```scala
+  def predict(model: ECommModel, query: Query): PredictedResult = {
+
+    ...
+
+    // ADDED
+    val weights: Map[Int, Double] = (for {
+      group <- weightedItems
+      item <- group.items
+      index <- model.itemStringIntMap.get(item)
+    } yield (index, group.weight))
+      .toMap
+      .withDefaultValue(1.0)
+
+    ...
+
+    val topScores: Array[(Int, Double)] = if (userFeature.isDefined) {
+      // the user has feature vector
+      predictKnownUser(
+        userFeature = userFeature.get,
+        productModels = productModels,
+        query = query,
+        whiteList = whiteList,
+        blackList = finalBlackList,
+        weights = weights // ADDED
+      )
+    } else {
+      ...
+
+      if (recentFeatures.isEmpty) {
+        logger.info(s"No features vector for recent items ${recentItems}.")
+        predictDefault(
+          productModels = productModels,
+          query = query,
+          whiteList = whiteList,
+          blackList = finalBlackList,
+          weights = weights // ADDED
+        )
+      } else {
+        predictSimilar(
+          recentFeatures = recentFeatures,
+          productModels = productModels,
+          query = query,
+          whiteList = whiteList,
+          blackList = finalBlackList,
+          weights = weights // ADDED
+        )
+      }
+    }
+
+    ...
+  }
+```
+
+Now, to send an event to Event Server:
+
+```
+$ curl -i -X POST http://localhost:7070/events.json?accessKey=$ACCESS_KEY \
+-H "Content-Type: application/json" \
+-d '{
+  "event" : "$set",
+  "entityType" : "constraint",
+  "entityId" : "weightedItems",
+  "properties" : {
+    "weights": [
+      {
+        "items": ["i4", "i14"],
+        "weight": 1.2
+      },
+      {
+        "items": ["i11"],
+        "weight": 1.5
+      }
+    ]
+  },
+  "eventTime" : "2014-11-02T09:39:45.618-08:00"
+}'
+```
+
+That's it! Now your engine can predict with adjusted scores.

@@ -1,0 +1,132 @@
+---
+title: Get Rid of Events for Users (Similar Product)
+---
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+In some cases, if you don't need to keep track the user ID being created/deleted or user properties changes with events, then you can simplify the template as described in this example to get rid of '$set' events for users.
+
+You can find the complete modified source code [here](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-similarproduct/rid-user-set-event).
+
+
+## Modification
+
+### DataSource.scala
+
+Modify TrainingData class to remove the RDD of users.
+
+```scala
+class TrainingData(
+  val items: RDD[(String, Item)],
+  val viewEvents: RDD[ViewEvent]
+) extends Serializable {
+  override def toString = {
+    s"items: [${items.count()} (${items.take(2).toList}...)]" +
+    s"viewEvents: [${viewEvents.count()}] (${viewEvents.take(2).toList}...)"
+  }
+}
+```
+
+Modify `readTraining()` function of `DataSource` to remove the RDD of (entityID, User).
+
+```scala
+
+  override
+  def readTraining(sc: SparkContext): TrainingData = {
+
+    // REMOVED
+    // create a RDD of (entityID, User)
+    val usersRDD: RDD[(String, User)] = PEventStore.aggregateProperties(
+      appName = dsp.appName,
+      entityType = "user"
+    )(sc).map { case (entityId, properties) =>
+      val user = try {
+        User()
+      } catch {
+        case e: Exception => {
+          logger.error(s"Failed to get properties ${properties} of" +
+            s" user ${entityId}. Exception: ${e}.")
+          throw e
+        }
+      }
+      (entityId, user)
+    }.cache()
+
+    ...
+
+    new TrainingData(
+      items = itemsRDD,
+      viewEvents = viewEventsRDD
+    )
+  }
+```
+
+### Preparator.scala
+
+Modify Preparator to remove the RDD of users.
+
+Modify Preparator's `parpare()` method:
+
+```scala
+
+  ...
+
+  def prepare(sc: SparkContext, trainingData: TrainingData): PreparedData = {
+    new PreparedData(
+      items = trainingData.items,
+      viewEvents = trainingData.viewEvents)
+  }
+```
+
+Modify `PreparedData` class:
+
+```scala
+class PreparedData(
+  val items: RDD[(String, Item)],
+  val viewEvents: RDD[ViewEvent]
+) extends Serializable
+```
+
+### ALSAlgorithm.scala
+
+Modify `train()` method:
+
+- remove the check of users in PreparedData
+- modify user index BiMap to extract the user ID from the `viewEvents`
+
+```scala
+
+  def train(sc: SparkContext, data: PreparedData): ECommModel = {
+    ...
+    // REMOVED
+    require(!data.users.take(1).isEmpty,
+      s"users in PreparedData cannot be empty." +
+      " Please check if DataSource generates TrainingData" +
+      " and Preprator generates PreparedData correctly.")
+    ...
+    // create User and item's String ID to integer index BiMap
+    val userStringIntMap = BiMap.stringInt(data.viewEvents.map(_.user)) // MODIFIED
+    val itemStringIntMap = BiMap.stringInt(data.items.keys)
+
+    ...
+
+  }
+
+```
+
+That's it! Now your engine can get rid of '$set' events for users.

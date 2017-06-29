@@ -1,0 +1,197 @@
+---
+title: Recommend Users (Similar Product)
+---
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+This examples demonstrates how to recommend users instead of items.
+
+Instead of using user-to-item events to find similar items, user-to-user events are used to find similar users you may also follow, like, etc (depending on which events are used in training and how the events are used). By default, "follow" events are used.
+
+You can find the complete modified source code [here](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-similarproduct/recommended-user).
+
+
+## Modification
+
+### Engine.scala
+
+In Query, change `items` to `users` and remove categories. Change `ItemScore` case class to SimilarUserScore. In PredictedResult, change `Array[ItemScore]` to `Array[SimilarUserScore]`.
+
+```scala
+case class Query(
+  users: List[String],
+  num: Int,
+  whiteList: Option[Set[String]],
+  blackList: Option[Set[String]]
+)
+
+case class PredictedResult(
+  similarUserScores: Array[SimilarUserScore]
+){
+  override def toString: String = similarUserScores.mkString(",")
+}
+
+case class SimilarUserScore(
+  user: String,
+  score: Double
+)
+```
+
+### DataSource.scala
+
+In DataSource, change `ViewEvent` case class to FollowEvent. Remove `Item` case class.
+
+Change
+
+```scala
+case class ViewEvent(user: String, item: String, t: Long)
+```
+
+to
+
+```scala
+// MODIFIED
+case class FollowEvent(user: String, followedUser: String, t: Long)
+```
+
+Modify TrainingData class to use followEvent
+
+```scala
+class TrainingData(
+  val users: RDD[(String, User)],
+  val followEvents: RDD[FollowEvent] // MODIFIED
+) extends Serializable {
+  override def toString = {
+    s"users: [${users.count()} (${users.take(2).toList}...)]" +
+    // MODIFIED
+    s"followEvents: [${followEvents.count()}] (${followEvents.take(2).toList}...)"
+  }
+}
+```
+
+Modify `readTraining()` function of `DataSource` to read "follow" events (commented with "// MODIFIED"). Remove the RDD of (entityID, Item):
+
+```scala
+
+  override
+  def readTraining(sc: SparkContext): TrainingData = {
+
+    // create a RDD of (entityID, User)
+    val usersRDD: RDD[(String, User)] = ...
+
+    // MODIFIED
+    // get all "user" "follow" "followedUser" events
+    val followEventsRDD: RDD[FollowEvent] = PEventStore.find(
+      appName = dsp.appName,
+      entityType = Some("user"),
+      eventNames = Some(List("follow")),
+      // targetEntityType is optional field of an event.
+      targetEntityType = Some(Some("user")))(sc)
+      // eventsDb.find() returns RDD[Event]
+      .map { event =>
+        val followEvent = try {
+          event.event match {
+            case "follow" => FollowEvent(
+              user = event.entityId,
+              followedUser = event.targetEntityId.get,
+              t = event.eventTime.getMillis)
+            case _ => throw new Exception(s"Unexpected event $event is read.")
+          }
+        } catch {
+          case e: Exception => {
+            logger.error(s"Cannot convert $event to FollowEvent." +
+              s" Exception: $e.")
+            throw e
+          }
+        }
+        followEvent
+      }.cache()
+
+    new TrainingData(
+      users = usersRDD,
+      followEvents = followEventsRDD // MODIFIED
+    )
+  }
+```
+
+### Preparator.scala
+
+Modify Preparator to pass followEvents to algorithm as PreparedData.
+
+Modify Preparator's `parpare()` method:
+
+```scala
+
+  ...
+
+  def prepare(sc: SparkContext, trainingData: TrainingData): PreparedData = {
+    new PreparedData(
+      users = trainingData.users,
+      followEvents = trainingData.followEvents) // MODIFIED
+  }
+```
+
+Modify `PreparedData` class:
+
+```scala
+class PreparedData(
+  val users: RDD[(String, User)],
+  val followEvents: RDD[FollowEvent] // MODIFIED
+) extends Serializable
+
+```
+
+### ALSAlgorithm.scala
+
+Modify ALSModel class to use similar user. Modify `train()` method to train with follow event. Modify `predict()` method to predict similar users.
+
+### Test the Result
+
+Then we can build/train/deploy the engine and test the result:
+
+The query
+
+```bash
+curl \
+-H "Content-Type: application/json" \
+-d '{ "user": ["u1", "u3"], "num": 10 }' \
+http://localhost:8000/queries.json
+```
+
+will return the result
+
+```json
+TODO
+```
+
+unknown user
+
+```bash
+curl \
+-H "Content-Type: application/json" \
+-d '{ "user": ["unk1", "u1", "u3"], "num": 10 }' \
+http://localhost:8000/queries.json
+```
+
+will return the result
+
+```json
+TODO
+```
+
+That's it! Now your engine can recommend users.

@@ -21,6 +21,8 @@ limitations under the License.
 
 The classification template uses the Naive Bayes algorithm by default. You can easily add and use other MLlib classification algorithms. The following will demonstrate how to add the [MLlib Random Forests algorithm](https://spark.apache.org/docs/latest/mllib-ensembles.html) into the engine.
 
+You can find the complete modified source code [here](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-classification/add-algorithm).
+
 ## Create a new file RandomForestAlgorithm.scala
 
 Locate `src/main/scala/NaiveBayesAlgorithm.scala` under your engine directory, which should be /MyClassification if you are following the [Classification QuickStart](/templates/classification/quickstart/).  Copy `NaiveBayesAlgorithm.scala` and create a new file `RandomForestAlgorithm.scala`. You will modify this file and follow the instructions below to define a new RandomForestAlgorithm class.
@@ -98,14 +100,14 @@ class RandomForestAlgorithm(val ap: RandomForestAlgorithmParams) // CHANGED
     query: Query): PredictedResult = {
 
     val label = model.predict(Vectors.dense(
-        query.attr0, query.attr1, query.attr2
+      Array(query.attr0, query.attr1, query.attr2)
     ))
     new PredictedResult(label)
   }
 
 }
 ```
-Note that the MLlib Random Forest algorithm takes the same training data as the Navie Bayes algorithm (ie, RDD[LabeledPoint]) so you don't need to modify the `DataSource`, `TrainigData` and `PreparedData` classes. If the new algorithm to be added requires different types of training data, then you need to modify these classes accordingly to accomodate your new algorithm.
+Note that the MLlib Random Forest algorithm takes the same training data as the Naive Bayes algorithm (ie, RDD[LabeledPoint]) so you don't need to modify the `DataSource` and `PreparedData` classes. If the new algorithm to be added requires different types of training data, then you need to modify these classes accordingly to accommodate your new algorithm.
 ##  Update Engine.scala
 
 Modify the EngineFactory to add the new algorithm class `RandomForestAlgorithm` you just defined and give it a name `"randomforest"`. The name will be used in `engine.json` to specify which algorithm to use.

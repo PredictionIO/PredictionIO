@@ -24,17 +24,17 @@ There are two types of user preferences:
 - explicit preference (also referred as "explicit feedback"), such as "rating" given to item by users.
 - implicit preference (also referred as "implicit feedback"), such as "view" and "buy" history.
 
-MLlib ALS provides two functions, `ALS.train()` and `ALS.trainImplicit()` to handle these two cases, respectively. The ALS algorithm takes RDD[Rating] as training data input. The Rating class is defined in Spark MLlib library as:
+MLlib ALS provides the `setImplicitPrefs()` function to set whether to use implicit preference. The ALS algorithm takes RDD[Rating] as training data input. The Rating class is defined in Spark MLlib library as:
 
 ```
 case class Rating(user: Int, product: Int, rating: Double)
 ```
 
-By default, the recommendation template uses `ALS.train()` which expects explicit rating values which the user has rated the item.
+By default, the recommendation template sets `setImplicitPrefs()` to `false` which expects explicit rating values which the user has rated the item.
 
-To handle implicit preference, `ALS.trainImplicit()` can be used. In this case, the "rating" value input to ALS is used to calculate the confidence level that the user likes the item. Higher "rating" means a stronger indication that the user likes the item.
+To handle implicit preference, you can set `setImplicitPrefs()` to `true`. In this case, the "rating" value input to ALS is used to calculate the confidence level that the user likes the item. Higher "rating" means a stronger indication that the user likes the item.
 
-The following provides an example of using implicit preference.
+The following provides an example of using implicit preference. You can find the complete modified source code [here](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-recommendation/train-with-view-event).
 
 ### Training with view events
 
@@ -44,17 +44,10 @@ First, we can modify `DataSource.scala` to aggregate the number of views of the 
 
 ```scala
 
-class DataSource(val dsp: DataSourceParams)
-  extends PDataSource[TrainingData,
-      EmptyEvaluationInfo, Query, EmptyActualResult] {
+  def getRatings(sc: SparkContext): RDD[Rating] = {
 
-  @transient lazy val logger = Logger[this.type]
-
-  override
-  def readTraining(sc: SparkContext): TrainingData = {
-    val eventsDb = Storage.getPEvents()
-    val eventsRDD: RDD[Event] = eventsDb.find(
-      appId = dsp.appId,
+    val eventsRDD: RDD[Event] = PEventStore.find(
+      appName = dsp.appName,
       entityType = Some("user"),
       eventNames = Some(List("view")), // MODIFIED
       // targetEntityType is optional field of an event.
@@ -84,16 +77,20 @@ class DataSource(val dsp: DataSourceParams)
       Rating(uid, iid, r)
     }.cache()
 
-    new TrainingData(ratingsRDD)
+    ratingsRDD
   }
-}
+
+  override
+  def readTraining(sc: SparkContext): TrainingData = {
+    new TrainingData(getRatings(sc))
+  }
 
 ```
 
 NOTE: You may put the view count aggregation logic in `ALSAlgorithm`'s `train()` instead, depending on your needs.
 
 
-Then, we can modify ALSAlgorithm.scala to call `ALS.trainImplicit()` instead of `ALS.train()`:
+Then, we can modify ALSAlgorithm.scala to set `setImplicitPrefs` to `true`:
 
 ```scala
 
@@ -106,15 +103,21 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
     ...
 
+    // If you only have one type of implicit event (Eg. "view" event only),
+    // set implicitPrefs to true
     // MODIFIED
-    val m = ALS.trainImplicit(
-      ratings = mllibRatings,
-      rank = ap.rank,
-      iterations = ap.numIterations,
-      lambda = ap.lambda,
-      blocks = -1,
-      alpha = 1.0,
-      seed = seed)
+    val implicitPrefs = true
+    val als = new ALS()
+    als.setUserBlocks(-1)
+    als.setProductBlocks(-1)
+    als.setRank(ap.rank)
+    als.setIterations(ap.numIterations)
+    als.setLambda(ap.lambda)
+    als.setImplicitPrefs(implicitPrefs)
+    als.setAlpha(1.0)
+    als.setSeed(seed)
+    als.setCheckpointInterval(10)
+    val m = als.run(mllibRatings)
 
     new ALSModel(
       rank = m.rank,
@@ -131,3 +134,5 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 ```
 
 Now the recommendation engine can train a model with implicit preference events.
+
+#### [Next: Filter Recommended Items by Blacklist in Query](blacklist-items.html)

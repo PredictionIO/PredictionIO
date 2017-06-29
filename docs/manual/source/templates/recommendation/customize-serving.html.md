@@ -26,23 +26,11 @@ currently in stock from the list of recommendation.
 This section is based on the [Recommendation Engine Template](/templates/recommendation/quickstart/).
 
 A full end-to-end example can be found on
-[GitHub](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-recommendation/custom-serving).
-
-<!--
-This section demonstrates how to add a custom filtering logic to exclude a list
-of blacklisted movies from the [Movie Recommendation Engine](/quickstart.html)
-based on the Recommendation Engine Template. It is highly recommended to go
-through the Quckstart guide first.
-
-Complete code example can be found in
-`examples/scala-parallel-recommendation-howto`.
-
-If you simply want to use this customized code, you can skip to the last section.
--->
+[GitHub](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-recommendation/customize-serving).
 
 ## The Serving Component
 
-Recall [the DASE Architecture](/start/engines/), a PredictionIO engine has
+Recall [the DASE Architecture](/customize/), a PredictionIO engine has
 4 main components: Data Source, Data Preparator, Algorithm, and Serving
 components. When a Query comes in, it is passed to the Algorithm component for
 making Predictions.
@@ -51,7 +39,8 @@ The Engine's serving component can be found in `src/main/scala/Serving.scala` in
 the *MyRecommendation* directory. By default, it looks like the following:
 
 ```scala
-class Serving extends LServing[Query, PredictedResult] {
+class Serving
+  extends LServing[Query, PredictedResult] {
 
   override
   def serve(query: Query,
@@ -73,10 +62,13 @@ is called, it loads the file and removes items in the disabled list from
 ```scala
 import scala.io.Source  // ADDED
 
-class Serving extends LServing[Query, PredictedResult] {
+class Serving
+  extends LServing[Query, PredictedResult] {
 
-  override def serve(query: Query, predictedResults: Seq[PredictedResult])
-  : PredictedResult = {
+  override
+  def serve(query: Query,
+    predictedResults: Seq[PredictedResult]): PredictedResult = {
+    // MODIFIED HERE
     // Read the disabled item from file.
     val disabledProducts: Set[String] = Source
       .fromFile("./data/sample_disabled_items.txt")
@@ -101,16 +93,16 @@ implementation for production deployment.
 
 ## Deploy the Modified Engine
 
-Now you can deploy the modified engine as described in the [Quick
-Start](/templates/recommendation/quickstart/) guide.
+Now you can deploy the modified engine as described in [Quick
+Start](quickstart.html).
 
-Make sure the `appId` defined in the file `engine.json` match your *App ID*:
+Make sure the `appName` defined in the file `engine.json` matches your *App Name*:
 
 ```
 ...
 "datasource": {
-  "params": {
-    "appId": 1
+  "params" : {
+    "appName": "YourAppName"
   }
 },
 ...
@@ -178,7 +170,7 @@ logic to your Serving component!
 Optionally, you may want to take the hardcoded path
 (`./data/sample_disabled_items.txt`) away from the source code.
 
-PredictionIO offers `ServingParams` so you can read variable values from
+PredictionIO offers serving params so you can read variable values from
 `engine.json` instead. PredictionIO transforms the JSON object specified in
 `engine.json`'s `serving` field into the `ServingParams` class.
 
@@ -210,9 +202,7 @@ class Serving(val params: ServingParams)
 }
 ```
 
-In `engine.json`, you specify the parameter `serving` for the Serving component
-(the JSON4S library automatically extract the JSON object into a Scala class
-under the hood):
+In `engine.json`, you define the parameters `serving` for the Serving component:
 
 ```json
 {
@@ -226,7 +216,7 @@ under the hood):
 }
 ```
 
-Again, to build *MyRecommendation* and deploy it as a service:
+Try to build *MyRecommendation* and deploy it again:
 
 ```
 $ pio build
@@ -236,4 +226,4 @@ $ pio deploy
 
 You can change the `filepath` value without re-building the code next time.
 
-#### [Next: Filter Recommended Items by Blacklist in Query](blacklist-items.html)
+#### [Next: Training with Implicit Preference](training-with-implicit-preference.html)

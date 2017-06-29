@@ -214,6 +214,9 @@ root:
           -
             body: 'Train with Rate Event'
             url: '/templates/ecommercerecommendation/train-with-rate-event/'
+          -
+            body: 'Adjust Score'
+            url: '/templates/ecommercerecommendation/adjust-score/'
       -
         body: 'Similar Product'
         children:
@@ -229,9 +232,20 @@ root:
           -
             body: 'Multiple Events and Multiple Algorithms'
             url: '/templates/similarproduct/multi-events-multi-algos/'
-
+          -
+            body: 'Returns Item Properties'
+            url: '/templates/similarproduct/return-item-properties/'
+          -
+            body: 'Train with Rate Event'
+            url: '/templates/similarproduct/train-with-rate-event/'
+          -
+            body: 'Get Rid of Events for Users'
+            url: '/templates/similarproduct/rid-user-set-event/'
+          -
+            body: 'Recommend Users'
+            url: '/templates/similarproduct/recommended-user/'
       -
-        body: 'Classfication'
+        body: 'Classification'
         children:
           -
             body: 'Quick Start'

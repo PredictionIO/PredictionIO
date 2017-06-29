@@ -1,5 +1,5 @@
 ---
-title: Train with Rate Event (E-Commerce Recommendation)
+title: Train with Rate Event (Similar Product)
 ---
 
 <!--
@@ -19,13 +19,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-This examples demonstrates how to modify E-Commerce Recommendation template to use "rate" event as Training Data.
+This examples demonstrates how to modify Similar Product template to use "rate" event as Training Data.
 
-However, recent "view" event is still used for recommendation for new user (to recommend items similar to what new user just recently viewed) and the returned scores are not predicted rating but a ranked scores for new user.
-
-This template also supports that the user may rate same item multiple times and latest rating value will be used for training. The modification can be further simplified if the support of this case is not needed.
-
-You can find the complete modified source code [here](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-ecommercerecommendation/train-with-rate-event).
+You can find the complete modified source code [here](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-similarproduct/train-with-rate-event).
 
 
 ## Modification
@@ -53,15 +49,13 @@ Modify TrainingData class to use rateEvent
 class TrainingData(
   val users: RDD[(String, User)],
   val items: RDD[(String, Item)],
-  val rateEvents: RDD[RateEvent], // MODIFIED
-  val buyEvents: RDD[BuyEvent]
+  val rateEvents: RDD[RateEvent] // MODIFIED
 ) extends Serializable {
   override def toString = {
     s"users: [${users.count()} (${users.take(2).toList}...)]" +
     s"items: [${items.count()} (${items.take(2).toList}...)]" +
     // MODIFIED
-    s"rateEvents: [${rateEvents.count()}] (${rateEvents.take(2).toList}...)" +
-    s"buyEvents: [${buyEvents.count()}] (${buyEvents.take(2).toList}...)"
+    s"rateEvents: [${rateEvents.count()}] (${rateEvents.take(2).toList}...)"
   }
 }
 ```
@@ -74,39 +68,38 @@ Modify `readTraining()` function of `DataSource` to read "rate" events (commente
   def readTraining(sc: SparkContext): TrainingData = {
     ...
 
-    val eventsRDD: RDD[Event] = PEventStore.find(
+    // get all "user" "rate" "item" events
+    val rateEventsRDD: RDD[RateEvent] = PEventStore.find( // MODIFIED
       appName = dsp.appName,
       entityType = Some("user"),
-      eventNames = Some(List("rate", "buy")), // MODIFIED
+      eventNames = Some(List("rate")), // MODIFIED
       // targetEntityType is optional field of an event.
       targetEntityType = Some(Some("item")))(sc)
-      .cache()
-
-    val rateEventsRDD: RDD[RateEvent] = eventsRDD // MODIFIED
-      .filter { event => event.event == "rate" } // MODIFIED
+      // eventsDb.find() returns RDD[Event]
       .map { event =>
-        try {
-          RateEvent( // MODIFIED
-            user = event.entityId,
-            item = event.targetEntityId.get,
-            rating = event.properties.get[Double]("rating"), // ADDED
-            t = event.eventTime.getMillis
-          )
+        val rateEvent = try { // MODIFIED
+          event.event match {
+            case "rate" => RateEvent( // MODIFIED
+              user = event.entityId,
+              item = event.targetEntityId.get,
+              rating = event.properties.get[Double]("rating"), // ADDED
+              t = event.eventTime.getMillis)
+            case _ => throw new Exception(s"Unexpected event ${event} is read.")
+          }
         } catch {
-          case e: Exception =>
+          case e: Exception => {
             logger.error(s"Cannot convert ${event} to RateEvent." + // MODIFIED
               s" Exception: ${e}.")
             throw e
+          }
         }
-      }
-
-    ...
+        rateEvent // MODIFIED
+      }.cache()
 
     new TrainingData(
       users = usersRDD,
       items = itemsRDD,
-      rateEvents = rateEventsRDD, // MODIFIED
-      buyEvents = buyEventsRDD
+      rateEvents = rateEventsRDD // MODIFIED
     )
   }
 ```
@@ -125,8 +118,7 @@ Modify Preparator's `parpare()` method:
     new PreparedData(
       users = trainingData.users,
       items = trainingData.items,
-      rateEvents = trainingData.rateEvents, // MODIFIED
-      buyEvents = trainingData.buyEvents)
+      rateEvents = trainingData.rateEvents) // MODIFIED
   }
 ```
 
@@ -136,13 +128,12 @@ Modify `PreparedData` class:
 class PreparedData(
   val users: RDD[(String, User)],
   val items: RDD[(String, Item)],
-  val rateEvents: RDD[RateEvent], // MODIFIED
-  val buyEvents: RDD[BuyEvent]
+  val rateEvents: RDD[RateEvent] // MODIFIED
 ) extends Serializable
 
 ```
 
-### ECommAlgorithm.scala
+### ALSAlgorithm.scala
 
 Modify `train()` method to train with rate event.
 
@@ -155,20 +146,13 @@ Modify `train()` method to train with rate event.
       " and Preprator generates PreparedData correctly.")
 
     ...
-  }
-
-  def genMLlibRating(
-    userStringIntMap: BiMap[String, Int],
-    itemStringIntMap: BiMap[String, Int],
-    data: PreparedData): RDD[MLlibRating] = {
 
     val mllibRatings = data.rateEvents // MODIFIED
       .map { r =>
         ...
 
-        ((uindex, iindex), (r.rating, r.t)) // MODIFIED
-      }
-      .filter { case ((u, i), v) =>
+        ((uindex, iindex), (r.rating,r.t)) //MODIFIED
+      }.filter { case ((u, i), v) =>
         // keep events with valid user and item index
         (u != -1) && (i != -1)
       }
@@ -187,8 +171,10 @@ Modify `train()` method to train with rate event.
       }
       .cache()
 
-    mllibRatings
+    ...
+
   }
+
 ```
 
 Modify `train()` method to use `ALS.trainImplicit()`:

@@ -24,9 +24,11 @@ You can modify the [default DataSource](dase.html#data) to read
 - Custom events other than the default **rate** and **buy** events.
 - Events which involve different entity types other than the default **user** and **item**.
 
+You can find the complete modified source code [here](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-recommendation/reading-custom-events).
+
 
 ## Add the Custom Event
-To read custom events, modify the function call `eventsDb.find()` in MyRecommendation/src/main/scala/***DataSource.scala***:
+To read custom events, modify the function call `PEventStore.find()` in MyRecommendation/src/main/scala/***DataSource.scala***:
 
 - Specify the names of events in `eventNames` parameters
 - Specify the entity types involved in the events in the `entityType` and `targetEntityType` parameters accordingly
@@ -35,11 +37,10 @@ In this example below, we modify DataSource to read custom **like** and **dislik
 
 
 ```scala
-val eventsRDD: RDD[Event] = eventsDb.find(
-      appId = dsp.appId,
+val eventsRDD: RDD[Event] = PEventStore.find(
+      appName = dsp.appName,
       entityType = Some("customer"), // MODIFIED
       eventNames = Some(List("like", "dislike")), // MODIFIED
-
       // targetEntityType is optional field of an event.
       targetEntityType = Some(Some("product")))(sc) // MODIFIED
 ```
@@ -56,8 +57,6 @@ val ratingsRDD: RDD[Rating] = eventsRDD.map { event =>
         val ratingValue: Double = event.event match {
           // MODIFIED
           case "like" => 4.0 // map a like event to a rating of 4.0
-
-
           case "dislike" => 1.0  // map a like event to a rating of 1.0
           case _ => throw new Exception(s"Unexpected event ${event} is read.")
         }
@@ -72,7 +71,7 @@ val ratingsRDD: RDD[Rating] = eventsRDD.map { event =>
         }
       }
       rating
-    }
+    }.cache()
 ```
 
 That's it! Your engine can read custom **like** and **dislike** event.

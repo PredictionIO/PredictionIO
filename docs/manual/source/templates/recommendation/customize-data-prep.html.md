@@ -34,11 +34,11 @@ A sample black list file containing the items to be excluded is provided in
 `./data/sample_not_train_data.txt`.
 
 A full end-to-end example can be found on
-[GitHub](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-recommendation/custom-prepartor).
+[GitHub](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-recommendation/customize-data-prep).
 
 ## The Data Preparator Component
 
-Recall [the DASE Architecture](/start/engines/), data is prepared by 2
+Recall [the DASE Architecture](/customize/), data is prepared by 2
 components sequentially: *Data Source* and *Data Preparator*. *Data Source*
 reads data from the data store of Event Server and then *Data Preparator*
 prepares `RDD[Rating]` for the ALS algorithm.
@@ -147,7 +147,7 @@ Preparator!
 Optionally, you may want to take the hardcoded path
 (`./data/sample_not_train_data.txt`) away from the source code.
 
-PredictionIO offers `PreparatorParams` so you can read variable values from
+PredictionIO offers preparator params so you can read variable values from
 `engine.json` instead.
 
 Modify `src/main/scala/Preparator.scala` again in the *MyRecommendation*
@@ -156,7 +156,7 @@ directory to:
 ```scala
 import org.apache.predictionio.controller.Params // ADDED
 
- // ADDED CustomPreparatorParams case class
+// ADDED CustomPreparatorParams case class
 case class CustomPreparatorParams(
   filepath: String
 ) extends Params
@@ -165,7 +165,7 @@ class Preparator(pp: CustomPreparatorParams) // ADDED CustomPreparatorParams
   extends PPreparator[TrainingData, PreparedData] {
 
   def prepare(sc: SparkContext, trainingData: TrainingData): PreparedData = {
-    val noTrainItems = Source.fromFile(pp.filepath).getLines.toSet //CHANGED
+    val noTrainItems = Source.fromFile(pp.filepath).getLines.toSet // CHANGED
     val ratings = trainingData.ratings.filter( r =>
       !noTrainItems.contains(r.item)
     )
@@ -199,4 +199,4 @@ $ pio deploy
 
 You can change the `filepath` value without re-building the code next time.
 
-#### [Next: Customizing Serving](customize-serving.html)
+#### [Next: Customizing Serving Component](customize-serving.html)

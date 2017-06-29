@@ -22,3 +22,4 @@ limitations under the License.
 Here are the pages that show you how you can customize the E-Commerce Recommendation engine template.
 
 - [Train with Rate Event](/templates/ecommercerecommendation/train-with-rate-event/)
+- [Adjust Score](/templates/ecommercerecommendation/adjust-score/)
