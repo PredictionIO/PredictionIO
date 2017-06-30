@@ -47,16 +47,22 @@ check_undocumented_libraries() {
   # Gather and filter reports
   find . -name "*-licenses.csv" -exec cat {} >> ${GATHERED_FILE} \;
   cat ${GATHERED_FILE} | sort | uniq | grep -v "Category,License,Dependency,Notes" | \
-    grep -v Apache | grep -v ASL | \
-    grep -v "org.apache" | grep -v "commons-" | grep -v "tomcat" \
-    grep -v "org.codehaus.jettison" | grep -v "xml-apis" | grep -v "org.mortbay.jetty" | grep -v "com.google.guava" \
-    grep -v predictionio > ${FILTERED_FILE}
+    grep -v "Apache" | \
+    grep -v "ASL" | \
+    grep -v "org.apache" | \
+    grep -v "commons-" | \
+    grep -v "tomcat" | \
+    grep -v "org.codehaus.jettison" | \
+    grep -v "xml-apis" | \
+    grep -v "org.mortbay.jetty" | \
+    grep -v "com.google.guava" | \
+    grep -v "predictionio" > ${FILTERED_FILE}
 
   # Check undocumented
   cat ${FILTERED_FILE} | while read LINE
   do
     LIBRARY=`echo ${LINE} | cut -d ',' -f 3`
-    grep -q "$LIBRARY" LICENSE.txt
+    grep -q "$LIBRARY" "${FWDIR}/LICENSE.txt"
     if [ $? -ne 0 ]; then
       echo -e "\033[0;31m[error]\033[0;39m Undocumented dependency: $LINE"
       echo $LINE >> ${ERROR_FILE}
@@ -76,7 +82,7 @@ check_undocumented_libraries() {
 check_documented_libraries(){
   echo "Check libraries described in LICENSE.txt..."
   
-  cat LICENSE.txt | grep "#" | sed -e 's/(.*)//' | sed -e '/^#/d' | while read LINE
+  cat "${FWDIR}/LICENSE.txt" | grep "#" | sed -e 's/(.*)//' | sed -e '/^#/d' | while read LINE
   do
     grep -q "$LINE" ${GATHERED_FILE}
     if [ $? -ne 0 ]; then
@@ -85,7 +91,7 @@ check_documented_libraries(){
   done
 }
 
-if [ $1 = "--confirm" ]; then
+if [ "$1" = "--confirm" ]; then
   check_documented_libraries
 else
   check_undocumented_libraries
