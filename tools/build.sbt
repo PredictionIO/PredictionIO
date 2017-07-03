@@ -21,7 +21,7 @@ import sbtassembly.AssemblyPlugin.autoImport._
 name := "apache-predictionio-tools"
 
 libraryDependencies ++= Seq(
-  "me.lessis"               % "semverfi_2.10"  % "0.1.3",
+  "com.github.zafarkhaja"  %  "java-semver"    % "0.9.0",
   "org.apache.spark"       %% "spark-sql"      % sparkVersion.value % "provided",
   "com.typesafe.akka"      %% "akka-slf4j"     % akkaVersion.value,
   "io.spray"               %% "spray-testkit"  % "1.3.3" % "test",
