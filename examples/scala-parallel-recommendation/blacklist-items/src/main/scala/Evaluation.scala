@@ -91,7 +91,7 @@ object ComprehensiveRecommendationEvaluation extends Evaluation {
 trait BaseEngineParamsList extends EngineParamsGenerator {
   protected val baseEP = EngineParams(
     dataSourceParams = DataSourceParams(
-      appName = "INVALID_APP_NAME",
+      appName = "MyApp1",
       evalParams = Some(DataSourceEvalParams(kFold = 5, queryNum = 10))))
 }
 
