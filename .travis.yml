@@ -108,6 +108,8 @@ env:
       PIO_SPARK_VERSION=2.1.1
       PIO_ELASTICSEARCH_VERSION=5.4.1
 
+    - BUILD_TYPE=LicenseCheck
+
 before_install:
   - unset SBT_OPTS JVM_OPTS
   - sudo rm /usr/local/bin/docker-compose
