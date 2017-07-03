@@ -21,9 +21,6 @@ pushd /PredictionIO
 # Run license check
 ./tests/check_license.sh
 
-# Run library check
-./tests/check_libraries.sh
-
 # Prepare pio environment variables
 set -a
 source ./conf/pio-env.sh
@@ -43,5 +40,8 @@ sbt/sbt dataJdbc/compile test storage/test \
     -Dspark.version=$PIO_SPARK_VERSION \
     -Dhadoop.version=$PIO_HADOOP_VERSION \
     -Delasticsearch.version=$PIO_ELASTICSEARCH_VERSION
+
+# Run library check
+./tests/check_libraries.sh
 
 popd

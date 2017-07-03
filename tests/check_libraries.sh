@@ -27,72 +27,63 @@ FILTERED_FILE="${REPORT_DIR}/licences-filtered.csv"
 ERROR_FILE="${REPORT_DIR}/licences-errors.csv"
 
 # Extract libraries which are not described in LICENSE.txt
-check_undocumented_libraries() {
-  echo "Check library dependencies..."
-  
-  # Generate license report
-  sbt/sbt clean
-  sbt/sbt dumpLicenseReport
+echo "Check library dependencies..."
 
-  sbt/sbt storage/clean
-  sbt/sbt storage/dumpLicenseReport
+# Generate license report
+sbt/sbt clean
+sbt/sbt dumpLicenseReport
 
-  # Clean up
-  mkdir -p ${REPORT_DIR}
+sbt/sbt storage/clean
+sbt/sbt storage/dumpLicenseReport
 
-  rm -f ${GATHERED_FILE}
-  rm -f ${FILTERED_FILE}
-  rm -f ${ERROR_FILE}
+# Clean up
+mkdir -p ${REPORT_DIR}
 
-  # Gather and filter reports
-  find . -name "*-licenses.csv" -exec cat {} >> ${GATHERED_FILE} \;
-  cat ${GATHERED_FILE} | sort | uniq | grep -v "Category,License,Dependency,Notes" | \
-    grep -v "Apache" | \
-    grep -v "ASL" | \
-    grep -v "org.apache" | \
-    grep -v "commons-" | \
-    grep -v "tomcat" | \
-    grep -v "org.codehaus.jettison" | \
-    grep -v "xml-apis" | \
-    grep -v "org.mortbay.jetty" | \
-    grep -v "com.google.guava" | \
-    grep -v "predictionio" > ${FILTERED_FILE}
+rm -f ${GATHERED_FILE}
+rm -f ${FILTERED_FILE}
+rm -f ${ERROR_FILE}
 
-  # Check undocumented
-  cat ${FILTERED_FILE} | while read LINE
-  do
-    LIBRARY=`echo ${LINE} | cut -d ',' -f 3`
-    grep -q "$LIBRARY" "${FWDIR}/LICENSE.txt"
-    if [ $? -ne 0 ]; then
-      echo -e "\033[0;31m[error]\033[0;39m Undocumented dependency: $LINE"
-      echo $LINE >> ${ERROR_FILE}
-    fi
-  done
+# Gather and filter reports
+find . -name "*-licenses.csv" -exec cat {} >> ${GATHERED_FILE} \;
+cat ${GATHERED_FILE} | sort | uniq | grep -v "Category,License,Dependency,Notes" | \
+  grep -v "Apache" | \
+  grep -v "ASL" | \
+  grep -v "org.apache" | \
+  grep -v "commons-" | \
+  grep -v "tomcat" | \
+  grep -v "org.codehaus.jettison" | \
+  grep -v "xml-apis" | \
+  grep -v "org.mortbay.jetty" | \
+  grep -v "com.google.guava" | \
+  grep -v "predictionio" > ${FILTERED_FILE}
 
-  if [ -f ${ERROR_FILE} ]; then
-    echo "Library checks failed."
-    exit 1
-  else 
-    echo "Library checks passed."
-    exit 0
-  fi  
-}
+# Check undocumented
+cat ${FILTERED_FILE} | while read LINE
+do
+  LIBRARY=`echo ${LINE} | cut -d ',' -f 3`
+  grep -q "$LIBRARY" "${FWDIR}/LICENSE.txt"
+  if [ $? -ne 0 ]; then
+    echo -e "\033[0;31m[error]\033[0;39m Undocumented dependency: $LINE"
+    echo "Undocumented dependency: $LINE" >> ${ERROR_FILE}
+  fi
+done
 
 # Extract libraries which are described in LICENSE.txt but not exist actually
-check_documented_libraries(){
-  echo "Check libraries described in LICENSE.txt..."
+echo "Check libraries described in LICENSE.txt..."
   
-  cat "${FWDIR}/LICENSE.txt" | grep "#" | sed -e 's/(.*)//' | sed -e '/^#/d' | while read LINE
-  do
-    grep -q "$LINE" ${GATHERED_FILE}
-    if [ $? -ne 0 ]; then
-      echo -e "\033[0;31m[error]\033[0;39m Can't find: $LINE"
-    fi
-  done
-}
+cat "${FWDIR}/LICENSE.txt" | grep "#" | sed -e 's/(.*)//' | sed -e '/^#/d' | while read LINE
+do
+  grep -q "$LINE" ${GATHERED_FILE}
+  if [ $? -ne 0 ]; then
+    echo -e "\033[0;31m[error]\033[0;39m Can't find: $LINE"
+    echo "Unused dependency: $LINE" >> ${ERROR_FILE}
+  fi
+done
 
-if [ "$1" = "--confirm" ]; then
-  check_documented_libraries
-else
-  check_undocumented_libraries
-fi
+if [ -f ${ERROR_FILE} ]; then
+  echo "Library checks failed."
+  exit 1
+else 
+  echo "Library checks passed."
+  exit 0
+fi  
