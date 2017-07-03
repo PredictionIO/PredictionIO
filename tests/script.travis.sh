@@ -19,6 +19,8 @@
 if [[ $BUILD_TYPE == Unit ]]; then
   tests/run_docker.sh $METADATA_REP $EVENTDATA_REP $MODELDATA_REP \
     "/PredictionIO/tests/unit.sh"
+elif [[ $BUILD_TYPE == LicenseCheck ]]; then
+  tests/check_libraries.sh
 else
   tests/run_docker.sh $METADATA_REP $EVENTDATA_REP $MODELDATA_REP \
     "python3 /PredictionIO/tests/pio_tests/tests.py"

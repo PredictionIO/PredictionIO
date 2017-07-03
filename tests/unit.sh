@@ -41,7 +41,4 @@ sbt/sbt dataJdbc/compile test storage/test \
     -Dhadoop.version=$PIO_HADOOP_VERSION \
     -Delasticsearch.version=$PIO_ELASTICSEARCH_VERSION
 
-# Run library check
-./tests/check_libraries.sh
-
 popd
