@@ -139,7 +139,7 @@ Update the engine.json to use **randomforest**:
   {
     "name": "randomforest",
     "params": {
-      "numClasses": 3,
+      "numClasses": 4,
       "numTrees": 5,
       "featureSubsetStrategy": "auto",
       "impurity": "gini",
