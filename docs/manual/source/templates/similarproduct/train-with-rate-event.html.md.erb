@@ -19,9 +19,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-This examples demonstrates how to modify Similar Product template to use "rate" event as Training Data.
+By default, the similar product template uses implicit preference, such as "view" event.
 
-You can find the complete modified source code [here](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-similarproduct/train-with-rate-event).
+To handle explicit preference, such as "rating" given to item by users, you can customize the template. Higher "rating" means a stronger indication that the user likes the item.
+
+This examples demonstrates how to modify similar product template to use "rate" event as Training Data. You can find the complete modified source code [here](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-similarproduct/train-with-rate-event).
 
 
 ## Modification

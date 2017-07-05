@@ -118,5 +118,29 @@ Modify how to create the ItemScore object using the properties.
 
 Using `model.items(i)` you can receive corresponding object of the `Item` class, and now you can access its properties which you created during previous step.
 
+### Test the Result
+
+Then we can build/train/deploy the engine and test the result:
+
+The query
+
+```bash
+$ curl -H "Content-Type: application/json" \
+-d '{ "items": ["i1"], "num": 4 }' \
+http://localhost:8000/queries.json
+```
+
+will return the result
+
+```json
+{
+  "itemScores":[
+    {"item":"i3","title":"title for movie i3","date":"1947","imdbUrl":"http://imdb.com/fake-url/i3","score":0.5865418718902017},
+    {"item":"i44","title":"title for movie i44","date":"1941","imdbUrl":"http://imdb.com/fake-url/i44","score":0.5740199916714374},
+    {"item":"i37","title":"title for movie i37","date":"1940","imdbUrl":"http://imdb.com/fake-url/i37","score":0.5576820095310056},
+    {"item":"i6","title":"title for movie i6","date":"1947","imdbUrl":"http://imdb.com/fake-url/i6","score":0.45856345689769473}
+  ]
+}
+```
 
 That's it! Your engine can return more information.
