@@ -167,31 +167,22 @@ Then we can build/train/deploy the engine and test the result:
 The query
 
 ```bash
-curl \
--H "Content-Type: application/json" \
--d '{ "user": ["u1", "u3"], "num": 10 }' \
+$ curl -H "Content-Type: application/json" \
+-d '{ "users": ["u1"], "num": 4 }' \
 http://localhost:8000/queries.json
 ```
 
 will return the result
 
 ```json
-TODO
-```
-
-unknown user
-
-```bash
-curl \
--H "Content-Type: application/json" \
--d '{ "user": ["unk1", "u1", "u3"], "num": 10 }' \
-http://localhost:8000/queries.json
-```
-
-will return the result
-
-```json
-TODO
+{
+  "similarUserScores":[
+    {"user":"u3","score":0.7574200014043541},
+    {"user":"u10","score":0.6484507108863744},
+    {"user":"u43","score":0.64741489488357},
+    {"user":"u29","score":0.5767264820728124}
+  ]
+}
 ```
 
 That's it! Now your engine can recommend users.
