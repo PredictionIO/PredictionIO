@@ -26,7 +26,7 @@ import org.apache.predictionio.tools.EitherLogging
 import org.apache.predictionio.tools.ReturnTypes._
 import org.json4s._
 import org.json4s.native.JsonMethods._
-import semverfi._
+import com.github.zafarkhaja.semver.Version
 
 case class TemplateMetaData(
   pioVersionMin: Option[String] = None)
@@ -59,7 +59,7 @@ object Template extends EitherLogging {
     val metadata = templateMetaData(templateJsonFile)
 
     for (pvm <- metadata.pioVersionMin) {
-      if (Version(BuildInfo.version) < Version(pvm)) {
+      if(Version.valueOf(BuildInfo.version).lessThan(Version.valueOf(pvm))){
         return logAndFail(s"This engine template requires at least PredictionIO $pvm. " +
           s"The template may not work with PredictionIO ${BuildInfo.version}.")
       }

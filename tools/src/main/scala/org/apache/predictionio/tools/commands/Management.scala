@@ -33,7 +33,7 @@ import org.apache.predictionio.tools.admin.AdminServerConfig
 import akka.actor.ActorSystem
 import java.io.File
 import scala.io.Source
-import semverfi._
+import com.github.zafarkhaja.semver.Version
 
 case class DashboardArgs(
   ip: String = "127.0.0.1",
@@ -127,9 +127,9 @@ object Management extends EitherLogging {
           pioStatus = pioStatus.copy(warnings = pioStatus.warnings :+ warning)
         } else {
           val sparkReleaseVersion = sparkReleaseStrings(1)
-          val parsedMinVersion = Version.apply(sparkMinVersion)
-          val parsedCurrentVersion = Version.apply(sparkReleaseVersion)
-          if (parsedCurrentVersion >= parsedMinVersion) {
+          val parsedMinVersion = Version.valueOf(sparkMinVersion)
+          val parsedCurrentVersion = Version.valueOf(sparkReleaseVersion)
+          if (parsedCurrentVersion.greaterThanOrEqualTo(parsedMinVersion)) {
             info(stripMarginAndNewlines(
               s"""|Apache Spark $sparkReleaseVersion detected (meets minimum
                   |requirement of $sparkMinVersion)"""))
