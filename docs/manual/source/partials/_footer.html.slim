@@ -4,7 +4,7 @@ footer
   .container
     .seperator
     .row
-      .col-md-6.col-xs-6.footer-link-column
+      .col-md-6.footer-link-column
         .footer-link-column-row
           h4 Community
           ul
@@ -13,7 +13,7 @@ footer
             li: a href="//github.com/apache/incubator-predictionio" target="blank" GitHub
             li: a href="mailto:user-subscribe@predictionio.incubator.apache.org" target="blank" Subscribe to User Mailing List
             li: a href="//stackoverflow.com/questions/tagged/predictionio" target="blank" Stackoverflow
-      .col-md-6.col-xs-6.footer-link-column
+      .col-md-6.footer-link-column
         .footer-link-column-row
           h4 Contribute
           ul
@@ -21,6 +21,11 @@ footer
             li: a href="//github.com/apache/incubator-predictionio" target="blank" Source Code
             li: a href="//issues.apache.org/jira/browse/PIO" target="blank" Bug Tracker
             li: a href="mailto:dev-subscribe@predictionio.incubator.apache.org" target="blank" Subscribe to Development Mailing List
+    .row
+      .col-md-12.footer-link-column
+        a.pull-right href="http://incubator.apache.org/projects/predictionio.html"
+          = image_tag 'logos/apache_incubator.png', alt: 'Apache Incubator'
+        span Apache PredictionIO is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
 
   #footer-bottom
     .container
