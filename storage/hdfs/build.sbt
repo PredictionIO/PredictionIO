@@ -32,6 +32,11 @@ pomExtra := childrenPomExtra.value
 
 assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
 
+assemblyExcludedJars in assembly := {
+  val cp = (fullClasspath in assembly).value
+  cp filter {_.data.getName.contains("slf4j-log4j12")}
+}
+
 // skip test in assembly
 test in assembly := {}
 
