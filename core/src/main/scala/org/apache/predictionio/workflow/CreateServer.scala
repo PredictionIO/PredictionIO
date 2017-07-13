@@ -579,6 +579,7 @@ class ServerActor[Q, P](
                 pluginContext.outputBlockers.values.foldLeft(result) { case (r, p) =>
                   p.process(engineInstance, queryJValue, r, pluginContext)
                 }
+              pluginsActorRef ! (engineInstance, queryJValue, result)
 
               // Bookkeeping
               val servingEndTime = DateTime.now
@@ -679,6 +680,9 @@ class ServerActor[Q, P](
             val pluginType = segments(0)
             val pluginName = segments(1)
             pluginType match {
+              case EngineServerPlugin.outputBlocker =>
+                pluginContext.outputBlockers(pluginName).handleREST(
+                  pluginArgs)
               case EngineServerPlugin.outputSniffer =>
                 pluginsActorRef ? PluginsActor.HandleREST(
                   pluginName = pluginName,
