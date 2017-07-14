@@ -36,11 +36,11 @@ In MyClassification/src/main/scala/***Engine.scala***, the `Query` case class
 defines the format of **query**, such as `{ "attr0":4, "attr1":3, "attr2":8 }`:
 
 ```scala
-class Query(
-  val attr0 : Double,
-  val attr1 : Double,
-  val attr2 : Double
-) extends Serializable
+case class Query(
+  attr0 : Double,
+  attr1 : Double,
+  attr2 : Double
+)
 
 ```
 
@@ -48,9 +48,9 @@ The `PredictedResult` case class defines the format of **predicted result**,
 such as `{"label":2.0}`:
 
 ```scala
-class PredictedResult(
+case class PredictedResult(
   val label: Double
-) extends Serializable
+)
 ```
 
 Finally, `ClassificationEngine` is the Engine Factory that defines the
@@ -261,7 +261,7 @@ label of the item represented by this feature vector.
     val label = model.predict(Vectors.dense(
     	query.attr0, query.attr1, query.attr2
     ))
-    new PredictedResult(label)
+    PredictedResult(label)
   }
 ```
 
