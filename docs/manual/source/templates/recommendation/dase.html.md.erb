@@ -36,7 +36,7 @@ defines the format of such **query**:
 case class Query(
   user: String,
   num: Int
-) extends Serializable
+)
 ```
 
 The `PredictedResult` case class defines the format of **predicted result**,
@@ -56,12 +56,12 @@ with:
 ```scala
 case class PredictedResult(
   itemScores: Array[ItemScore]
-) extends Serializable
+)
 
 case class ItemScore(
   item: String,
   score: Double
-) extends Serializable
+)
 ```
 
 Finally, `RecommendationEngine` is the *Engine Factory* that defines the
@@ -386,10 +386,10 @@ predicts the top *num* of items a user will like.
       // index. Convert it to String ID for returning PredictedResult
       val itemScores = model.recommendProducts(userInt, query.num)
         .map (r => ItemScore(itemIntStringMap(r.product), r.rating))
-      new PredictedResult(itemScores)
+      PredictedResult(itemScores)
     }.getOrElse{
       logger.info(s"No prediction for unknown user ${query.user}.")
-      new PredictedResult(Array.empty)
+      PredictedResult(Array.empty)
     }
   }
 ```
