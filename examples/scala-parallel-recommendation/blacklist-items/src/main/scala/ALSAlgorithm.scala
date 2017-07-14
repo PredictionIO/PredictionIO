@@ -103,10 +103,10 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       val itemScores = model
         .recommendProductsWithFilter(userInt, query.num, blackList) // MODIFIED
         .map (r => ItemScore(itemIntStringMap(r.product), r.rating))
-      new PredictedResult(itemScores)
+      PredictedResult(itemScores)
     }.getOrElse{
       logger.info(s"No prediction for unknown user ${query.user}.")
-      new PredictedResult(Array.empty)
+      PredictedResult(Array.empty)
     }
   }
 

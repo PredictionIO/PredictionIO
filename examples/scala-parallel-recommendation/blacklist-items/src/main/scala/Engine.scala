@@ -24,20 +24,20 @@ case class Query(
   user: String,
   num: Int,
   blackList: Set[String] // ADDED
-) extends Serializable
+)
 
 case class PredictedResult(
   itemScores: Array[ItemScore]
-) extends Serializable
+)
 
 case class ActualResult(
   ratings: Array[Rating]
-) extends Serializable
+)
 
 case class ItemScore(
   item: String,
   score: Double
-) extends Serializable
+)
 
 object RecommendationEngine extends EngineFactory {
   def apply() = {

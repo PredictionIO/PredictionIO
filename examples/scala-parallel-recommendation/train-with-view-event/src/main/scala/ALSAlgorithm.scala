@@ -102,10 +102,10 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       // index. Convert it to String ID for returning PredictedResult
       val itemScores = model.recommendProducts(userInt, query.num)
         .map (r => ItemScore(itemIntStringMap(r.product), r.rating))
-      new PredictedResult(itemScores)
+      PredictedResult(itemScores)
     }.getOrElse{
       logger.info(s"No prediction for unknown user ${query.user}.")
-      new PredictedResult(Array.empty)
+      PredictedResult(Array.empty)
     }
   }
 
