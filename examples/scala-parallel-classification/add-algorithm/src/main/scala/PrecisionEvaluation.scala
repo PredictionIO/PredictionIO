@@ -40,5 +40,5 @@ case class Precision(label: Double)
 }
 
 object PrecisionEvaluation extends Evaluation {
-  engineMetric = (ClassificationEngine(), new Precision(label = 1.0))
+  engineMetric = (ClassificationEngine(), Precision(label = 1.0))
 }

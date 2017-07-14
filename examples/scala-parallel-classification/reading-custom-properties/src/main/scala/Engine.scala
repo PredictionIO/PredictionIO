@@ -21,20 +21,20 @@ import org.apache.predictionio.controller.EngineFactory
 import org.apache.predictionio.controller.Engine
 
 // MODIFIED
-class Query(
-  val featureA : Double,
-  val featureB : Double,
-  val featureC : Double,
-  val featureD : Double
-) extends Serializable
+case class Query(
+  featureA : Double,
+  featureB : Double,
+  featureC : Double,
+  featureD : Double
+)
 
-class PredictedResult(
-  val label: Double
-) extends Serializable
+case class PredictedResult(
+  label: Double
+)
 
-class ActualResult(
-  val label: Double
-) extends Serializable
+case class ActualResult(
+  label: Double
+)
 
 object ClassificationEngine extends EngineFactory {
   def apply() = {

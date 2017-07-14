@@ -51,7 +51,7 @@ class NaiveBayesAlgorithm(val ap: AlgorithmParams)
     val label = model.predict(Vectors.dense(
       Array(query.attr0, query.attr1, query.attr2)
     ))
-    new PredictedResult(label)
+    PredictedResult(label)
   }
 
 }

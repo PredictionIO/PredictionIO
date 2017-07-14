@@ -64,7 +64,7 @@ class RandomForestAlgorithm(val ap: RandomForestAlgorithmParams) // CHANGED
     val label = model.predict(Vectors.dense(
       Array(query.attr0, query.attr1, query.attr2)
     ))
-    new PredictedResult(label)
+    PredictedResult(label)
   }
 
 }

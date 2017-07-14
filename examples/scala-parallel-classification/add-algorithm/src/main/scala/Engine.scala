@@ -20,19 +20,19 @@ package org.apache.predictionio.examples.classification
 import org.apache.predictionio.controller.EngineFactory
 import org.apache.predictionio.controller.Engine
 
-class Query(
-  val attr0 : Double,
-  val attr1 : Double,
-  val attr2 : Double
-) extends Serializable
+case class Query(
+  attr0 : Double,
+  attr1 : Double,
+  attr2 : Double
+)
 
-class PredictedResult(
-  val label: Double
-) extends Serializable
+case class PredictedResult(
+  label: Double
+)
 
-class ActualResult(
-  val label: Double
-) extends Serializable
+case class ActualResult(
+  label: Double
+)
 
 object ClassificationEngine extends EngineFactory {
   def apply() = {

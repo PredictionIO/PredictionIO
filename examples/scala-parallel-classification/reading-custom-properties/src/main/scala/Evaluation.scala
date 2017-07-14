@@ -31,7 +31,7 @@ case class Accuracy()
 
 object AccuracyEvaluation extends Evaluation {
   // Define Engine and Metric used in Evaluation
-  engineMetric = (ClassificationEngine(), new Accuracy())
+  engineMetric = (ClassificationEngine(), Accuracy())
 }
 
 object EngineParamsList extends EngineParamsGenerator {

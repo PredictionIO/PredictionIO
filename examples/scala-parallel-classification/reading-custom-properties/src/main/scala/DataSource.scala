@@ -126,7 +126,7 @@ class DataSource(val dsp: DataSourceParams)
         new EmptyEvaluationInfo(),
         testingPoints.map {
           // MODIFIED
-          p => (new Query(p.features(0), p.features(1), p.features(2), p.features(3)), new ActualResult(p.label))
+          p => (Query(p.features(0), p.features(1), p.features(2), p.features(3)), ActualResult(p.label))
         }
       )
     }

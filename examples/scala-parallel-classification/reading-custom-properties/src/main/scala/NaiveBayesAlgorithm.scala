@@ -52,7 +52,7 @@ class NaiveBayesAlgorithm(val ap: AlgorithmParams)
       // MODIFIED
       Array(query.featureA, query.featureB, query.featureC, query.featureD)
     ))
-    new PredictedResult(label)
+    PredictedResult(label)
   }
 
 }
