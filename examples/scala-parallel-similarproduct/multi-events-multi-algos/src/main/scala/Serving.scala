@@ -65,6 +65,6 @@ class Serving
       .take(query.num)
       .map { case (k,v) => ItemScore(k, v) }
 
-    new PredictedResult(combined)
+    PredictedResult(combined)
   }
 }

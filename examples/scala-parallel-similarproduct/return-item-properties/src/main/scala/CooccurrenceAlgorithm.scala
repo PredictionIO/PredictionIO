@@ -151,7 +151,7 @@ class CooccurrenceAlgorithm(val ap: CooccurrenceAlgorithmParams)
         )
       }
 
-    new PredictedResult(itemScores)
+    PredictedResult(itemScores)
 
   }
 

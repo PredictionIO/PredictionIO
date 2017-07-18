@@ -187,7 +187,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val itemScores = topScores.map { case (i, s) =>
       // MODIFIED
       val it = model.items(i)
-      new ItemScore(
+      ItemScore(
         item = model.itemIntStringMap(i),
         title = it.title,
         date = it.date,
@@ -196,7 +196,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       )
     }
 
-    new PredictedResult(itemScores)
+    PredictedResult(itemScores)
   }
 
   private

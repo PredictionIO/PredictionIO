@@ -175,13 +175,13 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val topScores = getTopN(filteredScore, query.num)(ord).toArray
 
     val similarUserScores = topScores.map { case (i, s) =>
-      new SimilarUserScore(
+      SimilarUserScore(
         user = model.similarUserIntStringMap(i),
         score = s
       )
     }
 
-    new PredictedResult(similarUserScores)
+    PredictedResult(similarUserScores)
   }
 
   private
