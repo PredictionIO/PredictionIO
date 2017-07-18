@@ -102,7 +102,7 @@ Modify how to create the ItemScore object using the properties.
     val itemScores = topScores.map { case (i, s) =>
       // MODIFIED
       val it = model.items(i)
-      new ItemScore(
+      ItemScore(
         item = model.itemIntStringMap(i),
         title = it.title,
         date = it.date,

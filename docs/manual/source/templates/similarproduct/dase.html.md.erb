@@ -35,7 +35,7 @@ case class Query(
   categories: Option[Set[String]],
   whiteList: Option[Set[String]],
   blackList: Option[Set[String]]
-) extends Serializable
+)
 ```
 
 The `PredictedResult` case class defines the format of **predicted result**,
@@ -55,12 +55,12 @@ with:
 ```scala
 case class PredictedResult(
   itemScores: Array[ItemScore]
-) extends Serializable
+)
 
 case class ItemScore(
   item: String,
   score: Double
-) extends Serializable
+)
 ```
 
 Finally, `SimilarProductEngine` is the *Engine Factory* that defines the
@@ -531,13 +531,13 @@ INFO: You can easily modify `isCandidate()` checking or `whiteList` generation i
     val topScores = getTopN(filteredScore, query.num)(ord).toArray
 
     val itemScores = topScores.map { case (i, s) =>
-      new ItemScore(
+      ItemScore(
         item = model.itemIntStringMap(i),
         score = s
       )
     }
 
-    new PredictedResult(itemScores)
+    PredictedResult(itemScores)
   }
 ```
 
@@ -545,13 +545,13 @@ Note that the item IDs in top N results are the `Int` indices. You map them back
 
 ```scala
   val itemScores = topScores.map { case (i, s) =>
-    new ItemScore(
+    ItemScore(
       item = model.itemIntStringMap(i),
       score = s
     )
   }
 
-  new PredictedResult(itemScores)
+  PredictedResult(itemScores)
 ```
 
 PredictionIO passes the returned `PredictedResult` object to *Serving*.
