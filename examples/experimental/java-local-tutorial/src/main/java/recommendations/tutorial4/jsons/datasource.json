@@ -1,4 +1,0 @@
-{ 
-  "dir" :  "data/ml-100k/",
-  "addFakeData": true
-}

@@ -1,5 +1,0 @@
-[
-  { "name": "MyRecommendationAlgo",
-    "params" :  { "threshold" : 0.2 }
-  }
-]
