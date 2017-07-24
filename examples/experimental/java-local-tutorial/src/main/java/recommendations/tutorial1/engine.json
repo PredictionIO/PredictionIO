@@ -1,6 +1,0 @@
-{
-  "id": "org.apache.predictionio.examples.java.recommendations.tutorial1.EngineFactory",
-  "version": "0.9.1",
-  "name": "Simple Recommendations Engine",
-  "engineFactory": "org.apache.predictionio.examples.java.recommendations.tutorial1.EngineFactory"
-}
