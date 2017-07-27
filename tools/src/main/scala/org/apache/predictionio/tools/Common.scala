@@ -65,6 +65,15 @@ object Common extends EitherLogging {
     }
   }
 
+  def getCoreDir(pioHome: String): String = {
+    if (new File(pioHome + File.separator + "RELEASE").exists) {
+      pioHome + File.separator + "lib"
+    } else {
+      Array(pioHome, "assembly", "src", "universal", "lib")
+        .mkString(File.separator)
+    }
+  }
+
   def getEngineDirPath(directory: Option[String]): String = {
     new File(directory.getOrElse(".")).getCanonicalPath
   }
@@ -97,18 +106,12 @@ object Common extends EitherLogging {
     def jarFilesAt(path: File): Array[File] = path.listFiles filter {
       _.getName.toLowerCase.endsWith(".jar")
     }
-    jarFilesAt(new File(pioHome, "lib/spark"))
+    jarFilesAt(new File(getCoreDir(pioHome) + File.separator + "spark"))
   }
 
   def coreAssembly(pioHome: String): Expected[File] = {
     val core = s"pio-assembly-${BuildInfo.version}.jar"
-    val coreDir =
-      if (new File(pioHome + File.separator + "RELEASE").exists) {
-        new File(pioHome + File.separator + "lib")
-      } else {
-        new File(pioHome + File.separator + "assembly")
-      }
-    val coreFile = new File(coreDir, core)
+    val coreFile = new File(getCoreDir(pioHome), core)
     if (coreFile.exists) {
       Right(coreFile)
     } else {

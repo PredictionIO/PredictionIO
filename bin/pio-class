@@ -22,8 +22,6 @@ case "`uname`" in
     CYGWIN*) cygwin=true;;
 esac
 
-SCALA_VERSION=2.10
-
 # Figure out where PredictionIO is installed
 FWDIR="$(cd `dirname $0`/..; pwd)"
 
