@@ -18,7 +18,8 @@
 package org.apache.predictionio.tools.console
 
 import org.apache.predictionio.tools.{
-  EventServerArgs, SparkArgs, WorkflowArgs, ServerArgs, DeployArgs}
+  EventServerArgs, SparkArgs, WorkflowArgs, ServerArgs,
+  DeployArgs, BatchPredictArgs}
 import org.apache.predictionio.tools.commands.{
   DashboardArgs, AdminServerArgs, ImportArgs, ExportArgs,
   BuildArgs, EngineArgs, Management, Engine, Import, Export,
@@ -103,6 +104,16 @@ object Pio extends Logging {
         ea, engineInstanceId, serverArgs, sparkArgs, pioHome, verbose))
 
   def undeploy(da: DeployArgs): Int = Engine.undeploy(da)
+
+  def batchPredict(
+    ea: EngineArgs,
+    engineInstanceId: Option[String],
+    batchPredictArgs: BatchPredictArgs,
+    sparkArgs: SparkArgs,
+    pioHome: String,
+    verbose: Boolean = false): Int =
+      processAwaitAndClean(Engine.batchPredict(
+        ea, engineInstanceId, batchPredictArgs, sparkArgs, pioHome, verbose))
 
   def dashboard(da: DashboardArgs): Int = {
     Management.dashboard(da).awaitTermination

@@ -38,6 +38,7 @@ The most commonly used pio commands are:
     build         Build an engine at the current directory
     train         Kick off a training using an engine
     deploy        Deploy an engine as an engine server
+    batchpredict  Process bulk predictions with an engine
     eventserver   Launch an Event Server
     app           Manage apps that are used by the Event Server
     accesskey     Manage app access keys

@@ -1,0 +1,25 @@
+Usage: pio batchpredict [--input <value>]
+                        [--output <value>]
+                        [--query-partitions <value>]
+                        [--engine-instance-id <value>]
+
+Use an engine instance to process batch predictions. This command will pass all
+pass-through arguments to its underlying spark-submit command. All algorithm
+classes used in the engine must be serializable.
+
+  --input <value>
+      Path to file containing queries; a multi-object JSON file with one
+      query object per line. Accepts any valid Hadoop file URL.
+      Default: batchpredict-input.json
+  --output <value>
+      Path to file to receive results; a multi-object JSON file with one
+      object per line, the prediction + original query. Accepts any
+      valid Hadoop file URL. Actual output will be written as Hadoop
+      partition files in a directory with the output name.
+      Default: batchpredict-output.json
+  --query-partitions <value>
+      Limit concurrency of predictions by setting the number of partitions
+      used internally for the RDD of queries.
+      Default: number created by Spark context's `textFile`
+  --engine-instance-id <value>
+      Engine instance ID. Default: the latest trained instance.

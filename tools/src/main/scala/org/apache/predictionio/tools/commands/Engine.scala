@@ -21,8 +21,9 @@ import org.apache.predictionio.core.BuildInfo
 import org.apache.predictionio.controller.Utils
 import org.apache.predictionio.data.storage
 import org.apache.predictionio.tools.EitherLogging
-import org.apache.predictionio.tools.{RunWorkflow, RunServer}
-import org.apache.predictionio.tools.{DeployArgs, WorkflowArgs, SparkArgs, ServerArgs}
+import org.apache.predictionio.tools.{RunWorkflow, RunServer, RunBatchPredict}
+import org.apache.predictionio.tools.{
+  DeployArgs, WorkflowArgs, SparkArgs, ServerArgs, BatchPredictArgs}
 import org.apache.predictionio.tools.console.Console
 import org.apache.predictionio.tools.Common._
 import org.apache.predictionio.tools.ReturnTypes._
@@ -259,6 +260,56 @@ object Engine extends EitherLogging {
       case _: Throwable =>
         logAndFail("Another process might be occupying " +
           s"${da.ip}:${da.port}. Unable to undeploy.")
+    }
+  }
+
+  /** Batch predict with an engine.
+    *
+    * @param ea An instance of [[EngineArgs]]
+    * @param engineInstanceId An instance of [[engineInstanceId]]
+    * @param batchPredictArgs An instance of [[BatchPredictArgs]]
+    * @param sparkArgs An instance of [[SparkArgs]]
+    * @param pioHome [[String]] with a path to PIO installation
+    * @param verbose A [[Boolean]]
+    * @return An instance of [[Expected]] contaning either [[Left]]
+    *         with an error message or [[Right]] with a handle to process
+    *         of a running angine  and a function () => Unit,
+    *         that must be called when the process is complete
+    */
+  def batchPredict(
+    ea: EngineArgs,
+    engineInstanceId: Option[String],
+    batchPredictArgs: BatchPredictArgs,
+    sparkArgs: SparkArgs,
+    pioHome: String,
+    verbose: Boolean = false): Expected[(Process, () => Unit)] = {
+
+    val engineDirPath = getEngineDirPath(ea.engineDir)
+    val verifyResult = Template.verifyTemplateMinVersion(
+      new File(engineDirPath, "template.json"))
+    if (verifyResult.isLeft) {
+      return Left(verifyResult.left.get)
+    }
+    val ei = Console.getEngineInfo(
+      batchPredictArgs.variantJson.getOrElse(new File(engineDirPath, "engine.json")),
+      engineDirPath)
+    val engineInstances = storage.Storage.getMetaDataEngineInstances
+    val engineInstance = engineInstanceId map { eid =>
+      engineInstances.get(eid)
+    } getOrElse {
+      engineInstances.getLatestCompleted(
+        ei.engineId, ei.engineVersion, ei.variantId)
+    }
+    engineInstance map { r =>
+      RunBatchPredict.runBatchPredict(
+        r.id, batchPredictArgs, sparkArgs, pioHome, engineDirPath, verbose)
+    } getOrElse {
+      engineInstanceId map { eid =>
+        logAndFail(s"Invalid engine instance ID ${eid}. Aborting.")
+      } getOrElse {
+        logAndFail(s"No valid engine instance found for engine ${ei.engineId} " +
+          s"${ei.engineVersion}.\nTry running 'train' before 'batchpredict'. Aborting.")
+      }
     }
   }
 
