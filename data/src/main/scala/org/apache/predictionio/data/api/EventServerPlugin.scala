@@ -23,8 +23,6 @@ trait EventServerPlugin {
   val pluginDescription: String
   val pluginType: String
 
-  def start(context: EventServerPluginContext): Unit
-
   def process(eventInfo: EventInfo, context: EventServerPluginContext)
 
   def handleREST(appId: Int, channelId: Option[Int], arguments: Seq[String]): String

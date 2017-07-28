@@ -26,8 +26,6 @@ trait EngineServerPlugin {
   val pluginDescription: String
   val pluginType: String
 
-  def start(context: EngineServerPluginContext): Unit
-
   def process(
     engineInstance: EngineInstance,
     query: JValue,
