@@ -150,7 +150,7 @@ object ESUtils {
         val responseJValue = parse(EntityUtils.toString(response.getEntity))
         scroll((responseJValue \ "_scroll_id").extract[String],
           (responseJValue \ "hits" \ "hits").extract[Seq[JValue]],
-          hits.map(h => (h \ "_source").extract[JValue]) ++ results)
+          results ++ hits.map(h => (h \ "_source").extract[JValue]))
       }
     }
 
