@@ -319,6 +319,9 @@ root:
     url: '#'
     children:
       -
+        body: 'Release Cadence'
+        url: '/resources/release/'
+      -
         body: 'Developing Engines with IntelliJ IDEA'
         url: '/resources/intellij/'
       -
