@@ -62,6 +62,9 @@ root:
         body: 'Engine Command-line Interface'
         url: '/cli/#engine-commands'
       -
+        body: 'Batch Predictions'
+        url: '/batchpredict/'
+      -
         body: 'Monitoring Engine'
         url: '/deploy/monitoring/'
       -

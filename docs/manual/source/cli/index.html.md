@@ -67,4 +67,9 @@ third-party informational messages.
 
 ```pio train```         Kick off a training using an engine.
 
-```pio deploy```        Deploy an engine as an engine server. If no instance ID is specified, it will deploy the latest instance.
+```pio deploy```        Deploy an engine as an engine server.
+
+```pio batchpredict```  Process bulk predictions using an engine.
+
+For ```deploy``` & ```batchpredict```, if ```--engine-instance-id``` is not
+specified, it will use the latest trained instance.
