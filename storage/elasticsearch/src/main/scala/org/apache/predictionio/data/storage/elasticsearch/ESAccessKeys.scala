@@ -37,26 +37,21 @@ import grizzled.slf4j.Logging
 import org.elasticsearch.client.ResponseException
 
 /** Elasticsearch implementation of AccessKeys. */
-class ESAccessKeys(client: ESClient, config: StorageClientConfig, index: String)
+class ESAccessKeys(client: RestClient, config: StorageClientConfig, index: String)
     extends AccessKeys with Logging {
   implicit val formats = DefaultFormats.lossless
   private val estype = "accesskeys"
 
-  val restClient = client.open()
-  try {
-    ESUtils.createIndex(restClient, index,
-      ESUtils.getNumberOfShards(config, index.toUpperCase),
-      ESUtils.getNumberOfReplicas(config, index.toUpperCase))
-    val mappingJson =
-      (estype ->
-        ("_all" -> ("enabled" -> false)) ~
-        ("properties" ->
-          ("key" -> ("type" -> "keyword")) ~
-          ("events" -> ("type" -> "keyword"))))
-    ESUtils.createMapping(restClient, index, estype, compact(render(mappingJson)))
-  } finally {
-    restClient.close()
-  }
+  ESUtils.createIndex(client, index,
+    ESUtils.getNumberOfShards(config, index.toUpperCase),
+    ESUtils.getNumberOfReplicas(config, index.toUpperCase))
+  val mappingJson =
+    (estype ->
+      ("_all" -> ("enabled" -> false)) ~
+      ("properties" ->
+        ("key" -> ("type" -> "keyword")) ~
+        ("events" -> ("type" -> "keyword"))))
+  ESUtils.createMapping(client, index, estype, compact(render(mappingJson)))
 
   def insert(accessKey: AccessKey): Option[String] = {
     val key = if (accessKey.key.isEmpty) generateKey else accessKey.key
@@ -68,9 +63,8 @@ class ESAccessKeys(client: ESClient, config: StorageClientConfig, index: String)
     if (id.isEmpty) {
       return None
     }
-    val restClient = client.open()
     try {
-      val response = restClient.performRequest(
+      val response = client.performRequest(
         "GET",
         s"/$index/$estype/$id",
         Map.empty[String, String].asJava)
@@ -92,50 +86,41 @@ class ESAccessKeys(client: ESClient, config: StorageClientConfig, index: String)
       case e: IOException =>
         error(s"Failed to access to /$index/$estype/$id", e)
         None
-    } finally {
-      restClient.close()
     }
   }
 
   def getAll(): Seq[AccessKey] = {
-    val restClient = client.open()
     try {
       val json =
         ("query" ->
           ("match_all" -> List.empty))
-      ESUtils.getAll[AccessKey](restClient, index, estype, compact(render(json)))
+      ESUtils.getAll[AccessKey](client, index, estype, compact(render(json)))
     } catch {
       case e: IOException =>
         error("Failed to access to /$index/$estype/_search", e)
         Nil
-    } finally {
-      restClient.close()
     }
   }
 
   def getByAppid(appid: Int): Seq[AccessKey] = {
-    val restClient = client.open()
     try {
       val json =
         ("query" ->
           ("term" ->
             ("appid" -> appid)))
-      ESUtils.getAll[AccessKey](restClient, index, estype, compact(render(json)))
+      ESUtils.getAll[AccessKey](client, index, estype, compact(render(json)))
     } catch {
       case e: IOException =>
         error("Failed to access to /$index/$estype/_search", e)
         Nil
-    } finally {
-      restClient.close()
     }
   }
 
   def update(accessKey: AccessKey): Unit = {
     val id = accessKey.key
-    val restClient = client.open()
     try {
       val entity = new NStringEntity(write(accessKey), ContentType.APPLICATION_JSON)
-      val response = restClient.performRequest(
+      val response = client.performRequest(
         "POST",
         s"/$index/$estype/$id",
         Map("refresh" -> "true").asJava,
@@ -151,15 +136,12 @@ class ESAccessKeys(client: ESClient, config: StorageClientConfig, index: String)
     } catch {
       case e: IOException =>
         error(s"Failed to update $index/$estype/$id", e)
-    } finally {
-      restClient.close()
     }
   }
 
   def delete(id: String): Unit = {
-    val restClient = client.open()
     try {
-      val response = restClient.performRequest(
+      val response = client.performRequest(
         "DELETE",
         s"/$index/$estype/$id",
         Map("refresh" -> "true").asJava)
@@ -173,8 +155,6 @@ class ESAccessKeys(client: ESClient, config: StorageClientConfig, index: String)
     } catch {
       case e: IOException =>
         error(s"Failed to update $index/$estype/id", e)
-    } finally {
-      restClient.close()
     }
   }
 }

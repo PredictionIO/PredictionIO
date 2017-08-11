@@ -28,6 +28,7 @@ import org.apache.predictionio.controller.{Engine, Utils}
 import org.apache.predictionio.core.{BaseAlgorithm, BaseServing, Doer}
 import org.apache.predictionio.data.storage.{EngineInstance, Storage}
 import org.apache.predictionio.workflow.JsonExtractorOption.JsonExtractorOption
+import org.apache.predictionio.workflow.CleanupFunctions
 import org.apache.spark.rdd.RDD
 import org.json4s._
 import org.json4s.native.JsonMethods._
@@ -147,84 +148,89 @@ object BatchPredict extends Logging {
     engineInstance: EngineInstance,
     engine: Engine[_, _, _, Q, P, _]): Unit = {
 
-    val engineParams = engine.engineInstanceToEngineParams(
-      engineInstance, config.jsonExtractor)
+    try {
+      val engineParams = engine.engineInstanceToEngineParams(
+        engineInstance, config.jsonExtractor)
 
-    val kryo = KryoInstantiator.newKryoInjection
+      val kryo = KryoInstantiator.newKryoInjection
 
-    val modelsFromEngineInstance =
-      kryo.invert(modeldata.get(engineInstance.id).get.models).get.
-      asInstanceOf[Seq[Any]]
+      val modelsFromEngineInstance =
+        kryo.invert(modeldata.get(engineInstance.id).get.models).get.
+        asInstanceOf[Seq[Any]]
 
-    val prepareSparkContext = WorkflowContext(
-      batch = engineInstance.engineFactory,
-      executorEnv = engineInstance.env,
-      mode = "Batch Predict (model)",
-      sparkEnv = engineInstance.sparkConf)
+      val prepareSparkContext = WorkflowContext(
+        batch = engineInstance.engineFactory,
+        executorEnv = engineInstance.env,
+        mode = "Batch Predict (model)",
+        sparkEnv = engineInstance.sparkConf)
 
-    val models = engine.prepareDeploy(
-      prepareSparkContext,
-      engineParams,
-      engineInstance.id,
-      modelsFromEngineInstance,
-      params = WorkflowParams()
-    )
-
-    val algorithms = engineParams.algorithmParamsList.map { case (n, p) =>
-      Doer(engine.algorithmClassMap(n), p)
-    }
-
-    val servingParamsWithName = engineParams.servingParams
-
-    val serving = Doer(engine.servingClassMap(servingParamsWithName._1),
-      servingParamsWithName._2)
-
-    val runSparkContext = WorkflowContext(
-      batch = engineInstance.engineFactory,
-      executorEnv = engineInstance.env,
-      mode = "Batch Predict (runner)",
-      sparkEnv = engineInstance.sparkConf)
-
-    val inputRDD: RDD[String] = runSparkContext.
-      textFile(config.inputFilePath).
-      filter(_.trim.nonEmpty)
-    val queriesRDD: RDD[String] = config.queryPartitions match {
-      case Some(p) => inputRDD.repartition(p)
-      case None => inputRDD
-    }
-
-    val predictionsRDD: RDD[String] = queriesRDD.map { queryString =>
-      val jsonExtractorOption = config.jsonExtractor
-      // Extract Query from Json
-      val query = JsonExtractor.extract(
-        jsonExtractorOption,
-        queryString,
-        algorithms.head.queryClass,
-        algorithms.head.querySerializer,
-        algorithms.head.gsonTypeAdapterFactories
+      val models = engine.prepareDeploy(
+        prepareSparkContext,
+        engineParams,
+        engineInstance.id,
+        modelsFromEngineInstance,
+        params = WorkflowParams()
       )
-      // Deploy logic. First call Serving.supplement, then Algo.predict,
-      // finally Serving.serve.
-      val supplementedQuery = serving.supplementBase(query)
-      // TODO: Parallelize the following.
-      val predictions = algorithms.zipWithIndex.map { case (a, ai) =>
-        a.predictBase(models(ai), supplementedQuery)
-      }
-      // Notice that it is by design to call Serving.serve with the
-      // *original* query.
-      val prediction = serving.serveBase(query, predictions)
-      // Combine query with prediction, so the batch results are
-      // self-descriptive.
-      val predictionJValue = JsonExtractor.toJValue(
-        jsonExtractorOption,
-        Map("query" -> query,
-            "prediction" -> prediction),
-        algorithms.head.querySerializer,
-        algorithms.head.gsonTypeAdapterFactories)
-      // Return JSON string
-      compact(render(predictionJValue))
-    }
 
-    predictionsRDD.saveAsTextFile(config.outputFilePath)
+      val algorithms = engineParams.algorithmParamsList.map { case (n, p) =>
+        Doer(engine.algorithmClassMap(n), p)
+      }
+
+      val servingParamsWithName = engineParams.servingParams
+
+      val serving = Doer(engine.servingClassMap(servingParamsWithName._1),
+        servingParamsWithName._2)
+
+      val runSparkContext = WorkflowContext(
+        batch = engineInstance.engineFactory,
+        executorEnv = engineInstance.env,
+        mode = "Batch Predict (runner)",
+        sparkEnv = engineInstance.sparkConf)
+
+      val inputRDD: RDD[String] = runSparkContext.
+        textFile(config.inputFilePath).
+        filter(_.trim.nonEmpty)
+      val queriesRDD: RDD[String] = config.queryPartitions match {
+        case Some(p) => inputRDD.repartition(p)
+        case None => inputRDD
+      }
+
+      val predictionsRDD: RDD[String] = queriesRDD.map { queryString =>
+        val jsonExtractorOption = config.jsonExtractor
+        // Extract Query from Json
+        val query = JsonExtractor.extract(
+          jsonExtractorOption,
+          queryString,
+          algorithms.head.queryClass,
+          algorithms.head.querySerializer,
+          algorithms.head.gsonTypeAdapterFactories
+        )
+        // Deploy logic. First call Serving.supplement, then Algo.predict,
+        // finally Serving.serve.
+        val supplementedQuery = serving.supplementBase(query)
+        // TODO: Parallelize the following.
+        val predictions = algorithms.zipWithIndex.map { case (a, ai) =>
+          a.predictBase(models(ai), supplementedQuery)
+        }
+        // Notice that it is by design to call Serving.serve with the
+        // *original* query.
+        val prediction = serving.serveBase(query, predictions)
+        // Combine query with prediction, so the batch results are
+        // self-descriptive.
+        val predictionJValue = JsonExtractor.toJValue(
+          jsonExtractorOption,
+          Map("query" -> query,
+              "prediction" -> prediction),
+          algorithms.head.querySerializer,
+          algorithms.head.gsonTypeAdapterFactories)
+        // Return JSON string
+        compact(render(predictionJValue))
+      }
+
+      predictionsRDD.saveAsTextFile(config.outputFilePath)
+
+    } finally {
+      CleanupFunctions.run()
+    }
   }
 }

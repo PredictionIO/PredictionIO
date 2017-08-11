@@ -38,10 +38,6 @@ pomExtra := childrenPomExtra.value
 
 assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
 
-assemblyShadeRules in assembly := Seq(
-  ShadeRule.rename("org.apache.http.**" -> "shadeio.data.http.@1").inAll
-)
-
 // skip test in assembly
 test in assembly := {}
 

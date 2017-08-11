@@ -18,6 +18,7 @@
 
 package org.apache.predictionio.data.storage
 
+import java.io.{PrintWriter, Serializable, StringWriter}
 import java.lang.reflect.InvocationTargetException
 
 import grizzled.slf4j.Logging
@@ -216,7 +217,7 @@ object Storage extends Logging {
         }
       } catch {
         case e: Throwable =>
-          error(e.getMessage)
+          error(s"${e.getMessage}\n${getStackTraceString(e)}\n\n")
           errors += 1
           r -> DataObjectMeta("", "")
       }
@@ -284,7 +285,8 @@ object Storage extends Logging {
       Some(ClientMeta(sourceType, client, clientConfig))
     } catch {
       case e: Throwable =>
-        error(s"Error initializing storage client for source ${k}", e)
+        error(s"Error initializing storage client for source ${k}.\n" +
+          s"${getStackTraceString(e)}\n\n")
         errors += 1
         None
     }
@@ -461,4 +463,11 @@ object Storage extends Logging {
       }.getOrElse(Map.empty)
     }
   )
+
+  def getStackTraceString(e: Throwable): String = {
+    val writer = new StringWriter()
+    val printWriter = new PrintWriter(writer)
+    e.printStackTrace(printWriter)
+    writer.toString
+  }
 }

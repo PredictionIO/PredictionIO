@@ -36,26 +36,21 @@ import org.json4s.native.Serialization.write
 import grizzled.slf4j.Logging
 import org.elasticsearch.client.ResponseException
 
-class ESChannels(client: ESClient, config: StorageClientConfig, index: String)
+class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
     extends Channels with Logging {
   implicit val formats = DefaultFormats.lossless
   private val estype = "channels"
   private val seq = new ESSequences(client, config, index)
-
-  val restClient = client.open()
-  try {
-    ESUtils.createIndex(restClient, index,
-      ESUtils.getNumberOfShards(config, index.toUpperCase),
-      ESUtils.getNumberOfReplicas(config, index.toUpperCase))
-    val mappingJson =
-      (estype ->
-        ("_all" -> ("enabled" -> false)) ~
-        ("properties" ->
-          ("name" -> ("type" -> "keyword"))))
-    ESUtils.createMapping(restClient, index, estype, compact(render(mappingJson)))
-  } finally {
-    restClient.close()
-  }
+  
+  ESUtils.createIndex(client, index,
+    ESUtils.getNumberOfShards(config, index.toUpperCase),
+    ESUtils.getNumberOfReplicas(config, index.toUpperCase))
+  val mappingJson =
+    (estype ->
+      ("_all" -> ("enabled" -> false)) ~
+      ("properties" ->
+        ("name" -> ("type" -> "keyword"))))
+  ESUtils.createMapping(client, index, estype, compact(render(mappingJson)))
 
   def insert(channel: Channel): Option[Int] = {
     val id = channel.id match {
@@ -75,9 +70,8 @@ class ESChannels(client: ESClient, config: StorageClientConfig, index: String)
   }
 
   def get(id: Int): Option[Channel] = {
-    val restClient = client.open()
     try {
-      val response = restClient.performRequest(
+      val response = client.performRequest(
         "GET",
         s"/$index/$estype/$id",
         Map.empty[String, String].asJava)
@@ -99,34 +93,28 @@ class ESChannels(client: ESClient, config: StorageClientConfig, index: String)
       case e: IOException =>
         error(s"Failed to access to /$index/$estype/$id", e)
         None
-    } finally {
-      restClient.close()
     }
   }
 
   def getByAppid(appid: Int): Seq[Channel] = {
-    val restClient = client.open()
     try {
       val json =
         ("query" ->
           ("term" ->
             ("appid" -> appid)))
-      ESUtils.getAll[Channel](restClient, index, estype, compact(render(json)))
+      ESUtils.getAll[Channel](client, index, estype, compact(render(json)))
     } catch {
       case e: IOException =>
         error(s"Failed to access to /$index/$estype/_search", e)
         Nil
-    } finally {
-      restClient.close()
     }
   }
 
   def update(channel: Channel): Boolean = {
     val id = channel.id.toString
-    val restClient = client.open()
     try {
       val entity = new NStringEntity(write(channel), ContentType.APPLICATION_JSON)
-      val response = restClient.performRequest(
+      val response = client.performRequest(
         "POST",
         s"/$index/$estype/$id",
         Map("refresh" -> "true").asJava,
@@ -144,15 +132,12 @@ class ESChannels(client: ESClient, config: StorageClientConfig, index: String)
       case e: IOException =>
         error(s"Failed to update $index/$estype/$id", e)
         false
-    } finally {
-      restClient.close()
     }
   }
 
   def delete(id: Int): Unit = {
-    val restClient = client.open()
     try {
-      val response = restClient.performRequest(
+      val response = client.performRequest(
         "DELETE",
         s"/$index/$estype/$id",
         Map("refresh" -> "true").asJava)
@@ -166,8 +151,6 @@ class ESChannels(client: ESClient, config: StorageClientConfig, index: String)
     } catch {
       case e: IOException =>
         error(s"Failed to update $index/$estype/$id", e)
-    } finally {
-      restClient.close()
     }
   }
 }

@@ -96,6 +96,7 @@ object CoreWorkflow {
       }
     } finally {
       logger.debug("Stopping SparkContext")
+      CleanupFunctions.run()
       sc.stop()
     }
   }
@@ -123,40 +124,43 @@ object CoreWorkflow {
       env,
       params.sparkEnv,
       mode.capitalize)
-    val evaluationInstanceId = evaluationInstances.insert(evaluationInstance)
 
-    logger.info(s"Starting evaluation instance ID: $evaluationInstanceId")
+    try {
+      val evaluationInstanceId = evaluationInstances.insert(evaluationInstance)
 
-    val evaluatorResult: BaseEvaluatorResult = EvaluationWorkflow.runEvaluation(
-      sc,
-      evaluation,
-      engine,
-      engineParamsList,
-      evaluator,
-      params)
+      logger.info(s"Starting evaluation instance ID: $evaluationInstanceId")
 
-    if (evaluatorResult.noSave) {
-      logger.info(s"This evaluation result is not inserted into database: $evaluatorResult")
-    } else {
-      val evaluatedEvaluationInstance = evaluationInstance.copy(
-        status = "EVALCOMPLETED",
-        id = evaluationInstanceId,
-        endTime = DateTime.now,
-        evaluatorResults = evaluatorResult.toOneLiner,
-        evaluatorResultsHTML = evaluatorResult.toHTML,
-        evaluatorResultsJSON = evaluatorResult.toJSON
-      )
+      val evaluatorResult: BaseEvaluatorResult = EvaluationWorkflow.runEvaluation(
+        sc,
+        evaluation,
+        engine,
+        engineParamsList,
+        evaluator,
+        params)
 
-      logger.info(s"Updating evaluation instance with result: $evaluatorResult")
+      if (evaluatorResult.noSave) {
+        logger.info(s"This evaluation result is not inserted into database: $evaluatorResult")
+      } else {
+        val evaluatedEvaluationInstance = evaluationInstance.copy(
+          status = "EVALCOMPLETED",
+          id = evaluationInstanceId,
+          endTime = DateTime.now,
+          evaluatorResults = evaluatorResult.toOneLiner,
+          evaluatorResultsHTML = evaluatorResult.toHTML,
+          evaluatorResultsJSON = evaluatorResult.toJSON
+        )
 
-      evaluationInstances.update(evaluatedEvaluationInstance)
+        logger.info(s"Updating evaluation instance with result: $evaluatorResult")
+
+        evaluationInstances.update(evaluatedEvaluationInstance)
+      }
+      logger.info("runEvaluation completed")
+
+    } finally {
+      logger.debug("Stop SparkContext")
+      CleanupFunctions.run()
+      sc.stop()
     }
-
-    logger.debug("Stop SparkContext")
-
-    sc.stop()
-
-    logger.info("runEvaluation completed")
   }
 }
 
