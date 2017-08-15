@@ -25,7 +25,7 @@ This section explains how to model your application data as events.
 
 For example, your application may have users and some items which the user can interact with. Then you can model them as two entity types: **user** and **item** and the entityId can uniquely identify the entity within each entityType (e.g. user with ID 1, item with ID 1).
 
-An entity may peform some events (e.g user 1 does something), and entity may have properties associated with it (e.g. user may have gender, age, email etc). Hence, **events** involve **entities** and there are two types of events, respectively:
+An entity may peform some events (e.g user 1 does something), and entity may have properties associated with it (e.g. user may have gender, age, email etc). Hence, **events** involve **entities** and there are three types of events, respectively:
 
 1. Generic events performed by an entity.
 2. Special events for recording changes of an entity's properties
