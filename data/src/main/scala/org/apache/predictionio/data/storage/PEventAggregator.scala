@@ -22,8 +22,6 @@ import org.joda.time.DateTime
 
 import org.json4s.JValue
 
-import org.apache.spark.SparkContext
-import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 
 // each JValue data associated with the time it is set

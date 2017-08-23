@@ -119,15 +119,12 @@ abstract class LAlgorithm[PD, M : ClassTag, Q, P]
     bm: Any): Any = {
     // Check RDD[M].count == 1
     val m = bm.asInstanceOf[RDD[M]].first()
-    if (m.isInstanceOf[PersistentModel[_]]) {
-      if (m.asInstanceOf[PersistentModel[Params]].save(
-        modelId, algoParams, sc)) {
-        PersistentModelManifest(className = m.getClass.getName)
-      } else {
-        ()
-      }
-    } else {
-      m
+    m match {
+      case m: PersistentModel[Params] @unchecked =>
+        if(m.save(modelId, algoParams, sc)){
+          PersistentModelManifest(className = m.getClass.getName)
+        } else ()
+      case _ => m
     }
   }
 }

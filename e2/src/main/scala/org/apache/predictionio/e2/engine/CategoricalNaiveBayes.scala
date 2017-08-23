@@ -17,7 +17,6 @@
 
 package org.apache.predictionio.e2.engine
 
-import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 
 /** Class for training a naive Bayes model with categorical variables */

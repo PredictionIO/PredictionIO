@@ -59,10 +59,10 @@ object RunBatchPredict extends Logging {
       "--engine-variant",
       batchPredictArgs.variantJson.getOrElse(
         new File(engineDirPath, "engine.json")).getCanonicalPath) ++
-      (if (batchPredictArgs.queryPartitions.isEmpty) Seq()
+      (if (batchPredictArgs.queryPartitions.isEmpty) Nil
         else Seq("--query-partitions",
                   batchPredictArgs.queryPartitions.get.toString)) ++
-      (if (verbose) Seq("--verbose") else Seq()) ++
+      (if (verbose) Seq("--verbose") else Nil) ++
       Seq("--json-extractor", batchPredictArgs.jsonExtractor.toString)
 
     Runner.runOnSpark(

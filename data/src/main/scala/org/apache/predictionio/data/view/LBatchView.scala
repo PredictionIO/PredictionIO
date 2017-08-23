@@ -136,7 +136,6 @@ class EventSeq(val events: List[Event]) {
     events
     .groupBy( _.entityId )
     .mapValues( _.sortBy(_.eventTime.getMillis).foldLeft[T](init)(op))
-    .toMap
   }
 
 

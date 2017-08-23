@@ -64,25 +64,25 @@ object RunWorkflow extends Logging {
       "--verbosity",
       wa.verbosity.toString) ++
       wa.engineFactory.map(
-        x => Seq("--engine-factory", x)).getOrElse(Seq()) ++
+        x => Seq("--engine-factory", x)).getOrElse(Nil) ++
       wa.engineParamsKey.map(
-        x => Seq("--engine-params-key", x)).getOrElse(Seq()) ++
-      (if (wa.batch != "") Seq("--batch", wa.batch) else Seq()) ++
-      (if (verbose) Seq("--verbose") else Seq()) ++
-      (if (wa.skipSanityCheck) Seq("--skip-sanity-check") else Seq()) ++
-      (if (wa.stopAfterRead) Seq("--stop-after-read") else Seq()) ++
+        x => Seq("--engine-params-key", x)).getOrElse(Nil) ++
+      (if (wa.batch != "") Seq("--batch", wa.batch) else Nil) ++
+      (if (verbose) Seq("--verbose") else Nil) ++
+      (if (wa.skipSanityCheck) Seq("--skip-sanity-check") else Nil) ++
+      (if (wa.stopAfterRead) Seq("--stop-after-read") else Nil) ++
       (if (wa.stopAfterPrepare) {
         Seq("--stop-after-prepare")
       } else {
-        Seq()
+        Nil
       }) ++
       wa.evaluation.map(x => Seq("--evaluation-class", x)).
-        getOrElse(Seq()) ++
+        getOrElse(Nil) ++
       // If engineParamsGenerator is specified, it overrides the evaluation.
       wa.engineParamsGenerator.orElse(wa.evaluation)
         .map(x => Seq("--engine-params-generator-class", x))
-        .getOrElse(Seq()) ++
-      (if (wa.batch != "") Seq("--batch", wa.batch) else Seq()) ++
+        .getOrElse(Nil) ++
+      (if (wa.batch != "") Seq("--batch", wa.batch) else Nil) ++
       Seq("--json-extractor", wa.jsonExtractor.toString)
 
     Runner.runOnSpark(

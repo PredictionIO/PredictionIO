@@ -49,12 +49,12 @@ case class ConsoleArgs(
   dashboard: DashboardArgs = DashboardArgs(),
   export: ExportArgs = ExportArgs(),
   imprt: ImportArgs = ImportArgs(),
-  commands: Seq[String] = Seq(),
+  commands: Seq[String] = Nil,
   metricsParamsJsonPath: Option[String] = None,
   paramsPath: String = "params",
   engineInstanceId: Option[String] = None,
   mainClass: Option[String] = None,
-  driverPassThrough: Seq[String] = Seq(),
+  driverPassThrough: Seq[String] = Nil,
   pioHome: Option[String] = None,
   verbose: Boolean = false)
 
@@ -69,7 +69,7 @@ case class AppArgs(
 
 case class AccessKeyArgs(
   accessKey: String = "",
-  events: Seq[String] = Seq())
+  events: Seq[String] = Nil)
 
 case class EngineInfo(
   engineId: String,
@@ -763,7 +763,7 @@ object Console extends Logging {
     }
   }
 
-  def help(commands: Seq[String] = Seq()): String = {
+  def help(commands: Seq[String] = Nil): String = {
     if (commands.isEmpty) {
       mainHelp
     } else {

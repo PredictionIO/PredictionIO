@@ -134,12 +134,11 @@ object BatchPredict extends Logging {
     val maybeEngine = engineFactory()
 
     // EngineFactory return a base engine, which may not be deployable.
-    if (!maybeEngine.isInstanceOf[Engine[_,_,_,_,_,_]]) {
-      throw new NoSuchMethodException(
+    maybeEngine match {
+      case e: Engine[_, _, _, _, _, _] => e
+      case _ => throw new NoSuchMethodException(
         s"Engine $maybeEngine cannot be used for batch predict")
     }
-
-    maybeEngine.asInstanceOf[Engine[_,_,_,_,_,_]]
   }
 
   def run[Q, P](
@@ -207,8 +206,8 @@ object BatchPredict extends Logging {
       // finally Serving.serve.
       val supplementedQuery = serving.supplementBase(query)
       // TODO: Parallelize the following.
-      val predictions = algorithms.zipWithIndex.map { case (a, ai) =>
-        a.predictBase(models(ai), supplementedQuery)
+      val predictions = algorithms.zip(models).map { case (a, m) =>
+        a.predictBase(m, supplementedQuery)
       }
       // Notice that it is by design to call Serving.serve with the
       // *original* query.

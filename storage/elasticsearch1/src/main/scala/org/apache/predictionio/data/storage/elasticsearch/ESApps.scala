@@ -105,7 +105,7 @@ class ESApps(client: Client, config: StorageClientConfig, index: String)
     } catch {
       case e: ElasticsearchException =>
         error(e.getMessage)
-        Seq[App]()
+        Nil
     }
   }
 

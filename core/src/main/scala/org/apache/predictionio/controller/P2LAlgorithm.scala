@@ -110,15 +110,12 @@ abstract class P2LAlgorithm[PD, M: ClassTag, Q: ClassTag, P]
     algoParams: Params,
     bm: Any): Any = {
     val m = bm.asInstanceOf[M]
-    if (m.isInstanceOf[PersistentModel[_]]) {
-      if (m.asInstanceOf[PersistentModel[Params]].save(
-        modelId, algoParams, sc)) {
-        PersistentModelManifest(className = m.getClass.getName)
-      } else {
-        ()
-      }
-    } else {
-      m
+    m match {
+      case m: PersistentModel[Params] @unchecked =>
+        if(m.save(modelId, algoParams, sc)){
+          PersistentModelManifest(className = m.getClass.getName)
+        } else ()
+      case _ => m
     }
   }
 }

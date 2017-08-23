@@ -67,7 +67,7 @@ object App extends EitherLogging {
           val newKey = storage.AccessKey(
             key = accessKey,
             appid = id,
-            events = Seq())
+            events = Nil)
           accessKeys.insert(newKey)
           .map { k =>
             Right(AppDescription(
@@ -85,7 +85,7 @@ object App extends EitherLogging {
               errStr += s"""
                 |Failed to revert back the App meta-data change.
                 |The app ${name} CANNOT be used!
-                |Please run 'pio app delete ${name}' to delete this app!"""
+                |Please run 'pio app delete ${name}' to delete this app!""".stripMargin
           }
           logAndFail(errStr)
         }
@@ -209,12 +209,12 @@ object App extends EitherLogging {
               channels.find(ch => ch.name == chName) match {
                 case None =>
                   return logAndFail(s"""Unable to delete data for channel.
-                              |Channel ${chName} doesn't exist.""")
+                              |Channel ${chName} doesn't exist.""".stripMargin)
                 case Some(ch) => Seq(Some(ch.id))
               }
-              } getOrElse {
-                Seq(None) // for default channel
-              }
+            } getOrElse {
+              Seq(None) // for default channel
+            }
           }
 
         chanIdsToRemove.map { chId: Option[Int] =>
@@ -246,8 +246,7 @@ object App extends EitherLogging {
             errStr =
               if (chId.isDefined) {
                 s"Unable to initialize Event Store for the channel ID: ${chId.get}."
-              }
-              else {
+              } else {
                 s"Unable to initialize Event tore for the app ID: ${appDesc.app.id}."
               }
             error(errStr)
@@ -272,11 +271,11 @@ object App extends EitherLogging {
       show(appName).right flatMap { case (appDesc: AppDescription, channels: Seq[Channel]) =>
         if (channels.find(ch => ch.name == newChannel).isDefined) {
           logAndFail(s"""Channel ${newChannel} already exists.
-                      |Unable to create new channel.""")
+                      |Unable to create new channel.""".stripMargin)
         } else if (!storage.Channel.isValidName(newChannel)) {
           logAndFail(s"""Unable to create new channel.
                       |The channel name ${newChannel} is invalid.
-                      |${storage.Channel.nameConstraint}""")
+                      |${storage.Channel.nameConstraint}""".stripMargin)
         } else {
 
           val channel = Channel(
@@ -299,7 +298,7 @@ object App extends EitherLogging {
               Right(channel.copy(id = chanId))
             } else {
               errStr = s"""Unable to create new channel.
-                          |Failed to initalize Event Store."""
+                          |Failed to initalize Event Store.""".stripMargin
               error(errStr)
               // reverted back the meta data
               try {
@@ -307,17 +306,17 @@ object App extends EitherLogging {
                 Left(errStr)
               } catch {
                 case e: Exception =>
-                  val nextErrStr = s"""
+                  val nextErrStr = (s"""
                     |Failed to revert back the Channel meta-data change.
                     |The channel ${newChannel} CANNOT be used!
                     |Please run 'pio app channel-delete ${appName} ${newChannel}'""" +
-                    " to delete this channel!"
+                    " to delete this channel!").stripMargin
                   logAndFail(errStr + nextErrStr)
               }
             }
           } getOrElse {
             logAndFail(s"""Unable to create new channel.
-                          |Failed to update Channel meta-data.""")
+                          |Failed to update Channel meta-data.""".stripMargin)
           }
         }
       }
@@ -329,33 +328,32 @@ object App extends EitherLogging {
   def channelDelete(appName: String, deleteChannel: String): MaybeError = {
     val chanStorage = storage.Storage.getMetaDataChannels
     val events = storage.Storage.getLEvents()
-    var errStr = ""
     try {
       show(appName).right.flatMap { case (appDesc: AppDescription, channels: Seq[Channel]) =>
         val foundChannel = channels.find(ch => ch.name == deleteChannel)
-        if (foundChannel.isEmpty) {
-          logAndFail(s"""Unable to delete channel
-                        |Channel ${deleteChannel} doesn't exists.""")
-        } else {
-          val chId = foundChannel.get.id
-          val dbRemoved = events.remove(appDesc.app.id, Some(chId))
-          if (dbRemoved) {
-            info(s"Removed Event Store for this channel: ${deleteChannel}")
-            try {
-              chanStorage.delete(chId)
-              logAndSucceed(s"Deleted channel: ${deleteChannel}.")
-            } catch {
-              case e: Exception =>
-                logAndFail(s"""Unable to delete channel.
-                  |Failed to update Channel meta-data.
-                  |The channel ${deleteChannel} CANNOT be used!
-                  |Please run 'pio app channel-delete ${appDesc.app.name} ${deleteChannel}'""" +
-                  " to delete this channel again!")
+        foundChannel match {
+          case None =>
+            logAndFail(s"""Unable to delete channel
+                          |Channel ${deleteChannel} doesn't exists.""".stripMargin)
+          case Some(channel) =>
+            val dbRemoved = events.remove(appDesc.app.id, Some(channel.id))
+            if (dbRemoved) {
+              info(s"Removed Event Store for this channel: ${deleteChannel}")
+              try {
+                chanStorage.delete(channel.id)
+                logAndSucceed(s"Deleted channel: ${deleteChannel}.")
+              } catch {
+                case e: Exception =>
+                  logAndFail((s"""Unable to delete channel.
+                   |Failed to update Channel meta-data.
+                   |The channel ${deleteChannel} CANNOT be used!
+                   |Please run 'pio app channel-delete ${appDesc.app.name} ${deleteChannel}'""" +
+                    " to delete this channel again!").stripMargin)
+              }
+            } else {
+              logAndFail(s"""Unable to delete channel.
+                            |Error removing Event Store for this channel.""".stripMargin)
             }
-          } else {
-            logAndFail(s"""Unable to delete channel.
-                          |Error removing Event Store for this channel.""")
-          }
         }
       }
     } finally {

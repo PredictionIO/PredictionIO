@@ -185,7 +185,7 @@ object HB_0_8_0 {
       targetEntityId = targetEntityId,
       properties = properties,
       eventTime = new DateTime(rowKey.millis, eventTimeZone),
-      tags = Seq(),
+      tags = Nil,
       prId = prId,
       creationTime = creationTime
     )

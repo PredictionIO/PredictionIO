@@ -22,8 +22,6 @@ import org.apache.predictionio.core.BaseDataSource
 import org.apache.predictionio.core.BasePreparator
 import org.apache.spark.SparkContext
 
-import scala.reflect._
-
 /** A helper concrete implementation of [[org.apache.predictionio.core.BasePreparator]]
   * that passes training data through without any special preparation. This can
   * be used in place for both [[PPreparator]] and [[LPreparator]].

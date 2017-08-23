@@ -93,7 +93,6 @@ trait SelfCleaningDataSource {
     */
   @DeveloperApi
   def getCleanedLEvents(lEvents: Iterable[Event]): Iterable[Event] = {
-
     eventWindow
       .flatMap(_.duration)
       .map { duration =>
@@ -101,7 +100,7 @@ trait SelfCleaningDataSource {
         lEvents.filter(e =>
           e.eventTime.isAfter(DateTime.now().minus(fd.toMillis)) || isSetEvent(e)
         )
-      }.getOrElse(lEvents).toIterable
+      }.getOrElse(lEvents)
   }
 
   def compressPProperties(sc: SparkContext, rdd: RDD[Event]): RDD[Event] = {
@@ -117,7 +116,7 @@ trait SelfCleaningDataSource {
   }
 
   def compressLProperties(events: Iterable[Event]): Iterable[Event] = {
-    events.filter(isSetEvent).toIterable
+    events.filter(isSetEvent)
       .groupBy(_.entityType)
       .map { pair =>
         val (_, ls) = pair
@@ -164,7 +163,7 @@ trait SelfCleaningDataSource {
         val result = cleanPEvents(sc)
         val originalEvents = PEventStore.find(appName)(sc)
         val newEvents = result subtract originalEvents
-        val eventsToRemove = (originalEvents subtract result).map { case e =>
+        val eventsToRemove = (originalEvents subtract result).map { e =>
           e.eventId.getOrElse("")
         }
 
@@ -187,7 +186,7 @@ trait SelfCleaningDataSource {
 
   def removeEvents(eventsToRemove: Set[String], appId: Int) {
     val listOfFuture: List[Future[Boolean]] = eventsToRemove
-      .filter(x =>  x != "").toList.map { case eventId =>
+      .filter(x =>  x != "").toList.map { eventId =>
       lEventsDb.futureDelete(eventId, appId)
     }
 
@@ -202,9 +201,8 @@ trait SelfCleaningDataSource {
 
   /** Replace events in Event Store
     *
-    * @param events new events
-    * @param appId delete all events of appId
-    * @param channelId delete all events of channelId
+    * @param newEvents new events
+    * @param eventsToRemove event ids to remove
     */
   def wipe(
     newEvents: Set[Event],
@@ -212,7 +210,7 @@ trait SelfCleaningDataSource {
   ): Unit = {
     val (appId, channelId) = Common.appNameToId(appName, None)
 
-    val listOfFutureNewEvents: List[Future[String]] = newEvents.toList.map { case event =>
+    val listOfFutureNewEvents: List[Future[String]] = newEvents.toList.map { event =>
       lEventsDb.futureInsert(recreateEvent(event, None, event.eventTime), appId)
     }
 
@@ -233,10 +231,10 @@ trait SelfCleaningDataSource {
 
     val rdd = eventWindow match {
       case Some(ew) =>
-        var updated =
+        val updated =
           if (ew.compressProperties) compressPProperties(sc, pEvents) else pEvents
 
-        val deduped = if (ew.removeDuplicates) removePDuplicates(sc,updated) else updated
+        val deduped = if (ew.removeDuplicates) removePDuplicates(sc, updated) else updated
         deduped
       case None =>
         pEvents
@@ -258,7 +256,7 @@ trait SelfCleaningDataSource {
         val result = cleanLEvents().toSet
         val originalEvents = LEventStore.find(appName).toSet
         val newEvents = result -- originalEvents
-        val eventsToRemove = (originalEvents -- result).map { case e =>
+        val eventsToRemove = (originalEvents -- result).map { e =>
           e.eventId.getOrElse("")
         }
 
@@ -278,7 +276,7 @@ trait SelfCleaningDataSource {
 
     val events = eventWindow match {
       case Some(ew) =>
-        var updated =
+        val updated =
           if (ew.compressProperties) compressLProperties(lEvents) else lEvents
         val deduped = if (ew.removeDuplicates) removeLDuplicates(updated) else updated
         deduped

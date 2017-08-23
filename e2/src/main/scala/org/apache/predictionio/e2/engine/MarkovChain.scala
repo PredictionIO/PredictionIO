@@ -17,7 +17,6 @@
 
 package org.apache.predictionio.e2.engine
 
-import org.apache.spark.SparkContext._
 import org.apache.spark.mllib.linalg.distributed.CoordinateMatrix
 import org.apache.spark.mllib.linalg.{SparseVector, Vectors}
 import org.apache.spark.rdd.RDD

@@ -18,22 +18,13 @@
 
 package org.apache.predictionio.data.api
 
-import org.apache.predictionio.data.webhooks.JsonConnector
-import org.apache.predictionio.data.webhooks.FormConnector
 import org.apache.predictionio.data.webhooks.ConnectorUtil
-import org.apache.predictionio.data.storage.Event
-import org.apache.predictionio.data.storage.EventJson4sSupport
 import org.apache.predictionio.data.storage.LEvents
 
-import spray.routing._
-import spray.routing.Directives._
 import spray.http.StatusCodes
 import spray.http.StatusCode
 import spray.http.FormData
-import spray.httpx.Json4sSupport
 
-import org.json4s.Formats
-import org.json4s.DefaultFormats
 import org.json4s.JObject
 
 import akka.event.LoggingAdapter
@@ -62,22 +53,23 @@ private[predictionio] object Webhooks {
     }
 
     eventFuture.flatMap { eventOpt =>
-      if (eventOpt.isEmpty) {
-        Future successful {
-          val message = s"webhooks connection for ${web} is not supported."
-          (StatusCodes.NotFound, Map("message" -> message))
-        }
-      } else {
-        val event = eventOpt.get
-        val data = eventClient.futureInsert(event, appId, channelId).map { id =>
-          val result = (StatusCodes.Created, Map("eventId" -> s"${id}"))
-
-          if (stats) {
-            statsActorRef ! Bookkeeping(appId, result._1, event)
+      eventOpt match {
+        case None =>
+          Future successful {
+            val message = s"webhooks connection for ${web} is not supported."
+            (StatusCodes.NotFound, Map("message" -> message))
           }
-          result
-        }
-        data
+        case Some(event) =>
+          val event = eventOpt.get
+          val data = eventClient.futureInsert(event, appId, channelId).map { id =>
+            val result = (StatusCodes.Created, Map("eventId" -> s"${id}"))
+
+            if (stats) {
+              statsActorRef ! Bookkeeping(appId, result._1, event)
+            }
+            result
+          }
+          data
       }
     }
   }
@@ -115,22 +107,22 @@ private[predictionio] object Webhooks {
     }
 
     eventFuture.flatMap { eventOpt =>
-      if (eventOpt.isEmpty) {
-        Future {
-          val message = s"webhooks connection for ${web} is not supported."
-          (StatusCodes.NotFound, Map("message" -> message))
-        }
-      } else {
-        val event = eventOpt.get
-        val data = eventClient.futureInsert(event, appId, channelId).map { id =>
-          val result = (StatusCodes.Created, Map("eventId" -> s"${id}"))
-
-          if (stats) {
-            statsActorRef ! Bookkeeping(appId, result._1, event)
+      eventOpt match {
+        case None =>
+          Future {
+            val message = s"webhooks connection for ${web} is not supported."
+            (StatusCodes.NotFound, Map("message" -> message))
           }
-          result
-        }
-        data
+        case Some(event) =>
+          val data = eventClient.futureInsert(event, appId, channelId).map { id =>
+            val result = (StatusCodes.Created, Map("eventId" -> s"${id}"))
+
+            if (stats) {
+              statsActorRef ! Bookkeeping(appId, result._1, event)
+            }
+            result
+          }
+          data
       }
     }
   }

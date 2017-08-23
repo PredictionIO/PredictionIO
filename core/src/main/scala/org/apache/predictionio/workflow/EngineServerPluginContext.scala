@@ -41,9 +41,9 @@ class EngineServerPluginContext(
     val pluginParams: mutable.Map[String, JValue],
     val log: LoggingAdapter) {
   def outputBlockers: Map[String, EngineServerPlugin] =
-    plugins.getOrElse(EngineServerPlugin.outputBlocker, Map()).toMap
+    plugins.getOrElse(EngineServerPlugin.outputBlocker, Map.empty).toMap
   def outputSniffers: Map[String, EngineServerPlugin] =
-    plugins.getOrElse(EngineServerPlugin.outputSniffer, Map()).toMap
+    plugins.getOrElse(EngineServerPlugin.outputSniffer, Map.empty).toMap
 }
 
 object EngineServerPluginContext extends Logging {

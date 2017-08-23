@@ -18,10 +18,6 @@
 
 package org.apache.predictionio.data.view
 
-import org.apache.predictionio.data.storage.Event
-import org.apache.predictionio.data.storage.LEvents
-import org.apache.predictionio.data.storage.EventValidation
-import org.apache.predictionio.data.storage.DataMap
 import org.apache.predictionio.data.storage.Storage
 
 import scala.concurrent.ExecutionContext.Implicits.global // TODO

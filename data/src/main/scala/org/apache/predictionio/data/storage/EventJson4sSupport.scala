@@ -56,7 +56,7 @@ object EventJson4sSupport {
         val targetEntityType = fields.getOpt[String]("targetEntityType")
         val targetEntityId = fields.getOpt[String]("targetEntityId")
         val properties = fields.getOrElse[Map[String, JValue]](
-          "properties", Map())
+          "properties", Map.empty)
         // default currentTime expressed as UTC timezone
         lazy val currentTime = DateTime.now(EventValidation.defaultTimeZone)
         val eventTime = fields.getOpt[String]("eventTime")
@@ -70,7 +70,6 @@ object EventJson4sSupport {
           }.getOrElse(currentTime)
 
         // disable tags from API for now.
-        val tags = List()
       // val tags = fields.getOpt[Seq[String]]("tags").getOrElse(List())
 
         val prId = fields.getOpt[String]("prId")

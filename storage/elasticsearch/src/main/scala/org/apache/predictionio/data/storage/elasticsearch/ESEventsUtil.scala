@@ -80,7 +80,7 @@ object ESEventsUtil {
       targetEntityId = targetEntityId,
       properties = properties,
       eventTime = eventTime,
-      tags = Seq(),
+      tags = Nil,
       prId = prId,
       creationTime = creationTime
     )

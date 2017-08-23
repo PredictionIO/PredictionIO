@@ -101,7 +101,7 @@ class ESEvaluationInstances(client: Client, config: StorageClientConfig, index: 
     } catch {
       case e: ElasticsearchException =>
         error(e.getMessage)
-        Seq()
+        Nil
     }
   }
 
@@ -114,7 +114,7 @@ class ESEvaluationInstances(client: Client, config: StorageClientConfig, index: 
     } catch {
       case e: ElasticsearchException =>
         error(e.getMessage)
-        Seq()
+        Nil
     }
   }
 

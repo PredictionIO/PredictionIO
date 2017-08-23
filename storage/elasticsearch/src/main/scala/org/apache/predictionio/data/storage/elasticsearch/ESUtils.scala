@@ -44,16 +44,13 @@ object ESUtils {
     implicit formats: Formats): Event = {
     def getString(s: String): String = {
       (value \ s) match {
-        case x if x == JNothing => null
+        case JNothing => null
         case x => x.extract[String]
       }
     }
 
     def getOptString(s: String): Option[String] = {
-      getString(s) match {
-        case null => None
-        case x => Some(x)
-      }
+      Option(getString(s))
     }
 
     val properties: DataMap = getOptString("properties")
@@ -233,14 +230,14 @@ object ESUtils {
     targetEntityId: Option[Option[String]] = None,
     reversed: Option[Boolean] = None): String = {
     val mustQueries = Seq(
-      startTime.map(x => {
+      startTime.map { x =>
         val v = formatUTCDateTime(x)
         s"""{"range":{"eventTime":{"gte":"${v}"}}}"""
-      }),
-      untilTime.map(x => {
+      },
+      untilTime.map { x =>
         val v = formatUTCDateTime(x)
         s"""{"range":{"eventTime":{"lt":"${v}"}}}"""
-      }),
+      },
       entityType.map(x => s"""{"term":{"entityType":"${x}"}}"""),
       entityId.map(x => s"""{"term":{"entityId":"${x}"}}"""),
       targetEntityType.flatMap(xx => xx.map(x => s"""{"term":{"targetEntityType":"${x}"}}""")),

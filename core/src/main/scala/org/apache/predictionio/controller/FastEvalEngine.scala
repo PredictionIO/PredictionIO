@@ -270,10 +270,10 @@ object FastEvalEngineWorkflow  {
     workflow: FastEvalEngineWorkflow[TD, EI, PD, Q, P, A],
     engineParamsList: Seq[EngineParams])
   : Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])] = {
-    engineParamsList.map { engineParams => {
+    engineParamsList.map { engineParams =>
       (engineParams,
         getServingResult(workflow, new ServingPrefix(engineParams)))
-    }}
+    }
   }
 }
 

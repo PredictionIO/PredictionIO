@@ -84,11 +84,11 @@ class CommandClient(
             val accessKey = AccessKey(
               key = "",
               appid = id,
-              events = Seq())
+              events = Nil)
             val accessKey2 = accessKeyClient.insert(AccessKey(
               key = "",
               appid = id,
-              events = Seq()))
+              events = Nil))
             accessKey2 map { k =>
               new AppNewResponse(1,"App created successfully.",id, req.name, k)
             } getOrElse {

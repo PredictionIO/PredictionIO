@@ -35,7 +35,7 @@ import scala.language.implicitConversions
 class EngineParams(
     val dataSourceParams: (String, Params) = ("", EmptyParams()),
     val preparatorParams: (String, Params) = ("", EmptyParams()),
-    val algorithmParamsList: Seq[(String, Params)] = Seq(),
+    val algorithmParamsList: Seq[(String, Params)] = Nil,
     val servingParams: (String, Params) = ("", EmptyParams()))
   extends Serializable {
 
@@ -102,7 +102,7 @@ object EngineParams {
     dataSourceParams: Params = EmptyParams(),
     preparatorName: String = "",
     preparatorParams: Params = EmptyParams(),
-    algorithmParamsList: Seq[(String, Params)] = Seq(),
+    algorithmParamsList: Seq[(String, Params)] = Nil,
     servingName: String = "",
     servingParams: Params = EmptyParams()): EngineParams = {
       new EngineParams(

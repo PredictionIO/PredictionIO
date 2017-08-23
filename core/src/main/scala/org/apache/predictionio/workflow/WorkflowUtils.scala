@@ -60,12 +60,11 @@ object WorkflowUtils extends Logging {
         engineObject.instance.asInstanceOf[EngineFactory]
       )
     } catch {
-      case e @ (_: NoSuchFieldException | _: ClassNotFoundException) => try {
+      case e @ (_: NoSuchFieldException | _: ClassNotFoundException) =>
         (
           EngineLanguage.Java,
           Class.forName(engine).newInstance.asInstanceOf[EngineFactory]
         )
-      }
     }
   }
 
@@ -80,12 +79,11 @@ object WorkflowUtils extends Logging {
         epgObject.instance.asInstanceOf[EngineParamsGenerator]
       )
     } catch {
-      case e @ (_: NoSuchFieldException | _: ClassNotFoundException) => try {
+      case e @ (_: NoSuchFieldException | _: ClassNotFoundException) =>
         (
           EngineLanguage.Java,
           Class.forName(epg).newInstance.asInstanceOf[EngineParamsGenerator]
         )
-      }
     }
   }
 
@@ -99,12 +97,11 @@ object WorkflowUtils extends Logging {
         evaluationObject.instance.asInstanceOf[Evaluation]
       )
     } catch {
-      case e @ (_: NoSuchFieldException | _: ClassNotFoundException) => try {
+      case e @ (_: NoSuchFieldException | _: ClassNotFoundException) =>
         (
           EngineLanguage.Java,
           Class.forName(evaluation).newInstance.asInstanceOf[Evaluation]
         )
-      }
     }
   }
 
@@ -265,9 +262,9 @@ object WorkflowUtils extends Logging {
           Seq(file.toURI)
         } else {
           warn(s"Environment variable $p is pointing to a nonexistent file $f. Ignoring.")
-          Seq.empty[URI]
+          Seq.empty
         }
-      } getOrElse Seq.empty[URI]
+      } getOrElse Seq.empty
     )
   }
 
@@ -325,8 +322,8 @@ object WorkflowUtils extends Logging {
           error("Arrays are not allowed in the sparkConf section of engine.js.")
           sys.exit(1)
         }
-        case JNothing => List()
-        case _ => List(List() -> jv.values.toString)
+        case JNothing => Nil
+        case _ => List(Nil -> jv.values.toString)
       }
     }
 
