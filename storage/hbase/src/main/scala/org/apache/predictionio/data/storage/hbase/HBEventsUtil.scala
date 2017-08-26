@@ -374,32 +374,28 @@ object HBEventsUtil {
       }
     }
 
-    targetEntityType.foreach { tetOpt =>
-      tetOpt match {
-        case None =>
-          val filter = createSkipRowIfColumnExistFilter("targetEntityType")
-          filters.addFilter(filter)
-        case Some(tet) =>
-          val filter = createBinaryFilter(
-            "targetEntityType", Bytes.toBytes(tet))
-          // the entire row will be skipped if the column is not found.
-          filter.setFilterIfMissing(true)
-          filters.addFilter(filter)
-      }
+    targetEntityType.foreach {
+      case None =>
+        val filter = createSkipRowIfColumnExistFilter("targetEntityType")
+        filters.addFilter(filter)
+      case Some(tet) =>
+        val filter = createBinaryFilter(
+          "targetEntityType", Bytes.toBytes(tet))
+        // the entire row will be skipped if the column is not found.
+        filter.setFilterIfMissing(true)
+        filters.addFilter(filter)
     }
 
-    targetEntityId.foreach { teidOpt =>
-      teidOpt match {
-        case None =>
-          val filter = createSkipRowIfColumnExistFilter("targetEntityId")
-          filters.addFilter(filter)
-        case Some(teid) =>
-          val filter = createBinaryFilter(
-            "targetEntityId", Bytes.toBytes(teid))
-          // the entire row will be skipped if the column is not found.
-          filter.setFilterIfMissing(true)
-          filters.addFilter(filter)
-      }
+    targetEntityId.foreach {
+      case None =>
+        val filter = createSkipRowIfColumnExistFilter("targetEntityId")
+        filters.addFilter(filter)
+      case Some(teid) =>
+        val filter = createBinaryFilter(
+          "targetEntityId", Bytes.toBytes(teid))
+        // the entire row will be skipped if the column is not found.
+        filter.setFilterIfMissing(true)
+        filters.addFilter(filter)
     }
 
     if (!filters.getFilters().isEmpty) {

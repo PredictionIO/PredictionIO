@@ -52,25 +52,22 @@ private[predictionio] object Webhooks {
       }
     }
 
-    eventFuture.flatMap { eventOpt =>
-      eventOpt match {
-        case None =>
-          Future successful {
-            val message = s"webhooks connection for ${web} is not supported."
-            (StatusCodes.NotFound, Map("message" -> message))
-          }
-        case Some(event) =>
-          val event = eventOpt.get
-          val data = eventClient.futureInsert(event, appId, channelId).map { id =>
-            val result = (StatusCodes.Created, Map("eventId" -> s"${id}"))
+    eventFuture.flatMap {
+      case None =>
+        Future successful {
+          val message = s"webhooks connection for ${web} is not supported."
+          (StatusCodes.NotFound, Map("message" -> message))
+        }
+      case Some(event) =>
+        val data = eventClient.futureInsert(event, appId, channelId).map { id =>
+          val result = (StatusCodes.Created, Map("eventId" -> s"${id}"))
 
-            if (stats) {
-              statsActorRef ! Bookkeeping(appId, result._1, event)
-            }
-            result
+          if (stats) {
+            statsActorRef ! Bookkeeping(appId, result._1, event)
           }
-          data
-      }
+          result
+        }
+        data
     }
   }
 
@@ -106,24 +103,22 @@ private[predictionio] object Webhooks {
       }
     }
 
-    eventFuture.flatMap { eventOpt =>
-      eventOpt match {
-        case None =>
-          Future {
-            val message = s"webhooks connection for ${web} is not supported."
-            (StatusCodes.NotFound, Map("message" -> message))
-          }
-        case Some(event) =>
-          val data = eventClient.futureInsert(event, appId, channelId).map { id =>
-            val result = (StatusCodes.Created, Map("eventId" -> s"${id}"))
+    eventFuture.flatMap {
+      case None =>
+        Future successful {
+          val message = s"webhooks connection for ${web} is not supported."
+          (StatusCodes.NotFound, Map("message" -> message))
+        }
+      case Some(event) =>
+        val data = eventClient.futureInsert(event, appId, channelId).map { id =>
+          val result = (StatusCodes.Created, Map("eventId" -> s"${id}"))
 
-            if (stats) {
-              statsActorRef ! Bookkeeping(appId, result._1, event)
-            }
-            result
+          if (stats) {
+            statsActorRef ! Bookkeeping(appId, result._1, event)
           }
-          data
-      }
+          result
+        }
+        data
     }
   }
 
