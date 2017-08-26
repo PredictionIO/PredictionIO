@@ -47,8 +47,8 @@ case class EvaluationInstance(
   evaluationClass: String = "",
   engineParamsGeneratorClass: String = "",
   batch: String = "",
-  env: Map[String, String] = Map(),
-  sparkConf: Map[String, String] = Map(),
+  env: Map[String, String] = Map.empty,
+  sparkConf: Map[String, String] = Map.empty,
   evaluatorResults: String = "",
   evaluatorResultsHTML: String = "",
   evaluatorResultsJSON: String = "")

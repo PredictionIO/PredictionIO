@@ -25,7 +25,6 @@ import spray.routing._
 import spray.routing.Directives._
 import spray.routing.Rejection
 import spray.http.StatusCodes
-import spray.http.StatusCode
 import spray.httpx.Json4sSupport
 
 import org.json4s.Formats

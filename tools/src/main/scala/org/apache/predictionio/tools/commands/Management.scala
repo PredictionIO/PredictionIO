@@ -49,7 +49,7 @@ case class PioStatus(
   sparkHome: String = "",
   sparkVersion: String = "",
   sparkMinVersion: String = "",
-  warnings: Seq[String] = Seq())
+  warnings: Seq[String] = Nil)
 
 object Management extends EitherLogging {
 

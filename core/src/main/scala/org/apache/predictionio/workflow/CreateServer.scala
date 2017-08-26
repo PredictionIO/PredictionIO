@@ -18,7 +18,7 @@
 
 package org.apache.predictionio.workflow
 
-import java.io.{PrintWriter, Serializable, StringWriter}
+import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
 import akka.actor._
@@ -32,6 +32,7 @@ import com.twitter.chill.{KryoBase, KryoInjection, ScalaKryoInstantiator}
 import com.typesafe.config.ConfigFactory
 import de.javakaffee.kryoserializers.SynchronizedCollectionsSerializer
 import grizzled.slf4j.Logging
+import org.apache.commons.lang3.exception.ExceptionUtils
 import org.apache.predictionio.authentication.KeyAuthentication
 import org.apache.predictionio.configuration.SSLConfiguration
 import org.apache.predictionio.controller.{Engine, Params, Utils, WithPrId}
@@ -309,7 +310,7 @@ class MasterActor (
       sprayHttpListener.map { l =>
         log.info("Server is shutting down.")
         l ! Http.Unbind(5.seconds)
-        system.shutdown
+        system.shutdown()
       } getOrElse {
         log.warning("No active server is running.")
       }
@@ -353,7 +354,7 @@ class MasterActor (
         }
       } else {
         log.error("Bind failed. Shutting down.")
-        system.shutdown
+        system.shutdown()
       }
   }
 
@@ -432,13 +433,6 @@ class ServerActor[Q, P](
     }
   }
 
-  def getStackTraceString(e: Throwable): String = {
-    val writer = new StringWriter()
-    val printWriter = new PrintWriter(writer)
-    e.printStackTrace(printWriter)
-    writer.toString
-  }
-
   val myRoute =
     path("") {
       get {
@@ -492,8 +486,8 @@ class ServerActor[Q, P](
               // finally Serving.serve.
               val supplementedQuery = serving.supplementBase(query)
               // TODO: Parallelize the following.
-              val predictions = algorithms.zipWithIndex.map { case (a, ai) =>
-                a.predictBase(models(ai), supplementedQuery)
+              val predictions = algorithms.zip(models).map { case (a, m) =>
+                a.predictBase(m, supplementedQuery)
               }
               // Notice that it is by design to call Serving.serve with the
               // *original* query.
@@ -533,7 +527,7 @@ class ServerActor[Q, P](
                     case id: WithPrId =>
                       Map("prId" -> id.prId)
                     case _ =>
-                      Map()
+                      Map.empty
                   }
                 val data = Map(
                   // "appId" -> dataSourceParams.asInstanceOf[ParamsWithAppId].appId,
@@ -596,7 +590,7 @@ class ServerActor[Q, P](
             } catch {
               case e: MappingException =>
                 val msg = s"Query:\n$queryString\n\nStack Trace:\n" +
-                  s"${getStackTraceString(e)}\n\n"
+                  s"${ExceptionUtils.getStackTrace(e)}\n\n"
                 log.error(msg)
                 args.logUrl map { url =>
                   remoteLog(
@@ -607,7 +601,7 @@ class ServerActor[Q, P](
                 complete(StatusCodes.BadRequest, e.getMessage)
               case e: Throwable =>
                 val msg = s"Query:\n$queryString\n\nStack Trace:\n" +
-                  s"${getStackTraceString(e)}\n\n"
+                  s"${ExceptionUtils.getStackTrace(e)}\n\n"
                 log.error(msg)
                 args.logUrl map { url =>
                   remoteLog(

@@ -27,7 +27,6 @@ import org.apache.hadoop.hbase.client.Put
 import org.apache.hadoop.hbase.client.Scan
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.hadoop.hbase.filter.FilterList
-import org.apache.hadoop.hbase.filter.RegexStringComparator
 import org.apache.hadoop.hbase.filter.SingleColumnValueFilter
 import org.apache.hadoop.hbase.filter.CompareFilter.CompareOp
 import org.apache.hadoop.hbase.filter.BinaryComparator
@@ -275,7 +274,7 @@ object HBEventsUtil {
       targetEntityId = targetEntityId,
       properties = properties,
       eventTime = eventTime,
-      tags = Seq(),
+      tags = Nil,
       prId = prId,
       creationTime = creationTime
     )
@@ -375,34 +374,28 @@ object HBEventsUtil {
       }
     }
 
-    targetEntityType.foreach { tetOpt =>
-      if (tetOpt.isEmpty) {
+    targetEntityType.foreach {
+      case None =>
         val filter = createSkipRowIfColumnExistFilter("targetEntityType")
         filters.addFilter(filter)
-      } else {
-        tetOpt.foreach { tet =>
-          val filter = createBinaryFilter(
-            "targetEntityType", Bytes.toBytes(tet))
-          // the entire row will be skipped if the column is not found.
-          filter.setFilterIfMissing(true)
-          filters.addFilter(filter)
-        }
-      }
+      case Some(tet) =>
+        val filter = createBinaryFilter(
+          "targetEntityType", Bytes.toBytes(tet))
+        // the entire row will be skipped if the column is not found.
+        filter.setFilterIfMissing(true)
+        filters.addFilter(filter)
     }
 
-    targetEntityId.foreach { teidOpt =>
-      if (teidOpt.isEmpty) {
+    targetEntityId.foreach {
+      case None =>
         val filter = createSkipRowIfColumnExistFilter("targetEntityId")
         filters.addFilter(filter)
-      } else {
-        teidOpt.foreach { teid =>
-          val filter = createBinaryFilter(
-            "targetEntityId", Bytes.toBytes(teid))
-          // the entire row will be skipped if the column is not found.
-          filter.setFilterIfMissing(true)
-          filters.addFilter(filter)
-        }
-      }
+      case Some(teid) =>
+        val filter = createBinaryFilter(
+          "targetEntityId", Bytes.toBytes(teid))
+        // the entire row will be skipped if the column is not found.
+        filter.setFilterIfMissing(true)
+        filters.addFilter(filter)
     }
 
     if (!filters.getFilters().isEmpty) {

@@ -18,7 +18,6 @@
 package org.apache.predictionio.e2.engine
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.SparkContext._
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.linalg.Vector
 import scala.collection.immutable.HashMap

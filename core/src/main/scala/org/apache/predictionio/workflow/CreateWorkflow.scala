@@ -165,14 +165,14 @@ object CreateWorkflow extends Logging {
       }
     }
 
-    val pioEnvVars = wfc.env.map(e =>
-      e.split(',').flatMap(p =>
+    val pioEnvVars = wfc.env.map { e =>
+      e.split(',').flatMap { p =>
         p.split('=') match {
           case Array(k, v) => List(k -> v)
           case _ => Nil
         }
-      ).toMap
-    ).getOrElse(Map())
+      }.toMap
+    }.getOrElse(Map.empty)
 
     if (evaluation.isEmpty) {
       val variantJson = parse(stringFromFile(wfc.engineVariant))

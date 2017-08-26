@@ -30,10 +30,10 @@ class EventServerPluginContext(
     val plugins: mutable.Map[String, mutable.Map[String, EventServerPlugin]],
     val log: LoggingAdapter) {
   def inputBlockers: Map[String, EventServerPlugin] =
-    plugins.getOrElse(EventServerPlugin.inputBlocker, Map()).toMap
+    plugins.getOrElse(EventServerPlugin.inputBlocker, Map.empty).toMap
 
   def inputSniffers: Map[String, EventServerPlugin] =
-    plugins.getOrElse(EventServerPlugin.inputSniffer, Map()).toMap
+    plugins.getOrElse(EventServerPlugin.inputSniffer, Map.empty).toMap
 }
 
 object EventServerPluginContext extends Logging {

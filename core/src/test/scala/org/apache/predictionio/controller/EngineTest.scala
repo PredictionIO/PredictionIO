@@ -320,7 +320,7 @@ class EngineTrainSuite extends FunSuite with SharedSparkContext {
       sc,
       new PDataSource0(0),
       new PPreparator0(1),
-      Seq(),
+      Nil,
       defaultWorkflowParams
     )
 

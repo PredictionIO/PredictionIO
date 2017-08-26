@@ -75,13 +75,13 @@
       <h2>Algorithms and Models</h2>
         <table class="table table-bordered table-striped">
           <tr><th>#</th><th colspan="2">Information</th></tr>
-          @for(a <- algorithms.zip(algorithmsParams).zip(models).zipWithIndex) {
-          <tr>
-            <th rowspan="3">@{a._2 + 1}</th>
-            <th>Class</th><td>@{a._1._1._1}</td>
-          </tr>
-          <tr><th>Parameters</th><td>@{a._1._1._2}</td></tr>
-          <tr><th>Model</th><td>@{a._1._2}</td></tr>
+          @for((((algo, param), model), i) <- algorithms.zip(algorithmsParams).zip(models).zipWithIndex) {
+            <tr>
+              <th rowspan="3">@{i + 1}</th>
+              <th>Class</th><td>@{algo}</td>
+            </tr>
+            <tr><th>Parameters</th><td>@{param}</td></tr>
+            <tr><th>Model</th><td>@{model}</td></tr>
           }
         </table>
       <h2>Serving</h2>

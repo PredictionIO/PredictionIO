@@ -28,8 +28,8 @@ import scala.language.existentials
 object WorkflowContext extends Logging {
   def apply(
       batch: String = "",
-      executorEnv: Map[String, String] = Map(),
-      sparkEnv: Map[String, String] = Map(),
+      executorEnv: Map[String, String] = Map.empty,
+      sparkEnv: Map[String, String] = Map.empty,
       mode: String = ""
     ): SparkContext = {
     val conf = new SparkConf()

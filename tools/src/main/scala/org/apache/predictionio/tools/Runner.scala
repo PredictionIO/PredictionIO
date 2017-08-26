@@ -30,7 +30,7 @@ import scala.sys.process._
 
 case class SparkArgs(
   sparkHome: Option[String] = None,
-  sparkPassThrough: Seq[String] = Seq(),
+  sparkPassThrough: Seq[String] = Nil,
   sparkKryo: Boolean = false,
   scratchUri: Option[URI] = None)
 

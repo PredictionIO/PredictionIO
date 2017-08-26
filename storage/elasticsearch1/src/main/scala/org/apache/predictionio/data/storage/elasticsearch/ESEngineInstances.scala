@@ -107,7 +107,7 @@ class ESEngineInstances(client: Client, config: StorageClientConfig, index: Stri
     } catch {
       case e: ElasticsearchException =>
         error(e.getMessage)
-        Seq()
+        Nil
     }
   }
 
@@ -127,7 +127,7 @@ class ESEngineInstances(client: Client, config: StorageClientConfig, index: Stri
     } catch {
       case e: ElasticsearchException =>
         error(e.getMessage)
-        Seq()
+        Nil
     }
   }
 
@@ -150,7 +150,7 @@ class ESEngineInstances(client: Client, config: StorageClientConfig, index: Stri
 
   def delete(id: String): Unit = {
     try {
-      val response = client.prepareDelete(index, estype, id).get
+      client.prepareDelete(index, estype, id).get
     } catch {
       case e: ElasticsearchException => error(e.getMessage)
     }

@@ -131,13 +131,13 @@ class  EventServiceActor(
 
   private val FailedAuth = Left(
     AuthenticationFailedRejection(
-      AuthenticationFailedRejection.CredentialsRejected, List()
+      AuthenticationFailedRejection.CredentialsRejected, Nil
     )
   )
 
   private val MissedAuth = Left(
     AuthenticationFailedRejection(
-      AuthenticationFailedRejection.CredentialsMissing, List()
+      AuthenticationFailedRejection.CredentialsMissing, Nil
     )
   )
 
