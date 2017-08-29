@@ -19,6 +19,7 @@
 package org.apache.predictionio.data.storage
 
 import grizzled.slf4j.Logging
+import org.apache.commons.lang3.exception.ExceptionUtils
 import org.apache.predictionio.annotation.DeveloperApi
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -214,7 +215,8 @@ object Storage extends Logging {
         }
       } catch {
         case e: Throwable =>
-          error(e.getMessage)
+          val stackTrace = ExceptionUtils.getStackTrace(e)
+          error(s"${e.getMessage}\n${stackTrace}\n\n")
           errors += 1
           r -> DataObjectMeta("", "")
       }
@@ -282,7 +284,9 @@ object Storage extends Logging {
       Some(ClientMeta(sourceType, client, clientConfig))
     } catch {
       case e: Throwable =>
-        error(s"Error initializing storage client for source ${k}", e)
+        val stackTrace = ExceptionUtils.getStackTrace(e)
+        error(s"Error initializing storage client for source ${k}.\n" +
+          s"${stackTrace}\n\n")
         errors += 1
         None
     }

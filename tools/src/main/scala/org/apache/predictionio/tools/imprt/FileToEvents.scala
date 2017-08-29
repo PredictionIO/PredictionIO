@@ -25,6 +25,7 @@ import org.apache.predictionio.data.storage.Storage
 import org.apache.predictionio.tools.Runner
 import org.apache.predictionio.workflow.WorkflowContext
 import org.apache.predictionio.workflow.WorkflowUtils
+import org.apache.predictionio.workflow.CleanupFunctions
 
 import grizzled.slf4j.Logging
 import org.json4s.native.Serialization._
@@ -66,41 +67,46 @@ object FileToEvents extends Logging {
       }
     }
     parser.parse(args, FileToEventsArgs()) map { args =>
-      // get channelId
-      val channels = Storage.getMetaDataChannels
-      val channelMap = channels.getByAppid(args.appId).map(c => (c.name, c.id)).toMap
+      try {
+        // get channelId
+        val channels = Storage.getMetaDataChannels
+        val channelMap = channels.getByAppid(args.appId).map(c => (c.name, c.id)).toMap
 
-      val channelId: Option[Int] = args.channel.map { ch =>
-        if (!channelMap.contains(ch)) {
-          error(s"Channel ${ch} doesn't exist in this app.")
-          sys.exit(1)
+        val channelId: Option[Int] = args.channel.map { ch =>
+          if (!channelMap.contains(ch)) {
+            error(s"Channel ${ch} doesn't exist in this app.")
+            sys.exit(1)
+          }
+
+          channelMap(ch)
         }
 
-        channelMap(ch)
-      }
+        val channelStr = args.channel.map(n => " Channel " + n).getOrElse("")
 
-      val channelStr = args.channel.map(n => " Channel " + n).getOrElse("")
+        WorkflowUtils.modifyLogging(verbose = args.verbose)
+        @transient lazy implicit val formats = Utils.json4sDefaultFormats +
+          new EventJson4sSupport.APISerializer
+        val sc = WorkflowContext(
+          mode = "Import",
+          batch = "App ID " + args.appId + channelStr,
+          executorEnv = Runner.envStringToMap(args.env))
+        val rdd = sc.textFile(args.inputPath).filter(_.trim.nonEmpty).map { json =>
+          Try(read[Event](json)).recoverWith {
+            case e: Throwable =>
+              error(s"\nmalformed json => $json")
+              Failure(e)
+          }.get
+        }
+        val events = Storage.getPEvents()
+        events.write(events = rdd,
+          appId = args.appId,
+          channelId = channelId)(sc)
+        info("Events are imported.")
+        info("Done.")
 
-      WorkflowUtils.modifyLogging(verbose = args.verbose)
-      @transient lazy implicit val formats = Utils.json4sDefaultFormats +
-        new EventJson4sSupport.APISerializer
-      val sc = WorkflowContext(
-        mode = "Import",
-        batch = "App ID " + args.appId + channelStr,
-        executorEnv = Runner.envStringToMap(args.env))
-      val rdd = sc.textFile(args.inputPath).filter(_.trim.nonEmpty).map { json =>
-        Try(read[Event](json)).recoverWith {
-          case e: Throwable =>
-            error(s"\nmalformed json => $json")
-            Failure(e)
-        }.get
+      } finally {
+        CleanupFunctions.run()
       }
-      val events = Storage.getPEvents()
-      events.write(events = rdd,
-        appId = args.appId,
-        channelId = channelId)(sc)
-      info("Events are imported.")
-      info("Done.")
     }
   }
 }

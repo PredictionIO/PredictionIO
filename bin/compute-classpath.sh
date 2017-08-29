@@ -42,8 +42,25 @@ ASSEMBLY_JARS=$(printf "${MAIN_JAR}\n${DATA_JARS}" | paste -sd "," -)
 
 # Build up classpath
 CLASSPATH="${PIO_CONF_DIR}"
-CLASSPATH="$CLASSPATH:${FWDIR}/plugins/*"
-CLASSPATH="$CLASSPATH:${assembly_folder}/spark/*"
+
+# stable classpath for plugin JARs
+if [ -d "${FWDIR}/plugins" ]; then
+  lib_plugin_jars=`ls "${FWDIR}"/plugins/*`
+  lib_plugin_classpath=''
+  for J in $lib_plugin_jars; do
+    lib_plugin_classpath="${lib_plugin_classpath}:${J}"
+  done
+  CLASSPATH="$CLASSPATH${lib_plugin_classpath}"
+fi
+
+# stable classpath for Spark JARs
+lib_spark_jars=`ls "${assembly_folder}"/spark/*.jar`
+lib_spark_classpath=''
+for J in $lib_spark_jars; do
+  lib_spark_classpath="${lib_spark_classpath}:${J}"
+done
+CLASSPATH="$CLASSPATH${lib_spark_classpath}"
+
 CLASSPATH="$CLASSPATH:${MAIN_JAR}"
 
 # Add hadoop conf dir if given -- otherwise FileSystem.*, etc fail ! Note, this

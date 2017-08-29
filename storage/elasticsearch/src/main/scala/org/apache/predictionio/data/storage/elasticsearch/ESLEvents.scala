@@ -28,6 +28,7 @@ import org.apache.http.util.EntityUtils
 import org.apache.predictionio.data.storage.Event
 import org.apache.predictionio.data.storage.LEvents
 import org.apache.predictionio.data.storage.StorageClientConfig
+import org.elasticsearch.client.{ResponseException, RestClient}
 import org.joda.time.DateTime
 import org.json4s._
 import org.json4s.JsonDSL._
@@ -37,10 +38,9 @@ import org.json4s.ext.JodaTimeSerializers
 import grizzled.slf4j.Logging
 import org.apache.http.message.BasicHeader
 
-class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: String)
+class ESLEvents(val client: RestClient, config: StorageClientConfig, val index: String)
     extends LEvents with Logging {
   implicit val formats = DefaultFormats.lossless ++ JodaTimeSerializers.all
-  val restClient = client.open()
 
   def getEsType(appId: Int, channelId: Option[Int] = None): String = {
     channelId.map { ch =>
@@ -52,7 +52,7 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
 
   override def init(appId: Int, channelId: Option[Int] = None): Boolean = {
     val estype = getEsType(appId, channelId)
-    ESUtils.createIndex(restClient, index,
+    ESUtils.createIndex(client, index,
       ESUtils.getNumberOfShards(config, index.toUpperCase),
       ESUtils.getNumberOfReplicas(config, index.toUpperCase))
     val json =
@@ -71,7 +71,7 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
           ("tags" -> ("type" -> "keyword")) ~
           ("prId" -> ("type" -> "keyword")) ~
           ("creationTime" -> ("type" -> "date"))))
-    ESUtils.createMapping(restClient, index, estype, compact(render(json)))
+    ESUtils.createMapping(client, index, estype, compact(render(json)))
     true
   }
 
@@ -82,7 +82,7 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
         ("query" ->
           ("match_all" -> List.empty))
       val entity = new NStringEntity(compact(render(json)), ContentType.APPLICATION_JSON)
-      restClient.performRequest(
+      client.performRequest(
         "POST",
         s"/$index/$estype/_delete_by_query",
         Map("refresh" -> ESUtils.getEventDataRefresh(config)).asJava,
@@ -99,9 +99,7 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
     }
   }
 
-  override def close(): Unit = {
-    restClient.close()
-  }
+  override def close(): Unit = {}
 
   override def futureInsert(
     event: Event,
@@ -126,7 +124,7 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
           ("creationTime" -> ESUtils.formatUTCDateTime(event.creationTime)) ~
           ("properties" -> write(event.properties.toJObject))
         val entity = new NStringEntity(compact(render(json)), ContentType.APPLICATION_JSON)
-        val response = restClient.performRequest(
+        val response = client.performRequest(
           "POST",
           s"/$index/$estype/$id",
           Map("refresh" -> ESUtils.getEventDataRefresh(config)).asJava,
@@ -185,7 +183,7 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
         }.mkString("", "\n", "\n")
 
         val entity = new StringEntity(json)
-        val response = restClient.performRequest(
+        val response = client.performRequest(
           "POST",
           "/_bulk",
           Map("refresh" -> ESUtils.getEventDataRefresh(config)).asJava,
@@ -215,6 +213,29 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
     }
   }
 
+  private def exists(client: RestClient, estype: String, id: Int): Boolean = {
+    try {
+      client.performRequest(
+        "GET",
+        s"/$index/$estype/$id",
+        Map.empty[String, String].asJava).getStatusLine.getStatusCode match {
+          case 200 => true
+          case _ => false
+        }
+    } catch {
+      case e: ResponseException =>
+        e.getResponse.getStatusLine.getStatusCode match {
+          case 404 => false
+          case _ =>
+            error(s"Failed to access to /$index/$estype/$id", e)
+            false
+        }
+      case e: IOException =>
+        error(s"Failed to access to $index/$estype/$id", e)
+        false
+    }
+  }
+
   override def futureGet(
     eventId: String,
     appId: Int,
@@ -227,7 +248,7 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
             ("term" ->
               ("eventId" -> eventId)))
         val entity = new NStringEntity(compact(render(json)), ContentType.APPLICATION_JSON)
-        val response = restClient.performRequest(
+        val response = client.performRequest(
           "POST",
           s"/$index/$estype/_search",
           Map.empty[String, String].asJava,
@@ -260,7 +281,7 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
             ("term" ->
               ("eventId" -> eventId)))
         val entity = new NStringEntity(compact(render(json)), ContentType.APPLICATION_JSON)
-        val response = restClient.performRequest(
+        val response = client.performRequest(
           "POST",
           s"/$index/$estype/_delete_by_query",
           Map("refresh" -> ESUtils.getEventDataRefresh(config)).asJava,
@@ -301,8 +322,8 @@ class ESLEvents(val client: ESClient, config: StorageClientConfig, val index: St
           startTime, untilTime, entityType, entityId,
           eventNames, targetEntityType, targetEntityId, reversed)
         limit.getOrElse(20) match {
-          case -1 => ESUtils.getEventAll(restClient, index, estype, query).toIterator
-          case size => ESUtils.getEvents(restClient, index, estype, query, size).toIterator
+          case -1 => ESUtils.getEventAll(client, index, estype, query).toIterator
+          case size => ESUtils.getEvents(client, index, estype, query, size).toIterator
         }
       } catch {
         case e: IOException =>

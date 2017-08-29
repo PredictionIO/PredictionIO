@@ -30,7 +30,7 @@ libraryDependencies ++= Seq(
   "org.elasticsearch"       %% elasticsearchSparkArtifact.value % elasticsearchVersion.value
     exclude("org.apache.spark", "*"),
   "org.elasticsearch"        % "elasticsearch-hadoop-mr"  % elasticsearchVersion.value,
-  "org.scalatest"           %% "scalatest"                % "2.1.7" % "test")
+  "org.specs2"              %% "specs2"                   % "2.3.13" % "test")
 
 parallelExecution in Test := false
 
@@ -39,8 +39,10 @@ pomExtra := childrenPomExtra.value
 assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
 
 assemblyShadeRules in assembly := Seq(
-  ShadeRule.rename("org.apache.http.**" -> "shadeio.data.http.@1").inAll
-)
+  ShadeRule.rename("org.apache.http.**" ->
+    "org.apache.predictionio.shaded.org.apache.http.@1").inAll,
+  ShadeRule.rename("org.elasticsearch.client.**" ->
+    "org.apache.predictionio.shaded.org.elasticsearch.client.@1").inAll)
 
 // skip test in assembly
 test in assembly := {}

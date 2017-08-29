@@ -27,37 +27,31 @@ import org.apache.http.util.EntityUtils
 import org.apache.predictionio.data.storage.App
 import org.apache.predictionio.data.storage.Apps
 import org.apache.predictionio.data.storage.StorageClientConfig
-import org.elasticsearch.client.RestClient
+import org.elasticsearch.client.{ResponseException, RestClient}
 import org.json4s._
 import org.json4s.JsonDSL._
 import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization.write
 
 import grizzled.slf4j.Logging
-import org.elasticsearch.client.ResponseException
 
 /** Elasticsearch implementation of Items. */
-class ESApps(client: ESClient, config: StorageClientConfig, index: String)
+class ESApps(client: RestClient, config: StorageClientConfig, index: String)
     extends Apps with Logging {
   implicit val formats = DefaultFormats.lossless
   private val estype = "apps"
   private val seq = new ESSequences(client, config, index)
 
-  val restClient = client.open()
-  try {
-    ESUtils.createIndex(restClient, index,
-      ESUtils.getNumberOfShards(config, index.toUpperCase),
-      ESUtils.getNumberOfReplicas(config, index.toUpperCase))
-    val mappingJson =
-      (estype ->
-        ("_all" -> ("enabled" -> false)) ~
-        ("properties" ->
-          ("id" -> ("type" -> "keyword")) ~
-          ("name" -> ("type" -> "keyword"))))
-    ESUtils.createMapping(restClient, index, estype, compact(render(mappingJson)))
-  } finally {
-    restClient.close()
-  }
+  ESUtils.createIndex(client, index,
+    ESUtils.getNumberOfShards(config, index.toUpperCase),
+    ESUtils.getNumberOfReplicas(config, index.toUpperCase))
+  val mappingJson =
+    (estype ->
+      ("_all" -> ("enabled" -> false)) ~
+      ("properties" ->
+        ("id" -> ("type" -> "keyword")) ~
+        ("name" -> ("type" -> "keyword"))))
+  ESUtils.createMapping(client, index, estype, compact(render(mappingJson)))
 
   def insert(app: App): Option[Int] = {
     val id = app.id match {
@@ -77,9 +71,8 @@ class ESApps(client: ESClient, config: StorageClientConfig, index: String)
   }
 
   def get(id: Int): Option[App] = {
-    val restClient = client.open()
     try {
-      val response = restClient.performRequest(
+      val response = client.performRequest(
         "GET",
         s"/$index/$estype/$id",
         Map.empty[String, String].asJava)
@@ -101,20 +94,17 @@ class ESApps(client: ESClient, config: StorageClientConfig, index: String)
       case e: IOException =>
         error(s"Failed to access to /$index/$estype/$id", e)
         None
-    } finally {
-      restClient.close()
     }
   }
 
   def getByName(name: String): Option[App] = {
-    val restClient = client.open()
     try {
       val json =
         ("query" ->
           ("term" ->
             ("name" -> name)))
       val entity = new NStringEntity(compact(render(json)), ContentType.APPLICATION_JSON)
-      val response = restClient.performRequest(
+      val response = client.performRequest(
         "POST",
         s"/$index/$estype/_search",
         Map.empty[String, String].asJava,
@@ -131,33 +121,27 @@ class ESApps(client: ESClient, config: StorageClientConfig, index: String)
       case e: IOException =>
         error(s"Failed to access to /$index/$estype/_search", e)
         None
-    } finally {
-      restClient.close()
     }
   }
 
   def getAll(): Seq[App] = {
-    val restClient = client.open()
     try {
       val json =
         ("query" ->
           ("match_all" -> Nil))
-      ESUtils.getAll[App](restClient, index, estype, compact(render(json)))
+      ESUtils.getAll[App](client, index, estype, compact(render(json)))
     } catch {
       case e: IOException =>
         error("Failed to access to /$index/$estype/_search", e)
         Nil
-    } finally {
-      restClient.close()
     }
   }
 
   def update(app: App): Unit = {
     val id = app.id.toString
-    val restClient = client.open()
     try {
       val entity = new NStringEntity(write(app), ContentType.APPLICATION_JSON);
-      val response = restClient.performRequest(
+      val response = client.performRequest(
         "POST",
         s"/$index/$estype/$id",
         Map("refresh" -> "true").asJava,
@@ -173,15 +157,12 @@ class ESApps(client: ESClient, config: StorageClientConfig, index: String)
     } catch {
       case e: IOException =>
         error(s"Failed to update $index/$estype/$id", e)
-    } finally {
-      restClient.close()
     }
   }
 
   def delete(id: Int): Unit = {
-    val restClient = client.open()
     try {
-      val response = restClient.performRequest(
+      val response = client.performRequest(
         "DELETE",
         s"/$index/$estype/$id",
         Map("refresh" -> "true").asJava)
@@ -195,8 +176,6 @@ class ESApps(client: ESClient, config: StorageClientConfig, index: String)
     } catch {
       case e: IOException =>
         error(s"Failed to update $index/$estype/id", e)
-    } finally {
-      restClient.close()
     }
   }
 }
