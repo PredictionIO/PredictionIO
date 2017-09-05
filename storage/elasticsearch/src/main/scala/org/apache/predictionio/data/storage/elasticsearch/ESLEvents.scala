@@ -287,16 +287,10 @@ class ESLEvents(val client: RestClient, config: StorageClientConfig, val index: 
           Map("refresh" -> ESUtils.getEventDataRefresh(config)).asJava,
           entity)
         val jsonResponse = parse(EntityUtils.toString(response.getEntity))
-        val result = (jsonResponse \ "result").extract[String]
-        result match {
-          case "deleted" => true
-          case _ =>
-            error(s"[$result] Failed to update $index/$estype:$eventId")
-            false
-        }
+        (jsonResponse \ "deleted").extract[Int] > 0
       } catch {
         case e: IOException =>
-          error(s"Failed to update $index/$estype:$eventId", e)
+          error(s"Failed to delete $index/$estype:$eventId", e)
           false
       }
     }
