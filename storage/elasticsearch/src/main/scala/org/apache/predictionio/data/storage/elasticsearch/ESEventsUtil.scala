@@ -51,11 +51,9 @@ object ESEventsUtil {
     }
 
     def getOptStringCol(col: String): Option[String] = {
-      val r = result.get(new Text(col))
-      if (r == null) {
-        None
-      } else {
-        Some(r.asInstanceOf[Text].toString())
+      result.get(new Text(col)) match {
+        case x if x.isInstanceOf[Text] => Some(x.asInstanceOf[Text].toString)
+        case _ => None
       }
     }
 
