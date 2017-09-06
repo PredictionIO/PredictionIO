@@ -449,7 +449,7 @@
 
 - template:
     name: Deeplearning4j RNTN
-    repo: "https://github.com/ts335793/template-scala-parallel-dl4j-rntn"
+    repo: "https://github.com/thomasste/template-scala-parallel-dl4j-rntn"
     description: |-
       Recursive Neural Tensor Network algorithm is supervised learning algorithm used to predict sentiment of sentences. This template is based on deeplearning4j RNTN example: https://github.com/SkymindIO/deeplearning4j-nlp-examples/tree/master/src/main/java/org/deeplearning4j/rottentomatoes/rntn. It's goal is to show how to integrate deeplearning4j library with PredictionIO.
     tags: [classification, nlp]
@@ -459,7 +459,7 @@
     status: alpha
     pio_min_version: 0.9.2
     apache_pio_convesion_required: "requires conversion"
-    support_link: '<a href="https://github.com/ts335793/template-scala-parallel-dl4j-rntn/issues">Github issues</a>'
+    support_link: '<a href="https://github.com/thomasste/template-scala-parallel-dl4j-rntn/issues">Github issues</a>'
 
 - template:
     name: classifier-kafka-streaming-template
@@ -601,7 +601,7 @@
 
 - template:
     name: Spark Deeplearning4j Word2Vec
-    repo: "https://github.com/ts335793/template-scala-spark-dl4j-word2vec"
+    repo: "https://github.com/thomasste/template-scala-spark-dl4j-word2vec"
     description: |-
       This template shows how to integrate Deeplearnign4j spark api with PredictionIO on example of app which uses Word2Vec algorithm to predict nearest words.
     tags: [nlp]
@@ -611,7 +611,7 @@
     status: stable
     pio_min_version: 0.9.2
     apache_pio_convesion_required: "requires conversion"
-    support_link: '<a href="https://github.com/ts335793/template-scala-spark-dl4j-word2vec/issues">Github issues</a>'
+    support_link: '<a href="https://github.com/thomasste/template-scala-spark-dl4j-word2vec/issues">Github issues</a>'
 
 - template:
     name: Sentiment Analysis Template
@@ -629,7 +629,7 @@
 
 - template:
     name: Recursive Neural Networks (Sentiment Analysis)
-    repo: "https://github.com/ts335793/template-scala-rnn"
+    repo: "https://github.com/thomasste/template-scala-rnn"
     description: |-
       Predicting sentiment of phrases with use of Recursive Neural Network algorithm and OpenNLP parser.
     tags: [nlp]
@@ -639,7 +639,7 @@
     status: stable
     pio_min_version: 0.9.2
     apache_pio_convesion_required: "requires conversion"
-    support_link: '<a href="https://github.com/ts335793/template-scala-rnn/issues">Github issues</a>'
+    support_link: '<a href="https://github.com/thomasste/template-scala-rnn/issues">Github issues</a>'
 
 - template:
     name: CoreNLP Text Classification
