@@ -59,6 +59,15 @@ then
   . ${PIO_HOME}/bin/compute-classpath.sh
   shift
   ${SPARK_HOME}/bin/spark-shell --jars ${ASSEMBLY_JARS} $@
+elif [[ "$1" == "--with-pyspark" ]]
+then
+  echo "Starting the PIO shell with the Apache Spark Shell."
+  # Get paths of assembly jars to pass to pyspark
+  . ${PIO_HOME}/bin/compute-classpath.sh
+  shift
+  export PYTHONSTARTUP=${PIO_HOME}/python/pypio/shell.py
+  export PYTHONPATH=${PIO_HOME}/python
+  ${SPARK_HOME}/bin/pyspark --jars ${ASSEMBLY_JARS} $@
 else
   echo -e "\033[0;33mStarting the PIO shell without Apache Spark.\033[0m"
   echo -e "\033[0;33mIf you need the Apache Spark library, run 'pio-shell --with-spark [spark-submit arguments...]'.\033[0m"

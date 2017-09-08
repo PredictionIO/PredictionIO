@@ -39,6 +39,7 @@ case class WorkflowArgs(
   stopAfterRead: Boolean = false,
   stopAfterPrepare: Boolean = false,
   skipSanityCheck: Boolean = false,
+  mainPyFile: Option[String] = None,
   jsonExtractor: JsonExtractorOption = JsonExtractorOption.Both)
 
 object RunWorkflow extends Logging {
@@ -85,8 +86,12 @@ object RunWorkflow extends Logging {
       (if (wa.batch != "") Seq("--batch", wa.batch) else Nil) ++
       Seq("--json-extractor", wa.jsonExtractor.toString)
 
+    val resourceName = wa.mainPyFile match {
+      case Some(x) => x
+      case _ => "org.apache.predictionio.workflow.CreateWorkflow"
+    }
     Runner.runOnSpark(
-      "org.apache.predictionio.workflow.CreateWorkflow",
+      resourceName,
       args,
       sa,
       jarFiles,

@@ -214,6 +214,9 @@ object Console extends Logging {
           opt[String]("engine-params-key") action { (x, c) =>
             c.copy(workflow = c.workflow.copy(engineParamsKey = Some(x)))
           },
+          opt[String]("main-py-file") action { (x, c) =>
+            c.copy(workflow = c.workflow.copy(mainPyFile = Some(x)))
+          },
           opt[String]("json-extractor") action { (x, c) =>
             c.copy(workflow = c.workflow.copy(jsonExtractor = JsonExtractorOption.withName(x)))
           } validate { x =>

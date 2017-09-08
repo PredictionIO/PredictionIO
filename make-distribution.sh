@@ -83,6 +83,7 @@ cd ${FWDIR}
 rm -rf ${DISTDIR}
 mkdir -p ${DISTDIR}/bin
 mkdir -p ${DISTDIR}/conf
+mkdir -p ${DISTDIR}/python
 mkdir -p ${DISTDIR}/lib
 mkdir -p ${DISTDIR}/lib/spark
 mkdir -p ${DISTDIR}/project
@@ -91,6 +92,7 @@ mkdir -p ${DISTDIR}/sbt
 
 cp ${FWDIR}/bin/* ${DISTDIR}/bin || :
 cp ${FWDIR}/conf/* ${DISTDIR}/conf
+cp -r ${FWDIR}/python/* ${DISTDIR}/python
 cp ${FWDIR}/project/build.properties ${DISTDIR}/project
 cp ${FWDIR}/sbt/sbt ${DISTDIR}/sbt
 cp ${FWDIR}/assembly/src/universal/lib/*assembly*jar ${DISTDIR}/lib
