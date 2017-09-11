@@ -71,7 +71,7 @@ akkaVersion in ThisBuild := sys.props.getOrElse(
   "akka.version",
   scalaSparkDepsVersion(scalaBinaryVersion.value)(sparkBinaryVersion.value)("akka"))
 
-lazy val es = sys.props.getOrElse("elasticsearch.version", "5.4.1")
+lazy val es = sys.props.getOrElse("elasticsearch.version", "5.5.2")
 
 elasticsearchVersion in ThisBuild := es
 
