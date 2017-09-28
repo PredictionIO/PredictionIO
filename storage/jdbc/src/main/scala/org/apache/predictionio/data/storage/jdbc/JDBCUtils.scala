@@ -44,6 +44,7 @@ object JDBCUtils {
     driverType(url) match {
       case "postgresql" => sqls"bytea"
       case "mysql" => sqls"longblob"
+      case "oracle" => sqls"blob"
       case _ => sqls"longblob"
     }
   }
@@ -57,6 +58,7 @@ object JDBCUtils {
     driverType(url) match {
       case "postgresql" => "to_timestamp"
       case "mysql" => "from_unixtime"
+      case "oracle" => "TO_DATE('19700101','yyyymmdd') + ((?)/24/60/60)"
       case _ => "from_unixtime"
     }
   }
@@ -103,4 +105,24 @@ object JDBCUtils {
     */
   def eventTableName(namespace: String, appId: Int, channelId: Option[Int]): String =
     s"${namespace}_${appId}${channelId.map("_" + _).getOrElse("")}"
+
+  def ifnotcreate(url: String, sql: String) : String = {
+    driverType(url) match {
+      case "oracle" => s"""
+        declare
+        error_code NUMBER;
+        begin
+        EXECUTE IMMEDIATE '$sql';
+        exception
+        when others then
+          if(SQLCODE = -955) then
+                        NULL;
+          else
+                        RAISE;
+          end if;
+        end;
+          """
+      case _ => sql
+    }
+  }
 }

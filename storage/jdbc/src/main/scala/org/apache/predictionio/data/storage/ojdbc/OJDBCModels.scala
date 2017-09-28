@@ -16,43 +16,41 @@
  */
 
 
-package org.apache.predictionio.data.storage.jdbc
+package org.apache.predictionio.data.storage.ojdbc
+
+import java.io.{ByteArrayInputStream, InputStream}
+import java.sql.PreparedStatement
 
 import grizzled.slf4j.Logging
 import org.apache.predictionio.data.storage.Model
 import org.apache.predictionio.data.storage.Models
 import org.apache.predictionio.data.storage.StorageClientConfig
+import org.apache.predictionio.data.storage.jdbc.{JDBCModels, JDBCUtils}
 import scalikejdbc._
 
 /** JDBC implementation of [[Models]] */
-class JDBCModels(client: String, config: StorageClientConfig, prefix: String)
-  extends Models with Logging {
-  /** Database table name for this data access object */
-
-  val tableName = JDBCUtils.prefixTableName(prefix, "models")
-
-  def init() = {
+class OJDBCModels(client: String, config: StorageClientConfig, prefix: String)
+  extends JDBCModels(client, config, prefix) {
+  override def init() = {
     /** Determines binary column type based on JDBC driver type */
     val binaryColumnType = JDBCUtils.binaryColumnType(client)
+    val sql =
+      s"""
+    create table ${tableName.value} (
+      id varchar2(100) not null primary key,
+      models ${binaryColumnType.value} not null)
+    """.replaceAll("\n", "")
+
     DB autoCommit { implicit session =>
-      sql"""
-    create table if not exists $tableName (
-      id varchar(100) not null primary key,
-      models $binaryColumnType not null)""".execute().apply()
+      SQL(JDBCUtils.ifnotcreate(client, sql)).execute().apply()
     }
   }
 
-  def insert(i: Model): Unit = DB localTx { implicit session =>
-    sql"insert into $tableName values(${i.id}, ${i.models})".update().apply()
-  }
-
-  def get(id: String): Option[Model] = DB readOnly { implicit session =>
-    sql"select id, models from $tableName where id = $id".map { r =>
-      Model(id = r.string("id"), models = r.bytes("models"))
-    }.single().apply()
-  }
-
-  def delete(id: String): Unit = DB localTx { implicit session =>
-    sql"delete from $tableName where id = $id".execute().apply()
+  override def insert(i: Model): Unit = DB localTx { implicit session =>
+    val bytesBinder = ParameterBinder[InputStream](
+      value = new ByteArrayInputStream(i.models),
+      binder = _.setBinaryStream(_, new ByteArrayInputStream(i.models), i.models.length)
+    )
+    sql"insert into $tableName values(${i.id}, ${bytesBinder})".update().apply()
   }
 }

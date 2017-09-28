@@ -31,12 +31,14 @@ class JDBCAccessKeys(client: String, config: StorageClientConfig, prefix: String
   extends AccessKeys with Logging {
   /** Database table name for this data access object */
   val tableName = JDBCUtils.prefixTableName(prefix, "accesskeys")
-  DB autoCommit { implicit session =>
-    sql"""
+  def init() = {
+    DB autoCommit { implicit session =>
+      sql"""
     create table if not exists $tableName (
       accesskey varchar(64) not null primary key,
       appid integer not null,
       events text)""".execute().apply()
+    }
   }
 
   def insert(accessKey: AccessKey): Option[String] = DB localTx { implicit s =>

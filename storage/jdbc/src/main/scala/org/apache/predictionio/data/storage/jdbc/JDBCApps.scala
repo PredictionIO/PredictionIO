@@ -29,14 +29,15 @@ class JDBCApps(client: String, config: StorageClientConfig, prefix: String)
   extends Apps with Logging {
   /** Database table name for this data access object */
   val tableName = JDBCUtils.prefixTableName(prefix, "apps")
-  DB autoCommit { implicit session =>
-    sql"""
+  def init() = {
+    DB autoCommit { implicit session =>
+      sql"""
     create table if not exists $tableName (
       id serial not null primary key,
       name text not null,
       description text)""".execute.apply()
+    }
   }
-
   def insert(app: App): Option[Int] = DB localTx { implicit session =>
     val q = if (app.id == 0) {
       sql"""

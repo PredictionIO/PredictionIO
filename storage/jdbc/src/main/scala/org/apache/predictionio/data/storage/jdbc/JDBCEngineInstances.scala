@@ -29,8 +29,9 @@ class JDBCEngineInstances(client: String, config: StorageClientConfig, prefix: S
   extends EngineInstances with Logging {
   /** Database table name for this data access object */
   val tableName = JDBCUtils.prefixTableName(prefix, "engineinstances")
-  DB autoCommit { implicit session =>
-    sql"""
+  def init() = {
+    DB autoCommit { implicit session =>
+      sql"""
     create table if not exists $tableName (
       id varchar(100) not null primary key,
       status text not null,
@@ -47,8 +48,8 @@ class JDBCEngineInstances(client: String, config: StorageClientConfig, prefix: S
       preparatorParams text not null,
       algorithmsParams text not null,
       servingParams text not null)""".execute().apply()
+    }
   }
-
   def insert(i: EngineInstance): String = DB localTx { implicit session =>
     val id = java.util.UUID.randomUUID().toString
     sql"""
