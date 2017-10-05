@@ -21,6 +21,7 @@ name := "apache-predictionio-data"
 
 libraryDependencies ++= Seq(
   "com.github.nscala-time" %% "nscala-time"    % "2.6.0",
+  "com.google.guava"        % "guava"          % "14.0.1",
   "io.spray"               %% "spray-can"      % "1.3.3",
   "io.spray"               %% "spray-routing"  % "1.3.3",
   "io.spray"               %% "spray-testkit"  % "1.3.3" % "test",
