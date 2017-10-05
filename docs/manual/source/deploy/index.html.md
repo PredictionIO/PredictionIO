@@ -31,8 +31,10 @@ After you have [downloaded an Engine Template](/start/download/),  you can deplo
 
 1. Run `pio app new **your-app-name-here**` and specify the `appName` used in the template's *engine.json* file (you can set it there to your preference).
 2. Run `pio build` to update the engine
-2. Run `pio train` to train a predictive model with training data
-3. Run `pio deploy` to deploy the engine as a service
+3. Run `pio train` to train a predictive model with training data
+4. Run `pio deploy` to deploy the engine as a service
+
+INFO: See [here](/cli/#engine-commands) to know details of command-line interface for the engine server.
 
 A deployed engine listens to port 8000 by default. Your application can [send query to retrieve prediction](/appintegration/) in real-time through the REST interface.
 

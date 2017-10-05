@@ -428,3 +428,5 @@ Please use the following CLI command:
 ```
 $ pio app data-delete <your_app_name>
 ```
+
+INFO: See [here](/cli/#event-server-commands) to know details of command-line interface for the event server.
