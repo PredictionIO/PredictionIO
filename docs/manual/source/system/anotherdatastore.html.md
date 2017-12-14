@@ -114,6 +114,10 @@ PredictionIO comes with the following sources:
   * Type name is **hdfs**.
   * Can be used for *Model Data* repository
 
+- **S3**:
+  * Type name is **s3**.
+  * Can be used for *Model Data* repository
+
 Each repository can be configured to use different sources as shown above.
 
 Each source has its own set of configuration parameters. Configuration variables will be explained in more details in later sections below (see Data Store Configuration).
@@ -291,6 +295,45 @@ supported.
 
     HDFS path at where models are stored, e.g.
     `PIO_STORAGE_SOURCES_HDFS_PATH=/mymodels`
+
+
+#### S3 Configuration
+
+Variable Format: `PIO_STORAGE_SOURCES_[NAME]_TYPE=s3`
+
+Supported Repositories: **model**
+
+To provide authentication information, you can set the `AWS_ACCESS_KEY_ID`
+and `AWS_SECRET_ACCESS_KEY` environment variables or use one of the other
+methods in the [AWS Setup Docs](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#config-settings-and-precedence)
+
+When `TYPE` is set to `s3`, the following configuration keys are
+supported.
+
+-   REGION (mandatory)
+
+    AWS Region to use, e.g.
+    `PIO_STORAGE_SOURCES_S3_REGION=us-east-1`
+
+-   BUCKET_NAME (mandatory)
+
+    S3 Bucket where models are stored, e.g.
+    `PIO_STORAGE_SOURCES_S3_BUCKET_NAME=pio_bucket`
+
+-   BASE_PATH (optional)
+
+    S3 base path where models are stored, e.g.
+    `PIO_STORAGE_SOURCES_S3_BASE_PATH=pio_model`
+
+-   DISABLE_CHUNKED_ENCODING (optional)
+
+    Disable the use of Chunked Encoding when transferring files to/from S3, e.g.
+    `PIO_STORAGE_SOURCES_S3_DISABLE_CHUNKED_ENCODING=true`
+
+-   ENDPOINT (optional)
+
+    S3 Endpoint to use, e.g.
+    `PIO_STORAGE_SOURCES_S3_ENDPOINT=http://localstack:4572`
 
 
 ## Adding Support of Other Backends
