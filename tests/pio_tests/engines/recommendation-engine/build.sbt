@@ -19,13 +19,13 @@ import AssemblyKeys._
 
 assemblySettings
 
-scalaVersion in ThisBuild := sys.env.getOrElse("PIO_SCALA_VERSION", "2.10.5")
+scalaVersion in ThisBuild := sys.env.getOrElse("PIO_SCALA_VERSION", "2.11.8")
 
 name := "template-scala-parallel-recommendation"
 
 organization := "org.apache.predictionio"
 
 libraryDependencies ++= Seq(
-  "org.apache.predictionio" %% "apache-predictionio-core" % "0.12.0-incubating" % "provided",
-  "org.apache.spark"        %% "spark-core"    % sys.env.getOrElse("PIO_SPARK_VERSION", "1.6.3") % "provided",
-  "org.apache.spark"        %% "spark-mllib"   % sys.env.getOrElse("PIO_SPARK_VERSION", "1.6.3") % "provided")
+  "org.apache.predictionio" %% "apache-predictionio-core" % "0.13.0-SNAPSHOT" % "provided",
+  "org.apache.spark"        %% "spark-core"    % sys.env.getOrElse("PIO_SPARK_VERSION", "2.1.1") % "provided",
+  "org.apache.spark"        %% "spark-mllib"   % sys.env.getOrElse("PIO_SPARK_VERSION", "2.1.1") % "provided")

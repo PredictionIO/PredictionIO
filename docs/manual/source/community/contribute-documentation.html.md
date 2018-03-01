@@ -21,10 +21,10 @@ limitations under the License.
 
 ## How to Write Documentation
 
-You can help improve the Apache PredictionIO (incubating) documentation by
+You can help improve the Apache PredictionIO documentation by
 submitting tutorials, writing how-tos, fixing errors, and adding missing
 information. You can edit any page live on
-[GitHub](https://github.com/apache/incubator-predictionio) by clicking the
+[GitHub](https://github.com/apache/predictionio) by clicking the
 pencil icon on any page or open a [Pull
 Request](https://help.github.com/articles/creating-a-pull-request/).
 
@@ -37,7 +37,7 @@ release.
 
 ## Installing Locally
 
-Apache PredictionIO (incubating) documentation uses
+Apache PredictionIO documentation uses
 [Middleman](http://middlemanapp.com/) and is hosted on Apache.
 
 [Gems](http://rubygems.org/) are managed with [Bundler](http://bundler.io/).
@@ -189,15 +189,27 @@ NOTE: Files must end with a `.erb` extension to be processed as ERB.
 
 ## Going Live
 
-Pushing to the `livedoc` branch will update
-http://predictionio.incubator.apache.org in about 5 minutes.
+For Apache project committers, pushing to the `livedoc` branch of PredictionIO ASF git will update
+http://predictionio.apache.org in about 10 minutes.
+
+Make sure the **apache.org** remote is attached to your `predictionio` repo, and if not, add it:
+
+```
+$ git remote -v
+$ git remote add apache https://git-wip-us.apache.org/repos/asf/predictionio.git
+```
+
+Then, push the `livedoc` branch. (It will be published and synced with the public GitHub mirror):
+
+```
+$ git push apache livedoc
+```
 
 You can check the progress of each build on [Apache's
-Jenkins](https://builds.apache.org/).
+Jenkins](https://builds.apache.org/):
 
-```
-$ git push origin livedoc
-```
+* [build-site](https://builds.apache.org/job/PredictionIO-build-site/)
+* [publish-site](https://builds.apache.org/job/PredictionIO-publish-site/)
 
 ## Checking the Site
 

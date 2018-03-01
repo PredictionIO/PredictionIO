@@ -27,7 +27,7 @@ DataSource reads and selects useful data from the Event Store (data store of the
 
 ## readTraining()
 
-You need to implment readTraining() of [PDataSource](https://predictionio.incubator.apache.org/api/current/#org.apache.predictionio.controller.PDataSource), where you can use the [PEventStore Engine API](https://predictionio.incubator.apache.org/api/current/#org.apache.predictionio.data.store.PEventStore$) to read the events and create the TrainingData based on the events.
+You need to implment readTraining() of [PDataSource](https://predictionio.apache.org/api/current/#org.apache.predictionio.controller.PDataSource), where you can use the [PEventStore Engine API](https://predictionio.apache.org/api/current/#org.apache.predictionio.data.store.PEventStore$) to read the events and create the TrainingData based on the events.
 
 The following code example reads user "view" and "buy" item events, filters specific type of events for future processing and returns TrainingData accordingly.
 
@@ -64,9 +64,9 @@ class DataSource(val dsp: DataSourceParams)
 
 ## Using PEventStore Engine API
 
-Please see [Event Server Overview](https://predictionio.incubator.apache.org/datacollection/) to understand [EventAPI](https://predictionio.incubator.apache.org/datacollection/eventapi/) and [event modeling](https://predictionio.incubator.apache.org/datacollection/eventmodel/).
+Please see [Event Server Overview](https://predictionio.apache.org/datacollection/) to understand [EventAPI](https://predictionio.apache.org/datacollection/eventapi/) and [event modeling](https://predictionio.apache.org/datacollection/eventmodel/).
 
-With [PEventStore Engine API](https://predictionio.incubator.apache.org/api/current/#org.apache.predictionio.data.store.PEventStore$), you can easily read different events in DataSource and get the information you need.
+With [PEventStore Engine API](https://predictionio.apache.org/api/current/#org.apache.predictionio.data.store.PEventStore$), you can easily read different events in DataSource and get the information you need.
 
 For example, let's say you have events like the following:
 
@@ -117,7 +117,7 @@ Then following code could read these events and extract the properties field of 
 
 If you have used special events `$set/$unset/$delete` setting entity's properties, you can retrieve it with `PEventStore.aggregateProperties()`.
 
-Please see [event modeling](https://predictionio.incubator.apache.org/datacollection/eventmodel/) to understand usage of special `$set/$unset/$delete` events.
+Please see [event modeling](https://predictionio.apache.org/datacollection/eventmodel/) to understand usage of special `$set/$unset/$delete` events.
 
 For example, the following code show how you could retrieve properties of the "item" entities:
 
@@ -163,7 +163,7 @@ A few example usages of Preparator:
 
 ## prepare()
 
-You need to implement the `prepare()` method of [PPrepartor](https://predictionio.incubator.apache.org/api/current/#org.apache.predictionio.controller.PPreparator) to perform such tasks.
+You need to implement the `prepare()` method of [PPrepartor](https://predictionio.apache.org/api/current/#org.apache.predictionio.controller.PPreparator) to perform such tasks.
 
 Example:
 
@@ -177,21 +177,21 @@ The two methods of the Algorithm class are train() and predict():
 ## train()
 
 train() is responsible for training a predictive model. It is called when you
-run `pio train`. Apache PredictionIO (incubating) will store this model.
+run `pio train`. Apache PredictionIO will store this model.
 
 ## predict()
 
 predict() is responsible for using this model to make prediction. It is called when you send a JSON query to the engine. Note that predict() is called in real time.
 
-Apache PredictionIO (incubating) supports two types of algorithms:
+Apache PredictionIO supports two types of algorithms:
 
-- **[P2LAlgorithm](https://predictionio.incubator.apache.org/api/current/#org.apache.predictionio.controller.P2LAlgorithm)**: trains a Model which does not contain RDD
-- **[PAlgorithm](https://predictionio.incubator.apache.org/api/current/#org.apache.predictionio.controller.PAlgorithm)**: trains a Model which contains RDD
+- **[P2LAlgorithm](https://predictionio.apache.org/api/current/#org.apache.predictionio.controller.P2LAlgorithm)**: trains a Model which does not contain RDD
+- **[PAlgorithm](https://predictionio.apache.org/api/current/#org.apache.predictionio.controller.PAlgorithm)**: trains a Model which contains RDD
 
 ## P2LAlgorithm
 
 For `P2LAlgorithm`, the Model is automatically serialized and persisted by
-Apache PredictionIO (incubating) after training.
+Apache PredictionIO after training.
 
 Implementing `IPersistentModel` and `IPersistentModelLoader` is optional for P2LAlgorithm.
 
@@ -213,7 +213,7 @@ Example:
 
 ## using LEventStore Engine API in predict()
 
-You may use [LEventStore.findByEntity()](https://predictionio.incubator.apache.org/api/current/#org.apache.predictionio.data.store.LEventStore$) to retrieve events of a specific entity. For example, retrieve recent events of the user specified in the query) and use these recent events to make prediction in real time.
+You may use [LEventStore.findByEntity()](https://predictionio.apache.org/api/current/#org.apache.predictionio.data.store.LEventStore$) to retrieve events of a specific entity. For example, retrieve recent events of the user specified in the query) and use these recent events to make prediction in real time.
 
 
 For example, the following code reads the recent 10 view events of `query.user`:
@@ -253,7 +253,7 @@ Example:
 
 ## serve()
 
-You need to implement the serve() method of the class [LServing](https://predictionio.incubator.apache.org/api/current/#org.apache.predictionio.controller.LServing). The serve() method processes predicted result. It is also responsible for combining multiple predicted results into one if you have more than one predictive model.
+You need to implement the serve() method of the class [LServing](https://predictionio.apache.org/api/current/#org.apache.predictionio.controller.LServing). The serve() method processes predicted result. It is also responsible for combining multiple predicted results into one if you have more than one predictive model.
 
 Example:
 

@@ -40,6 +40,10 @@ footer {
     padding: 15px 0;
     margin-top: 50px;
 
+    span {
+      color: $footer-bottom-span-color;
+    }
+
     #footer-logo-wrapper {
       float:left;
     }

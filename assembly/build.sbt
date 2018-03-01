@@ -33,7 +33,7 @@ version in Rpm := version.value.replace("-", "_")
 rpmRelease := "1"
 rpmVendor := "apache"
 rpmGroup := Some("Applications/System")
-rpmUrl := Some("http://predictionio.incubator.apache.org/")
+rpmUrl := Some("http://predictionio.apache.org/")
 rpmLicense := Some("Apache License Version 2.0")
 
 maintainerScripts in Rpm := maintainerScriptsAppendFromFile((maintainerScripts in Rpm).value)(

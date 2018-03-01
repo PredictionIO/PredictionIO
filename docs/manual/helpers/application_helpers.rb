@@ -36,7 +36,7 @@ module ApplicationHelpers
   end
 
   def github_url
-    base = 'https://github.com/apache/incubator-predictionio/tree/livedoc/docs/manual'
+    base = 'https://github.com/apache/predictionio/tree/livedoc/docs/manual'
     path = current_page.source_file.sub(Middleman::Application.root_path.to_s, '')
     base + path
   end
@@ -71,7 +71,7 @@ module ApplicationHelpers
         return current_page.data.title
       end
     else
-      return "Welcome to Apache PredictionIO (incubating) Documentation!"
+      return "Welcome to Apache PredictionIO Documentation!"
     end
 
   end

@@ -19,21 +19,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-Apache PredictionIO (incubating) is designed as a machine learning server that
+Apache PredictionIO is designed as a machine learning server that
 integrates with your applications on production environments.
 
 A web or mobile app normally:
 
-1.  Send event data to Apache PredictionIO (incubating)'s Event Server for model
+1.  Send event data to Apache PredictionIO's Event Server for model
     training
 2.  Send dynamic queries to deployed engine(s) to retrieve predicted results
 
-![Apache PredictionIO (incubating) Single Engine
+![Apache PredictionIO Single Engine
 Overview](/images/overview-singleengine.png)
 
 ## Sending Event Data
 
-Apache PredictionIO (incubating)'s Event Server receives event data from your
+Apache PredictionIO's Event Server receives event data from your
 application. The data can be used by engines as training data to build preditive
 models.
 

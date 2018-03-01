@@ -19,7 +19,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-Apache PredictionIO (incubating) offers an Event Server that collects data in an
+Apache PredictionIO offers an Event Server that collects data in an
 event-based style via a RESTful API. By default, Event Server uses Apache HBase
 as data store.
 

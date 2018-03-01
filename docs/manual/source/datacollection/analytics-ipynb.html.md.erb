@@ -21,7 +21,7 @@ limitations under the License.
 
 [IPython Notebook](http://ipython.org/notebook.html) is a very powerful
 interactive computational environment, and with
-[Apache PredictionIO (incubating)](http://predictionio.incubator.apache.org),
+[Apache PredictionIO](http://predictionio.apache.org),
 [PySpark](http://spark.apache.org/docs/latest/api/python/) and [Spark
 SQL](https://spark.apache.org/sql/), you can easily analyze your collected
 events when you are developing or tuning your engine.
@@ -48,7 +48,7 @@ If you see a error appearing in the console like this:
 [E 10:07:53.901 NotebookApp] Please use `%pylab inline` or `%matplotlib inline` in the notebook itself.
 ```
 
-Then you can use the following command. 
+Then you can use the following command.
 
 ```
 PYSPARK_DRIVER_PYTHON=ipython PYSPARK_DRIVER_PYTHON_OPTS="notebook --`%pylab inline`" $SPARK_HOME/bin/pyspark

@@ -15,14 +15,11 @@
 # limitations under the License.
 #
 
-# WARNING: THIS DOCKERFILE IS NOT INTENDED FOR PRODUCTION USE OR DEPLOYMENT. AT
-#          THIS POINT, THIS IS ONLY INTENDED FOR USE IN AUTOMATED TESTS. IF YOU
-#          ARE LOOKING TO DEPLOY PREDICTIONIO WITH DOCKER, PLEASE REFER TO
-#          http://predictionio.apache.org/community/projects/#docker-installation-for-predictionio
+from __future__ import absolute_import
 
-FROM predictionio/pio-testing-base
+from pypio.workflow.cleanup_functions import CleanupFunctions
 
-# Include the entire code tree
-ENV PIO_HOME /PredictionIO
-ENV PATH ${PIO_HOME}/bin/:${PATH}
-ADD . ${PIO_HOME}
+
+__all__ = [
+    'CleanupFunctions'
+]

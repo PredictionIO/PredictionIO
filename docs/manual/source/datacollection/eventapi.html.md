@@ -20,26 +20,26 @@ limitations under the License.
 -->
 
 **Event Server** is designed to collect data into Apache PredictionIO
-(incubating) in an event-based style. Once the Event Server is launched, your
+in an event-based style. Once the Event Server is launched, your
 application can send data to it through its **Event API** with HTTP requests or
 with `EventClient`s of PredictionIO's SDKs.
 
-INFO: All Apache PredictionIO (incubating)-compliant engines support accessing
+INFO: All Apache PredictionIO-compliant engines support accessing
 the Event Store (i.e. the data store of Event Server) through [Apache
-PredictionIO (incubating)'s Storage
-API](http://predictionio.incubator.apache.org/api/current/index.html#org.apache.predictionio.data.storage.package).
+PredictionIO's Storage
+API](http://predictionio.apache.org/api/current/index.html#org.apache.predictionio.data.storage.package).
 
 ## Launching the Event Server
 
 INFO: Before launching the Event Server, make sure that your event data store
 backend is properly configured and is running. By default, Apache PredictionIO
-(incubating) uses Apache HBase, and a quick configuration can be found
+uses Apache HBase, and a quick configuration can be found
 [here](/install/install-sourcecode/#hbase). Please allow a minute (usually less
 than 30 seconds) after HBase is started for its initialization to complete
 before starting the Event Server.
 
 
-Everything about Apache PredictionIO (incubating) can be done through the `pio`
+Everything about Apache PredictionIO can be done through the `pio`
 command. Please add PIO binary command path to to your `PATH` first. Assuming
 PredictionIO is installed at `/home/yourname/PredictionIO/`, you can run
 
@@ -99,7 +99,7 @@ to use the Event API. You should see something like the following output:
 ### Creating Your First Event
 
 You may connect to the Event Server with HTTP request or by using one of many
-**Apache PredictionIO (incubating) SDKs**.
+**Apache PredictionIO SDKs**.
 
 For example, the following shows how one can create an event involving a single entity.
 Replace the value of `accessKey` by the *Access Key* generated for your App.
@@ -428,3 +428,5 @@ Please use the following CLI command:
 ```
 $ pio app data-delete <your_app_name>
 ```
+
+INFO: See [here](/cli/#event-server-commands) to know details of command-line interface for the event server.

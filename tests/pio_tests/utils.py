@@ -119,7 +119,7 @@ def send_events_batch(events, test_context, access_key, channel=None):
     channel (str): custom channel for storing event
   Returns: `requests.Response`
   Requires: Events length must not exceed length of 50
-    http://predictionio.incubator.apache.org/datacollection/eventmodel/#3.-batch-events-to-the-eventserver
+    http://predictionio.apache.org/datacollection/eventmodel/#3.-batch-events-to-the-eventserver
   """
   url = 'http://{}:{}/batch/events.json'.format(
       test_context.es_ip, test_context.es_port)

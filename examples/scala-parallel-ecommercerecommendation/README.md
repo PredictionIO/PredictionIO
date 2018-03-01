@@ -17,4 +17,4 @@ limitations under the License.
 
 This is based on E-Commerce Recommendation Template v0.12.0-incubating.
 
-Please refer to http://predictionio.incubator.apache.org/templates/ecommercerecommendation/how-to/
+Please refer to http://predictionio.apache.org/templates/ecommercerecommendation/how-to/

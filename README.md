@@ -15,18 +15,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-# [Apache PredictionIO (incubating)](http://predictionio.incubator.apache.org)
+# [Apache PredictionIO](http://predictionio.apache.org)
 
 [![Build
-Status](https://api.travis-ci.org/apache/incubator-predictionio.svg?branch=develop)](https://travis-ci.org/apache/incubator-predictionio)
+Status](https://api.travis-ci.org/apache/predictionio.svg?branch=develop)](https://travis-ci.org/apache/predictionio)
 
-Apache PredictionIO (incubating) is an open source machine learning framework
+Apache PredictionIO is an open source machine learning framework
 for developers, data scientists, and end users. It supports event collection,
 deployment of algorithms, evaluation, querying predictive results via REST APIs.
 It is based on scalable open source services like Hadoop, HBase (and other DBs),
 Elasticsearch, Spark and implements what is called a Lambda Architecture.
 
-To get started, check out http://predictionio.incubator.apache.org!
+To get started, check out http://predictionio.apache.org!
 
 
 ## Table of contents
@@ -42,23 +42,23 @@ To get started, check out http://predictionio.incubator.apache.org!
 
 A few installation options available.
 
-*   [Installing Apache PredictionIO (incubating) from Source
-    Code](http://predictionio.incubator.apache.org/install/install-sourcecode/)
-*   [Installing Apache PredictionIO (incubating) with
-    Docker](http://predictionio.incubator.apache.org/community/projects/#docker-installation-for-predictionio)
+*   [Installing Apache PredictionIO from Source
+    Code](http://predictionio.apache.org/install/install-sourcecode/)
+*   [Installing Apache PredictionIO with
+    Docker](http://predictionio.apache.org/community/projects/#docker-installation-for-predictionio)
     (community contributed)
 
 
 ## Quick Start
 
 *   [Recommendation Engine Template Quick
-    Start](http://predictionio.incubator.apache.org/templates/recommendation/quickstart/)
+    Start](http://predictionio.apache.org/templates/recommendation/quickstart/)
     Guide
 *   [Similiar Product Engine Template Quick
-    Start](http://predictionio.incubator.apache.org/templates/similarproduct/quickstart/)
+    Start](http://predictionio.apache.org/templates/similarproduct/quickstart/)
     Guide
 *   [Classification Engine Template Quick
-    Start](http://predictionio.incubator.apache.org/templates/classification/quickstart/)
+    Start](http://predictionio.apache.org/templates/classification/quickstart/)
     Guide
 
 
@@ -70,30 +70,30 @@ Use [Apache JIRA](https://issues.apache.org/jira/browse/PIO) to report bugs or r
 
 Documentation, included in this repo in the `docs/manual` directory, is built
 with [Middleman](http://middlemanapp.com/) and publicly hosted at
-[predictionio.incubator.apache.org](http://predictionio.incubator.apache.org/).
+[predictionio.apache.org](http://predictionio.apache.org/).
 
 Interested in helping with our documentation? Read [Contributing
-Documentation](http://predictionio.incubator.apache.org/community/contribute-documentation/).
+Documentation](http://predictionio.apache.org/community/contribute-documentation/).
 
 
 ## Community
 
 Keep track of development and community news.
 
-*   Subscribe to the user mailing list <mailto:user-subscribe@predictionio.incubator.apache.org>
-    and the dev mailing list <mailto:dev-subscribe@predictionio.incubator.apache.org>
+*   Subscribe to the user mailing list <mailto:user-subscribe@predictionio.apache.org>
+    and the dev mailing list <mailto:dev-subscribe@predictionio.apache.org>
 *   Follow [@predictionio](https://twitter.com/predictionio) on Twitter.
 
 
 ## Contributing
 
-Read the [Contribute Code](http://predictionio.incubator.apache.org/community/contribute-code/) page.
+Read the [Contribute Code](http://predictionio.apache.org/community/contribute-code/) page.
 
 You can also list your projects on the [Community Project
-page](http://predictionio.incubator.apache.org//community/projects/).
+page](http://predictionio.apache.org//community/projects/).
 
 
 ## License
 
-Apache PredictionIO (incubating) is under [Apache 2
+Apache PredictionIO is under [Apache 2
 license](http://www.apache.org/licenses/LICENSE-2.0.html).

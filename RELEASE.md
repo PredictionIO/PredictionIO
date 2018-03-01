@@ -17,7 +17,7 @@ limitations under the License.
 
 # Release Notes and News
 
-**Note:** For upgrade instructions please refer to [this page](http://predictionio.incubator.apache.org/resources/upgrade/).
+**Note:** For upgrade instructions please refer to [this page](http://predictionio.apache.org/resources/upgrade/).
 
 ## Version History
 
@@ -36,7 +36,7 @@ Sep ?, 2017
 
 #### Breaking changes
 
-- [PIO-106](https://issues.apache.org/jira/browse/PIO-106): Elasticsearch 5.x StorageClient should reuse RestClient (see the [pull request](https://github.com/apache/incubator-predictionio/pull/421))
+- [PIO-106](https://issues.apache.org/jira/browse/PIO-106): Elasticsearch 5.x StorageClient should reuse RestClient (see the [pull request](https://github.com/apache/predictionio/pull/421))
 
 #### Behavior Changes
 
@@ -128,7 +128,7 @@ Oct 7, 2016
 
  - Make SSL optional
  - Merge ActionML fork
- - First Apache PredictionIO (incubating) release
+ - First Apache PredictionIO release
 
 ### 0.9.7-aml (ActionML fork)
 
@@ -142,7 +142,7 @@ Aug 5, 2016
 
 April 11, 2015
 
-For a detailed list of commits check [this page](https://github.com/apache/incubator-predictionio/commits/master)
+For a detailed list of commits check [this page](https://github.com/apache/predictionio/commits/v0.9.6)
 
 - Upgrade components for install/runtime to Hbase 1, Spark 1.5.2 PIO still runs on older HBase and Spark back to 1.3.1, upgrading install of Elaticsearch to 1.5.2 since pio run well on it but also runs on older versions.
 - Support for maintaining a moving window of events by discarding old events from the EventStore
@@ -160,7 +160,7 @@ March 26, 2016
 
 October 14th, 2015
 
-[Release Notes](https://github.com/apache/incubator-predictionio/blob/master/RELEASE.md) have been moved to Github and you are reading them. For a detailed list of commits check [this page](https://github.com/apache/incubator-predictionio/commits/v0.9.5)
+[Release Notes](https://github.com/apache/predictionio/blob/master/RELEASE.md) have been moved to Github and you are reading them. For a detailed list of commits check [this page](https://github.com/apache/predictionio/commits/v0.9.5)
 
 - Support batches of events sent to the EventServer as json arrays
 - Support creating an Elasticsearch StorageClient created for an Elasticsearch cluster from variables in pio-env.sh
@@ -198,7 +198,7 @@ Release Notes
 
 - Channels in the Event Server
 - Spark 1.3+ support (upgrade to Spark 1.3+ required)
-- [Webhook Connector](http://predictionio.incubator.apache.org/community/contribute-webhook/) support
+- [Webhook Connector](http://predictionio.apache.org/community/contribute-webhook/) support
 - Engine and Event Servers now by default bind to 0.0.0.0
 - Many documentation improvements
 
@@ -217,9 +217,9 @@ March 4th, 2015
 
 Release Notes
 
-- [E-Commerce Recommendation Template](http://predictionio.incubator.apache.org/gallery/template-gallery#recommender-systems) which includes 1) out-of-stock items support 2) new user recommendation 3) unseen items only
-- [Complementary Purchase Template](http://predictionio.incubator.apache.org/gallery/template-gallery#unsupervised-learning) for shopping cart recommendation
-- [Lead Scoring Template](http://predictionio.incubator.apache.org/gallery/template-gallery#classification) predicts the probability of an user will convert in the current session
+- [E-Commerce Recommendation Template](http://predictionio.apache.org/gallery/template-gallery#recommender-systems) which includes 1) out-of-stock items support 2) new user recommendation 3) unseen items only
+- [Complementary Purchase Template](http://predictionio.apache.org/gallery/template-gallery#unsupervised-learning) for shopping cart recommendation
+- [Lead Scoring Template](http://predictionio.apache.org/gallery/template-gallery#classification) predicts the probability of an user will convert in the current session
 - `pio-start-all`, `pio-stop-all` commands to start and stop all PredictionIO related services
 
 ### 0.8.6

@@ -21,7 +21,7 @@ limitations under the License.
 
 The classification template uses the Naive Bayes algorithm by default. You can easily add and use other MLlib classification algorithms. The following will demonstrate how to add the [MLlib Random Forests algorithm](https://spark.apache.org/docs/latest/mllib-ensembles.html) into the engine.
 
-You can find the complete modified source code [here](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-classification/add-algorithm).
+You can find the complete modified source code [here](https://github.com/apache/predictionio/tree/develop/examples/scala-parallel-classification/add-algorithm).
 
 ## Create a new file RandomForestAlgorithm.scala
 

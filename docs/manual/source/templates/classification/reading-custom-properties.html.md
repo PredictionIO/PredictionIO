@@ -21,7 +21,7 @@ limitations under the License.
 
 By default, the classification template reads 4 properties of a user entity: "attr0", "attr1", "attr2" and "plan". You can modify the [default DataSource](dase.html#data) to read your custom properties or different Entity Type.
 
-In this example, we modify DataSource to read properties "featureA", "featureB", "featureC", "featureD" and "label" for entity type "item". You can find the complete modified source code [here](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-classification/reading-custom-properties).
+In this example, we modify DataSource to read properties "featureA", "featureB", "featureC", "featureD" and "label" for entity type "item". You can find the complete modified source code [here](https://github.com/apache/predictionio/tree/develop/examples/scala-parallel-classification/reading-custom-properties).
 
 >> Note: you also need import events with these properties accordingly.
 

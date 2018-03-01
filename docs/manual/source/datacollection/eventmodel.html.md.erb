@@ -104,7 +104,7 @@ For example, setting entity `user-1`'s properties `birthday` and `address`:
 }
 ```
 
-**Note** that the properties values of the entity will be aggregated based on these special events and the eventTime. The state of the entity is different depending on the time you are looking at the data. In engine's DataSource, you can use [PEventStore.aggregateProperties() API](https://predictionio.incubator.apache.org/api/current/#org.apache.predictionio.data.store.PEventStore$) to retrieve the state of entity's properties (based on time).
+**Note** that the properties values of the entity will be aggregated based on these special events and the eventTime. The state of the entity is different depending on the time you are looking at the data. In engine's DataSource, you can use [PEventStore.aggregateProperties() API](https://predictionio.apache.org/api/current/#org.apache.predictionio.data.store.PEventStore$) to retrieve the state of entity's properties (based on time).
 
 NOTE: Although it doesn't hurt to import duplicated special events for an entity (exactly same properties) into event server (it just means that the entity changes to the same state as before and new duplicated event provides no new information about the user), it could waste storage space.
 
@@ -240,7 +240,7 @@ NOTE: Note that you should quote the entire URL by using single or double quotes
 
 You should see all events being created for this user-2.
 
-Now, let's retrieve the user-2's properties using the [PEventStore API](https://predictionio.incubator.apache.org/api/current/#org.apache.predictionio.data.store.PEventStore$).
+Now, let's retrieve the user-2's properties using the [PEventStore API](https://predictionio.apache.org/api/current/#org.apache.predictionio.data.store.PEventStore$).
 
 First, start `pio-shell` by running:
 

@@ -16,6 +16,8 @@
 #
 
 from pypio.data import PEventStore
+from pypio.workflow import CleanupFunctions
 
 p_event_store = PEventStore(spark._jsparkSession, sqlContext)
+cleanup_functions = CleanupFunctions(sqlContext)
 

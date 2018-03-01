@@ -42,11 +42,15 @@ lazy val scalaSparkDepsVersion = Map(
     "2.1" -> Map(
       "akka" -> "2.4.17",
       "hadoop" -> "2.7.3",
+      "json4s" -> "3.2.11"),
+    "2.2" -> Map(
+      "akka" -> "2.4.17",
+      "hadoop" -> "2.7.3",
       "json4s" -> "3.2.11")))
 
 name := "apache-predictionio-parent"
 
-version in ThisBuild := "0.12.0-incubating"
+version in ThisBuild := "0.13.0-SNAPSHOT"
 
 organization in ThisBuild := "org.apache.predictionio"
 
@@ -107,7 +111,7 @@ val commonSettings = Seq(
 val commonTestSettings = Seq(
   libraryDependencies ++= Seq(
     "org.postgresql"   % "postgresql"  % "9.4-1204-jdbc41" % "test",
-    "org.scalikejdbc" %% "scalikejdbc" % "2.3.5" % "test"))
+    "org.scalikejdbc" %% "scalikejdbc" % "3.1.0" % "test"))
 
 val dataElasticsearch1 = (project in file("storage/elasticsearch1")).
   settings(commonSettings: _*).
@@ -195,8 +199,8 @@ val root = (project in file(".")).
   settings(commonSettings: _*).
   enablePlugins(ScalaUnidocPlugin).
   settings(
-    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(dataElasticsearch),
-    unidocProjectFilter in (JavaUnidoc, unidoc) := inAnyProject -- inProjects(dataElasticsearch),
+    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(dataElasticsearch, dataElasticsearch1),
+    unidocProjectFilter in (JavaUnidoc, unidoc) := inAnyProject -- inProjects(dataElasticsearch, dataElasticsearch1),
     scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
       "-groups",
       "-skip-packages",
@@ -208,8 +212,16 @@ val root = (project in file(".")).
         "org.apache.predictionio.controller.html",
         "org.apache.predictionio.controller.java",
         "org.apache.predictionio.data.api",
+        "org.apache.predictionio.data.storage.*",
+        "org.apache.predictionio.data.storage.hdfs",
+        "org.apache.predictionio.data.storage.jdbc",
+        "org.apache.predictionio.data.storage.localfs",
+        "org.apache.predictionio.data.storage.s3",
+        "org.apache.predictionio.data.storage.hbase",
         "org.apache.predictionio.data.view",
+        "org.apache.predictionio.data.webhooks",
         "org.apache.predictionio.tools",
+        "org.apache.predictionio.workflow.html",
         "scalikejdbc").mkString(":"),
       "-doc-title",
       "PredictionIO Scala API",
@@ -266,7 +278,7 @@ pioUnidoc := {
     IO.read(baseDirectory.value / "docs" / "scaladoc" / "api-docs.js"))
 }
 
-homepage := Some(url("http://predictionio.incubator.apache.org"))
+homepage := Some(url("http://predictionio.apache.org"))
 
 pomExtra := {
   <parent>
@@ -275,15 +287,15 @@ pomExtra := {
     <version>18</version>
   </parent>
   <scm>
-    <connection>scm:git:github.com/apache/incubator-predictionio</connection>
-    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/incubator-predictionio.git</developerConnection>
-    <url>github.com/apache/incubator-predictionio</url>
+    <connection>scm:git:github.com/apache/predictionio</connection>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/predictionio.git</developerConnection>
+    <url>github.com/apache/predictionio</url>
   </scm>
   <developers>
     <developer>
       <id>donald</id>
       <name>Donald Szeto</name>
-      <url>http://predictionio.incubator.apache.org</url>
+      <url>http://predictionio.apache.org</url>
       <email>donald@apache.org</email>
     </developer>
   </developers>

@@ -115,7 +115,7 @@
 
 - template:
     name: Recommendation
-    repo: "https://github.com/apache/incubator-predictionio-template-recommender"
+    repo: "https://github.com/apache/predictionio-template-recommender"
     description: |-
       An engine template is an almost-complete implementation of an engine. PredictionIO's Recommendation Engine Template has integrated Apache Spark MLlib's Collaborative Filtering algorithm by default. You can customize it easily to fit your specific needs.
     tags: [recommender]
@@ -125,11 +125,11 @@
     status: stable
     pio_min_version: 0.10.0-incubating
     apache_pio_convesion_required: "already compatible"
-    support_link: '<a href="http://predictionio.incubator.apache.org/support/">Apache PredictionIO mailing lists</a>'
+    support_link: '<a href="http://predictionio.apache.org/support/">Apache PredictionIO mailing lists</a>'
 
 - template:
     name: E-Commerce Recommendation
-    repo: "https://github.com/apache/incubator-predictionio-template-ecom-recommender"
+    repo: "https://github.com/apache/predictionio-template-ecom-recommender"
     description: |-
       This engine template provides personalized recommendation for e-commerce applications with the following features by default:
 
@@ -146,11 +146,11 @@
     status: alpha
     pio_min_version: 0.10.0-incubating
     apache_pio_convesion_required: "already compatible"
-    support_link: '<a href="http://predictionio.incubator.apache.org/support/">Apache PredictionIO mailing lists</a>'
+    support_link: '<a href="http://predictionio.apache.org/support/">Apache PredictionIO mailing lists</a>'
 
 - template:
     name: Similar Product
-    repo: "https://github.com/apache/incubator-predictionio-template-similar-product"
+    repo: "https://github.com/apache/predictionio-template-similar-product"
     description: |-
        This engine template recommends products that are "similar" to the input product(s). Similarity is not defined by user or item attributes but by users' previous actions. By default, it uses 'view' action such that product A and B are considered similar if most users who view A also view B. The template can be customized to support other action types such as buy, rate, like..etc
     tags: [recommender]
@@ -160,11 +160,11 @@
     status: stable
     pio_min_version: 0.10.0-incubating
     apache_pio_convesion_required: "already compatible"
-    support_link: '<a href="http://predictionio.incubator.apache.org/support/">Apache PredictionIO mailing lists</a>'
+    support_link: '<a href="http://predictionio.apache.org/support/">Apache PredictionIO mailing lists</a>'
 
 - template:
     name: E-Commerce Recommendation (Java)
-    repo: "https://github.com/apache/incubator-predictionio-template-java-ecom-recommender"
+    repo: "https://github.com/apache/predictionio-template-java-ecom-recommender"
     description: |-
       This engine template provides personalized recommendation for e-commerce applications with the following features by default:
 
@@ -181,7 +181,7 @@
     status: alpha
     pio_min_version: 0.9.3
     apache_pio_convesion_required: "requires conversion"
-    support_link: '<a href="http://predictionio.incubator.apache.org/support/">Apache PredictionIO mailing lists</a>'
+    support_link: '<a href="http://predictionio.apache.org/support/">Apache PredictionIO mailing lists</a>'
 
 - template:
     name: Product Ranking
@@ -283,7 +283,7 @@
 
 - template:
     name: Classification
-    repo: "https://github.com/apache/incubator-predictionio-template-attribute-based-classifier"
+    repo: "https://github.com/apache/predictionio-template-attribute-based-classifier"
     description: |-
       An engine template is an almost-complete implementation of an engine. PredictionIO's Classification Engine Template has integrated Apache Spark MLlib's Naive Bayes algorithm by default.
     tags: [classification]
@@ -293,7 +293,7 @@
     status: stable
     pio_min_version: 0.9.2
     apache_pio_convesion_required: "already compatible"
-    support_link: '<a href="http://predictionio.incubator.apache.org/support/">Apache PredictionIO mailing lists</a>'
+    support_link: '<a href="http://predictionio.apache.org/support/">Apache PredictionIO mailing lists</a>'
 
 - template:
     name: Classification
@@ -323,7 +323,7 @@
 
 - template:
     name: Text Classification
-    repo: "https://github.com/apache/incubator-predictionio-template-text-classifier"
+    repo: "https://github.com/apache/predictionio-template-text-classifier"
     description: |-
       Use this engine for general text classification purposes. Uses OpenNLP library for text vectorization, includes t.f.-i.d.f.-based feature transformation and reduction, and uses Spark MLLib's Multinomial Naive Bayes implementation for classification.
     tags: [classification, nlp]
@@ -333,7 +333,7 @@
     status: alpha
     pio_min_version: 0.9.2
     apache_pio_convesion_required: "requires conversion"
-    support_link: '<a href="https://github.com/apache/incubator-predictionio-template-text-classifier/issues">Github issues</a>'
+    support_link: '<a href="https://github.com/apache/predictionio-template-text-classifier/issues">Github issues</a>'
 
 - template:
     name: Churn Prediction - H2O Sparkling Water
@@ -673,7 +673,7 @@
 
 - template:
     name: Skeleton
-    repo: "https://github.com/apache/incubator-predictionio-template-skeleton"
+    repo: "https://github.com/apache/predictionio-template-skeleton"
     description: |-
       Skeleton template is for developing new engine when you find other engine templates do not fit your needs. This template provides a skeleton to kick start new engine development.
     tags: [other]
@@ -683,7 +683,7 @@
     status: stable
     pio_min_version: 0.9.2
     apache_pio_convesion_required: "already compatible"
-    support_link: '<a href="http://predictionio.incubator.apache.org/support/">Apache PredictionIO mailing lists</a>'
+    support_link: '<a href="http://predictionio.apache.org/support/">Apache PredictionIO mailing lists</a>'
 
 - template:
     name: Linear Regression BFGS
@@ -696,3 +696,27 @@
     license: "Apache Licence 2.0"
     status: beta
     pio_min_version: 0.10.0
+
+- template:
+    name: Classification template for Iris
+    repo: "https://github.com/jpioug/predictionio-template-iris"
+    description: |-
+      This is Python(PySpark) based classification example for Iris dataset.
+    tags: [classification]
+    type: Parallel
+    language: Python
+    license: "Apache Licence 2.0"
+    status: stable
+    pio_min_version: 0.12.0-incubating
+
+- template:
+    name: Regression template for Boston House Prices
+    repo: "https://github.com/jpioug/predictionio-template-boston-house-prices"
+    description: |-
+      This is Python(PySpark) based regression example for Boston House Prices dataset.
+    tags: [regression]
+    type: Parallel
+    language: Python
+    license: "Apache Licence 2.0"
+    status: stable
+    pio_min_version: 0.12.0-incubating

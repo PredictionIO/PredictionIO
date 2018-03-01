@@ -20,13 +20,13 @@ limitations under the License.
 -->
 
 A SDK should provide convenient methods for client applications to easily
-record users' behaviors in Apache PredictionIO (incubating)'s Event Server and
+record users' behaviors in Apache PredictionIO's Event Server and
 also query recommendations from the ML Engines. Therefore, a SDK typically has 2
 corresponding clients: `Event Client` and `Engine Client`.
 
-The following guideline bases on the REST API provided by Apache PredictionIO
-(incubating)'s  Event Client which details can be found
-[here](http://predictionio.incubator.apache.org/datacollection/eventapi/).
+The following guideline bases on the REST API provided by Apache PredictionIO's
+Event Client which details can be found
+[here](http://predictionio.apache.org/datacollection/eventapi/).
 
 ## Event Client
 Because the Event Server has only 1 connection point, the `Event Client`
@@ -37,7 +37,7 @@ following rules.
 (e.g. http://localhost:7070/events.json?accessKey=1234567890)
 
 - **Request**: `POST` + JSON data. Please refer to the [Event Creation API]
-(http://predictionio.incubator.apache.org/datacollection/eventapi/) for the details
+(http://predictionio.apache.org/datacollection/eventapi/) for the details
 on the fields of the JSON data object.
 
 - **Response**:
@@ -134,7 +134,7 @@ support the following 7 shorthand operations:
         ```
 
 Again, please refer to the [API documentation]
-(http://predictionio.incubator.apache.org/datacollection/eventapi/) for explanations
+(http://predictionio.apache.org/datacollection/eventapi/) for explanations
 on the reversed events like `$set`, `$unset` or `$delete`.
 
 INFO: The `eventTime` is optional but it is recommended that the client
@@ -145,7 +145,7 @@ sending the event to the server.
 
 ## Engine Client
 `Engine Client`'s main job is to retrieve recommendation or prediction  results
-from Apache PredictionIO (incubating)'s Engines. It has only a few rules on the
+from Apache PredictionIO's Engines. It has only a few rules on the
 request and response type.
 
 - **URL**: `<base URL>/queries.json` (e.g. http://localhost:8000/queries.json)
@@ -180,7 +180,7 @@ request and response type.
     + **Failure**: status code `400` e.g. fail to parse the query.
 
 The formats of JSON objects in both the request and response must be defined by
-the Apache PredictionIO (incubating)'s Engine and are different across
+the Apache PredictionIO's Engine and are different across
 applications. The above examples are taken from the Recommendation Engine
 template in which the query and prediction results are defined as following.
 
@@ -197,7 +197,7 @@ case class PredictedResult(
 
 ## Testing Your SDK
 
-You can set up a local host Apache PredictionIO (incubating) environment to test
+You can set up a local host Apache PredictionIO environment to test
 your SDK. However, it is hard to set it up online to test your SDK automatically
 using services like Travis CI. In that case, you should consider using these
 lightweight [mock servers]

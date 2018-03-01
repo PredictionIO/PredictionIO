@@ -24,7 +24,7 @@ You can modify the [default DataSource](dase.html#data) to read
 - Custom events other than the default **rate** and **buy** events.
 - Events which involve different entity types other than the default **user** and **item**.
 
-You can find the complete modified source code [here](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-recommendation/reading-custom-events).
+You can find the complete modified source code [here](https://github.com/apache/predictionio/tree/develop/examples/scala-parallel-recommendation/reading-custom-events).
 
 
 ## Add the Custom Event

@@ -21,7 +21,7 @@ limitations under the License.
 
 Let's say you want to supply a backList for each query to exclude some items from recommendation (For example, in the browsing session, the user just added some items to shopping cart, or you have a list of items you want to filter out, you may want to supply blackList in Query). This how-to will demonstrate how you can do it.
 
-You can find the complete modified source code [here](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-recommendation/blacklist-items).
+You can find the complete modified source code [here](https://github.com/apache/predictionio/tree/develop/examples/scala-parallel-recommendation/blacklist-items).
 
 Note that you may also use [E-Commerce Recommendation Template](/templates/ecommercerecommendation/quickstart/) which supports this feature by default.
 

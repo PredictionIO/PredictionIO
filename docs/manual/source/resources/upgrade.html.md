@@ -41,7 +41,7 @@ In addition, please take notes of the following for specific version upgrade.
 In 0.12.0, Elasticsearch 5.x client has been reimplemented as a singleton.
 Engine templates directly using Elasticsearch 5.x StorageClient require
 update for compatibility. See [pull request]
-(https://github.com/apache/incubator-predictionio/pull/421) for details.
+(https://github.com/apache/predictionio/pull/421) for details.
 
 ## Upgrade to 0.11.0
 

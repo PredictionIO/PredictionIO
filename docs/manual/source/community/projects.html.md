@@ -20,11 +20,11 @@ limitations under the License.
 -->
 
 Here you will find great projects contributed by the Apache PredictionIO
-(incubating) community. Stay tuned.
+community. Stay tuned.
 
-INFO: If you have built a Apache PredictionIO (incubating)-related project, we
+INFO: If you have built a Apache PredictionIO-related project, we
 would love to showcase it to the community! Simply edit [this
-page](https://github.com/apache/incubator-predictionio/blob/livedoc/docs/manual/source/community/projects.html.md)
+page](https://github.com/apache/predictionio/blob/livedoc/docs/manual/source/community/projects.html.md)
 and submit a pull request.
 
 ## SDKs
@@ -82,7 +82,7 @@ Docker container for PredictionIO-based machine learning services.
 
 - Maintainer: Steven Yan
 
-- Status: Runs latest stable version of PredictionIO v0.10.0 - Under active development
+- Status: Runs latest stable version of PredictionIO v0.12.0 (as well as v0.10.0) - Under active development
 
 
 ## GraphX Parallel SimRank Algorithm

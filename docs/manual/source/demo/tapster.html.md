@@ -23,7 +23,7 @@ limitations under the License.
 
 In this demo, we will show you how to build a Tinder-style web application (named "Tapster") recommending comics to users based on their likes/dislikes of episodes interactively.
 
-The demo will use [Similar Product Template](https://predictionio.incubator.apache.org/templates/similarproduct/quickstart/). Similar Product Template is a great choice if you want to make recommendations based on immediate user activities or for new users with limited history. It uses MLLib Alternating Least Squares (ALS) recommendation algorithm, a [Collaborative filtering](http://en.wikipedia.org/wiki/Recommender_system#Collaborative_filtering) (CF) algorithm commonly used for recommender systems. These techniques aim to fill in the missing entries of a user-item association matrix. Users and products are described by a small set of latent factors that can be used to predict missing entries. A layman's interpretation of Collaborative Filtering is "People who like this comic, also like these comics."
+The demo will use [Similar Product Template](https://predictionio.apache.org/templates/similarproduct/quickstart/). Similar Product Template is a great choice if you want to make recommendations based on immediate user activities or for new users with limited history. It uses MLLib Alternating Least Squares (ALS) recommendation algorithm, a [Collaborative filtering](http://en.wikipedia.org/wiki/Recommender_system#Collaborative_filtering) (CF) algorithm commonly used for recommender systems. These techniques aim to fill in the missing entries of a user-item association matrix. Users and products are described by a small set of latent factors that can be used to predict missing entries. A layman's interpretation of Collaborative Filtering is "People who like this comic, also like these comics."
 
 All the code and data is on GitHub at: [github.com/PredictionIO/Demo-Tapster](https://github.com/PredictionIO/Demo-Tapster).
 
@@ -84,20 +84,20 @@ $rails server
 
 ![Rails Server](/images/demo/tapster/rails-server.png)
 
-## Apache PredictionIO (incubating) Setup
+## Apache PredictionIO Setup
 
-### Install Apache PredictionIO (incubating)
-Follow the installation instructions [here](http://predictionio.incubator.apache.org/install/) or simply run:
+### Install Apache PredictionIO
+Follow the installation instructions [here](http://predictionio.apache.org/install/) or simply run:
 
 ```
-$ bash -c "$(curl -s https://raw.githubusercontent.com/apache/incubator-predictionio/master/bin/install.sh)"
+$ bash -c "$(curl -s https://raw.githubusercontent.com/apache/predictionio/master/bin/install.sh)"
 ```
 
 ![PIO Install](/images/demo/tapster/pio-install.png)
 
 
 ### Create a New App
-You will need to create a new app on Apache PredictionIO (incubating) to house
+You will need to create a new app on Apache PredictionIO to house
 the Tapster demo. You can do this with:
 
 ```
@@ -114,7 +114,7 @@ We are going to copy the Similar Product Template into the PIO directory.
 
 ```
 $ cd PredictionIO
-$ git clone https://github.com/apache/incubator-predictionio-template-similar-product.git tapster-episode-similar
+$ git clone https://github.com/apache/predictionio-template-similar-product.git tapster-episode-similar
 ```
 
 Next we are going to update the App ID in the ‘engine.json’ file to match the App ID we just created.
@@ -191,7 +191,7 @@ Once everything is installed, start the event server by running: `$ pio eventser
 
 ![Event Server](/images/demo/tapster/pio-eventserver.png)
 
-INFO: You can check the status of Apache PredictionIO (incubating) at any time
+INFO: You can check the status of Apache PredictionIO at any time
 by running: `$ pio status`
 
 ALERT: If your laptop goes to sleep you might manually need to restart HBase with:
@@ -202,10 +202,10 @@ $ ./stop-hbase.sh
 $ ./start-hbase.sh
 ```
 
-The key event we are importing into Apache PredictionIO (incubating) event
+The key event we are importing into Apache PredictionIO event
 server is the "Like" event (for example, user X likes episode Y).
 
-We will send this data to Apache PredictionIO (incubating) by executing `$ rake
+We will send this data to Apache PredictionIO by executing `$ rake
 import:predictionio` command.
 
 [View on GitHub](https://github.com/PredictionIO/Demo-Tapster/blob/master/lib/tasks/import/predictionio.rake)
@@ -224,7 +224,7 @@ You can set these values in the `.env` file located in the application root dire
 
 The next part of the script loops through each line of the `data/user_list.csv`
 file and returns an array of unique user and episode IDs. Once we have those we
-can send the data to Apache PredictionIO (incubating) like this.
+can send the data to Apache PredictionIO like this.
 
 First the users:
 
@@ -278,7 +278,7 @@ end
 ```
 
 In total the script takes about 4 minutes to run on a basic laptop. At this
-point all the data is now imported to Apache PredictionIO (incubating).
+point all the data is now imported to Apache PredictionIO.
 
 ![Import](/images/demo/tapster/pio-import-predictionio.png)
 
@@ -293,10 +293,9 @@ $ pio train -- --driver-memory 4g
 
 ![PIO Train](/images/demo/tapster/pio-train.png)
 
-Using the --driver-memory option to limit the memory used by Apache PredictionIO
-(incubating). Without this Apache PredictionIO (incubating) can consume too much
-memory leading to a crash. You can adjust the 4g up or down depending on your
-system specs.
+Using the --driver-memory option to limit the memory used by Apache PredictionIO.
+Without this Apache PredictionIO can consume too much memory leading to a crash.
+You can adjust the 4g up or down depending on your system specs.
 
 You can set up a job to periodically retrain the engine so the model is updated with the latest dataset.
 
@@ -306,24 +305,24 @@ You can set up a job to periodically retrain the engine so the model is updated 
 You can deploy the model with: `$ pio deploy` from the `tapster-episode-similar` directory.
 
 At this point, you have an demo app with data and a Apache PredictionIO
-(incubating) server with a trained model all setup. Next, we will connect the
+server with a trained model all setup. Next, we will connect the
 two so you can log the live interaction (likes) events into Apache PredictionIO
-(incubating) event server and query the engine server for recommendation.
+event server and query the engine server for recommendation.
 
 
-## Connect Demo app with Apache PredictionIO (incubating)
+## Connect Demo app with Apache PredictionIO
 
 ### Overview
-On a high level the application keeps a record of each like and dislike. It uses jQuery to send an array of both likes and dislikes to the server on each click. The server then queries Apache PredictionIO (incubating) for a similar episode which is relayed to jQuery and displayed to the user.
+On a high level the application keeps a record of each like and dislike. It uses jQuery to send an array of both likes and dislikes to the server on each click. The server then queries Apache PredictionIO for a similar episode which is relayed to jQuery and displayed to the user.
 
 Data flow:
 
 - The user likes an episode.
-- Tapster sends the "Like" event to Apache PredictionIO (incubating) event
+- Tapster sends the "Like" event to Apache PredictionIO event
   server.
-- Tapster queries Apache PredictionIO (incubating) engine with all the episodes
+- Tapster queries Apache PredictionIO engine with all the episodes
   the user has rated (likes and dislikes) in this session.
-- Apache PredictionIO (incubating) returns 1 recommended episode.
+- Apache PredictionIO returns 1 recommended episode.
 
 ### JavaScript
 All the important code lives in `app/assets/javascripts/application.js` [View on GitHub](https://github.com/PredictionIO/Demo-Tapster/blob/master/app/assets/javascripts/application.js)
@@ -331,7 +330,7 @@ All the important code lives in `app/assets/javascripts/application.js` [View on
 Most of this file is just handlers for click things, displaying the loading dialog and other such things.
 
 The most important function is to query the Rails server for results from Apache
-PredictionIO (incubating).
+PredictionIO.
 
 ```
 // Query the server for a comic based on previous likes. See episodes#query.
@@ -388,7 +387,7 @@ def query
 end
 ```
 
-On the first line we make a connection to Apache PredictionIO (incubating). You
+On the first line we make a connection to Apache PredictionIO. You
 will need to set the `PIO_ENGINE_URL`. This can be done in the `.env` file. The
 default URL is: http://localhost:8000.
 
@@ -396,33 +395,32 @@ Next we decode the JSON sent from the browser.
 
 After that we check to see if the user has liked anything yet. If not we just return a random episode.
 
-If the user has likes then we can send that data to Apache PredictionIO
-(incubating) event server.
+If the user has likes then we can send that data to Apache PredictionIO event server.
 
 We also blacklist the dislikes so that they are not returned.
 
-With our response from Apache PredictionIO (incubating) it’s just a matter of
+With our response from Apache PredictionIO it’s just a matter of
 looking it up in the database and rendering that object as JSON.
 
 Once the response is sent to the browser JavaScript is used to replace the existing comic and hide the loading message.
 
-Thats it. You’re done! If Ruby is not your language of choice check out our other [SDKs](http://predictionio.incubator.apache.org/sdk/) and remember you can always interact with the Event Server though it’s native JSON API.
+Thats it. You’re done! If Ruby is not your language of choice check out our other [SDKs](http://predictionio.apache.org/sdk/) and remember you can always interact with the Event Server though it’s native JSON API.
 
 ## Links
 Source code is on GitHub at: [github.com/PredictionIO/Demo-Tapster](https://github.com/PredictionIO/Demo-Tapster)
 
 ## Conclusion
 
-Love this tutorial and Apache PredictionIO (incubating)? Both are open source
+Love this tutorial and Apache PredictionIO? Both are open source
 (Apache 2 License). [Fork](https://github.com/PredictionIO/Demo-Tapster) this
 demo and build upon it. If you produce something cool shoot us an email and we
 will link to it from here.
 
 Found a typo? Think something should be explained better? This tutorial (and all
 our other documenation) live in the main repo
-[here](https://github.com/apache/incubator-predictionio/blob/livedoc/docs/manual/source/demo/tapster.html.md).
+[here](https://github.com/apache/predictionio/blob/livedoc/docs/manual/source/demo/tapster.html.md).
 Our documentation is in the `livedoc` branch. Find out how to contribute
 documentation at
-http://predictionio.incubator.apache.org/community/contribute-documentation/].
+http://predictionio.apache.org/community/contribute-documentation/].
 
 We &hearts; pull requests!

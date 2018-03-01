@@ -52,7 +52,7 @@ PIO_FS_TMPDIR=$PIO_FS_BASEDIR/tmp
 # storage facilities. Default values are shown below.
 #
 # For more information on storage configuration please refer to
-# https://predictionio.incubator.apache.org/system/anotherdatastore/
+# https://predictionio.apache.org/system/anotherdatastore/
 
 # Storage Repositories
 
@@ -119,4 +119,3 @@ PIO_STORAGE_SOURCES_S3_REGION=us-east-1
 PIO_STORAGE_SOURCES_S3_BUCKET_NAME=pio_bucket
 PIO_STORAGE_SOURCES_S3_BASE_PATH=pio_model
 PIO_STORAGE_SOURCES_S3_DISABLE_CHUNKED_ENCODING=true
-

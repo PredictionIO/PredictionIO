@@ -17,7 +17,7 @@ limitations under the License.
 
 ## Data Collection API
 
-Please refer to the documentation site - [Collecting Data through REST/SDKs](http://predictionio.incubator.apache.org/datacollection/eventapi/).
+Please refer to the documentation site - [Collecting Data through REST/SDKs](http://predictionio.apache.org/datacollection/eventapi/).
 
 ## For Development Use only:
 

@@ -34,7 +34,7 @@ By default, the recommendation template sets `setImplicitPrefs()` to `false` whi
 
 To handle implicit preference, you can set `setImplicitPrefs()` to `true`. In this case, the "rating" value input to ALS is used to calculate the confidence level that the user likes the item. Higher "rating" means a stronger indication that the user likes the item.
 
-The following provides an example of using implicit preference. You can find the complete modified source code [here](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-recommendation/train-with-view-event).
+The following provides an example of using implicit preference. You can find the complete modified source code [here](https://github.com/apache/predictionio/tree/develop/examples/scala-parallel-recommendation/train-with-view-event).
 
 ### Training with view events
 

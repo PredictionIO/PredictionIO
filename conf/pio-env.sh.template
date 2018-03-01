@@ -53,7 +53,7 @@ PIO_FS_TMPDIR=$PIO_FS_BASEDIR/tmp
 # storage facilities. Default values are shown below.
 #
 # For more information on storage configuration please refer to
-# http://predictionio.incubator.apache.org/system/anotherdatastore/
+# http://predictionio.apache.org/system/anotherdatastore/
 
 # Storage Repositories
 

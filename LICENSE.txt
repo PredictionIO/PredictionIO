@@ -205,7 +205,7 @@
 ================================================================================
 PredictionIO Subcomponents:
 
-The Apache PredictionIO (incubating) project contains subcomponents with
+The Apache PredictionIO project contains subcomponents with
 separate copyright notices and license terms. Your use of the source code for
 these subcomponents is subject to the terms and conditions of the following
 licenses.
@@ -1359,9 +1359,9 @@ Binary distribution bundles
 --------------------------------------------------------------------------------
 Binary distribution bundles
 
+  org.slf4j # slf4j-api # 1.7.25 (https://www.slf4j.org/)
   org.slf4j # slf4j-api # 1.7.18 (https://www.slf4j.org/)
   org.slf4j # slf4j-api # 1.7.16 (https://www.slf4j.org/)
-  org.slf4j # slf4j-api # 1.7.14 (https://www.slf4j.org/)
   org.slf4j # slf4j-api # 1.7.10 (https://www.slf4j.org/)
   org.slf4j # slf4j-api # 1.7.2 (https://www.slf4j.org/)
   org.slf4j # slf4j-log4j12 # 1.7.18 (https://www.slf4j.org/)
@@ -1709,6 +1709,7 @@ Binary distribution bundles
   org.scala-lang # scalap # 2.11.8 (http://scala-lang.org/)
   org.scala-lang.modules # scala-java8-compat_2.11 # 0.7.0 (http://scala-lang.org/)
   org.scala-lang.modules # scala-parser-combinators_2.11 # 1.0.4 (http://scala-lang.org/)
+  org.scala-lang.modules # scala-parser-combinators_2.11 # 1.0.6 (http://scala-lang.org/)
   org.scala-lang.modules # scala-xml_2.11 # 1.0.3 (http://scala-lang.org/)
   org.scala-lang.modules # scala-xml_2.11 # 1.0.4 (http://scala-lang.org/)
   

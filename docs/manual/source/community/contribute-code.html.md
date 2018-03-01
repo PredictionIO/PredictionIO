@@ -19,13 +19,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-Thank you for your interest in contributing to Apache PredictionIO (incubating).
+Thank you for your interest in contributing to Apache PredictionIO.
 Our mission is to enable developers to build scalable machine learning
 applications easily. Here is how you can help with the project development. If
 you have any question regarding development at anytime, please free to
-[subscribe](mailto:dev-subscribe@predictionio.incubator.apache.org) and post to
+[subscribe](mailto:dev-subscribe@predictionio.apache.org) and post to
 the [Development Mailing
-List](mailto:dev-subscribe@predictionio.incubator.apache.org).
+List](mailto:dev-subscribe@predictionio.apache.org).
 
 ## Areas in Need of Help
 
@@ -43,7 +43,7 @@ show features that are highly sought after by the community.
 ## How to Report an Issue
 
 If you wish to report an issue you found, you can do so on [Apache PredictionIO
-(incubating) JIRA](https://issues.apache.org/jira/browse/PIO).
+JIRA](https://issues.apache.org/jira/browse/PIO).
 
 ## How to Help Resolve Existing Issues
 
@@ -55,15 +55,15 @@ bug fixes will follow a different path.
 Before adding new features into JIRA, please check that the feature does not currently exist in JIRA.
 
 1. To propose a new feature, simply
-   [subscribe](mailto:dev-subscribe@predictionio.incubator.apache.org) and post
-   your proposal to [Apache PredictionIO (incubating) Development Mailing List]
-   (mailto:dev@predictionio.incubator.apache.org).
+   [subscribe](mailto:dev-subscribe@predictionio.apache.org) and post
+   your proposal to [Apache PredictionIO Development Mailing List]
+   (mailto:dev@predictionio.apache.org).
 2. Discuss with the community and the core development team on what needs to be
    done, and lay down concrete plans on deliverables.
 3. Once solid plans are made, start creating tickets in the [issue tracker]
    (https://issues.apache.org/jira/browse/PIO).
 4. Work side by side with other developers using Apache PredictionIO
-   (incubating) Development Mailing List as primary mode of communication. You
+   Development Mailing List as primary mode of communication. You
    never know if someone else has a better idea. ;)
 
 ### Adding ticket to JIRA
@@ -113,18 +113,18 @@ information.
 
 ## Getting Started
 
-Apache PredictionIO (incubating) relies heavily on the [git flow methodology](
+Apache PredictionIO relies heavily on the [git flow methodology](
 http://nvie.com/posts/a-successful-git-branching-model/). Please make sure you
 read and understand it before you start your development. By default, cloning
-Apache PredictionIO (incubating) will put you in the *develop* branch, which in
+Apache PredictionIO will put you in the *develop* branch, which in
 most cases is where all the latest development go to.
 
 NOTE: For core development, please follow the [Scala Style Guide](http://docs.scala-lang.org/style/).
 
-### Create a Fork of the Apache PredictionIO (incubating) Repository
+### Create a Fork of the Apache PredictionIO Repository
 
 1. Start by creating a GitHub account if you do not already have one.
-2. Go to [Apache PredictionIO (incubating)’s GitHub
+2. Go to [Apache PredictionIO’s GitHub
    mirror](https://github.com/PredictionIO/PredictionIO) and fork it to your own
    account.
 3. Clone your fork to your local machine.
@@ -132,10 +132,10 @@ NOTE: For core development, please follow the [Scala Style Guide](http://docs.sc
 If you need additional help, please refer to
 https://help.github.com/articles/fork-a-repo/.
 
-### Building Apache PredictionIO (incubating) from Source
+### Building Apache PredictionIO from Source
 
 After the previous section, you should have a copy of Apache PredictionIO
-(incubating) in your local machine ready to be built.
+in your local machine ready to be built.
 
 1. Make sure you are on the *develop* branch. You can double check by `git
    status` or simply `git checkout develop`.
@@ -144,16 +144,16 @@ After the previous section, you should have a copy of Apache PredictionIO
 
 ### Setting Up the Environment
 
-Apache PredictionIO (incubating) relies on 3rd party software to perform its
+Apache PredictionIO relies on 3rd party software to perform its
 tasks. To set them up, simply follow this [documentation](
-http://predictionio.incubator.apache.org/install/install-sourcecode/#installing-dependencies).
+http://predictionio.apache.org/install/install-sourcecode/#installing-dependencies).
 
 ### Start Hacking
 
-You should have a Apache PredictionIO (incubating) development environment by
+You should have a Apache PredictionIO development environment by
 now. Happy hacking!
 
-## Anatomy of Apache PredictionIO (incubating) Code Tree
+## Anatomy of Apache PredictionIO Code Tree
 
 The following describes each directory’s purpose.
 
@@ -168,22 +168,22 @@ Configuration files that are used by both a source tree and binary distribution.
 
 ### core
 
-Core Apache PredictionIO (incubating) code that provides the DASE controller
+Core Apache PredictionIO code that provides the DASE controller
 API, core data structures, and workflow creation and management code.
 
 ### data
 
-Apache PredictionIO (incubating) Event Server, and backend-agnostic storage
+Apache PredictionIO Event Server, and backend-agnostic storage
 layer for event store and metadata store.
 
 ### docs
 
-Source code for http://predictionio.incubator.apache.org site, and any other
+Source code for http://predictionio.apache.org site, and any other
 documentation support files.
 
 ### examples
 
-Complete code examples showing Apache PredictionIO (incubating)'s application.
+Complete code examples showing Apache PredictionIO's application.
 
 ### sbt
 
@@ -195,6 +195,6 @@ Storage implementations.
 
 ### tools
 
-Tools for running Apache PredictionIO (incubating). Contains primarily the CLI
+Tools for running Apache PredictionIO. Contains primarily the CLI
 (command-line interface) and its supporting code, and the experimental
 evaluation dashboard.

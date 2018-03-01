@@ -1,10 +1,10 @@
 root:
   -
-    body: 'Apache PredictionIO (incubating) Documentation'
+    body: 'Apache PredictionIO® Documentation'
     url: '/'
     children:
       -
-        body: 'Welcome to Apache PredictionIO (incubating)'
+        body: 'Welcome to Apache PredictionIO®'
         url: '/'
   -
     body: 'Getting Started'
@@ -14,7 +14,7 @@ root:
         body: 'A Quick Intro'
         url: '/start/'
       -
-        body: 'Installing Apache PredictionIO (incubating)'
+        body: 'Installing Apache PredictionIO'
         url: '/install/'
       -
         body: 'Downloading an Engine Template'
@@ -59,9 +59,6 @@ root:
         body: 'Deploying as a Web Service'
         url: '/deploy/'
       -
-        body: 'Engine Command-line Interface'
-        url: '/cli/#engine-commands'
-      -
         body: 'Batch Predictions'
         url: '/batchpredict/'
       -
@@ -73,6 +70,9 @@ root:
       -
         body: 'Deploying Multiple Engine Variants'
         url: '/deploy/enginevariants/'
+      -
+        body: 'Engine Server Plugin'
+        url: '/deploy/plugin/'
   -
     body: 'Customizing an Engine'
     url: '#'
@@ -97,9 +97,6 @@ root:
         body: 'Event Server Overview'
         url: '/datacollection/'
       -
-        body: 'Event Server Command-line Interface'
-        url: '/cli/#event-server-commands'
-      -
         body: 'Collecting Data with REST/SDKs'
         url: '/datacollection/eventapi/'
       -
@@ -117,6 +114,9 @@ root:
       -
         body: 'Using Analytics Tools'
         url: '/datacollection/analytics/'
+      -
+        body: 'Event Server Plugin'
+        url: '/datacollection/plugin/'
   -
     body: 'Choosing an Algorithm(s)'
     url: '#'
@@ -163,7 +163,7 @@ root:
         body: 'Using Another Data Store'
         url: '/system/anotherdatastore/'
   -
-    body: 'PredictionIO Official Templates'
+    body: 'PredictionIO® Official Templates'
     url: '#'
     children:
       -
@@ -322,6 +322,9 @@ root:
     url: '#'
     children:
       -
+        body: 'Command-line Interface'
+        url: '/cli/'
+      -
         body: 'Release Cadence'
         url: '/resources/release/'
       -
@@ -333,3 +336,22 @@ root:
       -
         body: 'Glossary'
         url: '/resources/glossary/'
+  -
+    body: 'Apache Software Foundation'
+    url: '#'
+    children:
+      -
+        body: 'Apache Homepage'
+        url: 'https://www.apache.org/'
+      -
+        body: 'License'
+        url: 'https://www.apache.org/licenses/'
+      -
+        body: 'Sponsorship'
+        url: 'https://www.apache.org/foundation/sponsorship.html'
+      -
+        body: 'Thanks'
+        url: 'https://www.apache.org/foundation/thanks.html'
+      -
+        body: 'Security'
+        url: 'https://www.apache.org/security/'

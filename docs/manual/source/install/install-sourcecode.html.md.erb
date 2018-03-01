@@ -1,5 +1,5 @@
 ---
-title: Installing Apache PredictionIO (incubating) from Source Code
+title: Installing Apache PredictionIO from Source Code
 ---
 
 <!--
@@ -24,19 +24,36 @@ replace `/home/abc` with your own home directory wherever you see it.
 
 ## Downloading Source Code
 
-Download Apache PredictionIO (incubating) <%= data.versions.pio %> from an
+Download Apache PredictionIO <%= data.versions.pio %> from an
 Apache [mirror](https://www.apache.org/dyn/closer.cgi/incubator/predictionio/<%=
 data.versions.pio %>/apache-predictionio-<%= data.versions.pio %>.tar.gz). 
+
+Verify this release using [signatures and checksums]
+(https://www.apache.org/dist/incubator/predictionio/<%= data.versions.pio %>/)
+and [project release KEYS](https://www.apache.org/dist/incubator/predictionio/KEYS).
+
+```
+$ gpg --import KEYS
+$ gpg --verify apache-predictionio-<%= data.versions.pio %>.tar.gz.asc apache-predictionio-<%= data.versions.pio %>.tar.gz
+```
+
+You should see something like this.
+
+```
+gpg: Signature made Tue Sep 26 22:55:22 2017 PDT
+gpg:                using RSA key 7E2363D84719A8F4
+gpg: Good signature from "Chan Lee <chanlee@apache.org>" [ultimate]
+```
 
 ## Building
 
 Run the following at the directory where you downloaded the source code to build
-Apache PredictionIO (incubating). By default, the build will be against
+Apache PredictionIO. By default, the build will be against
 
-* Scala 2.10.6
-* Spark 1.6.3
-* Hadoop 2.6.5
-* Elasticsearch 1.7.6
+* Scala 2.11.8
+* Spark 2.1.1
+* Hadoop 2.7.3
+* Elasticsearch 5.5.2
 
 ```
 $ tar zxvf apache-predictionio-<%= data.versions.pio %>.tar.gz
@@ -83,7 +100,7 @@ $ ./make-distribution.sh -Dscala.version=2.11.8 -Dspark.version=2.1.0 -Delastics
 
 Let us install dependencies inside a subdirectory of the Apache PredictionIO
 (incubating) installation. By following this convention, you can use
-Apache PredictionIO (incubating)'s default configuration as is.
+Apache PredictionIO's default configuration as is.
 
 ```
 $ mkdir PredictionIO-<%= data.versions.pio %>/vendors

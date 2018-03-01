@@ -1,5 +1,5 @@
 ---
-title: Demo Tutorials with Apache PredictionIO (incubating)
+title: Demo Tutorials with Apache PredictionIO
 ---
 
 <!--
@@ -19,10 +19,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-Here is a list of demo tutorials for Apache PredictionIO (incubating).
+Here is a list of demo tutorials for Apache PredictionIO.
 
 INFO: If you want to showcase your demo app here, simply edit [this
-page](https://github.com/apache/incubator-predictionio/blob/livedoc/docs/manual/source/community/showcase.html.md)
+page](https://github.com/apache/predictionio/blob/livedoc/docs/manual/source/community/showcase.html.md)
 and submit a pull request.
 
 

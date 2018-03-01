@@ -21,7 +21,7 @@ limitations under the License.
 
 ##Overview
 
-Interaction with Apache PredictionIO (incubating) is done through the command
+Interaction with Apache PredictionIO is done through the command
 line interface. It follows the format of:
 
 ```pio <command> [options] <args>...```
@@ -29,7 +29,7 @@ line interface. It follows the format of:
 You can run ```pio help``` to see a list of all available commands and ```pio
 help <command>``` to see details of the command.
 
-Apache PredictionIO (incubating) commands can be separated into the following
+Apache PredictionIO commands can be separated into the following
 three categories.
 
 ##General Commands

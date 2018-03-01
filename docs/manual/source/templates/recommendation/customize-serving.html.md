@@ -26,7 +26,7 @@ currently in stock from the list of recommendation.
 This section is based on the [Recommendation Engine Template](/templates/recommendation/quickstart/).
 
 A full end-to-end example can be found on
-[GitHub](https://github.com/apache/incubator-predictionio/tree/develop/examples/scala-parallel-recommendation/customize-serving).
+[GitHub](https://github.com/apache/predictionio/tree/develop/examples/scala-parallel-recommendation/customize-serving).
 
 ## The Serving Component
 

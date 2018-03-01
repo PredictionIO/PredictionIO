@@ -1,13 +1,8 @@
 {
-  "name": "predictionio.incubator.apache.org",
-  "version": "2.0.0",
-  "authors": [
-    "David Singer <david@ramaboo.com>",
-    "Donald Szeto <donald@apache.org>"
-  ],
-  "description": "Apache PredictionIO (incubating) Documentation",
+  "name": "predictionio.apache.org",
+  "description": "Apache PredictionIO Documentation",
   "license": "Apache-2.0",
-  "homepage": "predictionio.incubator.apache.org",
+  "homepage": "predictionio.apache.org",
   "ignore": [
     "**/.*",
     "node_modules",
