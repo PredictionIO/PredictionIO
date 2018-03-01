@@ -171,15 +171,19 @@ class JDBCPEvents(client: String, config: StorageClientConfig, namespace: String
   def delete(eventIds: RDD[String], appId: Int, channelId: Option[Int])(sc: SparkContext): Unit = {
 
     eventIds.foreachPartition{ iter =>
-
-      iter.foreach { eventId =>
-        DB localTx { implicit session =>
+      DB(
+        DriverManager.getConnection(
+          client,
+          config.properties("USERNAME"),
+          config.properties("PASSWORD"))
+      ) localTx { implicit session =>
         val tableName = JDBCUtils.eventTableName(namespace, appId, channelId)
         val table = SQLSyntax.createUnsafely(tableName)
-        sql"""
-        delete from $table where id = $eventId
-        """.update().apply()
-        true
+
+        iter.foreach { eventId =>
+          sql"""
+          delete from $table where id = $eventId
+          """.update().apply()
         }
       }
     }
