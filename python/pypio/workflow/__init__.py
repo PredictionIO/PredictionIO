@@ -15,9 +15,11 @@
 # limitations under the License.
 #
 
-from pypio.data import PEventStore
-from pypio.workflow import CleanupFunctions
+from __future__ import absolute_import
 
-p_event_store = PEventStore(spark._jsparkSession, sqlContext)
-cleanup_functions = CleanupFunctions(sqlContext)
+from pypio.workflow.cleanup_functions import CleanupFunctions
 
+
+__all__ = [
+    'CleanupFunctions'
+]

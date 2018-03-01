@@ -15,9 +15,18 @@
 # limitations under the License.
 #
 
-from pypio.data import PEventStore
-from pypio.workflow import CleanupFunctions
+from __future__ import absolute_import
 
-p_event_store = PEventStore(spark._jsparkSession, sqlContext)
-cleanup_functions = CleanupFunctions(sqlContext)
+__all__ = ["CleanupFunctions"]
+
+
+class CleanupFunctions(object):
+
+    def __init__(self, sql_ctx):
+        self.sql_ctx = sql_ctx
+        self._sc = sql_ctx and sql_ctx._sc
+
+    def run(self):
+        cf = self._sc._jvm.org.apache.predictionio.workflow.CleanupFunctions
+        cf.run()
 
