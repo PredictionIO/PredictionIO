@@ -1,10 +1,10 @@
 root:
   -
-    body: 'Apache PredictionIO™ Documentation'
+    body: 'Apache PredictionIO® Documentation'
     url: '/'
     children:
       -
-        body: 'Welcome to Apache PredictionIO'
+        body: 'Welcome to Apache PredictionIO®'
         url: '/'
   -
     body: 'Getting Started'
@@ -163,7 +163,7 @@ root:
         body: 'Using Another Data Store'
         url: '/system/anotherdatastore/'
   -
-    body: 'PredictionIO Official Templates'
+    body: 'PredictionIO® Official Templates'
     url: '#'
     children:
       -
