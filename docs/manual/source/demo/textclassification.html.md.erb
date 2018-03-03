@@ -100,7 +100,7 @@ Make sure the "appName" is same as the app you created in step1.
 {
   "id": "default",
   "description": "Default settings",
-  "engineFactory": "org.template.textclassification.TextClassificationEngine",
+  "engineFactory": "org.example.textclassification.TextClassificationEngine",
   "datasource": {
     "params": {
       "appName": "MyTextApp"
@@ -193,7 +193,7 @@ you should see following outputs returned by the engine:
 ### 5.b.Evaluate your training model and tune parameters.
 
 ```
-$ pio eval org.template.textclassification.AccuracyEvaluation org.template.textclassification.EngineParamsList
+$ pio eval org.example.textclassification.AccuracyEvaluation org.example.textclassification.EngineParamsList
 ```
 
 **Note:** Training and evaluation stages are generally different stages of engine development. Evaluation is there to help you choose the best [algorithm parameters](/evaluation/paramtuning/) to use for training an engine that is to be deployed as a web service.
@@ -582,7 +582,7 @@ To use the alternative multinomial logistic regression algorithm change your `en
   {
   "id": "default",
   "description": "Default settings",
-  "engineFactory": "org.template.textclassification.TextClassificationEngine",
+  "engineFactory": "org.example.textclassification.TextClassificationEngine",
   "datasource": {
     "params": {
       "appName": "MyTextApp"
@@ -679,7 +679,7 @@ $ pio build
 **2.a.** Evaluate your training model and tune parameters.
 
 ```
-$ pio eval org.template.textclassification.AccuracyEvaluation org.template.textclassification.EngineParamsList
+$ pio eval org.example.textclassification.AccuracyEvaluation org.example.textclassification.EngineParamsList
 ```
 
 **2.b.** Train your model and deploy.
