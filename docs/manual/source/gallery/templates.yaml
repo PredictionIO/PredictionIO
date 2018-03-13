@@ -74,7 +74,7 @@
 
 - template:
     name: Topic Labelling with Wikipedia
-    repo: "https://github.com/peoplehum/template-Labelling-Topics-with-wikipedia"
+    repo: "https://github.com/rajdeepd/template-Labelling-Topics-with-wikipedia"
     description: |-
       This template will label topics (e.g. topic generated through LDA topic modeling) with relevant category by referring to Wikipedia as a knowledge base.
     tags: [clustering, nlp]
