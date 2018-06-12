@@ -59,8 +59,7 @@ workflow for the classification template.
 ```
 $ pio build
 ...
-$ pio eval org.template.classification.AccuracyEvaluation \
-    org.template.classification.EngineParamsList
+$ pio eval org.example.classification.AccuracyEvaluation org.example.classification.EngineParamsList
 ```
 
 You will see the following output:
