@@ -107,7 +107,7 @@ Optimal Engine Params:
   }
 }
 Metrics:
-  org.template.classification.Accuracy: 0.9281045751633987
+  org.example.classification.Accuracy: 0.9281045751633987
 The best variant params can be found in best.json
 [INFO] [CoreWorkflow$] runEvaluation completed
 ```
@@ -362,8 +362,7 @@ from the console.
 ```
 $ pio build
 ...
-$ pio eval org.template.classification.AccuracyEvaluation \
-    org.template.classification.EngineParamsList
+$ pio eval org.example.classification.AccuracyEvaluation org.example.classification.EngineParamsList
 ```
 
 You will see the following output:
