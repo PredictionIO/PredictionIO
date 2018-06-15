@@ -67,7 +67,7 @@ object. We can run the following command to kick start the evaluation.
 ```
 $ pio build
 ...
-$ pio eval org.example.classification.AccuracyEvaluation org.template.classification.EngineParamsList
+$ pio eval org.example.classification.AccuracyEvaluation org.example.classification.EngineParamsList
 ...
 ```
 
