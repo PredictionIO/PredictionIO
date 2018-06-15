@@ -67,8 +67,7 @@ object. We can run the following command to kick start the evaluation.
 ```
 $ pio build
 ...
-$ pio eval org.template.classification.AccuracyEvaluation \
-    org.template.classification.EngineParamsList
+$ pio eval org.example.classification.AccuracyEvaluation org.template.classification.EngineParamsList
 ...
 ```
 
@@ -140,8 +139,7 @@ separation of concern when we conduct hyperparameter tuning.
 ```
 $ pio build
 ...
-$ pio eval org.template.classification.PrecisionEvaluation \
-    org.template.classification.EngineParamsList
+$ pio eval org.example.classification.PrecisionEvaluation org.example.classification.EngineParamsList
 ...
 [INFO] [CoreWorkflow$] Starting evaluation instance ID: SMhzYbJ9QgKkD0fQzTA7MA
 ...
@@ -183,7 +181,7 @@ Optimal Engine Params:
   }
 }
 Metrics:
-  org.template.classification.Precision: 0.8846153846153846
+  org.example.classification.Precision: 0.8846153846153846
 ```
 
 (See MyClassification/src/main/scala/***PrecisionEvaluation.scala*** for
