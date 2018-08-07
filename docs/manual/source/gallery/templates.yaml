@@ -86,6 +86,19 @@
     apache_pio_convesion_required: "already compatible"
     support_link: '<a href="https://github.com/peoplehum/template-Labelling-Topics-with-wikipedia/issues">Github issues</a>'
 
+- template:
+    name: Bayesian Nonparametric Chinese Restaurant Process Clustering
+    repo: "https://github.com/jirotubuyaki/predictionio-template-crp-clustering"
+    description: |-
+        Chinese restaurant process is stochastic process for statistical inference. The clustering which uses Chinese restaurant process does not need to decide the number of clusters in advance. This algorithm automatically adjusts it.
+    tags: [clustering]
+    type: Parallel
+    language: Scala
+    license: "Apache Licence 2.0"
+    status: alpha
+    pio_min_version: 0.10.0-incubating
+    support_link: '<a href="https://github.com/jirotubuyaki/predictionio-template-crp-clustering/issues">Github issues</a>'
+
 # Recommenders
 
 - template:
