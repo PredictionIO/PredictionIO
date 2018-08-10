@@ -25,7 +25,7 @@ The [default algorithm described in DASE](dase.html#algorithm) uses user-to-item
 
 In this example, we will add another algorithm to process like/dislike events. The final PredictedResults will be the combined outputs of both algorithms.
 
-NOTE: This is just one of the ways to handle mutliple types of events. We use this use case to demonstrate how one can build an engine with multiple algorithms. You may also build one single algorithm which takes different events into account without using multiple algorithms.
+NOTE: This is just one of the ways to handle multiple types of events. We use this use case to demonstrate how one can build an engine with multiple algorithms. You may also build one single algorithm which takes different events into account without using multiple algorithms.
 
 This example will demonstrate the following:
 
@@ -397,7 +397,7 @@ Next, in order to train and deploy two algorithms for this engine, we also need 
 
 ```
 
-INFO: You may notice that the parameters of the new `"likealgo"` contains the same fields as `"als"`. It is just becasuse the `LikeAlgorithm` class extends the original `ALSAlgorithm` class and shares the same algorithm parameter class defintion. If the other algorithm you add has its own parameter class, you just need to specify them inside its `params` field accordingly.
+INFO: You may notice that the parameters of the new `"likealgo"` contains the same fields as `"als"`. It is just becasuse the `LikeAlgorithm` class extends the original `ALSAlgorithm` class and shares the same algorithm parameter class definition. If the other algorithm you add has its own parameter class, you just need to specify them inside its `params` field accordingly.
 
 That's it! Now you have a engine configured with two algorithms.
 

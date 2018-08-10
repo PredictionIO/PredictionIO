@@ -244,7 +244,7 @@ User u10 buys item s2i1 at 2014-10-19 15:43:15.618000-07:53
 
 ## 6. Use the Engine
 
-Now, You can query the engine. For example, return top 3 items which are frequently bought with item "s2i1". You can sending this JSON '{ "items" : ["s2i1"], "num" : 3 }' to the deployed engine. The engine will return a JSON with the recommeded items.
+Now, You can query the engine. For example, return top 3 items which are frequently bought with item "s2i1". You can sending this JSON '{ "items" : ["s2i1"], "num" : 3 }' to the deployed engine. The engine will return a JSON with the recommended items.
 
 If you include one or more items in the query, the engine will use each combination of the query items as condition, and return recommended items if there is any for this condition. For example, if you query items are ["A", "B"], then the engine will use ["A"], ["B"], and ["A", "B"] as condition and try to find top n recommended items for each combination.
 

@@ -30,7 +30,7 @@ A simplistic form of metric is a function which takes a
 `(Query, PredictedResult, ActualResult)`-tuple (*QPA-tuple*) as input
 and return a score.
 Exploiting this properties allows us to implement custom metric with a single
-line of code (plus some boilerplates). We demonstate this with two metrics:
+line of code (plus some boilerplates). We demonstrate this with two metrics:
 accuracy and precision.
 
 <!--
@@ -101,7 +101,7 @@ Lines 3 to 4 is the method signature of `calcuate` method. The key difference
 is that the return value is a `Option[Double]`, in contrast to `Double` for
 `AverageMetric`. This class only computes the average of `Some(.)` results.
 Lines 5 to 13 are the actual logic. The first `if` factors out the
-positively predicted case, and the computation is simliar to the accuracy
+positively predicted case, and the computation is similiar to the accuracy
 metric. The negatively predicted case are the *don't cares*, which we return
 `None`.
 

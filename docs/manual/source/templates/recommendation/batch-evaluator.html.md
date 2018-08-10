@@ -70,7 +70,7 @@ NOTE: Alternatively, you can create a new DataSource extending original DataSour
 
 ## 2. Add a new Evaluator
 
-Create a new file `BatchPersistableEvaluator.scala`. Unlike the `MetricEvaluator`, this Evaluator simply writes the Query and correpsonding PredictedResult to the output directory without performaning any metrics calculation.
+Create a new file `BatchPersistableEvaluator.scala`. Unlike the `MetricEvaluator`, this Evaluator simply writes the Query and corresponding PredictedResult to the output directory without performing any metrics calculation.
 
 Note that output directory is specified by the variable `outputDir`.
 

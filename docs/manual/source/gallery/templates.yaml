@@ -227,7 +227,7 @@
     name: Viewed This Bought That
     repo: "https://github.com/vngrs/template-scala-parallel-viewedthenbought"
     description: |-
-      This Engine uses co-occurence algorithm to match viewed items to bought items. Using this engine you may predict which item the user will buy, given the item(s) browsed.
+      This Engine uses co-occurrence algorithm to match viewed items to bought items. Using this engine you may predict which item the user will buy, given the item(s) browsed.
     tags: [recommender]
     type: Parallel
     language: Scala
@@ -465,7 +465,7 @@
     name: classifier-kafka-streaming-template
     repo: "https://github.com/singsanj/classifier-kafka-streaming-template"
     description: |-
-      The template will provide a simple integration of DASE with kafka using spark streaming capabilites in order to play around with real time notification, messages ..
+      The template will provide a simple integration of DASE with kafka using spark streaming capabilities in order to play around with real time notification, messages ..
     tags: [classification]
     type: Parallel
     language: Scala

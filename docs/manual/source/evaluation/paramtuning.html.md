@@ -292,7 +292,7 @@ For each point in the validation set, we construct the `Query` and
 
 We define a `Metric` which gives a *score* to engine params. The higher the
 score, the better the engine params are.
-In this template, we use accuray score which measures
+In this template, we use accuracy score which measures
 the portion of correct prediction among all data points.
 
 In MyClassification/src/main/scala/**Evaluation.scala**, the class
@@ -345,7 +345,7 @@ object EngineParamsList extends EngineParamsGenerator {
 }
 ```
 
-A good practise is to first define a base engine params, it contains the common
+A good practice is to first define a base engine params, it contains the common
 parameters used in all evaluations (lines 7 to 8). With the base params, we
 construct the list of engine params we want to evaluation by
 adding or replacing the controller parameter. Lines 13 to 16 generate 3 engine
@@ -417,7 +417,7 @@ The best variant params can be found in best.json
 
 ## Notes
 
-- We deliberately not metion ***test set*** in this hyperparameter tuning guide.
+- We deliberately not mention ***test set*** in this hyperparameter tuning guide.
 In machine learning literature, the ***test set*** is a separate piece of data
 which is used to evaluate the final engine params outputted by the evaluation
 process. This guarantees that no information in the training / validation set is

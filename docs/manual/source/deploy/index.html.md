@@ -94,5 +94,5 @@ The down time is usually not more than a few seconds though it can be more.
 The last thing to do is to add this to your *crontab*:
 
 ```
-0 0 * * *   /path/to/script >/dev/null 2>/dev/null # mute both stdout and stderr to supress email sent from cron
+0 0 * * *   /path/to/script >/dev/null 2>/dev/null # mute both stdout and stderr to suppress email sent from cron
 ```

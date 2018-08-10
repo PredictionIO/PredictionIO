@@ -145,7 +145,7 @@ url, etc.) with it. You can supply these as pass-through arguments at the end of
 
 If the engine training seems stuck, it's possible that the the executor doesn't have enough memory.
 
-First, follow [instruction here]( http://spark.apache.org/docs/latest/spark-standalone.html) to start standalone Spark cluster and get the master URL. If you use the provided quick install script to install PredictionIO, the Spark is installed at `PredictionIO/vendors/spark-1.2.0/` where you could run the Spark commands in `sbin/` as described in the Spark documentation. Then use following train commmand to specify executor memory (default is only 512 MB) and driver memory.
+First, follow [instruction here]( http://spark.apache.org/docs/latest/spark-standalone.html) to start standalone Spark cluster and get the master URL. If you use the provided quick install script to install PredictionIO, the Spark is installed at `PredictionIO/vendors/spark-1.2.0/` where you could run the Spark commands in `sbin/` as described in the Spark documentation. Then use following train command to specify executor memory (default is only 512 MB) and driver memory.
 
 For example, the follow command set the Spark master to `spark://localhost:7077`
 (the default url of standalone cluster), set the driver memory to 16G and set the executor memory to 24G for `pio train`.
