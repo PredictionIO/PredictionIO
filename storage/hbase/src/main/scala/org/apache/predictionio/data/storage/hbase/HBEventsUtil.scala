@@ -148,7 +148,7 @@ object HBEventsUtil {
     val rowKey = event.eventId.map { id =>
       RowKey(id) // create rowKey from eventId
     }.getOrElse {
-      // TOOD: use real UUID. not pseudo random
+      // TODO: use real UUID. not pseudo random
       val uuidLow: Long = UUID.randomUUID().getLeastSignificantBits
       RowKey(
         entityType = event.entityType,

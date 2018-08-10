@@ -268,7 +268,7 @@ class Engine[TD, EI, PD, Q, P, A](
 
   /** Extract model for persistent layer.
     *
-    * PredictionIO presist models for future use. It allows custom
+    * PredictionIO persists models for future use. It allows custom
     * implementation for persisting models. You need to implement the
     * [[org.apache.predictionio.controller.PersistentModel]] interface. This method
     * traverses all models in the workflow. If the model is a
@@ -642,7 +642,7 @@ object Engine {
       dataSource.readTrainingBase(sc)
     } catch {
       case e: StorageClientException =>
-        logger.error(s"Error occured reading from data source. (Reason: " +
+        logger.error(s"Error occurred reading from data source. (Reason: " +
           e.getMessage + ") Please see the log for debugging details.", e)
         sys.exit(1)
     }

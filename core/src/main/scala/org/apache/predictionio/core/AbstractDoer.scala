@@ -48,7 +48,7 @@ object Doer extends Logging {
 
     // Subclasses only allows two kind of constructors.
     // 1. Constructor with P <: Params.
-    // 2. Emtpy constructor.
+    // 2. Empty constructor.
     // First try (1), if failed, try (2).
     try {
       val constr = cls.getConstructor(params.getClass)
