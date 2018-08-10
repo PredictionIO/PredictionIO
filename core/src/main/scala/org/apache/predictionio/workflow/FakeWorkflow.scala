@@ -72,7 +72,7 @@ private[predictionio] case class FakeEvalResult() extends BaseEvaluatorResult {
   override val noSave: Boolean = true
 }
 
-/** FakeRun allows user to implement custom function under the exact enviroment
+/** FakeRun allows user to implement custom function under the exact environment
   * as other PredictionIO workflow.
   *
   * Useful for developing new features. Only need to extend this trait and

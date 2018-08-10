@@ -55,7 +55,7 @@ def repository_dirname(template):
 
 def obtain_template(engine_dir, template):
   """Given a directory with engines and a template downloads an engine
-  if neccessary
+  if necessary
   Args:
     engine_dir (str): directory where engines are stored
     template (str): either the name of an engine from the engines directory

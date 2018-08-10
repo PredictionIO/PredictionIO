@@ -33,14 +33,14 @@ has to download the following python-3 packages:
 You can pass it arguments to:
 * suppress the output of executed shell commands within the tests
 * enable logging
-* specify which tests should be exectued (by names)
+* specify which tests should be executed (by names)
 
 For more information run:
 ```shell
 python3 tests.py -h
 ```
 
-As soon as the tests are finishied an XML file with JUnit-like test reports 
+As soon as the tests are finished an XML file with JUnit-like test reports
 is created in the directory of execution.
 
 ### Adding new tests

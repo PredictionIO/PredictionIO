@@ -24,7 +24,7 @@ import org.specs2.mutable._
 
 class MailChimpConnectorSpec extends Specification with ConnectorTestUtil {
 
-  // TOOD: test other events
+  // TODO: test other events
   // TODO: test different optional fields
 
   "MailChimpConnector" should {
@@ -87,7 +87,7 @@ class MailChimpConnectorSpec extends Specification with ConnectorTestUtil {
         "data[merges][EMAIL]" -> "api+unsub@mailchimp.com",
         "data[merges][FNAME]" -> "MailChimp",
         "data[merges][LNAME]" -> "API",
-        "data[merges][INTERESTS]" -> "Group1,Group2", //optional 
+        "data[merges][INTERESTS]" -> "Group1,Group2", //optional
         "data[ip_opt]" -> "10.20.10.30",
         "data[campaign_id]" -> "cb398d21d2"
       )
@@ -120,7 +120,7 @@ class MailChimpConnectorSpec extends Specification with ConnectorTestUtil {
       check(MailChimpConnector, unsubscribe, expected)
     }
 
-    //check profile update to event Json 
+    //check profile update to event Json
     "convert profile update to event JSON" in {
 
       val profileUpdate = Map(
@@ -162,7 +162,7 @@ class MailChimpConnectorSpec extends Specification with ConnectorTestUtil {
       check(MailChimpConnector, profileUpdate, expected)
     }
 
-    //check email update to event Json 
+    //check email update to event Json
     "convert email update to event JSON" in {
 
       val emailUpdate = Map(
@@ -192,7 +192,7 @@ class MailChimpConnectorSpec extends Specification with ConnectorTestUtil {
       check(MailChimpConnector, emailUpdate, expected)
     }
 
-    //check cleaned email to event Json 
+    //check cleaned email to event Json
     "convert cleaned email to event JSON" in {
 
       val cleanedEmail = Map(
@@ -221,7 +221,7 @@ class MailChimpConnectorSpec extends Specification with ConnectorTestUtil {
       check(MailChimpConnector, cleanedEmail, expected)
     }
 
-    //check campaign sending status to event Json 
+    //check campaign sending status to event Json
     "convert campaign sending status to event JSON" in {
 
       val campaign = Map(

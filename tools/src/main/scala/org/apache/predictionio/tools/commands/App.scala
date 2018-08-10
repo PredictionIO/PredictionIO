@@ -298,7 +298,7 @@ object App extends EitherLogging {
               Right(channel.copy(id = chanId))
             } else {
               errStr = s"""Unable to create new channel.
-                          |Failed to initalize Event Store.""".stripMargin
+                          |Failed to initialize Event Store.""".stripMargin
               error(errStr)
               // reverted back the meta data
               try {

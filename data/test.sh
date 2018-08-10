@@ -481,7 +481,7 @@ testdata='[{
 checkPOST "/batch/events.json?accessKey=$accessKey" "$testdata" 200
 
 # request with a malformed event (2nd event)
-# the response code is succesful but the error for individual event is reflected in the response's body.
+# the response code is successful but the error for individual event is reflected in the response's body.
 testdata='[{
   "event" : "my_event_1",
   "entityType" : "user",

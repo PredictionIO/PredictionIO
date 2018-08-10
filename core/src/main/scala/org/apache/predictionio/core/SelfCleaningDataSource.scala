@@ -69,7 +69,7 @@ trait SelfCleaningDataSource {
 
   /** :: DeveloperApi ::
     *
-    * Returns RDD of events happend after duration in event window params.
+    * Returns RDD of events happened after duration in event window params.
     *
     * @return RDD[Event] most recent PEvents.
     */
@@ -87,7 +87,7 @@ trait SelfCleaningDataSource {
 
   /** :: DeveloperApi ::
     *
-    * Returns Iterator of events happend after duration in event window params.
+    * Returns Iterator of events happened after duration in event window params.
     *
     * @return Iterator[Event] most recent LEvents.
     */
