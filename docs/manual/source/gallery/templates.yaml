@@ -90,7 +90,7 @@
     name: Bayesian Nonparametric Chinese Restaurant Process Clustering
     repo: "https://github.com/jirotubuyaki/predictionio-template-crp-clustering"
     description: |-
-        Chinese restaurant process is stochastic process for statistical inference. The clustering which uses Chinese restaurant process does not need to decide the number of clusters in advance. This algorithm automatically adjusts it.
+      Chinese restaurant process is stochastic process for statistical inference. The clustering which uses Chinese restaurant process does not need to decide the number of clusters in advance. This algorithm automatically adjusts it.
     tags: [clustering]
     type: Parallel
     language: Scala
