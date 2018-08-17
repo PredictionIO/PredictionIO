@@ -23,4 +23,4 @@ Scala API Documentation
     $ sbt/sbt pioUnidoc
     ```
 
-2.  Point your web browser at `target/scala-2.10/unidoc/index.html`.
+2.  Point your web browser at `target/scala-2.11/unidoc/index.html`.
