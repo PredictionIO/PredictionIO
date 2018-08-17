@@ -50,7 +50,7 @@ lazy val scalaSparkDepsVersion = Map(
 
 name := "apache-predictionio-parent"
 
-version in ThisBuild := "0.12.1"
+version in ThisBuild := "0.13.0-SNAPSHOT"
 
 organization in ThisBuild := "org.apache.predictionio"
 
@@ -65,7 +65,7 @@ scalacOptions in ThisBuild ++= Seq("-deprecation", "-unchecked", "-feature")
 scalacOptions in (ThisBuild, Test) ++= Seq("-Yrangepos")
 fork in (ThisBuild, run) := true
 
-javacOptions in (ThisBuild, compile) ++= Seq("-source", "1.7", "-target", "1.7",
+javacOptions in (ThisBuild, compile) ++= Seq("-source", "1.8", "-target", "1.8",
   "-Xlint:deprecation", "-Xlint:unchecked")
 
 // Ignore differentiation of Spark patch levels
@@ -323,6 +323,10 @@ parallelExecution in Global := false
 testOptions in Test += Tests.Argument("-oDF")
 
 printBuildInfo := {
+  if (scalaBinaryVersion.value == "2.10")
+    streams.value.log.warn("Support for Scala 2.10 is deprecated. Please upgrade to a newer version of Scala.")
+  if (sparkBinaryVersion.value == "1.6")
+    streams.value.log.warn("Support for Spark 1.6 is deprecated. Please upgrade to a newer version of Spark.")
   println(s"PIO_SCALA_VERSION=${scalaVersion.value}")
   println(s"PIO_SPARK_VERSION=${sparkVersion.value}")
   println(s"PIO_ELASTICSEARCH_VERSION=${elasticsearchVersion.value}")
