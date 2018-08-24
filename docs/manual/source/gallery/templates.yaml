@@ -97,7 +97,7 @@
     license: "Apache Licence 2.0"
     status: alpha
     pio_min_version: 0.10.0-incubating
-    apache_pio_convesion_required: "requires conversion"
+    apache_pio_convesion_required: "already compatible"
     support_link: '<a href="https://github.com/jirotubuyaki/predictionio-template-crp-clustering/issues">Github issues</a>'
 
 # Recommenders
