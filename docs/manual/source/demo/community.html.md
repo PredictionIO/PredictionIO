@@ -51,9 +51,7 @@ URL: http://nogoodgamez.com
 
 Beer recommendation app built by [Victor Leung](https://twitter.com/victorleungtw).
 
-URL: http://ontappapp.com/
-
-Writeup: http://victorleungtw.com/prediction-io/
+Writeup: https://medium.com/@victorleungtw/beer-recommendation-engine-using-predictionio-36488ea0c50d
 
 
 ## Yelpio
