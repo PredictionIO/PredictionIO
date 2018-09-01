@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/usr/bin/env bash
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -28,7 +28,10 @@ if [ ! -f $DIR/docker-files/${PGSQL_JAR} ]; then
   mv ${PGSQL_JAR} $DIR/docker-files/
 fi
 if [ ! -f $DIR/docker-files/${SPARK_ARCHIVE} ]; then
-  wget $SPARK_DOWNLOAD
+  curl -fLo $SPARK_ARCHIVE $SPARK_DOWNLOAD_MIRROR
+  if [[ $? -ne 0 ]]; then
+    curl -fLo $SPARK_ARCHIVE $SPARK_DOWNLOAD_ARCHIVE
+  fi
   mv $SPARK_ARCHIVE $DIR/docker-files/
 fi
 

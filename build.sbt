@@ -46,6 +46,10 @@ lazy val scalaSparkDepsVersion = Map(
     "2.2" -> Map(
       "akka" -> "2.4.17",
       "hadoop" -> "2.7.3",
+      "json4s" -> "3.2.11"),
+    "2.3" -> Map(
+      "akka" -> "2.4.17",
+      "hadoop" -> "2.7.3",
       "json4s" -> "3.2.11")))
 
 name := "apache-predictionio-parent"
