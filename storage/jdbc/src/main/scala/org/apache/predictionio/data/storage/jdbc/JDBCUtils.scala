@@ -76,10 +76,14 @@ object JDBCUtils {
     * @return Map of String to String, e.g. Map("FOO" -> "BAR", "X" -> "Y", ...)
     */
   def stringToMap(str: String): Map[String, String] = {
-    str.split(",").map { x =>
-      val y = x.split("=")
-      y(0) -> y(1)
-    }.toMap[String, String]
+    if (str.isEmpty) {
+      Map.empty[String, String]
+    } else {
+      str.split(",").map { x =>
+        val y = x.split("=")
+        y(0) -> y(1)
+      }.toMap[String, String]
+    }
   }
 
   /** Generate 32-character random ID using UUID with - stripped */
