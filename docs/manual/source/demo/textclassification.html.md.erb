@@ -23,7 +23,7 @@ limitations under the License.
 
 ## Introduction
 
-In the real world, there are many applications that collect text as data. For example, spam detectors take email and header content to automatically determine what is or is not spam; applications can gague the general sentiment in a geographical area by analyzing Twitter data; and news articles can be automatically categorized based solely on the text content.There are a wide array of machine learning models you can use to create, or train, a predictive model to assign an incoming article, or query, to an existing category. Before you can use these techniques you must first transform the text data (in this case the set of news articles) into numeric vectors, or feature vectors, that can be used to train your model.
+In the real world, there are many applications that collect text as data. For example, spam detectors take email and header content to automatically determine what is or is not spam; applications can gauge the general sentiment in a geographical area by analyzing Twitter data; and news articles can be automatically categorized based solely on the text content.There are a wide array of machine learning models you can use to create, or train, a predictive model to assign an incoming article, or query, to an existing category. Before you can use these techniques you must first transform the text data (in this case the set of news articles) into numeric vectors, or feature vectors, that can be used to train your model.
 
 The purpose of this tutorial is to illustrate how you can go about doing this using PredictionIO's platform. The advantages of using this platform include: a dynamic engine that responds to queries in real-time; [separation of concerns](http://en.wikipedia.org/wiki/Separation_of_concerns), which offers code re-use and maintainability, and distributed computing capabilities for scalability and efficiency. Moreover, it is easy to incorporate non-trivial data modeling tasks into the DASE architecture allowing Data Scientists to focus on tasks related to modeling. This tutorial will exemplify some of these ideas by guiding you through PredictionIO's [text classification template](/gallery/template-gallery/#natural-language-processing).
 
@@ -91,7 +91,7 @@ $ pio import --appid *** --input data/emails.json
 
 ### 3. Set the engine parameters in the file `engine.json`.
 
-The default settings are shown below. By default, it uses the algorithm name "lr" which is logstic regression. Please see later section for more detailed explanation of engine.json setting.
+The default settings are shown below. By default, it uses the algorithm name "lr" which is logistic regression. Please see later section for more detailed explanation of engine.json setting.
 
 Make sure the "appName" is same as the app you created in step1.
 
@@ -272,7 +272,7 @@ Note that `readEventData` and `readStopWords` use different entity types and eve
 
 Now, the default dataset used for training is contained in the file `data/emails.json` and contains a set of e-mail spam data. If we want to switch over to one of the other data sets we must make sure that the `eventNames` and `entityType` fields are changed accordingly.
 
-In the data/ directory, you will find different sets of data files for different types of text classifcaiton application. The following show one observation from each of the provided data files:
+In the data/ directory, you will find different sets of data files for different types of text classificaiton application. The following show one observation from each of the provided data files:
 
 - `emails.json`:
 

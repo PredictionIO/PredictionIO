@@ -115,8 +115,8 @@ Metrics:
 
 ```
 
-The console prints out the evaluation meric score of each engine params, and finally
-pretty print the optimal engine params. Amongs the 3 engine params we evaluate,
+The console prints out the evaluation metric score of each engine params, and finally
+pretty print the optimal engine params. Amongst the 3 engine params we evaluate,
 the best Prediction@k has a score of ~0.1521.
 
 
@@ -145,7 +145,7 @@ recommendation engine:
 
 - Definition of 'good'. We want to quantify if the engine is able to recommend
 items which the user likes, we need to define what is meant by 'good'. In this
-examle, we have two kinds of events: 'rate' and 'buy'. The 'rate' event is
+example, we have two kinds of events: 'rate' and 'buy'. The 'rate' event is
 associated with a rating value which ranges between 1 to 4, and the 'buy'
 event is mapped to a rating of 4. When we
 implement the metric, we have to specify a rating threshold, only the rating
@@ -160,7 +160,7 @@ that the final metric is only an approximation of the actual result.
 
 - Recommendation affects user behavior. Suppose you are a e-commerce company and
 would like to use the recommendation engine to personalize the landing page,
-the item you show in the langing page directly impacts what the user is going to
+the item you show in the landing page directly impacts what the user is going to
 purchase. This is different from weather prediction, whatever the weather
 forecast engine predicts, tomorrow's weather won't be affected.  Therefore, when
 we conduct offline evaluation for recommendation engines, it is possible that

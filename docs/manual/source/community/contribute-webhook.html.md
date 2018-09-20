@@ -197,7 +197,7 @@ and tests should be in
 data/src/test/scala/org.apache.predictionio/data/webhooks/segmentio/
 ```
 
-**For form-submission data**, you can find the comple example [the GitHub
+**For form-submission data**, you can find the complete example [the GitHub
 repo](https://github.com/apache/predictionio/blob/develop/data/src/main/scala/org/apache/predictionio/data/webhooks/exampleform/ExampleFormConnector.scala)
 and how to write [tests for the
 connector](https://github.com/apache/predictionio/blob/develop/data/src/test/scala/org/apache/predictionio/data/webhooks/exampleform/ExampleFormConnectorSpec.scala).

@@ -28,7 +28,7 @@ sudo apt-get install monit
 ```
 
 ##Configure Basics
-Now we can configure monit by the configuration file  `/etc/monit/monitrc` with your favorite editor. You will notice that this file contains quite a bit already, most of which is commented intructions/examples.
+Now we can configure monit by the configuration file  `/etc/monit/monitrc` with your favorite editor. You will notice that this file contains quite a bit already, most of which is commented instructions/examples.
 
 First, choose the interval on which you want monit to check the status of your system. Use the `set daemon` command for this, it should already exist in the configuration file.
 

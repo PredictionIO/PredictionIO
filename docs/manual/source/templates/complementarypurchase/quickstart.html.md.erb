@@ -211,7 +211,7 @@ client.createEvent(buyEvent);
 
 <%= partial 'shared/quickstart/import_sample_data' %>
 
-A Python import script `import_eventserver.py` is provided to import sample data. The script generates some frequent item sets (prefix with "s"), some other random items (prefix with "i") and a few popular items (prefix with "p"). Then each user (with user ID "u1" to "u10") performs 5 buy transactions (buy events are within 10 seconds in each transcation). In each transcation, the user may or may not buy some random items, always buy one of the popular items and buy 2 or more items in one of the frequent item sets.
+A Python import script `import_eventserver.py` is provided to import sample data. The script generates some frequent item sets (prefix with "s"), some other random items (prefix with "i") and a few popular items (prefix with "p"). Then each user (with user ID "u1" to "u10") performs 5 buy transactions (buy events are within 10 seconds in each transaction). In each transaction, the user may or may not buy some random items, always buy one of the popular items and buy 2 or more items in one of the frequent item sets.
 
 <%= partial 'shared/quickstart/install_python_sdk' %>
 
@@ -329,7 +329,7 @@ JsonObject response = engineClient.sendQuery(ImmutableMap.<String, Object>of(
   </div>
 </div>
 
-The following is sample JSON response. The `cond` field is one of the combination of query items used as condition to determine other frequently bought items with this condition, followed by top items. If there are multiple conditions with recommended items found, the `rules` array will contain mutliple elements, and each correspond to the condition.
+The following is sample JSON response. The `cond` field is one of the combination of query items used as condition to determine other frequently bought items with this condition, followed by top items. If there are multiple conditions with recommended items found, the `rules` array will contain multiple elements, and each correspond to the condition.
 
 ```
 {

@@ -21,7 +21,7 @@ limitations under the License.
 
 PredictionIO's evaluation module allows you to streamline the process of
 testing lots of knobs in engine parameters and deploy the best one out
-of it using statisically sound cross-validation methods.
+of it using statistically sound cross-validation methods.
 
 There are two key components:
 
@@ -51,6 +51,6 @@ We will discuss various aspects of evaluation with PredictionIO.
   where you can see a detailed breakdown of all previous evaluations.
 - [Choosing Evaluation Metrics](/evaluation/metricchoose/) - we cover some basic
   machine learning metrics
-- [Bulding Evaluation Metrics](/evaluation/metricbuild/) - we illustrate how to
+- [Building Evaluation Metrics](/evaluation/metricbuild/) - we illustrate how to
   implement a custom metric with as few as one line of code (plus some
   boilerplates).

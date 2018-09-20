@@ -278,7 +278,7 @@ validation set, `EvaluationInfo` can be used to hold some global evaluation data
 ; it is not used in the current example.
 
 Lines 11 to 41 is the logic of reading and transforming data from the
-datastore; it is equvialent to the existing `readTraining` method. After line
+datastore; it is equivalent to the existing `readTraining` method. After line
 41, the variable `labeledPoints` contains the complete dataset with which we use
 to generate the (training, validation) sequence.
 

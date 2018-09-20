@@ -81,7 +81,7 @@ Storage Backend Connections
 2015-02-03 18:40:04,812 ERROR zookeeper.ZooKeeperWatcher - hconnection-0x1e4075ce, quorum=localhost:2181, baseZNode=/hbase Received unexpected KeeperException, re-throwing exception
 org.apache.zookeeper.KeeperException$ConnectionLossException: KeeperErrorCode = ConnectionLoss for /hbase/hbaseid
 ...
-2015-02-03 18:40:07,021 ERROR hbase.StorageClient - Failed to connect to HBase. Plase check if HBase is running properly.
+2015-02-03 18:40:07,021 ERROR hbase.StorageClient - Failed to connect to HBase. Please check if HBase is running properly.
 2015-02-03 18:40:07,026 ERROR storage.Storage$ - Error initializing storage client for source HBASE
 2015-02-03 18:40:07,027 ERROR storage.Storage$ - Can't connect to ZooKeeper
 java.util.NoSuchElementException: None.get

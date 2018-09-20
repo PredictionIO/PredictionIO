@@ -34,7 +34,7 @@ Overview](/images/overview-singleengine.png)
 ## Sending Event Data
 
 Apache PredictionIO's Event Server receives event data from your
-application. The data can be used by engines as training data to build preditive
+application. The data can be used by engines as training data to build predictive
 models.
 
 Event Server listens to port 7070 by default. You can change the port with the

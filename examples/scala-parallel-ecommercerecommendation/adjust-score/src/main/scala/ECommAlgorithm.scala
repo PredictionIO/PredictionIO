@@ -250,7 +250,7 @@ class ECommAlgorithm(val ap: ECommAlgorithmParams)
     )
 
     val finalBlackList: Set[Int] = genBlackList(query = query)
-      // convert seen Items list from String ID to interger Index
+      // convert seen Items list from String ID to integer Index
       .flatMap(x => model.itemStringIntMap.get(x))
 
     // ADDED

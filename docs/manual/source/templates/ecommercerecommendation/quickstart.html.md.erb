@@ -46,7 +46,7 @@ INFO: This template can easily be customized to consider more user events such a
 
 The *view* events are used as Training Data to train the model. The algorithm has a parameter *unseenOnly*; when this parameter is set to true, the engine would recommend unseen items only. You can specify a list of events which are considered as *seen* events with the algorithm parameter *seenEvents*. The default values are *view* and *buy* events, which means that the engine by default recommends un-viewed and un-bought items only. You can also define your own events which are considered as *seen*.
 
-The constraint *unavailableItems* set events are used to exclude a list of unaviable items (such as out of stock) for all users in real time.
+The constraint *unavailableItems* set events are used to exclude a list of unavailable items (such as out of stock) for all users in real time.
 
 ### Input Query
 
@@ -80,7 +80,7 @@ Likewise, if a blacklist is provided, the engine will exclude those products in 
 
 Next, let's collect training data for this Engine. By default,
 the E-Commerce Recommendation Engine Template supports 2 types of entities and 2 events: **user** and
-**item**; events **view** and **buy**. An item has the **categories** property, which is a list of category names (String). A user can view and buy an item. The specical **constraint** entiy with entityId **unavailableItems** defines a list of unavailable items and is taken into account in realtime during serving.
+**item**; events **view** and **buy**. An item has the **categories** property, which is a list of category names (String). A user can view and buy an item. The special **constraint** entity with entityId **unavailableItems** defines a list of unavailable items and is taken into account in realtime during serving.
 
 In summary, this template requires '$set' user event, '$set' item event, user-view-item events, user-buy-item event and '$set' constraint event.
 
@@ -620,7 +620,7 @@ client.createEvent(itemEvent)
 </div>
 
 
-Try to get recommendation for user *u1* again, the unavaiable items (e.g. i4, i14, i11). won't be recommended anymore:
+Try to get recommendation for user *u1* again, the unavailable items (e.g. i4, i14, i11). won't be recommended anymore:
 
 ```
 $ curl -H "Content-Type: application/json" \

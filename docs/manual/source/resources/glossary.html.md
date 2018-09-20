@@ -34,7 +34,7 @@ Algorithm, [S] Serving, [E] Evaluation Metrics.
 
 **EngineClient**
 - Part of PredictionSDK. It sends queries to a deployed engine instance through
-the Engine API and retrives prediction results.
+the Engine API and retrieves prediction results.
 
 **Event API**
 - Please see Event Server.

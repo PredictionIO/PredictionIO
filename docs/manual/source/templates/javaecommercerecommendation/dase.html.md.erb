@@ -327,9 +327,9 @@ public class AlgorithmParams implements Params{
 Parameter description:
 
 - **appName**: Your App name. Events defined by "seenItemEvents" and "similarItemEvents" will be read from this app during `predict`.
-- **unseenOnly**: true or false. Set to true if you want to recommmend unseen items only. Seen items are defined by *seenItemEvents* which mean if the user has these events on the items, then it's treated as *seen*.
+- **unseenOnly**: true or false. Set to true if you want to recommend unseen items only. Seen items are defined by *seenItemEvents* which mean if the user has these events on the items, then it's treated as *seen*.
 - **seenItemEvents**: A list of user-to-item events which will be treated as *seen* events. Used when *unseenOnly* is set to true.
-- **similarItemEvents**: A list of user-item-item events which will be used to find similar items to the items which the user has performend these events on.
+- **similarItemEvents**: A list of user-item-item events which will be used to find similar items to the items which the user has performed these events on.
 - **rank**: Parameter of the MLlib ALS algorithm. Number of latent features.
 - **iteration**: Parameter of the MLlib ALS algorithm. Number of iterations.
 - **lambda**: Regularization parameter of the MLlib ALS algorithm.

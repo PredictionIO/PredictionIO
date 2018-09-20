@@ -97,11 +97,11 @@ negative cases.
 
 PredictionIO provides a helper class `OptionAverageMetric` allows user to
 specify *don't care* values as `None`. It only aggregates the non-None values.
-Lines 3 to 4 is the method signature of `calcuate` method. The key difference
+Lines 3 to 4 is the method signature of `calculate` method. The key difference
 is that the return value is a `Option[Double]`, in contrast to `Double` for
 `AverageMetric`. This class only computes the average of `Some(.)` results.
 Lines 5 to 13 are the actual logic. The first `if` factors out the
-positively predicted case, and the computation is similiar to the accuracy
+positively predicted case, and the computation is similar to the accuracy
 metric. The negatively predicted case are the *don't cares*, which we return
 `None`.
 

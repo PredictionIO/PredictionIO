@@ -85,7 +85,7 @@ Please follow this styleguide for any documentation contributions.
 
 ### Text
 
-View our [Sample Typography](/samples/) page for all posible styles.
+View our [Sample Typography](/samples/) page for all possible styles.
 
 ### Headings
 

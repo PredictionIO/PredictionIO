@@ -180,7 +180,7 @@ In `readTraining()`, `PEventStore` is an object which provides function to acces
 
 This Lead Scoring Engine Template requires "view" and "buy" events with `sessionId` in event property.
 
-`PEventStore.find(...)` specifies the events that you want to read. In this case, "user view page" and "user buy item" events are read and then each is mapped to tuple of (sessionId, event). The event are then "cogrouped" by sessionId to find out the information in the session, such as first page view (landing page view), and whether the user converts (buy event), to craete a RDD of Session as TrainingData:
+`PEventStore.find(...)` specifies the events that you want to read. In this case, "user view page" and "user buy item" events are read and then each is mapped to tuple of (sessionId, event). The event are then "cogrouped" by sessionId to find out the information in the session, such as first page view (landing page view), and whether the user converts (buy event), to create a RDD of Session as TrainingData:
 
 ```scala
 case class Session(
@@ -223,7 +223,7 @@ The `LabeledPoint` class is defined in Spark MLlib and it's required for the Ran
 
 By default, the feature used for classification is "landingPage", "referrer" and "browser". Since these features contain categorical values, we need to create a map of categorical values to the integer values for the algorithm to use.
 
-NOTE: You can customize the tempate to use other features.
+NOTE: You can customize the template to use other features.
 
 For example, if the feature "landingPage" can be any of the following values: "page1", "page2", "page3", "page4". We can create a categorical Int value Map, such as:
 
@@ -238,7 +238,7 @@ Map(
 
 Instead of manually create such Map, a helper method `createCategoricalIntMap()` is defined in **Prepraator.scala** for this purpose.
 
-Each `labeledPoint` is a label and a feature vector. The element index of the vector for the coresponding feature is defined by `featureIndex` Map. By default, it's defined as
+Each `labeledPoint` is a label and a feature vector. The element index of the vector for the corresponding feature is defined by `featureIndex` Map. By default, it's defined as
 
 ```scala
 val featureIndex = Map(

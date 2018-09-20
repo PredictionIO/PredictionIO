@@ -25,7 +25,7 @@ This section explains how to model your application data as events.
 
 For example, your application may have users and some items which the user can interact with. Then you can model them as two entity types: **user** and **item** and the entityId can uniquely identify the entity within each entityType (e.g. user with ID 1, item with ID 1).
 
-An entity may peform some events (e.g user 1 does something), and entity may have properties associated with it (e.g. user may have gender, age, email etc). Hence, **events** involve **entities** and there are three types of events, respectively:
+An entity may perform some events (e.g user 1 does something), and entity may have properties associated with it (e.g. user may have gender, age, email etc). Hence, **events** involve **entities** and there are three types of events, respectively:
 
 1. Generic events performed by an entity.
 2. Special events for recording changes of an entity's properties
@@ -78,7 +78,7 @@ The following are some simple examples:
 
 ## 2. Special events for recording changes of an entity's properties
 
-The generic events described above are used to record general actions performed by the entity. However, an entity may have properties (or attributes) associated with it. Morever, the properties  of the entity may change over time (for example, user may have new address, item may have new categories). In order to record such changes of an entity's properties. Special events `$set` , `$unset` and `$delete` are introduced.
+The generic events described above are used to record general actions performed by the entity. However, an entity may have properties (or attributes) associated with it. Moreover, the properties of the entity may change over time (for example, user may have new address, item may have new categories). In order to record such changes of an entity's properties. Special events `$set` , `$unset` and `$delete` are introduced.
 
 The following special events are reserved for updating entities and their properties:
 
@@ -108,7 +108,7 @@ For example, setting entity `user-1`'s properties `birthday` and `address`:
 
 NOTE: Although it doesn't hurt to import duplicated special events for an entity (exactly same properties) into event server (it just means that the entity changes to the same state as before and new duplicated event provides no new information about the user), it could waste storage space.
 
-To demonstrate the concept of these special events, we are going to import a sequence of events and see how it affects the retrieved entitiy's properties.
+To demonstrate the concept of these special events, we are going to import a sequence of events and see how it affects the retrieved entity's properties.
 
 Assuming you have created the App (named "MyTestApp") for testing and Event Server is started.
 
@@ -151,7 +151,7 @@ After this eventTime, user-2 is created and has properties of a = 3 and b = 4.
 
 #### Event 2
 
-Then, on `2014-09-10T...`, let's say the user has updated the properties b = 5 and c = 6. To record such propertiy change, create another `$set` event. Run the following command:
+Then, on `2014-09-10T...`, let's say the user has updated the properties b = 5 and c = 6. To record such property change, create another `$set` event. Run the following command:
 
 ```bash
 $ curl -i -X POST http://localhost:7070/events.json?accessKey=$ACCESS_KEY \
@@ -283,7 +283,7 @@ scala> import org.joda.time.DateTime
 scala> PEventStore.aggregateProperties(appName=appName, entityType="user", untilTime=Some(new DateTime(2014, 9, 11, 0, 0)))(sc).collect()
 ```
 
-You should see the following ouptut and the aggregated properties matches what we expected as described earlier (right befor event 3): user-2 has properties of a = 3, b = 5 and c = 6.
+You should see the following ouptut and the aggregated properties matches what we expected as described earlier (right before event 3): user-2 has properties of a = 3, b = 5 and c = 6.
 
 ```
 res2: Array[(String, org.apache.predictionio.data.storage.PropertyMap)] =

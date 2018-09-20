@@ -417,7 +417,7 @@ demo and build upon it. If you produce something cool shoot us an email and we
 will link to it from here.
 
 Found a typo? Think something should be explained better? This tutorial (and all
-our other documenation) live in the main repo
+our other documentation) live in the main repo
 [here](https://github.com/apache/predictionio/blob/livedoc/docs/manual/source/demo/tapster.html.md).
 Our documentation is in the `livedoc` branch. Find out how to contribute
 documentation at

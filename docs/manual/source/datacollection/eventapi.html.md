@@ -328,7 +328,7 @@ Field | Type | Description
                    | | are reserved and shouldn't be used.
 `targetEntityId` | String | (Optional) The target entity ID.
 `properties` | JSON | (Optional) See **Note About Properties** below
-             | | **Note**: All peroperty names start with "$" and "pio_"
+             | | **Note**: All property names start with "$" and "pio_"
              | | are reserved and shouldn't be used as keys inside `properties`.
 `eventTime` | String | (Optional) The time of the event. Although Event Server's
             | | current system time and UTC timezone will be used if this is
