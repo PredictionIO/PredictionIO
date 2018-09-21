@@ -35,6 +35,8 @@ if [ ! -f $DIR/docker-files/${SPARK_ARCHIVE} ]; then
   mv $SPARK_ARCHIVE $DIR/docker-files/
 fi
 
+set -e
+
 ./make-distribution.sh \
     -Dscala.version=$PIO_SCALA_VERSION \
     -Dspark.version=$PIO_SPARK_VERSION \
