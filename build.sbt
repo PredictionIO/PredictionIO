@@ -17,24 +17,7 @@
 import PIOBuild._
 
 lazy val scalaSparkDepsVersion = Map(
-  "2.10" -> Map(
-    "1.6" -> Map(
-      "akka" -> "2.3.15",
-      "hadoop" -> "2.6.5",
-      "json4s" -> "3.2.10"),
-    "2.0" -> Map(
-      "akka" -> "2.3.16",
-      "hadoop" -> "2.7.3",
-      "json4s" -> "3.2.11"),
-    "2.1" -> Map(
-      "akka" -> "2.3.16",
-      "hadoop" -> "2.7.3",
-      "json4s" -> "3.2.11")),
   "2.11" -> Map(
-    "1.6" -> Map(
-      "akka" -> "2.3.15",
-      "hadoop" -> "2.6.5",
-      "json4s" -> "3.2.10"),
     "2.0" -> Map(
       "akka" -> "2.4.17",
       "hadoop" -> "2.7.3",
@@ -62,7 +45,7 @@ scalaVersion in ThisBuild := sys.props.getOrElse("scala.version", "2.11.8")
 
 scalaBinaryVersion in ThisBuild := binaryVersion(scalaVersion.value)
 
-crossScalaVersions in ThisBuild := Seq("2.10.6", "2.11.8")
+crossScalaVersions in ThisBuild := Seq("2.11.8")
 
 scalacOptions in ThisBuild ++= Seq("-deprecation", "-unchecked", "-feature")
 
@@ -73,7 +56,7 @@ javacOptions in (ThisBuild, compile) ++= Seq("-source", "1.8", "-target", "1.8",
   "-Xlint:deprecation", "-Xlint:unchecked")
 
 // Ignore differentiation of Spark patch levels
-sparkVersion in ThisBuild := sys.props.getOrElse("spark.version", (if (scalaBinaryVersion.value == "2.10") "1.6.3" else "2.1.1"))
+sparkVersion in ThisBuild := sys.props.getOrElse("spark.version", "2.1.1")
 
 sparkBinaryVersion in ThisBuild := binaryVersion(sparkVersion.value)
 
