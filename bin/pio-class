@@ -44,7 +44,7 @@ fi
 
 # Make sure the Apache Spark version meets the prerequisite if it is a binary
 # distribution
-MIN_SPARK_VERSION="1.6.3"
+MIN_SPARK_VERSION="2.0.2"
 if [ -z "$SPARK_HOME" ]; then
   echo -e "\033[0;31mSPARK_HOME must be set in conf/pio-env.sh, or in the environment!\033[0m"
   exit 1
