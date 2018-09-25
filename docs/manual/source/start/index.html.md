@@ -49,7 +49,7 @@ Like a database server, Event Server can host multiple applications. Data are se
 Once Event Server is launched, you can send data to a specific *app_name*, identified by an Access Key, through its [Event API](/datacollection/eventapi.html) with HTTP requests or with [one of the SDKs](/sdk/).
 
 In some special case, you may want your engine to read data from another datastore instead of Event Server.
-It can be achieved by [making some modifications](#).
+It can be achieved by [making some modifications](/start/customize/).
 
 ## Engine
 
