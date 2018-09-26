@@ -20,7 +20,7 @@ limitations under the License.
 -->
 
 Here you will find great projects contributed by the Apache PredictionIO
-community. Stay tuned.
+community.
 
 INFO: If you have built a Apache PredictionIO-related project, we
 would love to showcase it to the community! Simply edit [this
@@ -29,79 +29,45 @@ and submit a pull request.
 
 ## SDKs
 
-Community-powered SDKs are [separately listed](/sdk/).
+### Swift SDK
 
-## Magento 2 Personalised Products Module
-
-URL: https://github.com/richdynamix/personalised-products
-
-Personalised Products is a Magento 2 module that will serve realtime predicted suggestions for product upsells on the product page and complimentary suggestions for cross sells on the basket page. All powered by PredictionIO using the [Similar Product](/gallery/template-gallery/#recommender-systems "Similar Product") engine and the [Complementary Purchase](/gallery/template-gallery/#unsupervised-learning "Complementary Purchase") engine.
-
-- Core Author: Steven Richardson
-
-- Status: It works with PredictionIO v0.9.5 - Under active development
-
-## Vagrant Installation for Apache PredictionIO®
-
-URL: https://github.com/PredictionIO/PredictionIO-Vagrant
-
-Bring Up PredictionIO 0.9.x VM with Vagrant.
-
-- Core Author: Raphael Mäder
-
-- Status: It works with PredictionIO v0.8 - Under active development
+ - Minh-Tu Le: https://github.com/minhtule/PredictionIO-Swift-SDK
 
 
-## Docker Installation for Apache PredictionIO®
+## DEMOs
 
-URL: https://github.com/mingfang/docker-predictionio
+### Tapster iOS Demo
 
-Run PredictionIO inside Docker.
-
-- Core Author: Ming Fang
-
-- Status: It works with PredictionIO v0.8 - Under active development
+ - Minh-Tu Le: https://github.com/minhtule/Tapster-iOS-Demo
 
 
-## Another Docker Installation for Apache PredictionIO®
+## Template Maintainer
 
-URL: https://github.com/sphereio/docker-predictionio
-
-Docker container for PredictionIO-based machine learning services.
-
-- Core Author: Fabian M. Borschel
-
-- Status: It works with PredictionIO v0.9.3 - Under active development
+ - Naoki Takezoe: https://github.com/takezoe/predictionio-templates-maintenance
 
 
-## Third Docker Installation for Apache PredictionIO®
+## Universal Recommender
 
-URL: https://github.com/steveny2k/docker-predictionio
-
-Docker container for PredictionIO-based machine learning services.
-
-- Maintainer: Steven Yan
-
-- Status: Runs latest stable version of PredictionIO v0.12.0 (as well as v0.10.0) - Under active development
+ - ActionML: https://github.com/actionml/universal-recommender
 
 
-## GraphX Parallel SimRank Algorithm
+## Docker Images
 
-URL: https://github.com/ZhouYii/PIO-Parallel-Simrank-Engine
+ - Ming Fang: https://github.com/mingfang/docker-predictionio
 
-Implementation of Delta-Simrank algorithm using Spark's GraphX framework.
+ - Steven Yan: https://github.com/steveny2k/docker-predictionio
 
-- Core Author: Joey Zhou
+ - Japan PredictionIO User Group: https://github.com/jpioug/predictionio-docker
 
-- Status: It works with PredictionIO v0.8 - Under active development
+ - Inspectorio Inc: https://github.com/inspectorioinc/docker-prediction-io
 
 
-## Magento Similar Products Extension
+## Archived Projects
 
-URL: https://github.com/magento-hackathon/Predictionio
+Some community projects have not got any update for quite some time.
 
-Similar Products is a Magento extension that utilizes PredictionIO to create a more personalized suggestion of up-sell products on the Magento product page.
+These projects are listed in the [archived list](/archived/community/).
 
-- Core Author: Steven Richardson, Raphael Mäder & Damian Luszczymak
-
-- Status: It works with PredictionIO v0.8 - Under active development
+If an archived project is updated, please edit [this
+page](https://github.com/apache/predictionio/blob/livedoc/docs/manual/source/community/projects.html.md)
+and submit a pull request to put your project back to this active projects list.
