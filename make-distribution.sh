@@ -112,7 +112,12 @@ cp -r ${DISTDIR} ${TARDIR}
 cp LICENSE.txt ${TARDIR}
 cp NOTICE.txt ${TARDIR}
 
-tar zcvf ${TARNAME} ${TARDIR}
+# Allows override for `tar` command
+# This enables using GNU tar on systems such as macOS
+if [ -z "$TAR" ] ; then
+  TAR=tar
+fi
+$TAR zcvf ${TARNAME} ${TARDIR}
 rm -rf ${TARDIR}
 
 echo -e "\033[0;32mPredictionIO binary distribution created at $TARNAME\033[0m"
