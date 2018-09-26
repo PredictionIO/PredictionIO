@@ -28,4 +28,4 @@ limitations under the License.
 
 ## Community Powered SDKs
 
-See the full list [here](/sdk/community/).
+Check the community projects! [here](/community/projects.html#sdks).
