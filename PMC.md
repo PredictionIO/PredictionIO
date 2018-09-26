@@ -115,7 +115,9 @@ for staging actual releases.
     * `svn delete 0.13.0`
 24. `svn commit -m "Apache PredictionIO 0.14.0"`
 25. Document breaking changes in https://predictionio.apache.org/resources/upgrade/.
-26. Send out an email to the following mailing lists: announce, user, dev.
+26. Mark the version as released on JIRA.
+(https://issues.apache.org/jira/projects/PIO?selectedItem=com.atlassian.jira.jira-projects-plugin%3Arelease-page&status=no-filter)
+27. Send out an email to the following mailing lists: announce, user, dev.
 
   ```
   Subject: [ANNOUNCE] Apache PredictionIO 0.14.0 Release
