@@ -1,0 +1,96 @@
+---
+title: Installing Apache PredictionIO on Linux / Mac OS X
+---
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+Follow the steps below to setup Apache PredictionIO and its
+dependencies. In these instructions we will assume you are in your home
+directory. Wherever you see `/home/abc`, replace it with your own home
+directory.
+
+### Java
+
+Ensure you have an appropriate Java version installed. For example:
+
+```
+$ java -version
+java version "1.8.0_40"
+Java(TM) SE Runtime Environment (build 1.8.0_40-b25)
+Java HotSpot(TM) 64-Bit Server VM (build 25.40-b25, mixed mode)
+```
+
+
+### Download Apache PredictionIO
+
+Download Apache PredictionIO and extract it.
+
+```
+$ cd
+$ pwd
+/home/abc
+$ wget http://download.prediction.io/PredictionIO-<%= data.versions.pio %>.tar.gz
+$ tar zxvf PredictionIO-<%= data.versions.pio %>.tar.gz
+```
+
+NOTE: Download instructions above apply to previous non-Apache releases only.
+Once we have made an Apache release, new instructions will be provided.
+
+### Installing Dependencies
+
+Let us install dependencies inside a subdirectory of the Apache PredictionIO
+installation. By following this convention, you can use
+PredictionIO's default configuration as is.
+
+```
+$ mkdir PredictionIO-<%= data.versions.pio %>/vendors
+```
+
+
+#### Spark Setup
+
+<%= partial 'shared/install/spark' %>
+
+
+#### Elasticsearch Setup
+
+WARNING: You may skip this section if you are using PostgreSQL or MySQL.
+
+<%= partial 'shared/install/elasticsearch' %>
+
+
+#### HBase Setup<a class="anchor" name="hbase">&nbsp;</a>
+
+WARNING: You may skip this section if you are using PostgreSQL or MySQL.
+
+<%= partial 'shared/install/hbase' %>
+
+
+In addition, you must set your environment variable `JAVA_HOME`. For example, in
+`/home/abc/.bashrc` add the following line:
+
+```
+export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+```
+
+
+<%= partial 'shared/install/dependent_services' %>
+
+Now you have installed everything you need!
+
+<%= partial 'shared/install/proceed_template' %>

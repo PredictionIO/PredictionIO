@@ -1,0 +1,134 @@
+---
+title: Installing PredictionIO with Vagrant (VirtualBox)
+---
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+WARNING: Running PredictionIO with Vagrant is intended for the purposes of
+simple tests in an isolated environment. Due to resource limitation and overhead
+of virtual machine (VM), it runs much more slowly or may encounter memory issue.
+We recommend using Linux or Mac machine for serious usage.
+
+## Install VirtualBox
+
+If you don't have VirtualBox installed, please follow the instructions in the
+[VirtualBox site](https://www.virtualbox.org/wiki/Downloads) to download and
+install it. After installation is done, you don't need to setup anything in Virtual Box. Vagrant will do it for you later.
+
+## Install Vagrant
+
+If you don't have Vagrant installed, please follow the instructions in the the
+[Vagrant site](https://www.vagrantup.com/downloads.html) to download and install
+it.
+
+## Bring up PredictoinIO VM with Vagrant
+
+Get the latest vagrant setup from github and make sure in master branch:
+
+```
+$ git clone https://github.com/PredictionIO/PredictionIO-Vagrant.git
+$ cd PredictionIO-Vagrant/
+$ git checkout master
+```
+
+Inside the directory `PredictionIO-Vagrant/`, you will find a file named `Vagrantfile` which is the configuration file used by Vagrant to setup the VM. You may modify this file if you want to change the VM configuration.
+
+For example, if you want to change the memory of the VM, you can locate the following line in the `Vagrantfile` and change the value passed to the `memory` parameter (default is 2048MB):
+
+```
+  v.customize ["modifyvm", :id, "--cpuexecutioncap", "90", "--memory", "2048"]
+```
+
+In the directory `PredictionIO-Vagrant/`, bring up PredictionIO VM by running:
+
+```
+$ vagrant up
+```
+
+INFO: When you run `vagrant up` for the first time, it will download the base
+box ubuntu/trusty64 if you don't have it. Then it will also install all
+necessary libraries and setup PredictionIO in the virtual machine.
+
+When it finishes successfully, you should see something like the following:
+
+```
+==> default: Installation done!
+==> default: --------------------------------------------------------------------------------
+==> default: Installation of PredictionIO <%= data.versions.pio %> complete!
+==> default: IMPORTANT: You still have to start PredictionIO and dependencies manually:
+==> default: Run: 'pio-start-all'
+==> default: Check the status with: 'pio status'
+==> default: Use: 'pio [train|deploy|...]' commands
+==> default: Please report any problems to: dev@predictionio.apache.org
+==> default: Documentation at: http://predictionio.apache.org
+==> default: --------------------------------------------------------------------------------
+==> default: Finish PredictionIO installation.
+```
+
+That's it! Now you have a PredictionIO VM running!
+
+Please see the following notes regarding how to use PredictionIO VM with vagrant.
+
+## Using the PredictionIO VM
+
+### Login to the VM
+
+You could ssh to the VM by running the following from your host machine in the
+same directory where you run `vagrant up` (i.e. PredictionIO-Vagrant/)
+
+```
+$ vagrant ssh
+```
+
+Then your console prompt becomes something like the following, which means you have logged into the VM:
+
+```
+vagrant@vagrant-ubuntu-trusty-64:~$
+```
+
+One you've logged into the VM, you can proceed to [Choosing an Engine Template](/start/download) or continue the QuickStart of the Engine template you have chosen.
+
+### Shutdown and bring up PredictionIO VM again
+
+When you are not using PredictionIO VM, you should shut down VM properly, by running the following **in the host machine** (not inside VM):
+
+```
+$ vagrant halt
+```
+
+WARNING: If you didn't shut down VM properly or you ran `vagrant suspend`, the
+VM may go to suspend state. HBase may not be running properly next time when
+you run `vagrant up.` In this case, you can always run `vagrant halt` to do a
+clean shutdown first before run `vagrant up` again.
+
+Then you can run `vagrant up` again later to bring up the PredicitonIO VM again.
+
+```
+$ vagrant up
+```
+
+When it's ready, you should see the following:
+
+```
+==> default: --------------------------------------------------------------------------------
+==> default: PredictionIO VM is up!
+==> default: You could run 'pio status' inside VM ('vagrant ssh' to VM first) to confirm if PredictionIO is ready.
+==> default: IMPORTANT: You still have to start the eventserver manually (inside VM):
+==> default: Run: 'pio eventserver'
+==> default: --------------------------------------------------------------------------------
+```
