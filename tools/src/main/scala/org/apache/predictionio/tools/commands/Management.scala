@@ -109,7 +109,7 @@ object Management extends EitherLogging {
     val sparkHomePath = Common.getSparkHome(sparkHome)
     if (new File(s"$sparkHomePath/bin/spark-submit").exists) {
       info(s"Apache Spark is installed at $sparkHomePath")
-      val sparkMinVersion = "1.6.3"
+      val sparkMinVersion = "2.0.2"
       pioStatus = pioStatus.copy(
         sparkHome = sparkHomePath,
         sparkMinVersion = sparkMinVersion)
