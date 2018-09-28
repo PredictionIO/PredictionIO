@@ -41,11 +41,6 @@ and submit a pull request.
  - Minh-Tu Le: https://github.com/minhtule/Tapster-iOS-Demo
 
 
-## Template Maintainer
-
- - Naoki Takezoe: https://github.com/takezoe/predictionio-templates-maintenance
-
-
 ## Universal Recommender
 
  - ActionML: https://github.com/actionml/universal-recommender
