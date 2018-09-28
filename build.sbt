@@ -74,18 +74,6 @@ hadoopVersion in ThisBuild := sys.props.getOrElse(
   "hadoop.version",
   scalaSparkDepsVersion(scalaBinaryVersion.value)(sparkBinaryVersion.value)("hadoop"))
 
-val pioBuildInfoSettings = buildInfoSettings ++ Seq(
-  sourceGenerators in Compile += buildInfo,
-  buildInfoKeys := Seq[BuildInfoKey](
-    name,
-    version,
-    scalaVersion,
-    scalaBinaryVersion,
-    sbtVersion,
-    sparkVersion,
-    hadoopVersion),
-  buildInfoPackage := "org.apache.predictionio.core")
-
 val conf = file("conf")
 
 val commonSettings = Seq(
@@ -146,7 +134,18 @@ val core = (project in file("core")).
   settings(commonSettings: _*).
   settings(commonTestSettings: _*).
   enablePlugins(GenJavadocPlugin).
-  settings(pioBuildInfoSettings: _*).
+  enablePlugins(BuildInfoPlugin).
+  settings(
+    buildInfoKeys := Seq[BuildInfoKey](
+      name,
+      version,
+      scalaVersion,
+      scalaBinaryVersion,
+      sbtVersion,
+      sparkVersion,
+      hadoopVersion),
+    buildInfoPackage := "org.apache.predictionio.core"
+  ).
   enablePlugins(SbtTwirl).
   disablePlugins(sbtassembly.AssemblyPlugin)
 
@@ -155,9 +154,9 @@ val tools = (project in file("tools")).
   dependsOn(data).
   settings(commonSettings: _*).
   settings(commonTestSettings: _*).
+  settings(skip in publish := true).
   enablePlugins(GenJavadocPlugin).
-  enablePlugins(SbtTwirl).
-  settings(publishArtifact := false)
+  enablePlugins(SbtTwirl)
 
 val e2 = (project in file("e2")).
   settings(commonSettings: _*).
@@ -175,9 +174,9 @@ val storageSubprojects = Seq(
     dataS3)
 
 val storage = (project in file("storage"))
+  .settings(skip in publish := true)
   .aggregate(storageSubprojects map Project.projectToRef: _*)
   .disablePlugins(sbtassembly.AssemblyPlugin)
-  .settings(publishArtifact := false)
 
 val assembly = (project in file("assembly")).
   settings(commonSettings: _*)
@@ -186,6 +185,7 @@ val root = (project in file(".")).
   settings(commonSettings: _*).
   enablePlugins(ScalaUnidocPlugin).
   settings(
+    skip in publish := true,
     unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(dataElasticsearch, dataElasticsearch1),
     unidocProjectFilter in (JavaUnidoc, unidoc) := inAnyProject -- inProjects(dataElasticsearch, dataElasticsearch1),
     scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
@@ -310,10 +310,6 @@ parallelExecution in Global := false
 testOptions in Test += Tests.Argument("-oDF")
 
 printBuildInfo := {
-  if (scalaBinaryVersion.value == "2.10")
-    streams.value.log.warn("Support for Scala 2.10 is deprecated. Please upgrade to a newer version of Scala.")
-  if (sparkBinaryVersion.value == "1.6")
-    streams.value.log.warn("Support for Spark 1.6 is deprecated. Please upgrade to a newer version of Spark.")
   println(s"PIO_SCALA_VERSION=${scalaVersion.value}")
   println(s"PIO_SPARK_VERSION=${sparkVersion.value}")
   println(s"PIO_ELASTICSEARCH_VERSION=${elasticsearchVersion.value}")
