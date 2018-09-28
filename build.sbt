@@ -310,11 +310,6 @@ parallelExecution in Global := false
 testOptions in Test += Tests.Argument("-oDF")
 
 printBuildInfo := {
-  val log = streams.value.log
-  if (scalaBinaryVersion.value == "2.10")
-    log.warn("Support for Scala 2.10 is deprecated. Please upgrade to a newer version of Scala.")
-  if (sparkBinaryVersion.value == "1.6")
-    log.warn("Support for Spark 1.6 is deprecated. Please upgrade to a newer version of Spark.")
   println(s"PIO_SCALA_VERSION=${scalaVersion.value}")
   println(s"PIO_SPARK_VERSION=${sparkVersion.value}")
   println(s"PIO_ELASTICSEARCH_VERSION=${elasticsearchVersion.value}")
