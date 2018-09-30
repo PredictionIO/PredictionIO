@@ -658,6 +658,6 @@ object Run {
     EventServer.createEventServer(EventServerConfig(
       ip = "0.0.0.0",
       port = 7070))
-    .awaitTermination
+    .whenTerminated.wait()
   }
 }

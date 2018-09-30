@@ -26,7 +26,7 @@ $ sbt/sbt "tools/compile"
 $ set -a
 $ source conf/pio-env.sh
 $ set +a
-$ sbt/sbt "tools/run-main org.apache.predictionio.tools.admin.AdminRun"
+$ sbt/sbt "tools/runMain org.apache.predictionio.tools.admin.AdminRun"
 ```
 
 ### Unit test (Very minimal)
@@ -35,7 +35,7 @@ $ sbt/sbt "tools/run-main org.apache.predictionio.tools.admin.AdminRun"
 $ set -a
 $ source conf/pio-env.sh
 $ set +a
-$ sbt/sbt "tools/test-only org.apache.predictionio.tools.admin.AdminAPISpec"
+$ sbt/sbt "tools/testOnly org.apache.predictionio.tools.admin.AdminAPISpec"
 ```
 
 ### Start with pio command adminserver

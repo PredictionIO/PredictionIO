@@ -17,16 +17,13 @@
 
 package org.apache.predictionio.tools.console
 
-import org.apache.predictionio.tools.{
-  EventServerArgs, SparkArgs, WorkflowArgs, ServerArgs,
-  DeployArgs, BatchPredictArgs}
-import org.apache.predictionio.tools.commands.{
-  DashboardArgs, AdminServerArgs, ImportArgs, ExportArgs,
-  BuildArgs, EngineArgs, Management, Engine, Import, Export,
-  App => AppCmd, AccessKey => AccessKeysCmd}
+import org.apache.predictionio.tools.{BatchPredictArgs, DeployArgs, EventServerArgs, ServerArgs, SparkArgs, WorkflowArgs}
+import org.apache.predictionio.tools.commands.{AdminServerArgs, BuildArgs, DashboardArgs, Engine, EngineArgs, Export, ExportArgs, Import, ImportArgs, Management, AccessKey => AccessKeysCmd, App => AppCmd}
 import org.apache.predictionio.tools.ReturnTypes._
-
 import grizzled.slf4j.Logging
+
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 import scala.language.implicitConversions
 import scala.sys.process._
 
@@ -116,17 +113,17 @@ object Pio extends Logging {
         ea, engineInstanceId, batchPredictArgs, sparkArgs, pioHome, verbose))
 
   def dashboard(da: DashboardArgs): Int = {
-    Management.dashboard(da).awaitTermination
+    Management.dashboard(da).whenTerminated.wait()
     0
   }
 
   def eventserver(ea: EventServerArgs): Int = {
-    Management.eventserver(ea).awaitTermination
+    Management.eventserver(ea).whenTerminated.wait()
     0
   }
 
   def adminserver(aa: AdminServerArgs): Int = {
-    Management.adminserver(aa).awaitTermination
+    Await.ready(Management.adminserver(aa).whenTerminated, Duration.Inf)
     0
   }
 

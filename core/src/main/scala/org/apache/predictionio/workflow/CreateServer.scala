@@ -177,7 +177,7 @@ object CreateServer extends Logging {
         "master")
         implicit val timeout = Timeout(5.seconds)
         master ? StartServer()
-        actorSystem.awaitTermination
+        actorSystem.whenTerminated.wait()
       } getOrElse {
         error(s"Invalid engine instance ID. Aborting server.")
       }
@@ -310,7 +310,7 @@ class MasterActor (
       sprayHttpListener.map { l =>
         log.info("Server is shutting down.")
         l ! Http.Unbind(5.seconds)
-        system.shutdown()
+        system.terminate()
       } getOrElse {
         log.warning("No active server is running.")
       }
@@ -354,7 +354,7 @@ class MasterActor (
         }
       } else {
         log.error("Bind failed. Shutting down.")
-        system.shutdown()
+        system.terminate()
       }
   }
 
