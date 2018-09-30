@@ -16,7 +16,10 @@
  */
 package org.apache.predictionio.tools.admin
 
+import akka.http.scaladsl.server.Route
 import org.apache.predictionio.data.storage.{AccessKey, Storage}
+
+import scala.concurrent.ExecutionContext
 
 case class AdminServerConfig(
   ip: String = "localhost",
@@ -34,12 +37,7 @@ import spray.json.DefaultJsonProtocol._
 
 object AdminServer {
 
-  def createAdminServer(config: AdminServerConfig): ActorSystem = {
-
-    implicit val system = ActorSystem("AdminServerSystem")
-    implicit val materializer = ActorMaterializer()
-    implicit val executionContext = system.dispatcher
-
+  def createRoute()(implicit executionContext: ExecutionContext): Route = {
     implicit val generalResponseProtocol = jsonFormat2(GeneralResponse)
     implicit val appRequestProtocol      = jsonFormat3(AppRequest)
     implicit val accessKeyProtocol       = jsonFormat3(AccessKey)
@@ -108,6 +106,16 @@ object AdminServer {
         }
       }
 
+    route
+  }
+
+
+  def createAdminServer(config: AdminServerConfig): ActorSystem = {
+    implicit val system = ActorSystem("AdminServerSystem")
+    implicit val materializer = ActorMaterializer()
+    implicit val executionContext = system.dispatcher
+
+    val route = createRoute()
     Http().bindAndHandle(route, config.ip, config.port)
     system
   }

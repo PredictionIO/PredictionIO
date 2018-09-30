@@ -17,67 +17,28 @@
 
 package org.apache.predictionio.tools.admin
 
-import akka.actor.{ActorSystem, Props}
-import akka.testkit.TestProbe
-import org.apache.predictionio.data.storage.Storage
 import org.specs2.mutable.Specification
-import spray.http._
-import spray.httpx.RequestBuilding._
-import spray.util._
+import akka.http.scaladsl.testkit.Specs2RouteTest
 
-
-class AdminAPISpec extends Specification{
-
-  val system = ActorSystem(Utils.actorSystemNameFrom(getClass))
-  val config = AdminServerConfig(
-    ip = "localhost",
-    port = 7071)
-
-  val commandClient = new CommandClient(
-    appClient = Storage.getMetaDataApps,
-    accessKeyClient = Storage.getMetaDataAccessKeys,
-    eventClient = Storage.getLEvents()
-  )
-
-  val adminActor= system.actorOf(Props(classOf[AdminServiceActor], commandClient))
+class AdminAPISpec extends Specification with Specs2RouteTest {
+  val route = AdminServer.createRoute()
 
   "GET / request" should {
     "properly produce OK HttpResponses" in {
-      val probe = TestProbe()(system)
-      probe.send(adminActor, Get("/"))
-
-      probe.expectMsg(
-        HttpResponse(
-          200,
-          HttpEntity(
-            contentType = ContentTypes.`application/json`,
-            string = """{"status":"alive"}"""
-          )
-        )
-      )
-      success
+      Get() ~> route ~> check {
+        response.status.intValue() shouldEqual 200
+        responseAs[String] shouldEqual """{"status":"alive"}"""
+      }
     }
   }
 
   "GET /cmd/app request" should {
     "properly produce OK HttpResponses" in {
-      /*
-      val probe = TestProbe()(system)
-      probe.send(adminActor,Get("/cmd/app"))
-
-      //TODO: Need to convert the response string to the corresponding case object to assert some properties on the object
-      probe.expectMsg(
-        HttpResponse(
-          200,
-          HttpEntity(
-            contentType = ContentTypes.`application/json`,
-            string = """{"status":1}"""
-          )
-        )
-      )*/
-      pending
+      Get("/cmd/app") ~> route ~> check {
+        println(response.headers)
+        response.status.intValue() shouldEqual 200
+        responseAs[String] shouldEqual """{"status":1}"""
+      }
     }
   }
-
-  step(system.shutdown())
 }

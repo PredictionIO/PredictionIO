@@ -26,7 +26,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-slf4j"           % akkaVersion.value,
   "com.typesafe.akka" %% "akka-http"            % "10.1.5",
   "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.5",
-  "com.typesafe.akka" %% "akka-stream"          % "2.5.12",
+  "com.typesafe.akka" %% "akka-stream"          % "2.5.12"
 )
 
 pomExtra := childrenPomExtra.value
