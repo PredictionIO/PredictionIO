@@ -113,12 +113,12 @@ object Pio extends Logging {
         ea, engineInstanceId, batchPredictArgs, sparkArgs, pioHome, verbose))
 
   def dashboard(da: DashboardArgs): Int = {
-    Management.dashboard(da).whenTerminated.wait()
+    Await.ready(Management.dashboard(da).whenTerminated, Duration.Inf)
     0
   }
 
   def eventserver(ea: EventServerArgs): Int = {
-    Management.eventserver(ea).whenTerminated.wait()
+    Await.ready(Management.eventserver(ea).whenTerminated, Duration.Inf)
     0
   }
 
