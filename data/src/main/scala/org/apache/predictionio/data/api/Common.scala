@@ -15,68 +15,59 @@
  * limitations under the License.
  */
 
-
 package org.apache.predictionio.data.api
 
-import org.apache.predictionio.data.webhooks.ConnectorException
+import akka.http.scaladsl.server._
 import org.apache.predictionio.data.storage.StorageException
+import org.apache.predictionio.data.webhooks.ConnectorException
+import org.json4s.{DefaultFormats, Formats}
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+import spray.json.DefaultJsonProtocol._
 
-import spray.routing._
-import spray.routing.Directives._
-import spray.routing.Rejection
-import spray.http.StatusCodes
-import spray.httpx.Json4sSupport
-
-import org.json4s.Formats
-import org.json4s.DefaultFormats
 
 object Common {
 
-  object Json4sProtocol extends Json4sSupport {
+  object Json4sProtocol {
+    implicit val serialization = org.json4s.jackson.Serialization
     implicit def json4sFormats: Formats = DefaultFormats
   }
 
   import Json4sProtocol._
 
-  val rejectionHandler = RejectionHandler {
-    case MalformedRequestContentRejection(msg, _) :: _ =>
+  val exceptionHandler = ExceptionHandler {
+    case e: ConnectorException => {
+      complete(StatusCodes.BadRequest, Map("message" -> s"${e.getMessage()}"))
+    }
+    case e: StorageException => {
+      complete(StatusCodes.InternalServerError, Map("message" -> s"${e.getMessage()}"))
+    }
+    case e: Exception => {
+      complete(StatusCodes.InternalServerError, Map("message" -> s"${e.getMessage()}"))
+    }
+  }
+
+  val rejectionHandler = RejectionHandler.newBuilder().handle {
+    case MalformedRequestContentRejection(msg, _) =>
       complete(StatusCodes.BadRequest, Map("message" -> msg))
-    case MissingQueryParamRejection(msg) :: _ =>
+    case MissingQueryParamRejection(msg) =>
       complete(StatusCodes.NotFound,
         Map("message" -> s"missing required query parameter ${msg}."))
-    case AuthenticationFailedRejection(cause, challengeHeaders) :: _ => {
+    case AuthenticationFailedRejection(cause, challengeHeaders) => {
       val msg = cause match {
         case AuthenticationFailedRejection.CredentialsRejected =>
           "Invalid accessKey."
         case AuthenticationFailedRejection.CredentialsMissing =>
           "Missing accessKey."
       }
-      complete(StatusCodes.Unauthorized, challengeHeaders, Map("message" -> msg))
-    }
-    case ChannelRejection(msg) :: _ =>
+      // TODO complete(StatusCodes.Unauthorized, challengeHeaders, Map("message" -> msg))
       complete(StatusCodes.Unauthorized, Map("message" -> msg))
-    case NonExistentAppRejection(msg) :: _ =>
-      complete(StatusCodes.Unauthorized, Map("message" -> msg))
-  }
-
-  val exceptionHandler = ExceptionHandler {
-    case e: ConnectorException => {
-      val msg = s"${e.getMessage()}"
-      complete(StatusCodes.BadRequest, Map("message" -> msg))
     }
-    case e: StorageException => {
-      val msg = s"${e.getMessage()}"
-      complete(StatusCodes.InternalServerError, Map("message" -> msg))
-    }
-    case e: Exception => {
-      val msg = s"${e.getMessage()}"
-      complete(StatusCodes.InternalServerError, Map("message" -> msg))
-    }
-  }
+    // TODO
+    //    case ChannelRejection(msg) =>
+    //      complete(StatusCodes.Unauthorized, Map("message" -> msg))
+    //    case NonExistentAppRejection(msg) =>
+    //      complete(StatusCodes.Unauthorized, Map("message" -> msg))
+  }.result()
 }
-
-/** invalid channel */
-case class ChannelRejection(msg: String) extends Rejection
-
-/** the app doesn't exist */
-case class NonExistentAppRejection(msg: String) extends Rejection

@@ -22,12 +22,11 @@ name := "apache-predictionio-data"
 libraryDependencies ++= Seq(
   "com.github.nscala-time" %% "nscala-time"    % "2.6.0",
   "com.google.guava"        % "guava"          % "14.0.1",
-  "io.spray"               %% "spray-can"      % "1.3.3",
-  "io.spray"               %% "spray-routing"  % "1.3.3",
-  "io.spray"               %% "spray-testkit"  % "1.3.3" % "test",
+//  "io.spray"               %% "spray-can"      % "1.3.3",
+//  "io.spray"               %% "spray-routing"  % "1.3.3",
+//  "io.spray"               %% "spray-testkit"  % "1.3.3" % "test",
   "org.apache.spark"       %% "spark-sql"      % sparkVersion.value % "provided",
   "org.clapper"            %% "grizzled-slf4j" % "1.0.2",
-  "org.json4s"             %% "json4s-native"  % json4sVersion.value,
   "org.scalatest"          %% "scalatest"      % "2.1.7" % "test",
   "org.specs2"             %% "specs2"         % "3.3.1" % "test"
     exclude("org.scalaz.stream", s"scalaz-stream_${scalaBinaryVersion.value}"),

@@ -16,34 +16,50 @@
  */
 package org.apache.predictionio.tools.admin
 
-import akka.http.scaladsl.server.Route
-import org.apache.predictionio.data.storage.{AccessKey, Storage}
+import java.util.concurrent.TimeUnit
 
-import scala.concurrent.ExecutionContext
+import akka.http.scaladsl.server._
+import org.apache.predictionio.data.storage._
+
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext}
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.server.Directives._
+import akka.util.Timeout
+import org.apache.predictionio.akkahttpjson4s.Json4sSupport._
+import org.json4s.{DefaultFormats, Formats}
+
+object Json4sProtocol {
+  implicit val serialization = org.json4s.jackson.Serialization
+  implicit def json4sFormats: Formats = DefaultFormats
+}
 
 case class AdminServerConfig(
   ip: String = "localhost",
   port: Int = 7071
 )
 
-import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.model._
-import akka.http.scaladsl.server.Directives._
-import scala.util.{Success, Failure}
-import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
-import spray.json.DefaultJsonProtocol._
-
 object AdminServer {
+  import Json4sProtocol._
+
+  private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
+
+  // for better message response
+  private val rejectionHandler = RejectionHandler.newBuilder().handle {
+    case MalformedRequestContentRejection(msg, _) =>
+      complete(StatusCodes.BadRequest, Map("message" -> msg))
+    case MissingQueryParamRejection(msg) =>
+      complete(StatusCodes.NotFound,
+        Map("message" -> s"missing required query parameter ${msg}."))
+    case AuthenticationFailedRejection(cause, challengeHeaders) =>
+      complete(StatusCodes.Unauthorized, challengeHeaders,
+        Map("message" -> s"Invalid accessKey."))
+  }.result()
 
   def createRoute()(implicit executionContext: ExecutionContext): Route = {
-    implicit val generalResponseProtocol = jsonFormat2(GeneralResponse)
-    implicit val appRequestProtocol      = jsonFormat3(AppRequest)
-    implicit val accessKeyProtocol       = jsonFormat3(AccessKey)
-    implicit val appResponseProtocol     = jsonFormat3(AppResponse)
-    implicit val appListResponseProtocol = jsonFormat3(AppListResponse)
-    implicit val appNewResponseProtocol  = jsonFormat5(AppNewResponse)
 
     val commandClient = new CommandClient(
       appClient = Storage.getMetaDataApps,
@@ -60,11 +76,8 @@ object AdminServer {
       path("cmd" / "app" / Segment / "data") {
         appName => {
           delete {
-            onComplete(commandClient.futureAppDataDelete(appName)){
-              case Success(res) => complete(res)
-              case Failure(ex) =>
-                ex.printStackTrace()
-                complete(StatusCodes.InternalServerError, s"An error occurred: ${ex.getMessage}")
+            onSuccess(commandClient.futureAppDataDelete(appName)){ res =>
+              complete(res)
             }
           }
         }
@@ -72,35 +85,24 @@ object AdminServer {
       path("cmd" / "app" / Segment) {
         appName => {
           delete {
-            onComplete(commandClient.futureAppDelete(appName)){
-              case Success(res) => complete(res)
-              case Failure(ex) =>
-                ex.printStackTrace()
-                complete(StatusCodes.InternalServerError, s"An error occurred: ${ex.getMessage}")
+            onSuccess(commandClient.futureAppDelete(appName)){ res =>
+              complete(res)
             }
           }
         }
       } ~
       path("cmd" / "app") {
         get {
-          onComplete(commandClient.futureAppList()){
-            case Success(res) => complete(res)
-            case Failure(ex) =>
-              ex.printStackTrace()
-              complete(StatusCodes.InternalServerError, s"An error occurred: ${ex.getMessage}")
+          onSuccess(commandClient.futureAppList()){ res =>
+             complete(res)
           }
         } ~
         post {
           entity(as[AppRequest]) {
             appArgs =>
-              onComplete(commandClient.futureAppNew(appArgs)){
-                case Success(res) => res match {
-                  case res: GeneralResponse => complete(res)
-                  case res: AppNewResponse  => complete(res)
-                }
-                case Failure(ex) =>
-                  ex.printStackTrace()
-                  complete(StatusCodes.InternalServerError, s"An error occurred: ${ex.getMessage}")
+              onSuccess(commandClient.futureAppNew(appArgs)){
+                case res: GeneralResponse => complete(res)
+                case res: AppNewResponse  => complete(res)
               }
           }
         }
@@ -126,6 +128,8 @@ object AdminRun {
     val f = AdminServer.createAdminServer(AdminServerConfig(
       ip = "localhost",
       port = 7071))
-    .whenTerminated.wait()
+    .whenTerminated
+
+    Await.ready(f, Duration.Inf)
   }
 }

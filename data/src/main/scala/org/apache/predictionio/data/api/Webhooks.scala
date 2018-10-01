@@ -18,12 +18,9 @@
 
 package org.apache.predictionio.data.api
 
+import akka.http.scaladsl.model.{FormData, StatusCode, StatusCodes}
 import org.apache.predictionio.data.webhooks.ConnectorUtil
 import org.apache.predictionio.data.storage.LEvents
-
-import spray.http.StatusCodes
-import spray.http.StatusCode
-import spray.http.FormData
 
 import org.json4s.JObject
 

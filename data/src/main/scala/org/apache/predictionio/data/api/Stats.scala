@@ -18,13 +18,11 @@
 
 package org.apache.predictionio.data.api
 
+import akka.http.scaladsl.model.StatusCode
 import org.apache.predictionio.data.storage.Event
 
-import spray.http.StatusCode
-
-import scala.collection.mutable.{ HashMap => MHashMap }
+import scala.collection.mutable.{HashMap => MHashMap}
 import scala.collection.mutable
-
 import com.github.nscala_time.time.Imports.DateTime
 
 case class EntityTypesEvent(

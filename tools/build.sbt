@@ -24,7 +24,6 @@ libraryDependencies ++= Seq(
   "com.github.zafarkhaja"  %  "java-semver"       % "0.9.0",
   "org.apache.spark"       %% "spark-sql"         % sparkVersion.value % "provided",
   "com.typesafe.akka"      %% "akka-slf4j"        % akkaVersion.value,
-  "io.spray"               %% "spray-testkit"     % "1.3.3"  % "test",
   "com.typesafe.akka"      %% "akka-http-testkit" % "10.1.5" % "test",
   "org.specs2"             %% "specs2-core"       % "4.2.0" % "test")
 
