@@ -404,9 +404,6 @@ The GlassFish code released under the CDDL shall be governed by the laws of the 
 --------------------------------------------------------------------------------
 Binary distribution bundles
 
-  com.sun.jersey # jersey-core # 1.8 (https://github.com/jersey/jersey-1.x)
-  com.sun.jersey # jersey-json # 1.8 (https://github.com/jersey/jersey-1.x)
-  com.sun.jersey # jersey-server # 1.8 (https://github.com/jersey/jersey-1.x)
   com.sun.jersey # jersey-core # 1.9 (https://github.com/jersey/jersey-1.x)
   com.sun.jersey # jersey-json # 1.9 (https://github.com/jersey/jersey-1.x)
   com.sun.jersey # jersey-server # 1.9 (https://github.com/jersey/jersey-1.x)
@@ -1131,7 +1128,7 @@ version.
 --------------------------------------------------------------------------------
 Binary distribution bundles
 
-  junit # junit # 4.11 (http://junit.org/junit4/)
+  junit # junit # 4.12 (http://junit.org/junit4/)
   
   which are available under the CPL v1.0 license (https://eclipse.org/legal/cpl-v10.html)
 
@@ -1353,7 +1350,7 @@ in any resulting litigation.
 --------------------------------------------------------------------------------
 Binary distribution bundles
 
-  org.jamon # jamon-runtime # 2.3.1 (http://www.jamon.org/)
+  org.jamon # jamon-runtime # 2.4.1 (http://www.jamon.org/)
 
   which are available under the MPL v1.1 license (http://www.mozilla.org/MPL/MPL-1.1.txt)
 --------------------------------------------------------------------------------
@@ -1366,6 +1363,9 @@ Binary distribution bundles
   org.slf4j # slf4j-api # 1.7.2 (https://www.slf4j.org/)
   org.slf4j # slf4j-log4j12 # 1.7.18 (https://www.slf4j.org/)
   org.slf4j # slf4j-log4j12 # 1.7.10 (https://www.slf4j.org/)
+  org.jruby.jcodings # jcodings # 1.0.8 (https://github.com/jruby/jcodings/)
+  org.jruby.joni # joni # 2.1.2 (https://github.com/jruby/joni/)
+  
   
   which are available under the MIT license (http://opensource.org/licenses/mit-license.php)
   
@@ -1781,5 +1781,4 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 The following libraries are from the public domain.
 
-  com.github.stephenc.high-scale-lib # high-scale-lib # 1.1.1 (https://github.com/stephenc/high-scale-lib)
   org.tukaani # xz # 1.0 (http://tukaani.org/xz/java.html)

@@ -19,6 +19,7 @@ import sbt._
 
 object PIOBuild {
   val elasticsearchVersion = settingKey[String]("The version of Elasticsearch used for building")
+  val hbaseVersion = settingKey[String]("The version of Hbase used for building")
   val json4sVersion = settingKey[String]("The version of JSON4S used for building")
   val sparkVersion = settingKey[String]("The version of Apache Spark used for building")
   val sparkBinaryVersion = settingKey[String]("The binary version of Apache Spark used for building")

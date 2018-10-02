@@ -22,11 +22,11 @@ name := "apache-predictionio-data-hbase"
 libraryDependencies ++= Seq(
   "org.apache.predictionio" %% "apache-predictionio-core" % version.value % "provided",
   "org.apache.spark"        %% "spark-core"     % sparkVersion.value % "provided",
-  "org.apache.hbase"         % "hbase-common"   % "0.98.5-hadoop2",
-  "org.apache.hbase"         % "hbase-client"   % "0.98.5-hadoop2"
+  "org.apache.hbase"         % "hbase-common"   % hbaseVersion.value,
+  "org.apache.hbase"         % "hbase-client"   % hbaseVersion.value
     exclude("org.apache.zookeeper", "zookeeper"),
   // added for Parallel storage interface
-  "org.apache.hbase"         % "hbase-server"   % "0.98.5-hadoop2"
+  "org.apache.hbase"         % "hbase-server"   % hbaseVersion.value
     exclude("org.apache.hbase", "hbase-client")
     exclude("org.apache.zookeeper", "zookeeper")
     exclude("javax.servlet", "servlet-api")
