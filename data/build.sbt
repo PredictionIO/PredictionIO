@@ -25,6 +25,7 @@ libraryDependencies ++= Seq(
 //  "io.spray"               %% "spray-can"      % "1.3.3",
 //  "io.spray"               %% "spray-routing"  % "1.3.3",
 //  "io.spray"               %% "spray-testkit"  % "1.3.3" % "test",
+  "com.typesafe.akka"      %% "akka-http-testkit" % "10.1.5" % "test",
   "org.apache.spark"       %% "spark-sql"      % sparkVersion.value % "provided",
   "org.clapper"            %% "grizzled-slf4j" % "1.0.2",
   "org.scalatest"          %% "scalatest"      % "2.1.7" % "test",

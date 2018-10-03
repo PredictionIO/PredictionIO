@@ -18,55 +18,39 @@
 
 package org.apache.predictionio.data.api
 
-import org.apache.predictionio.data.storage.{Storage, StorageMockContext}
-//import akka.testkit.TestProbe
-//import akka.actor.{ActorRef, ActorSystem, Props}
-//import spray.http.HttpEntity
-//import spray.http.HttpResponse
-//import spray.http.ContentTypes
-//import spray.httpx.RequestBuilding.Get
+import akka.event.Logging
+import org.apache.predictionio.data.storage.Storage
 import org.specs2.mutable.Specification
+import akka.http.scaladsl.testkit.Specs2RouteTest
 
-class EventServiceSpec extends Specification {
 
-//  val system = ActorSystem("EventServiceSpecSystem")
-//
-//  def createEventServiceActor: ActorRef = {
-//    val eventClient = Storage.getLEvents()
-//    val accessKeysClient = Storage.getMetaDataAccessKeys()
-//    val channelsClient = Storage.getMetaDataChannels()
-//
-//    system.actorOf(
-//      Props(
-//        new EventServiceActor(
-//          eventClient,
-//          accessKeysClient,
-//          channelsClient,
-//          EventServerConfig()
-//        )
-//      )
-//    )
-//  }
-//
-//
-//  "GET / request" should {
-//    "properly produce OK HttpResponses" in new StorageMockContext {
-//      Thread.sleep(2000)
-//      val eventServiceActor = createEventServiceActor
-//      val probe = TestProbe()(system)
-//      probe.send(eventServiceActor, Get("/"))
-//      probe.expectMsg(
-//        HttpResponse(
-//          200,
-//          HttpEntity(
-//            contentType = ContentTypes.`application/json`,
-//            string = """{"status":"alive"}"""
-//          )
-//        )
-//      )
-//      success
-//    }
-//  }
-//
-//  step(system.shutdown())
+class EventServiceSpec extends Specification with Specs2RouteTest {
+  val eventClient = Storage.getLEvents()
+  val accessKeysClient = Storage.getMetaDataAccessKeys()
+  val channelsClient = Storage.getMetaDataChannels()
+
+  val statsActorRef = system.actorSelection("/user/StatsActor")
+  val pluginsActorRef = system.actorSelection("/user/PluginsActor")
+
+  val logger = Logging(system, getClass)
+  val config = EventServerConfig(ip = "0.0.0.0", port = 7070)
+
+  val route = EventServer.createRoute(
+    eventClient,
+    accessKeysClient,
+    channelsClient,
+    logger,
+    statsActorRef,
+    pluginsActorRef,
+    config
+  )
+
+  "GET / request" should {
+    "properly produce OK HttpResponses" in {
+      Get() ~> route ~> check {
+        response.status.intValue() shouldEqual 200
+        responseAs[String] shouldEqual """{"status":"alive"}"""
+      }
+    }
+  }
 }
