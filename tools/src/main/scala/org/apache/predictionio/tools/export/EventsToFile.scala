@@ -21,14 +21,12 @@ package org.apache.predictionio.tools.export
 import org.apache.predictionio.controller.Utils
 import org.apache.predictionio.data.storage.EventJson4sSupport
 import org.apache.predictionio.data.storage.Storage
-import org.apache.predictionio.data.SparkVersionDependent
 import org.apache.predictionio.tools.Runner
 import org.apache.predictionio.workflow.WorkflowContext
 import org.apache.predictionio.workflow.WorkflowUtils
 import org.apache.predictionio.workflow.CleanupFunctions
-
 import grizzled.slf4j.Logging
-import org.apache.spark.sql.SaveMode
+import org.apache.spark.sql.{SaveMode, SparkSession}
 import org.json4s.native.Serialization._
 
 case class EventsToFileArgs(
@@ -93,7 +91,7 @@ object EventsToFile extends Logging {
           mode = "Export",
           batch = "App ID " + args.appId + channelStr,
           executorEnv = Runner.envStringToMap(args.env))
-        val sqlSession = SparkVersionDependent.sqlSession(sc)
+        val sqlSession = SparkSession.builder().getOrCreate()
         val events = Storage.getPEvents()
         val eventsRdd = events.find(appId = args.appId, channelId = channelId)(sc)
         val jsonStringRdd = eventsRdd.map(write(_))

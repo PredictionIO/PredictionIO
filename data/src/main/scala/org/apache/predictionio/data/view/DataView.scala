@@ -20,14 +20,10 @@ package org.apache.predictionio.data.view
 
 import org.apache.predictionio.annotation.Experimental
 import org.apache.predictionio.data.storage.Event
-import org.apache.predictionio.data.SparkVersionDependent
-
 import grizzled.slf4j.Logger
 import org.apache.predictionio.data.store.PEventStore
-
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.SaveMode
+import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 import org.apache.spark.SparkContext
 import org.joda.time.DateTime
 
@@ -52,7 +48,6 @@ object DataView {
     * @param name identify the DataFrame created
     * @param version used to track changes to the conversionFunction, e.g. version = "20150413"
     *                and update whenever the function is changed.
-    * @param sqlContext SQL context
     * @tparam E the output type of the conversion function. The type needs to extend Product
     *           (e.g. case class)
     * @return a DataFrame of events
@@ -69,7 +64,7 @@ object DataView {
 
     @transient lazy val logger = Logger[this.type]
 
-    val sqlSession = SparkVersionDependent.sqlSession(sc)
+    val sqlSession = SparkSession.builder().getOrCreate()
 
     val beginTime = startTime match {
       case Some(t) => t
