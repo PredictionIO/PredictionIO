@@ -48,7 +48,7 @@ class EventServiceSpec extends Specification with Specs2RouteTest {
   "GET / request" should {
     "properly produce OK HttpResponses" in {
       Get() ~> route ~> check {
-        response.status.intValue() shouldEqual 200
+        status.intValue() shouldEqual 200
         responseAs[String] shouldEqual """{"status":"alive"}"""
       }
     }

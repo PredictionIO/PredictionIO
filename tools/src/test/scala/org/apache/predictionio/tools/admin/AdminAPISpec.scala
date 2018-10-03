@@ -36,7 +36,7 @@ class AdminAPISpec extends Specification with Specs2RouteTest {
     "properly produce OK HttpResponses" in {
       Get("/cmd/app") ~> route ~> check {
         println(response.headers)
-        response.status.intValue() shouldEqual 200
+        status.intValue() shouldEqual 200
         responseAs[String] shouldEqual """{"status":1}"""
       }
     }
