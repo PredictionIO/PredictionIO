@@ -129,8 +129,6 @@ val data = (project in file("data")).
   settings(commonSettings: _*).
   settings(commonTestSettings: _*).
   enablePlugins(GenJavadocPlugin).
-  settings(unmanagedSourceDirectories in Compile +=
-    sourceDirectory.value / s"main/spark-${majorVersion(sparkVersion.value)}").
   disablePlugins(sbtassembly.AssemblyPlugin)
 
 val core = (project in file("core")).
