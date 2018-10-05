@@ -50,7 +50,7 @@ root:
             url: '/sdk/ruby/'
           -
             body: 'Community Powered SDKs'
-            url: '/sdk/community/'
+            url: '/community/projects.html#sdks'
   -
     body: 'Deploying an Engine'
     url: '#'
@@ -280,11 +280,8 @@ root:
     url: '#'
     children:
       -
-        body: 'Comics Recommendation Demo'
-        url: '/demo/tapster/'
-      -
         body: 'Community Contributed Demo'
-        url: '/demo/community/'
+        url: '/community/projects.html#demos'
       -
         body: 'Text Classification Engine Tutorial'
         url: '/demo/textclassification/'

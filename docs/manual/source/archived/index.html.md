@@ -1,5 +1,5 @@
 ---
-title: Demos
+title: List of Archived Pages
 ---
 
 <!--
@@ -19,6 +19,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-## Current Demos
+## Archived Contribution
 
-[Text Classification](/demo/textclassification/) - an official demo of Apache PredictionIO.
+Please help to move pages here if they are no-longer maintained

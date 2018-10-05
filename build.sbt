@@ -68,6 +68,10 @@ lazy val es = sys.props.getOrElse("elasticsearch.version", "5.5.2")
 
 elasticsearchVersion in ThisBuild := es
 
+lazy val hbase = sys.props.getOrElse("hbase.version", "1.2.6")
+
+hbaseVersion in ThisBuild := hbase
+
 json4sVersion in ThisBuild := scalaSparkDepsVersion(scalaBinaryVersion.value)(sparkBinaryVersion.value)("json4s")
 
 hadoopVersion in ThisBuild := sys.props.getOrElse(
@@ -125,8 +129,6 @@ val data = (project in file("data")).
   settings(commonSettings: _*).
   settings(commonTestSettings: _*).
   enablePlugins(GenJavadocPlugin).
-  settings(unmanagedSourceDirectories in Compile +=
-    sourceDirectory.value / s"main/spark-${majorVersion(sparkVersion.value)}").
   disablePlugins(sbtassembly.AssemblyPlugin)
 
 val core = (project in file("core")).
