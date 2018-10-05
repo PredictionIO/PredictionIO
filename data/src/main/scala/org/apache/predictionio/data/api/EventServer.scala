@@ -104,8 +104,7 @@ object EventServer {
                 if (channelMap.contains(ch)) {
                   Right(AuthData(k.appid, Some(channelMap(ch)), k.events))
                 } else {
-                  FailedAuth
-                  // TODO Left(ChannelRejection(s"Invalid channel '$ch'."))
+                  Left(ChannelRejection(s"Invalid channel '$ch'."))
                 }
               }.getOrElse{
                 Right(AuthData(k.appid, None, k.events))

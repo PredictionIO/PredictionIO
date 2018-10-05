@@ -51,9 +51,11 @@ object Common {
   val rejectionHandler = RejectionHandler.newBuilder().handle {
     case MalformedRequestContentRejection(msg, _) =>
       complete(StatusCodes.BadRequest, Map("message" -> msg))
+
     case MissingQueryParamRejection(msg) =>
       complete(StatusCodes.NotFound,
         Map("message" -> s"missing required query parameter ${msg}."))
+
     case AuthenticationFailedRejection(cause, challengeHeaders) => {
       val msg = cause match {
         case AuthenticationFailedRejection.CredentialsRejected =>
@@ -64,10 +66,10 @@ object Common {
       // TODO complete(StatusCodes.Unauthorized, challengeHeaders, Map("message" -> msg))
       complete(StatusCodes.Unauthorized, Map("message" -> msg))
     }
-    // TODO
-    //    case ChannelRejection(msg) =>
-    //      complete(StatusCodes.Unauthorized, Map("message" -> msg))
-    //    case NonExistentAppRejection(msg) =>
-    //      complete(StatusCodes.Unauthorized, Map("message" -> msg))
+    case ChannelRejection(msg) =>
+      complete(StatusCodes.Unauthorized, Map("message" -> msg))
   }.result()
 }
+
+/** invalid channel */
+case class ChannelRejection(msg: String) extends Rejection
