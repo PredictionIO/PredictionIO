@@ -19,7 +19,6 @@
 package org.apache.predictionio.tools.dashboard
 
 import org.apache.predictionio.authentication.KeyAuthentication
-import org.apache.predictionio.configuration.SSLConfiguration
 import org.apache.predictionio.data.storage.Storage
 
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -40,7 +39,7 @@ case class DashboardConfig(
   ip: String = "localhost",
   port: Int = 9000)
 
-object Dashboard extends Logging with SSLConfiguration {
+object Dashboard extends Logging {
 
   def main(args: Array[String]): Unit = {
     val parser = new scopt.OptionParser[DashboardConfig]("Dashboard") {

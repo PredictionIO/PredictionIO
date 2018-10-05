@@ -30,7 +30,6 @@ import de.javakaffee.kryoserializers.SynchronizedCollectionsSerializer
 import grizzled.slf4j.Logging
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.apache.predictionio.authentication.KeyAuthentication
-import org.apache.predictionio.configuration.SSLConfiguration
 import org.apache.predictionio.controller.{Engine, Params, Utils, WithPrId}
 import org.apache.predictionio.core.{BaseAlgorithm, BaseServing, Doer}
 import org.apache.predictionio.data.storage.{EngineInstance, Storage}
@@ -259,7 +258,7 @@ object EngineServerJson4sSupport {
 class MasterActor (
     sc: ServerConfig,
     engineInstance: EngineInstance,
-    engineFactoryName: String) extends Actor with SSLConfiguration with KeyAuthentication {
+    engineFactoryName: String) extends Actor with KeyAuthentication {
 
   val log = Logging(context.system, this)
 
