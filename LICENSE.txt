@@ -409,7 +409,6 @@ Binary distribution bundles
   com.sun.jersey # jersey-server # 1.9 (https://github.com/jersey/jersey-1.x)
   javax.xml.bind # jaxb-api # 2.2.2
   com.sun.xml.bind # jaxb-impl # 2.2.3-1
-  org.jvnet.mimepull # mimepull # 1.9.5 (https://github.com/kohsuke/mimepull)
 
   which are available under the CDDL v1.1 license (https://glassfish.java.net/public/CDDL+GPL_1_1.html)
   
@@ -1708,9 +1707,8 @@ Binary distribution bundles
   org.scala-lang # scala-reflect # 2.11.8 (http://scala-lang.org/)
   org.scala-lang # scalap # 2.11.8 (http://scala-lang.org/)
   org.scala-lang.modules # scala-java8-compat_2.11 # 0.7.0 (http://scala-lang.org/)
-  org.scala-lang.modules # scala-parser-combinators_2.11 # 1.0.4 (http://scala-lang.org/)
   org.scala-lang.modules # scala-parser-combinators_2.11 # 1.0.6 (http://scala-lang.org/)
-  org.scala-lang.modules # scala-xml_2.11 # 1.0.3 (http://scala-lang.org/)
+  org.scala-lang.modules # scala-parser-combinators_2.11 # 1.1.0 (http://scala-lang.org/)
   org.scala-lang.modules # scala-xml_2.11 # 1.0.4 (http://scala-lang.org/)
   org.scala-lang.modules # scala-xml_2.11 # 1.0.6 (http://scala-lang.org/)
   
@@ -1782,3 +1780,4 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The following libraries are from the public domain.
 
   org.tukaani # xz # 1.0 (http://tukaani.org/xz/java.html)
+  org.reactivestreams # reactive-streams # 1.0.2 (http://www.reactive-streams.org/)
