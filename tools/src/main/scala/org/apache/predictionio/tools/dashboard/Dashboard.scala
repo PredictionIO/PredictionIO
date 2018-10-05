@@ -71,11 +71,13 @@ object DashboardServer extends KeyAuthentication with CorsSupport {
     system
   }
 
-  def createRoute(serverStartTime: DateTime, dc: DashboardConfig)(implicit executionContext: ExecutionContext): Route = {
+  def createRoute(serverStartTime: DateTime, dc: DashboardConfig)
+                 (implicit executionContext: ExecutionContext): Route = {
     val evaluationInstances = Storage.getMetaDataEvaluationInstances
     val pioEnvVars = sys.env.filter(kv => kv._1.startsWith("PIO_"))
 
-    def authenticate[T](authenticator: RequestContext => Future[Either[Rejection, T]]): AuthenticationDirective[T] = {
+    def authenticate[T](authenticator: RequestContext => Future[Either[Rejection, T]]):
+        AuthenticationDirective[T] = {
       extractRequestContext.flatMap { requestContext =>
         onSuccess(authenticator(requestContext)).flatMap {
           case Right(x) => provide(x)
@@ -109,7 +111,8 @@ object DashboardServer extends KeyAuthentication with CorsSupport {
         path("evaluator_results.html") {
           get {
             evaluationInstances.get(instanceId).map { i =>
-              complete(HttpResponse(entity = HttpEntity(`text/html(UTF-8)`, i.evaluatorResultsHTML)))
+              complete(HttpResponse(
+                entity = HttpEntity(`text/html(UTF-8)`, i.evaluatorResultsHTML)))
             } getOrElse {
               complete(StatusCodes.NotFound)
             }
@@ -118,7 +121,8 @@ object DashboardServer extends KeyAuthentication with CorsSupport {
         path("evaluator_results.json") {
           get {
             evaluationInstances.get(instanceId).map { i =>
-              complete(HttpResponse(entity = HttpEntity(`application/json`, i.evaluatorResultsJSON)))
+              complete(HttpResponse(
+                entity = HttpEntity(`application/json`, i.evaluatorResultsJSON)))
             } getOrElse {
               complete(StatusCodes.NotFound)
             }
@@ -128,7 +132,8 @@ object DashboardServer extends KeyAuthentication with CorsSupport {
           path("local_evaluator_results.json") {
             get {
               evaluationInstances.get(instanceId).map { i =>
-                complete(HttpResponse(entity = HttpEntity(`application/json`, i.evaluatorResultsJSON)))
+                complete(HttpResponse(
+                  entity = HttpEntity(`application/json`, i.evaluatorResultsJSON)))
               } getOrElse {
                 complete(StatusCodes.NotFound)
               }

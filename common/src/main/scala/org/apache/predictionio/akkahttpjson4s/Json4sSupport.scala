@@ -69,11 +69,11 @@ trait Json4sSupport {
     Marshaller.oneOf(mediaTypes: _*)(Marshaller.stringMarshaller)
 
   /**
-   * HTTP entity => `A`
-   *
-   * @tparam A type to decode
-   * @return unmarshaller for `A`
-   */
+    * HTTP entity => `A`
+    *
+    * @tparam A type to decode
+    * @return unmarshaller for `A`
+    */
   implicit def unmarshaller[A: Manifest](implicit serialization: Serialization,
     formats: Formats): FromEntityUnmarshaller[A] =
     jsonStringUnmarshaller
@@ -83,11 +83,11 @@ trait Json4sSupport {
       }
 
   /**
-   * `A` => HTTP entity
-   *
-   * @tparam A type to encode, must be upper bounded by `AnyRef`
-   * @return marshaller for any `A` value
-   */
+    * `A` => HTTP entity
+    *
+    * @tparam A type to encode, must be upper bounded by `AnyRef`
+    * @return marshaller for any `A` value
+    */
   implicit def marshaller[A <: AnyRef](implicit serialization: Serialization,
     formats: Formats,
     shouldWritePretty: ShouldWritePretty =

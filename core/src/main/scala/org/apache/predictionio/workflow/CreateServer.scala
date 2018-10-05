@@ -428,7 +428,8 @@ class PredictionServer[Q, P](
     }
   }
 
-  def authenticate[T](authenticator: RequestContext => Future[Either[Rejection, T]]): AuthenticationDirective[T] = {
+  def authenticate[T](authenticator: RequestContext => Future[Either[Rejection, T]]):
+      AuthenticationDirective[T] = {
     extractRequestContext.flatMap { requestContext =>
       onSuccess(authenticator(requestContext)).flatMap {
         case Right(x) => provide(x)

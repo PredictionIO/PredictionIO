@@ -129,7 +129,8 @@ object EventServer {
         }
     }
 
-    def authenticate[T](authenticator: RequestContext => Future[Either[Rejection, T]]): AuthenticationDirective[T] = {
+    def authenticate[T](authenticator: RequestContext => Future[Either[Rejection, T]]):
+        AuthenticationDirective[T] = {
       handleRejections(rejectionHandler).tflatMap { _ =>
         extractRequestContext.flatMap { requestContext =>
           onSuccess(authenticator(requestContext)).flatMap {
