@@ -1,3 +1,20 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.apache.predictionio.akkahttpjson4s
 
 import java.lang.reflect.InvocationTargetException
@@ -12,10 +29,10 @@ import org.json4s.{ Formats, MappingException, Serialization }
 import scala.collection.immutable.Seq
 
 /**
- * Automatic to and from JSON marshalling/unmarshalling using an in-scope *Json4s* protocol.
- *
- * Pretty printing is enabled if an implicit [[Json4sSupport.ShouldWritePretty.True]] is in scope.
- */
+  * Automatic to and from JSON marshalling/unmarshalling using an in-scope *Json4s* protocol.
+  *
+  * Pretty printing is enabled if an implicit [[Json4sSupport.ShouldWritePretty.True]] is in scope.
+  */
 object Json4sSupport extends Json4sSupport {
 
   sealed abstract class ShouldWritePretty
@@ -27,10 +44,10 @@ object Json4sSupport extends Json4sSupport {
 }
 
 /**
- * Automatic to and from JSON marshalling/unmarshalling using an in-scope *Json4s* protocol.
- *
- * Pretty printing is enabled if an implicit [[Json4sSupport.ShouldWritePretty.True]] is in scope.
- */
+  * Automatic to and from JSON marshalling/unmarshalling using an in-scope *Json4s* protocol.
+  *
+  * Pretty printing is enabled if an implicit [[Json4sSupport.ShouldWritePretty.True]] is in scope.
+  */
 trait Json4sSupport {
   import Json4sSupport._
 
