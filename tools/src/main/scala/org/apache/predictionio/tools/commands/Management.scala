@@ -25,7 +25,7 @@ import org.apache.predictionio.tools.EventServerArgs
 import org.apache.predictionio.tools.EitherLogging
 import org.apache.predictionio.tools.Common
 import org.apache.predictionio.tools.ReturnTypes._
-import org.apache.predictionio.tools.dashboard.Dashboard
+import org.apache.predictionio.tools.dashboard.DashboardServer
 import org.apache.predictionio.tools.dashboard.DashboardConfig
 import org.apache.predictionio.tools.admin.AdminServer
 import org.apache.predictionio.tools.admin.AdminServerConfig
@@ -62,7 +62,7 @@ object Management extends EitherLogging {
     */
   def dashboard(da: DashboardArgs): ActorSystem = {
     info(s"Creating dashboard at ${da.ip}:${da.port}")
-    Dashboard.createDashboard(DashboardConfig(
+    DashboardServer.createDashboard(DashboardConfig(
       ip = da.ip,
       port = da.port))
   }

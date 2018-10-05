@@ -50,7 +50,7 @@ import spray.httpx.Json4sSupport
 import spray.routing._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import scala.language.existentials
 import scala.util.{Failure, Random, Success}
@@ -177,7 +177,10 @@ object CreateServer extends Logging {
         "master")
         implicit val timeout = Timeout(5.seconds)
         master ? StartServer()
-        actorSystem.whenTerminated.wait()
+
+        val f = actorSystem.whenTerminated
+        Await.ready(f, Duration.Inf)
+
       } getOrElse {
         error(s"Invalid engine instance ID. Aborting server.")
       }

@@ -18,60 +18,33 @@
 
 package org.apache.predictionio.tools.dashboard
 
-// Reference from: https://gist.github.com/waymost/4b5598523c2c7361abea
+// Reference from: https://gist.github.com/jeroenr/5261fa041d592f37cd80
 
-import spray.http.{HttpMethods, HttpMethod, HttpResponse, AllOrigins}
-import spray.http.HttpHeaders._
-import spray.http.HttpEntity
-import spray.routing._
-import spray.http.StatusCodes
-import spray.http.ContentTypes
+import akka.http.scaladsl.model.HttpMethods._
+import akka.http.scaladsl.model.{StatusCodes, HttpResponse}
+import akka.http.scaladsl.model.headers._
+import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.{Directive0, Route}
+import com.typesafe.config.ConfigFactory
 
-// see also https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS
-trait CORSSupport {
-  this: HttpService =>
+trait CorsSupport {
 
-  private val allowOriginHeader = `Access-Control-Allow-Origin`(AllOrigins)
-  private val optionsCorsHeaders = List(
-    `Access-Control-Allow-Headers`("""Origin,
-                                      |X-Requested-With,
-                                      |Content-Type,
-                                      |Accept,
-                                      |Accept-Encoding,
-                                      |Accept-Language,
-                                      |Host,
-                                      |Referer,
-                                      |User-Agent""".stripMargin.replace("\n", " ")),
-    `Access-Control-Max-Age`(1728000)
-  )
-
-  def cors[T]: Directive0 = mapRequestContext { ctx =>
-    ctx.withRouteResponseHandling {
-      // OPTION request for a resource that responds to other methods
-      case Rejected(x) if (ctx.request.method.equals(HttpMethods.OPTIONS) &&
-          x.exists(_.isInstanceOf[MethodRejection])) => {
-        val allowedMethods: List[HttpMethod] = x.collect {
-          case rejection: MethodRejection => rejection.supported
-        }
-        ctx.complete {
-          HttpResponse().withHeaders(
-            `Access-Control-Allow-Methods`(HttpMethods.OPTIONS, allowedMethods :_*) ::
-            allowOriginHeader ::
-            optionsCorsHeaders
-          )
-        }
-      }
-    }.withHttpResponseHeadersMapped { headers =>
-      allowOriginHeader :: headers
-    }
+  // this directive adds access control headers to normal responses
+  private def addAccessControlHeaders: Directive0 = {
+    respondWithHeaders(
+      `Access-Control-Allow-Origin`.forRange(HttpOriginRange.`*`),
+      `Access-Control-Allow-Credentials`(true),
+      `Access-Control-Allow-Headers`("Authorization", "Content-Type", "X-Requested-With")
+    )
   }
 
-  override def timeoutRoute: StandardRoute = complete {
-    HttpResponse(
-      StatusCodes.InternalServerError,
-      HttpEntity(ContentTypes.`text/plain(UTF-8)`,
-          "The server was not able to produce a timely response to your request."),
-      List(allowOriginHeader)
-    )
+  // this handles preflight OPTIONS requests.
+  private def preflightRequestHandler: Route = options {
+    complete(HttpResponse(StatusCodes.OK)
+      .withHeaders(`Access-Control-Allow-Methods`(OPTIONS, POST, PUT, GET, DELETE)))
+  }
+
+  def corsHandler(r: Route): Route = addAccessControlHeaders {
+    preflightRequestHandler ~ r
   }
 }
