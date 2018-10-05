@@ -21,11 +21,7 @@ package org.apache.predictionio.workflow
 import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
-import akka.actor._
 import akka.event.Logging
-import akka.io.IO
-import akka.pattern.ask
-import akka.util.Timeout
 import com.github.nscala_time.time.Imports.DateTime
 import com.twitter.bijection.Injection
 import com.twitter.chill.{KryoBase, KryoInjection, ScalaKryoInstantiator}
@@ -42,12 +38,19 @@ import org.apache.predictionio.workflow.JsonExtractorOption.JsonExtractorOption
 import org.json4s._
 import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization.write
-import spray.can.Http
-import spray.can.server.ServerSettings
-import spray.http.MediaTypes._
-import spray.http._
-import spray.httpx.Json4sSupport
-import spray.routing._
+import akka.actor._
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.Http.ServerBinding
+import akka.http.scaladsl.model.ContentTypes._
+import akka.http.scaladsl.model.{HttpEntity, HttpResponse, StatusCodes}
+import akka.http.scaladsl.server.Directives.complete
+import akka.http.scaladsl.server.directives._
+import akka.http.scaladsl.server._
+import akka.pattern.ask
+import akka.util.Timeout
+import akka.http.scaladsl.server.Directives._
+import akka.stream.ActorMaterializer
+import org.apache.predictionio.akkahttpjson4s.Json4sSupport._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Await, Future}
@@ -187,11 +190,11 @@ object CreateServer extends Logging {
     }
   }
 
-  def createServerActorWithEngine[TD, EIN, PD, Q, P, A](
+  def createPredictionServerWithEngine[TD, EIN, PD, Q, P, A](
     sc: ServerConfig,
     engineInstance: EngineInstance,
     engine: Engine[TD, EIN, PD, Q, P, A],
-    engineLanguage: EngineLanguage.Value): ActorRef = {
+    engineLanguage: EngineLanguage.Value): PredictionServer[Q, P] = {
 
     val engineParams = engine.engineInstanceToEngineParams(
       engineInstance, sc.jsonExtractor)
@@ -231,31 +234,39 @@ object CreateServer extends Logging {
     val serving = Doer(engine.servingClassMap(servingParamsWithName._1),
       servingParamsWithName._2)
 
-    actorSystem.actorOf(
-      Props(
-        classOf[ServerActor[Q, P]],
-        sc,
-        engineInstance,
-        engine,
-        engineLanguage,
-        engineParams.dataSourceParams._2,
-        engineParams.preparatorParams._2,
-        algorithms,
-        engineParams.algorithmParamsList.map(_._2),
-        models,
-        serving,
-        engineParams.servingParams._2))
+    new PredictionServer(
+      sc,
+      engineInstance,
+      engine,
+      engineLanguage,
+      engineParams.dataSourceParams._2,
+      engineParams.preparatorParams._2,
+      algorithms,
+      engineParams.algorithmParamsList.map(_._2),
+      models,
+      serving,
+      engineParams.servingParams._2,
+      actorSystem)
   }
+}
+
+
+object EngineServerJson4sSupport {
+  implicit val serialization = org.json4s.jackson.Serialization
+  implicit def json4sFormats: Formats = DefaultFormats
 }
 
 class MasterActor (
     sc: ServerConfig,
     engineInstance: EngineInstance,
     engineFactoryName: String) extends Actor with SSLConfiguration with KeyAuthentication {
+
   val log = Logging(context.system, this)
+
   implicit val system = context.system
-  var sprayHttpListener: Option[ActorRef] = None
-  var currentServerActor: Option[ActorRef] = None
+  implicit val materializer = ActorMaterializer()
+
+  var currentServerBinding: Option[Future[ServerBinding]] = None
   var retry = 3
   val serverConfig = ConfigFactory.load("server.conf")
   val sslEnforced = serverConfig.getBoolean("org.apache.predictionio.server.ssl-enforced")
@@ -290,81 +301,64 @@ class MasterActor (
 
   def receive: Actor.Receive = {
     case x: StartServer =>
-      val actor = createServerActor(
-        sc,
-        engineInstance,
-        engineFactoryName)
-      currentServerActor = Some(actor)
       undeploy(sc.ip, sc.port)
       self ! BindServer()
     case x: BindServer =>
-      currentServerActor map { actor =>
-        val settings = ServerSettings(system)
-        IO(Http) ! Http.Bind(
-          actor,
-          interface = sc.ip,
-          port = sc.port,
-          settings = Some(settings.copy(sslEncryption = sslEnforced)))
-      } getOrElse {
-        log.error("Cannot bind a non-existing server backend.")
+      currentServerBinding match {
+        case Some(_) =>
+          log.error("Cannot bind a non-existing server backend.")
+        case None =>
+          val server = createServer(sc, engineInstance, engineFactoryName)
+          val route = server.createRoute()
+          val binding = Http().bindAndHandle(route, sc.ip, sc.port)
+          currentServerBinding = Some(binding)
+
+          val serverUrl = s"${protocol}${sc.ip}:${sc.port}"
+          log.info(s"Engine is deployed and running. Engine API is live at ${serverUrl}.")
       }
     case x: StopServer =>
       log.info(s"Stop server command received.")
-      sprayHttpListener.map { l =>
-        log.info("Server is shutting down.")
-        l ! Http.Unbind(5.seconds)
-        system.terminate()
-      } getOrElse {
-        log.warning("No active server is running.")
+      currentServerBinding match {
+        case Some(f) =>
+          f.flatMap { binding =>
+            binding.unbind()
+          }.foreach { _ =>
+            system.terminate()
+          }
+        case None =>
+          log.warning("No active server is running.")
       }
     case x: ReloadServer =>
       log.info("Reload server command received.")
-      val latestEngineInstance =
-        CreateServer.engineInstances.getLatestCompleted(
-          engineInstance.engineId,
-          engineInstance.engineVersion,
-          engineInstance.engineVariant)
-      latestEngineInstance map { lr =>
-        val actor = createServerActor(sc, lr, engineFactoryName)
-        sprayHttpListener.map { l =>
-          l ! Http.Unbind(5.seconds)
-          val settings = ServerSettings(system)
-          IO(Http) ! Http.Bind(
-            actor,
-            interface = sc.ip,
-            port = sc.port,
-            settings = Some(settings.copy(sslEncryption = sslEnforced)))
-          currentServerActor.get ! Kill
-          currentServerActor = Some(actor)
-        } getOrElse {
-          log.warning("No active server is running. Abort reloading.")
+        currentServerBinding match {
+          case Some(f) =>
+            f.flatMap { binding =>
+              binding.unbind()
+            }
+            val latestEngineInstance =
+              CreateServer.engineInstances.getLatestCompleted(
+                engineInstance.engineId,
+                engineInstance.engineVersion,
+                engineInstance.engineVariant)
+            latestEngineInstance map { lr =>
+              val server = createServer(sc, lr, engineFactoryName)
+              val route = server.createRoute()
+              val binding = Http().bindAndHandle(route, sc.ip, sc.port)
+              currentServerBinding = Some(binding)
+            } getOrElse {
+              log.warning(
+                s"No latest completed engine instance for ${engineInstance.engineId} " +
+                  s"${engineInstance.engineVersion}. Abort reloading.")
+            }
+          case None =>
+            log.warning("No active server is running. Abort reloading.")
         }
-      } getOrElse {
-        log.warning(
-          s"No latest completed engine instance for ${engineInstance.engineId} " +
-          s"${engineInstance.engineVersion}. Abort reloading.")
-      }
-    case x: Http.Bound =>
-      val serverUrl = s"${protocol}${sc.ip}:${sc.port}"
-      log.info(s"Engine is deployed and running. Engine API is live at ${serverUrl}.")
-      sprayHttpListener = Some(sender)
-    case x: Http.CommandFailed =>
-      if (retry > 0) {
-        retry -= 1
-        log.error(s"Bind failed. Retrying... ($retry more trial(s))")
-        context.system.scheduler.scheduleOnce(1.seconds) {
-          self ! BindServer()
-        }
-      } else {
-        log.error("Bind failed. Shutting down.")
-        system.terminate()
-      }
   }
 
-  def createServerActor(
+  def createServer(
       sc: ServerConfig,
       engineInstance: EngineInstance,
-      engineFactoryName: String): ActorRef = {
+      engineFactoryName: String): PredictionServer[_, _] = {
     val (engineLanguage, engineFactory) =
       WorkflowUtils.getEngine(engineFactoryName, getClass.getClassLoader)
     val engine = engineFactory()
@@ -376,7 +370,7 @@ class MasterActor (
 
     val deployableEngine = engine.asInstanceOf[Engine[_,_,_,_,_,_]]
 
-    CreateServer.createServerActorWithEngine(
+    CreateServer.createPredictionServerWithEngine(
       sc,
       engineInstance,
       // engine,
@@ -385,7 +379,7 @@ class MasterActor (
   }
 }
 
-class ServerActor[Q, P](
+class PredictionServer[Q, P](
     val args: ServerConfig,
     val engineInstance: EngineInstance,
     val engine: Engine[_, _, _, Q, P, _],
@@ -396,23 +390,22 @@ class ServerActor[Q, P](
     val algorithmsParams: Seq[Params],
     val models: Seq[Any],
     val serving: BaseServing[Q, P],
-    val servingParams: Params) extends Actor with HttpService with KeyAuthentication {
+    val servingParams: Params,
+    val system: ActorSystem) extends KeyAuthentication {
+
+  val log = Logging(system, getClass)
   val serverStartTime = DateTime.now
-  val log = Logging(context.system, this)
 
   var requestCount: Int = 0
   var avgServingSec: Double = 0.0
   var lastServingSec: Double = 0.0
 
-  /** The following is required by HttpService */
-  def actorRefFactory: ActorContext = context
-
   implicit val timeout = Timeout(5, TimeUnit.SECONDS)
-  val pluginsActorRef =
-    context.actorOf(Props(classOf[PluginsActor], args.engineVariant), "PluginsActor")
-  val pluginContext = EngineServerPluginContext(log, args.engineVariant)
 
-  def receive: Actor.Receive = runRoute(myRoute)
+  val pluginsActorRef =
+    system.actorOf(Props(classOf[PluginsActor], args.engineVariant), "PluginsActor")
+
+  val pluginContext = EngineServerPluginContext(log, args.engineVariant)
 
   val feedbackEnabled = if (args.feedback) {
     if (args.accessKey.isEmpty) {
@@ -436,37 +429,43 @@ class ServerActor[Q, P](
     }
   }
 
-  val myRoute =
-    path("") {
-      get {
-        respondWithMediaType(`text/html`) {
-          detach() {
-            complete {
-              html.index(
-                args,
-                engineInstance,
-                algorithms.map(_.toString),
-                algorithmsParams.map(_.toString),
-                models.map(_.toString),
-                dataSourceParams.toString,
-                preparatorParams.toString,
-                servingParams.toString,
-                serverStartTime,
-                feedbackEnabled,
-                args.eventServerIp,
-                args.eventServerPort,
-                requestCount,
-                avgServingSec,
-                lastServingSec
-              ).toString
-            }
-          }
-        }
+  def authenticate[T](authenticator: RequestContext => Future[Either[Rejection, T]]): AuthenticationDirective[T] = {
+    extractRequestContext.flatMap { requestContext =>
+      onSuccess(authenticator(requestContext)).flatMap {
+        case Right(x) => provide(x)
+        case Left(x)  => reject(x): Directive1[T]
       }
-    } ~
-    path("queries.json") {
-      post {
-        detach() {
+    }
+  }
+
+  def createRoute(): Route = {
+    val myRoute =
+      path("") {
+        get {
+          complete(HttpResponse(entity = HttpEntity(
+            `text/html(UTF-8)`,
+            html.index(
+              args,
+              engineInstance,
+              algorithms.map(_.toString),
+              algorithmsParams.map(_.toString),
+              models.map(_.toString),
+              dataSourceParams.toString,
+              preparatorParams.toString,
+              servingParams.toString,
+              serverStartTime,
+              feedbackEnabled,
+              args.eventServerIp,
+              args.eventServerPort,
+              requestCount,
+              avgServingSec,
+              lastServingSec
+            ).toString
+          )))
+        }
+      } ~
+      path("queries.json") {
+        post {
           entity(as[String]) { queryString =>
             try {
               val servingStartTime = DateTime.now
@@ -587,9 +586,8 @@ class ServerActor[Q, P](
                 (requestCount + 1)
               requestCount += 1
 
-              respondWithMediaType(`application/json`) {
-                complete(compact(render(pluginResult)))
-              }
+              complete(compact(render(pluginResult)))
+
             } catch {
               case e: MappingException =>
                 val msg = s"Query:\n$queryString\n\nStack Trace:\n" +
@@ -616,83 +614,76 @@ class ServerActor[Q, P](
             }
           }
         }
-      }
-    } ~
-    path("reload") {
-      authenticate(withAccessKeyFromFile) { request =>
-        post {
-          complete {
-            context.actorSelection("/user/master") ! ReloadServer()
-            "Reloading..."
+      } ~
+      path("reload") {
+        authenticate(withAccessKeyFromFile) { request =>
+          post {
+            system.actorSelection("/user/master") ! ReloadServer()
+            complete("Reloading...")
           }
         }
-      }
-    } ~
-    path("stop") {
-      authenticate(withAccessKeyFromFile) { request =>
-        post {
-          complete {
-            context.system.scheduler.scheduleOnce(1.seconds) {
-              context.actorSelection("/user/master") ! StopServer()
+      } ~
+      path("stop") {
+        authenticate(withAccessKeyFromFile) { request =>
+          post {
+            system.scheduler.scheduleOnce(1.seconds) {
+              system.actorSelection("/user/master") ! StopServer()
             }
-            "Shutting down..."
+            complete("Shutting down...")
           }
         }
-      }
-    } ~
-    pathPrefix("assets") {
-      getFromResourceDirectory("assets")
-    } ~
-    path("plugins.json") {
-      import EngineServerJson4sSupport._
-      get {
-        respondWithMediaType(MediaTypes.`application/json`) {
-          complete {
+      } ~
+      pathPrefix("assets") {
+        getFromResourceDirectory("assets")
+      } ~
+      path("plugins.json") {
+        import EngineServerJson4sSupport._
+        get {
+          complete(
             Map("plugins" -> Map(
               "outputblockers" -> pluginContext.outputBlockers.map { case (n, p) =>
                 n -> Map(
-                  "name" -> p.pluginName,
+                  "name"        -> p.pluginName,
                   "description" -> p.pluginDescription,
-                  "class" -> p.getClass.getName,
-                  "params" -> pluginContext.pluginParams(p.pluginName))
+                  "class"       -> p.getClass.getName,
+                  "params"      -> pluginContext.pluginParams(p.pluginName))
               },
               "outputsniffers" -> pluginContext.outputSniffers.map { case (n, p) =>
                 n -> Map(
-                  "name" -> p.pluginName,
+                  "name"        -> p.pluginName,
                   "description" -> p.pluginDescription,
-                  "class" -> p.getClass.getName,
-                  "params" -> pluginContext.pluginParams(p.pluginName))
+                  "class"       -> p.getClass.getName,
+                  "params"      -> pluginContext.pluginParams(p.pluginName))
               }
             ))
-          }
+          )
         }
-      }
-    } ~
-    path("plugins" / Segments) { segments =>
-      import EngineServerJson4sSupport._
-      get {
-        respondWithMediaType(MediaTypes.`application/json`) {
-          complete {
-            val pluginArgs = segments.drop(2)
-            val pluginType = segments(0)
-            val pluginName = segments(1)
-            pluginType match {
-              case EngineServerPlugin.outputBlocker =>
-                pluginContext.outputBlockers(pluginName).handleREST(
-                  pluginArgs)
-              case EngineServerPlugin.outputSniffer =>
-                pluginsActorRef ? PluginsActor.HandleREST(
-                  pluginName = pluginName,
-                  pluginArgs = pluginArgs) map {
-                  _.asInstanceOf[String]
-                }
-            }
-          }
-        }
-      }
-    }
-}
+      } ~
+      path("plugins" / Segments) { segments =>
+        import EngineServerJson4sSupport._
+        get {
+          val pluginArgs = segments.drop(2)
+          val pluginType = segments(0)
+          val pluginName = segments(1)
+          pluginType match {
+            case EngineServerPlugin.outputBlocker =>
+              complete(HttpResponse(entity = HttpEntity(
+                  `application/json`,
+                  pluginContext.outputBlockers(pluginName).handleREST(pluginArgs))))
 
-object EngineServerJson4sSupport extends Json4sSupport {
-  implicit def json4sFormats: Formats = DefaultFormats
+            case EngineServerPlugin.outputSniffer =>
+              complete(pluginsActorRef ? PluginsActor.HandleREST(
+                pluginName = pluginName,
+                pluginArgs = pluginArgs) map { json =>
+                HttpResponse(entity = HttpEntity(
+                  `application/json`,
+                  json.asInstanceOf[String]
+                ))
+              })
+          }
+        }
+      }
+
+    myRoute
+  }
 }

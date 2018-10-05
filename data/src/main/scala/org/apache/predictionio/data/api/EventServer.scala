@@ -24,7 +24,8 @@ import java.util.concurrent.TimeUnit
 
 import akka.actor._
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{FormData, StatusCodes}
+import akka.http.scaladsl.model.{FormData, HttpEntity, HttpResponse, StatusCodes}
+import akka.http.scaladsl.model.ContentTypes._
 import akka.http.scaladsl.model.headers.HttpChallenge
 import akka.http.scaladsl.server.Directives.complete
 import akka.http.scaladsl.server.directives._
@@ -33,7 +34,6 @@ import akka.pattern.ask
 import akka.util.Timeout
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
-
 import org.apache.predictionio.data.storage._
 import org.apache.predictionio.akkahttpjson4s.Json4sSupport._
 import org.json4s.{DefaultFormats, Formats, JObject}
@@ -180,16 +180,25 @@ object EventServer {
               val pluginName = segments(1)
               pluginType match {
                 case EventServerPlugin.inputBlocker =>
-                  complete(pluginContext.inputBlockers(pluginName).handleREST(
-                    authData.appId,
-                    authData.channelId,
-                    pluginArgs))
+                  complete(HttpResponse(entity = HttpEntity(
+                    `application/json`,
+                    pluginContext.inputBlockers(pluginName).handleREST(
+                      authData.appId,
+                      authData.channelId,
+                      pluginArgs)
+                  )))
+
                 case EventServerPlugin.inputSniffer =>
                   complete(pluginsActorRef ? PluginsActor.HandleREST(
                     appId = authData.appId,
                     channelId = authData.channelId,
                     pluginName = pluginName,
-                    pluginArgs = pluginArgs) map { _.asInstanceOf[String] })
+                    pluginArgs = pluginArgs) map { json =>
+                      HttpResponse(entity = HttpEntity(
+                        `application/json`,
+                        json.asInstanceOf[String]
+                      ))
+                    })
               }
             }
           }

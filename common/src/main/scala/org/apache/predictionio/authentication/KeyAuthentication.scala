@@ -23,11 +23,10 @@ package org.apache.predictionio.authentication
   * It is highly recommended to implement a stonger authentication mechanism
   */
 
+import akka.http.scaladsl.model.HttpRequest
+import akka.http.scaladsl.model.headers.HttpChallenge
+import akka.http.scaladsl.server.{AuthenticationFailedRejection, Rejection, RequestContext}
 import com.typesafe.config.ConfigFactory
-import spray.http.HttpRequest
-import spray.routing.authentication._
-import spray.routing.{AuthenticationFailedRejection, RequestContext}
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -42,19 +41,18 @@ trait KeyAuthentication {
     val param = "accessKey"
   }
 
-  def withAccessKeyFromFile: RequestContext => Future[Authentication[HttpRequest]] = {
+  def withAccessKeyFromFile: RequestContext => Future[Either[Rejection, HttpRequest]] = {
     ctx: RequestContext =>
-      val accessKeyParamOpt = ctx.request.uri.query.get(ServerKey.param)
+      val accessKeyParamOpt = ctx.request.uri.query().get(ServerKey.param)
       Future {
-
         val passedKey = accessKeyParamOpt.getOrElse {
           Left(AuthenticationFailedRejection(
-            AuthenticationFailedRejection.CredentialsRejected, Nil))
+            AuthenticationFailedRejection.CredentialsRejected, HttpChallenge("dashboard", None)))
         }
 
         if (!ServerKey.authEnforced || passedKey.equals(ServerKey.get)) Right(ctx.request)
         else Left(AuthenticationFailedRejection(
-          AuthenticationFailedRejection.CredentialsRejected, Nil))
+          AuthenticationFailedRejection.CredentialsRejected, HttpChallenge("dashboard", None)))
 
       }
   }

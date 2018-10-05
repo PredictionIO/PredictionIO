@@ -18,7 +18,7 @@
 
 package org.apache.predictionio.tools.dashboard
 
-import org.apache.predictionio.authentication.KeyAuthentication2
+import org.apache.predictionio.authentication.KeyAuthentication
 import org.apache.predictionio.configuration.SSLConfiguration
 import org.apache.predictionio.data.storage.Storage
 
@@ -60,7 +60,7 @@ object Dashboard extends Logging with SSLConfiguration {
 
 }
 
-object DashboardServer extends KeyAuthentication2 with CorsSupport {
+object DashboardServer extends KeyAuthentication with CorsSupport {
 
   def createDashboard(dc: DashboardConfig): ActorSystem = {
     val systemName = "pio-dashboard"

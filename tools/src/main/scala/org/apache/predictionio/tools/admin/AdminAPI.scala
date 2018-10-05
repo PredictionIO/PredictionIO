@@ -76,26 +76,20 @@ object AdminServer {
       path("cmd" / "app" / Segment / "data") {
         appName => {
           delete {
-            onSuccess(commandClient.futureAppDataDelete(appName)){ res =>
-              complete(res)
-            }
+            complete(commandClient.futureAppDataDelete(appName))
           }
         }
       } ~
       path("cmd" / "app" / Segment) {
         appName => {
           delete {
-            onSuccess(commandClient.futureAppDelete(appName)){ res =>
-              complete(res)
-            }
+            complete(commandClient.futureAppDelete(appName))
           }
         }
       } ~
       path("cmd" / "app") {
         get {
-          onSuccess(commandClient.futureAppList()){ res =>
-             complete(res)
-          }
+          complete(commandClient.futureAppList())
         } ~
         post {
           entity(as[AppRequest]) {
