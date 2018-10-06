@@ -23,14 +23,12 @@ import org.apache.predictionio.data.webhooks.ConnectorException
 import org.json4s.{DefaultFormats, Formats}
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
-import spray.json.DefaultJsonProtocol._
-
+import org.apache.predictionio.akkahttpjson4s.Json4sSupport._
 
 object Common {
 
   object Json4sProtocol {
-    implicit val serialization = org.json4s.jackson.Serialization
+    implicit val serialization = org.json4s.native.Serialization
     implicit def json4sFormats: Formats = DefaultFormats
   }
 

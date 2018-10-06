@@ -43,7 +43,7 @@ import scala.concurrent.duration.Duration
 import scala.util.{Failure, Success, Try}
 
 object Json4sProtocol {
-  implicit val serialization = org.json4s.jackson.Serialization
+  implicit val serialization = org.json4s.native.Serialization
   implicit def json4sFormats: Formats = DefaultFormats +
     new EventJson4sSupport.APISerializer +
     new BatchEventsJson4sSupport.APISerializer +
