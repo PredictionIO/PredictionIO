@@ -381,19 +381,19 @@ object EventServer {
                         statsActorRef ! Bookkeeping(appId, status, event)
                       }
                       (Map(
-                        "status"  -> s"${status.intValue}",
+                        "status"  -> status.intValue,
                         "eventId" -> s"${id}"), i)
                     } ++
                       // Results of denied events
                       taggedEvents.collect { case (Left(event), i) =>
                         (Map(
-                          "status"  -> s"${StatusCodes.Forbidden.intValue}",
+                          "status"  -> StatusCodes.Forbidden.intValue,
                           "message" -> s"${event.event} events are not allowed"), i)
                       } ++
                       // Results of failed to deserialze events
                       eventWithIndex.collect { case (Failure(exception), i) =>
                         (Map(
-                          "status"  -> s"${StatusCodes.BadRequest.intValue}",
+                          "status"  -> StatusCodes.BadRequest.intValue,
                           "message" -> s"${exception.getMessage()}"), i)
                       }
 
