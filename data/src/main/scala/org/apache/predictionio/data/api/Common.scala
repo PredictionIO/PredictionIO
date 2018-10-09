@@ -61,7 +61,6 @@ object Common {
         case AuthenticationFailedRejection.CredentialsMissing =>
           "Missing accessKey."
       }
-      // TODO complete(StatusCodes.Unauthorized, challengeHeaders, Map("message" -> msg))
       complete(StatusCodes.Unauthorized, Map("message" -> msg))
     }
     case ChannelRejection(msg) =>

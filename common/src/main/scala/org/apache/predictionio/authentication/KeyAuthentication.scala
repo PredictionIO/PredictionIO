@@ -47,12 +47,12 @@ trait KeyAuthentication {
       Future {
         val passedKey = accessKeyParamOpt.getOrElse {
           Left(AuthenticationFailedRejection(
-            AuthenticationFailedRejection.CredentialsRejected, HttpChallenge("dashboard", None)))
+            AuthenticationFailedRejection.CredentialsRejected, HttpChallenge.("", None)))
         }
 
         if (!ServerKey.authEnforced || passedKey.equals(ServerKey.get)) Right(ctx.request)
         else Left(AuthenticationFailedRejection(
-          AuthenticationFailedRejection.CredentialsRejected, HttpChallenge("dashboard", None)))
+          AuthenticationFailedRejection.CredentialsRejected, HttpChallenge("", None)))
 
       }
   }
