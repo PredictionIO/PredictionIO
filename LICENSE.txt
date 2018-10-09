@@ -1702,14 +1702,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 Binary distribution bundles
 
-  org.scala-lang # scala-library # 2.11.8 (http://scala-lang.org/)
-  org.scala-lang # scala-compiler # 2.11.8 (http://scala-lang.org/)
-  org.scala-lang # scala-reflect # 2.11.8 (http://scala-lang.org/)
-  org.scala-lang # scalap # 2.11.8 (http://scala-lang.org/)
+  org.scala-lang # scala-library # 2.11.12 (http://scala-lang.org/)
+  org.scala-lang # scala-compiler # 2.11.12 (http://scala-lang.org/)
+  org.scala-lang # scala-reflect # 2.11.12 (http://scala-lang.org/)
+  org.scala-lang # scalap # 2.11.12 (http://scala-lang.org/)
   org.scala-lang.modules # scala-java8-compat_2.11 # 0.7.0 (http://scala-lang.org/)
   org.scala-lang.modules # scala-parser-combinators_2.11 # 1.0.6 (http://scala-lang.org/)
   org.scala-lang.modules # scala-parser-combinators_2.11 # 1.1.0 (http://scala-lang.org/)
-  org.scala-lang.modules # scala-xml_2.11 # 1.0.4 (http://scala-lang.org/)
+  org.scala-lang.modules # scala-xml_2.11 # 1.0.3 (http://scala-lang.org/)
+  org.scala-lang.modules # scala-xml_2.11 # 1.0.5 (http://scala-lang.org/)
   org.scala-lang.modules # scala-xml_2.11 # 1.0.6 (http://scala-lang.org/)
   
   which is available under the BSD license (http://www.scala-lang.org/downloads/license.html)

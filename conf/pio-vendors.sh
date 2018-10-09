@@ -32,7 +32,7 @@ if [ -z "$PIO_HADOOP_VERSION" ]; then
 fi
 
 if [ -z "$PIO_ELASTICSEARCH_VERSION" ]; then
-    PIO_ELASTICSEARCH_VERSION="5.5.2"
+    PIO_ELASTICSEARCH_VERSION="5.6.9"
 fi
 
 ES_MAJOR=`echo $PIO_ELASTICSEARCH_VERSION | awk -F. '{print $1}'`
@@ -42,7 +42,7 @@ if [ "$ES_MAJOR" = "1" ]; then
     export ES_TAG="1"
 else
     export ES_IMAGE="docker.elastic.co/elasticsearch/elasticsearch"
-    export ES_TAG="5.5.2"
+    export ES_TAG="5.6.9"
 fi
 
 PGSQL_JAR=postgresql-9.4-1204.jdbc41.jar

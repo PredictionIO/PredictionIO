@@ -21,12 +21,12 @@ name := "apache-predictionio-data-elasticsearch"
 
 elasticsearchSparkArtifact := (if (majorVersion(sparkVersion.value) == 2) "elasticsearch-spark-20" else "elasticsearch-spark-13")
 
-elasticsearchVersion := (if (majorVersion(elasticsearchVersion.value) < 5) "5.5.2" else elasticsearchVersion.value)
+elasticsearchVersion := (if (majorVersion(elasticsearchVersion.value) < 5) "5.6.9" else elasticsearchVersion.value)
 
 libraryDependencies ++= Seq(
   "org.apache.predictionio" %% "apache-predictionio-core" % version.value % "provided",
   "org.apache.spark"        %% "spark-core"               % sparkVersion.value % "provided",
-  "org.elasticsearch.client" % "rest"                     % elasticsearchVersion.value,
+  "org.elasticsearch.client" % "elasticsearch-rest-client"                     % elasticsearchVersion.value,
   "org.elasticsearch"       %% elasticsearchSparkArtifact.value % elasticsearchVersion.value
     exclude("org.apache.spark", "*"),
   "org.elasticsearch"        % "elasticsearch-hadoop-mr"  % elasticsearchVersion.value,

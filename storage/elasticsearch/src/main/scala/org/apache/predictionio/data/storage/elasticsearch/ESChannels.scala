@@ -39,17 +39,18 @@ class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
     extends Channels with Logging {
   implicit val formats = DefaultFormats.lossless
   private val estype = "channels"
-  private val seq = new ESSequences(client, config, index)
-  
-  ESUtils.createIndex(client, index,
-    ESUtils.getNumberOfShards(config, index.toUpperCase),
-    ESUtils.getNumberOfReplicas(config, index.toUpperCase))
+  private val seq = new ESSequences(client, config, internalIndex)
+  private val internalIndex = index + "_" + estype
+
+  ESUtils.createIndex(client, internalIndex,
+    ESUtils.getNumberOfShards(config, internalIndex.toUpperCase),
+    ESUtils.getNumberOfReplicas(config, internalIndex.toUpperCase))
   val mappingJson =
     (estype ->
       ("_all" -> ("enabled" -> false)) ~
       ("properties" ->
         ("name" -> ("type" -> "keyword"))))
-  ESUtils.createMapping(client, index, estype, compact(render(mappingJson)))
+  ESUtils.createMapping(client, internalIndex, estype, compact(render(mappingJson)))
 
   def insert(channel: Channel): Option[Int] = {
     val id = channel.id match {
@@ -72,7 +73,7 @@ class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
     try {
       val response = client.performRequest(
         "GET",
-        s"/$index/$estype/$id",
+        s"/$internalIndex/$estype/$id",
         Map.empty[String, String].asJava)
       val jsonResponse = parse(EntityUtils.toString(response.getEntity))
       (jsonResponse \ "found").extract[Boolean] match {
@@ -86,11 +87,11 @@ class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
         e.getResponse.getStatusLine.getStatusCode match {
           case 404 => None
           case _ =>
-            error(s"Failed to access to /$index/$estype/$id", e)
+            error(s"Failed to access to /$internalIndex/$estype/$id", e)
             None
         }
       case e: IOException =>
-        error(s"Failed to access to /$index/$estype/$id", e)
+        error(s"Failed to access to /$internalIndex/$estype/$id", e)
         None
     }
   }
@@ -101,10 +102,10 @@ class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
         ("query" ->
           ("term" ->
             ("appid" -> appid)))
-      ESUtils.getAll[Channel](client, index, estype, compact(render(json)))
+      ESUtils.getAll[Channel](client, internalIndex, estype, compact(render(json)))
     } catch {
       case e: IOException =>
-        error(s"Failed to access to /$index/$estype/_search", e)
+        error(s"Failed to access to /$internalIndex/$estype/_search", e)
         Nil
     }
   }
@@ -115,7 +116,7 @@ class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
       val entity = new NStringEntity(write(channel), ContentType.APPLICATION_JSON)
       val response = client.performRequest(
         "POST",
-        s"/$index/$estype/$id",
+        s"/$internalIndex/$estype/$id",
         Map("refresh" -> "true").asJava,
         entity)
       val json = parse(EntityUtils.toString(response.getEntity))
@@ -124,12 +125,12 @@ class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
         case "created" => true
         case "updated" => true
         case _ =>
-          error(s"[$result] Failed to update $index/$estype/$id")
+          error(s"[$result] Failed to update $internalIndex/$estype/$id")
           false
       }
     } catch {
       case e: IOException =>
-        error(s"Failed to update $index/$estype/$id", e)
+        error(s"Failed to update $internalIndex/$estype/$id", e)
         false
     }
   }
@@ -138,18 +139,18 @@ class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
     try {
       val response = client.performRequest(
         "DELETE",
-        s"/$index/$estype/$id",
+        s"/$internalIndex/$estype/$id",
         Map("refresh" -> "true").asJava)
       val jsonResponse = parse(EntityUtils.toString(response.getEntity))
       val result = (jsonResponse \ "result").extract[String]
       result match {
         case "deleted" =>
         case _ =>
-          error(s"[$result] Failed to update $index/$estype/$id")
+          error(s"[$result] Failed to update $internalIndex/$estype/$id")
       }
     } catch {
       case e: IOException =>
-        error(s"Failed to update $index/$estype/$id", e)
+        error(s"Failed to update $internalIndex/$estype/$id", e)
     }
   }
 }

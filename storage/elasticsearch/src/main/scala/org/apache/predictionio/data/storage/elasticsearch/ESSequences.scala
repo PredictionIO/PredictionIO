@@ -38,23 +38,24 @@ import grizzled.slf4j.Logging
 class ESSequences(client: RestClient, config: StorageClientConfig, index: String) extends Logging {
   implicit val formats = DefaultFormats
   private val estype = "sequences"
+  private val internalIndex = index + "_" + estype
 
-  ESUtils.createIndex(client, index,
-    ESUtils.getNumberOfShards(config, index.toUpperCase),
-    ESUtils.getNumberOfReplicas(config, index.toUpperCase))
+  ESUtils.createIndex(client, internalIndex,
+    ESUtils.getNumberOfShards(config, internalIndex.toUpperCase),
+    ESUtils.getNumberOfReplicas(config, internalIndex.toUpperCase))
   val mappingJson =
     (estype ->
       ("_all" -> ("enabled" -> false)) ~
       ("properties" ->
         ("n" -> ("enabled" -> false))))
-  ESUtils.createMapping(client, index, estype, compact(render(mappingJson)))
+  ESUtils.createMapping(client, internalIndex, estype, compact(render(mappingJson)))
 
   def genNext(name: String): Long = {
     try {
       val entity = new NStringEntity(write("n" -> name), ContentType.APPLICATION_JSON)
       val response = client.performRequest(
         "POST",
-        s"/$index/$estype/$name",
+        s"/$internalIndex/$estype/$name",
         Map("refresh" -> "false").asJava,
         entity)
       val jsonResponse = parse(EntityUtils.toString(response.getEntity))
@@ -65,11 +66,11 @@ class ESSequences(client: RestClient, config: StorageClientConfig, index: String
         case "updated" =>
           (jsonResponse \ "_version").extract[Long]
         case _ =>
-          throw new IllegalStateException(s"[$result] Failed to update $index/$estype/$name")
+          throw new IllegalStateException(s"[$result] Failed to update $internalIndex/$estype/$name")
       }
     } catch {
       case e: IOException =>
-        throw new StorageClientException(s"Failed to update $index/$estype/$name", e)
+        throw new StorageClientException(s"Failed to update $internalIndex/$estype/$name", e)
     }
   }
 }

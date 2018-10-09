@@ -20,7 +20,7 @@
 OS=`uname`
 SPARK_VERSION=2.1.1
 # Looks like support for Elasticsearch 2.0 will require 2.0 so deferring
-ELASTICSEARCH_VERSION=5.5.2
+ELASTICSEARCH_VERSION=5.6.9
 HBASE_VERSION=1.2.6
 POSTGRES_VERSION=42.0.0
 MYSQL_VERSION=5.1.41

@@ -41,11 +41,11 @@ version in ThisBuild := "0.14.0-SNAPSHOT"
 
 organization in ThisBuild := "org.apache.predictionio"
 
-scalaVersion in ThisBuild := sys.props.getOrElse("scala.version", "2.11.8")
+scalaVersion in ThisBuild := sys.props.getOrElse("scala.version", "2.11.12")
 
 scalaBinaryVersion in ThisBuild := binaryVersion(scalaVersion.value)
 
-crossScalaVersions in ThisBuild := Seq("2.11.8")
+crossScalaVersions in ThisBuild := Seq("2.11.12")
 
 scalacOptions in ThisBuild ++= Seq("-deprecation", "-unchecked", "-feature")
 
@@ -56,7 +56,7 @@ javacOptions in (ThisBuild, compile) ++= Seq("-source", "1.8", "-target", "1.8",
   "-Xlint:deprecation", "-Xlint:unchecked")
 
 // Ignore differentiation of Spark patch levels
-sparkVersion in ThisBuild := sys.props.getOrElse("spark.version", "2.1.1")
+sparkVersion in ThisBuild := sys.props.getOrElse("spark.version", "2.1.2")
 
 sparkBinaryVersion in ThisBuild := binaryVersion(sparkVersion.value)
 
@@ -64,7 +64,7 @@ akkaVersion in ThisBuild := sys.props.getOrElse(
   "akka.version",
   scalaSparkDepsVersion(scalaBinaryVersion.value)(sparkBinaryVersion.value)("akka"))
 
-lazy val es = sys.props.getOrElse("elasticsearch.version", "5.5.2")
+lazy val es = sys.props.getOrElse("elasticsearch.version", "5.6.9")
 
 elasticsearchVersion in ThisBuild := es
 

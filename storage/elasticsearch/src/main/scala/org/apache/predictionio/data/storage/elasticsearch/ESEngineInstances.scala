@@ -59,8 +59,8 @@ class ESEngineInstances(client: RestClient, config: StorageClientConfig, index: 
         ("dataSourceParams" -> ("type" -> "keyword")) ~
         ("preparatorParams" -> ("type" -> "keyword")) ~
         ("algorithmsParams" -> ("type" -> "keyword")) ~
-        ("servingParams" -> ("type" -> "keyword")) ~
-        ("status" -> ("type" -> "keyword"))))
+        ("servingParams" -> ("type" -> "keyword"))
+        ))
   ESUtils.createMapping(client, index, estype, compact(render(mappingJson)))
 
   def insert(i: EngineInstance): String = {
