@@ -67,7 +67,7 @@ Sample response:
 
 ```
 HTTP/1.1 200 OK
-Server: spray-can/1.2.1
+Server: akka-http/10.1.5
 Date: Wed, 10 Sep 2014 22:37:30 GMT
 Content-Type: application/json; charset=UTF-8
 Content-Length: 18
@@ -284,7 +284,7 @@ Sample response:
 
 ```
 HTTP/1.1 201 Created
-Server: spray-can/1.2.1
+Server: akka-http/10.1.5
 Date: Wed, 10 Sep 2014 22:51:33 GMT
 Content-Type: application/json; charset=UTF-8
 Content-Length: 41

@@ -119,7 +119,7 @@ Be sure to adjust your deploy command to your environment (driver-memry, postgre
  exit 0
 ```
 
-There can be  cases when the process is running but the engine is down however. If the spray REST API used by PredictionIO crashes, the engine process continues but the engine to fail when queried.
+There can be  cases when the process is running but the engine is down however. If the Akka HTTP REST API used by PredictionIO crashes, the engine process continues but the engine to fail when queried.
 
 This sort of crash can be taken care of by using monits `check program` capability.
 
