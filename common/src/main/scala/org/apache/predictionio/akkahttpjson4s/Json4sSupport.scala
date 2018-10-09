@@ -17,6 +17,8 @@
 
 package org.apache.predictionio.akkahttpjson4s
 
+// Referenced from https://github.com/hseeberger/akka-http-json
+// because of the difference of supported json4s version.
 import java.lang.reflect.InvocationTargetException
 
 import akka.http.scaladsl.marshalling.{ Marshaller, ToEntityMarshaller }
