@@ -26,13 +26,16 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.server.directives.FutureDirectives.onSuccess
 import com.github.nscala_time.time.Imports.DateTime
 import grizzled.slf4j.Logging
-import akka.http.scaladsl.Http
+import akka.http.scaladsl.{ConnectionContext, Http, HttpsConnectionContext}
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.directives._
 import akka.http.scaladsl.server._
 import akka.stream.ActorMaterializer
 import akka.http.scaladsl.model.ContentTypes._
+import com.typesafe.config.ConfigFactory
+import org.apache.predictionio.configuration.SSLConfiguration
+
 import scala.concurrent.duration._
 
 case class DashboardConfig(
@@ -59,15 +62,23 @@ object Dashboard extends Logging {
 
 }
 
-object DashboardServer extends KeyAuthentication with CorsSupport {
+object DashboardServer extends KeyAuthentication with CorsSupport with SSLConfiguration {
 
   def createDashboard(dc: DashboardConfig): ActorSystem = {
     val systemName = "pio-dashboard"
     implicit val system = ActorSystem(systemName)
     implicit val materializer = ActorMaterializer()
     implicit val executionContext = system.dispatcher
+    val serverConfig = ConfigFactory.load("server.conf")
+    val sslEnforced = serverConfig.getBoolean("org.apache.predictionio.server.ssl-enforced")
     val route = createRoute(DateTime.now, dc)
-    Http().bindAndHandle(route, dc.ip, dc.port)
+    if(sslEnforced){
+      val https: HttpsConnectionContext = ConnectionContext.https(sslContext)
+      Http().setDefaultServerHttpContext(https)
+      Http().bindAndHandle(route, dc.ip, dc.port, connectionContext = https)
+    } else {
+      Http().bindAndHandle(route, dc.ip, dc.port)
+    }
     system
   }
 
