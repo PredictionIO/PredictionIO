@@ -38,7 +38,7 @@ import org.json4s._
 import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization.write
 import akka.actor._
-import akka.http.scaladsl.Http
+import akka.http.scaladsl.{ConnectionContext, Http, HttpsConnectionContext}
 import akka.http.scaladsl.Http.ServerBinding
 import akka.http.scaladsl.model.ContentTypes._
 import akka.http.scaladsl.model.{HttpEntity, HttpResponse, StatusCodes}
@@ -50,6 +50,7 @@ import akka.util.Timeout
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import org.apache.predictionio.akkahttpjson4s.Json4sSupport._
+import org.apache.predictionio.configuration.SSLConfiguration
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Await, Future}
@@ -258,7 +259,7 @@ object EngineServerJson4sSupport {
 class MasterActor (
     sc: ServerConfig,
     engineInstance: EngineInstance,
-    engineFactoryName: String) extends Actor with KeyAuthentication {
+    engineFactoryName: String) extends Actor with KeyAuthentication with SSLConfiguration {
 
   val log = Logging(context.system, this)
 
@@ -270,6 +271,12 @@ class MasterActor (
   val serverConfig = ConfigFactory.load("server.conf")
   val sslEnforced = serverConfig.getBoolean("org.apache.predictionio.server.ssl-enforced")
   val protocol = if (sslEnforced) "https://" else "http://"
+
+  val https: Option[HttpsConnectionContext] = if(sslEnforced){
+    val https = ConnectionContext.https(sslContext)
+    Http().setDefaultServerHttpContext(https)
+    Some(https)
+  } else None
 
   def undeploy(ip: String, port: Int): Unit = {
     val serverUrl = s"${protocol}${ip}:${port}"
@@ -309,7 +316,12 @@ class MasterActor (
         case None =>
           val server = createServer(sc, engineInstance, engineFactoryName)
           val route = server.createRoute()
-          val binding = Http().bindAndHandle(route, sc.ip, sc.port)
+          val binding = https match {
+            case Some(https) =>
+              Http().bindAndHandle(route, sc.ip, sc.port, connectionContext = https)
+            case None =>
+              Http().bindAndHandle(route, sc.ip, sc.port)
+          }
           currentServerBinding = Some(binding)
 
           val serverUrl = s"${protocol}${sc.ip}:${sc.port}"
@@ -342,7 +354,12 @@ class MasterActor (
             latestEngineInstance map { lr =>
               val server = createServer(sc, lr, engineFactoryName)
               val route = server.createRoute()
-              val binding = Http().bindAndHandle(route, sc.ip, sc.port)
+              val binding = https match {
+                case Some(https) =>
+                  Http().bindAndHandle(route, sc.ip, sc.port, connectionContext = https)
+                case None =>
+                  Http().bindAndHandle(route, sc.ip, sc.port)
+              }
               currentServerBinding = Some(binding)
             } getOrElse {
               log.warning(
