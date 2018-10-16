@@ -133,7 +133,7 @@ NOTE: If `org.apache.predictionio.data.storage.Storage` is not used at all (such
 - remove `import org.apache.predictionio.data.storage.Storage` and replace it by `import org.apache.predictionio.data.store.LEventStore`
 - change `appId` to `appName` in the XXXAlgorithmParams class.
 - remove this line of code: `@transient lazy val lEventsDb = Storage.getLEvents()`
-- locate where `LEventStore.findByEntity()` is used, change it to `LEventStore.findByEntity()`:
+- locate where `lEventsDb.findSingleEntity()` is used, change it to `LEventStore.findByEntity()`:
 
     For example, change following code
 
