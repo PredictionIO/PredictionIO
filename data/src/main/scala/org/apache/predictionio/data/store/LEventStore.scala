@@ -86,20 +86,18 @@ object LEventStore {
 
     import scala.concurrent.ExecutionContext.Implicits.global
 
-    val (appId, channelId) = Common.appNameToId(appName, channelName)
-
-    Await.result(eventsDb.futureFind(
-      appId = appId,
-      channelId = channelId,
-      startTime = startTime,
-      untilTime = untilTime,
-      entityType = Some(entityType),
-      entityId = Some(entityId),
+    Await.result(findByEntityAsync(
+      appName = appName,
+      entityType = entityType,
+      entityId = entityId,
+      channelName = channelName,
       eventNames = eventNames,
       targetEntityType = targetEntityType,
       targetEntityId = targetEntityId,
+      startTime = startTime,
+      untilTime = untilTime,
       limit = limit,
-      reversed = Some(latest)),
+      latest = latest),
       timeout)
   }
 
@@ -194,18 +192,16 @@ object LEventStore {
 
     import scala.concurrent.ExecutionContext.Implicits.global
 
-    val (appId, channelId) = Common.appNameToId(appName, channelName)
-
-    Await.result(eventsDb.futureFind(
-      appId = appId,
-      channelId = channelId,
-      startTime = startTime,
-      untilTime = untilTime,
+    Await.result(findAsync(
+      appName = appName,
       entityType = entityType,
       entityId = entityId,
+      channelName = channelName,
       eventNames = eventNames,
       targetEntityType = targetEntityType,
       targetEntityId = targetEntityId,
+      startTime = startTime,
+      untilTime = untilTime,
       limit = limit), timeout)
   }
 
