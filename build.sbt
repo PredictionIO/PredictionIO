@@ -277,7 +277,7 @@ pomExtra := {
   </parent>
   <scm>
     <connection>scm:git:github.com/apache/predictionio</connection>
-    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/predictionio.git</developerConnection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/predictionio.git</developerConnection>
     <url>github.com/apache/predictionio</url>
   </scm>
   <developers>
