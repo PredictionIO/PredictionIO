@@ -196,7 +196,7 @@ Make sure the **apache.org** remote is attached to your `predictionio` repo, and
 
 ```
 $ git remote -v
-$ git remote add apache https://git-wip-us.apache.org/repos/asf/predictionio.git
+$ git remote add apache https://gitbox.apache.org/repos/asf/predictionio.git
 ```
 
 Then, push the `livedoc` branch. (It will be published and synced with the public GitHub mirror):
