@@ -1,0 +1,127 @@
+---
+title: Installing Apache PredictionIO® with Docker
+---
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+## Download and Start Docker
+
+Docker is a widely used container solution. Please download and start Docker by following their [official guide](https://www.docker.com/get-started).
+
+## Get PredictionIO and Dependencies Configuration
+
+Starting from v0.13.0, Apache PredictionIO® starts to provide official docker support for production environment. `Dockerfile` and dependencies configuration can be found in the `docker` folder in the [git repository](https://github.com/apache/predictionio/tree/develop/docker).
+
+```bash
+git clone https://github.com/apache/predictionio.git
+cd predictionio/docker
+```
+
+INFO: In this installation, we only need the `docker` sub-directory in the repository. One can use other tools to get the folder without cloning the whole preject.
+
+## Pull Images and Start
+
+WARNING: People can get PredictionIO image from Dockerhub through `docker pull predictionio/pio`. However, since the image cannot  run without a properly configured storage, please follow the following steps to complete the installation.
+
+In this repository, PostgreSQL, MySQL, ElasticSearch, and local file system are supported with their corresponding configuration.
+
+### Supported storages are as below:
+
+Event Storage
+
+ - PostgreSQL, MySQL, Elasticsearch
+
+Metadata Storage
+
+ - PostgreSQL, MySQL, Elasticsearch
+
+Model Storage
+
+ - PostgreSQL, MySQL, LocalFS
+
+One can use `docker-compose -f` to pull and start the corresponding services. More details are provided in [this document](https://github.com/apache/predictionio/blob/develop/docker/README.md#run-predictionio-with-selectable-docker-compose-files).
+
+### Service Starting Sample
+
+```
+docker-compose -f docker-compose.yml \
+    -f pgsql/docker-compose.base.yml \
+    -f pgsql/docker-compose.meta.yml \
+    -f pgsql/docker-compose.event.yml \
+    -f pgsql/docker-compose.model.yml \
+    up
+```
+
+In this examples, we pull and start `predictionio/pio` image with `docker-compose.yml`.
+
+And pull `postgres:9` image with `pgsql/docker-compose.base.yml`.
+
+And config PostgreSQL to store our metadata, event, and model with `pgsql/docker-compose.meta.yml`, `pgsql/docker-compose.event.yml`, and `pgsql/docker-compose.model.yml`.
+
+After pulling the images, the script will start PostgreSQL, Apache PredictionIO, and Apache Spark. The event server should be ready at port `7070`, and one should see these logs in the command line interface.
+
+```
+...
+pio_1       | [INFO] [Management$] Your system is all ready to go.
+pio_1       | [INFO] [Management$] Creating Event Server at 0.0.0.0:7070
+pio_1       | [INFO] [HttpListener] Bound to /0.0.0.0:7070
+pio_1       | [INFO] [EventServerActor] Bound received. EventServer is ready.
+```
+
+## Verifying Service
+
+A command tool `pio-docker` is provided to invoke `pio` command in the PredictionIO container. Set `pio-docker` to default execution path and use `status` to check the current PredictionIO service with the following script.
+
+```bash
+$ export PATH=`pwd`/bin:$PATH
+$ pio-docker status
+```
+
+One should be able to see the corresponding log in the following structure, and your system is ready to go!
+
+```
+[INFO] [Management$] Inspecting PredictionIO...
+[INFO] [Management$] PredictionIO 0.13.0 is installed at /usr/share/predictionio
+[INFO] [Management$] Inspecting Apache Spark...
+[INFO] [Management$] Apache Spark is installed at /usr/share/spark-2.2.2-bin-hadoop2.7
+[INFO] [Management$] Apache Spark 2.2.2 detected (meets minimum requirement of 1.3.0)
+[INFO] [Management$] Inspecting storage backend connections...
+[INFO] [Storage$] Verifying Meta Data Backend (Source: PGSQL)...
+[INFO] [Storage$] Verifying Model Data Backend (Source: PGSQL)...
+[INFO] [Storage$] Verifying Event Data Backend (Source: PGSQL)...
+[INFO] [Storage$] Test writing to Event Store (App Id 0)...
+[INFO] [Management$] Your system is all ready to go.
+```
+
+INFO: After the service is up, one can continue by changing `pio` to `pio-docker` for further deployment. More details are provided in [this document](https://github.com/apache/predictionio/tree/develop/docker#tutorial).
+
+## Build Docker Image
+
+To build PredictionIO docker image, `Dockerfile` is provided in sub-directory `pio`.
+
+```
+docker build -t predictionio/pio pio
+```
+
+One will be able to build an image with tag `prediction/pio:latest` using the above command.
+
+WARNING: Image `prediction/pio` hosted on Dockerhub might provide a different PredictionIO version from your desired PredictionIO version. It is recommaned to build the image locally other than pulling directly from Dockerhub.
+
+## Community Docker Support
+
+[More PredictionIO Docker packages supported by our great community](/community/projects.html#docker-images).
