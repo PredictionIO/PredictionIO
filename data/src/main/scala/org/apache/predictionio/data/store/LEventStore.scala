@@ -84,6 +84,7 @@ object LEventStore {
     latest: Boolean = true,
     timeout: Duration = defaultTimeout): Iterator[Event] = {
 
+    // Import here to ensure ExecutionContext.Implicits.global is used only in this method
     import scala.concurrent.ExecutionContext.Implicits.global
 
     Await.result(findByEntityAsync(
@@ -190,6 +191,7 @@ object LEventStore {
     limit: Option[Int] = None,
     timeout: Duration = defaultTimeout): Iterator[Event] = {
 
+    // Import here to ensure ExecutionContext.Implicits.global is used only in this method
     import scala.concurrent.ExecutionContext.Implicits.global
 
     Await.result(findAsync(
