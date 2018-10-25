@@ -218,8 +218,8 @@ class ESLEvents(val client: RestClient, config: StorageClientConfig, val baseInd
   }
 
   private def exists(client: RestClient, estype: String, id: Int): Boolean = {
+    val index = baseIndex + "_" + estype
     try {
-      val index = baseIndex + "_" + estype
       client.performRequest(
         "GET",
         s"/$index/$estype/$id",
