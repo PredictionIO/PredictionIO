@@ -151,19 +151,19 @@ val core = (project in file("core")).
   enablePlugins(SbtTwirl).
   disablePlugins(sbtassembly.AssemblyPlugin)
 
-val tools = (project in file("tools")).
+val e2 = (project in file("e2")).
   dependsOn(core).
-  dependsOn(data).
+  settings(commonSettings: _*).
+  enablePlugins(GenJavadocPlugin).
+  disablePlugins(sbtassembly.AssemblyPlugin)
+
+val tools = (project in file("tools")).
+  dependsOn(e2).
   settings(commonSettings: _*).
   settings(commonTestSettings: _*).
   settings(skip in publish := true).
   enablePlugins(GenJavadocPlugin).
   enablePlugins(SbtTwirl)
-
-val e2 = (project in file("e2")).
-  settings(commonSettings: _*).
-  enablePlugins(GenJavadocPlugin).
-  disablePlugins(sbtassembly.AssemblyPlugin)
 
 val dataEs = if (majorVersion(es) == 1) dataElasticsearch1 else dataElasticsearch
 

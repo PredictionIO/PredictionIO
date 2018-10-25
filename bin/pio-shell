@@ -65,7 +65,6 @@ then
   # Get paths of assembly jars to pass to pyspark
   . ${PIO_HOME}/bin/compute-classpath.sh
   shift
-  export PYTHONSTARTUP=${PIO_HOME}/python/pypio/shell.py
   export PYTHONPATH=${PIO_HOME}/python
   ${SPARK_HOME}/bin/pyspark --jars ${ASSEMBLY_JARS} $@
 else

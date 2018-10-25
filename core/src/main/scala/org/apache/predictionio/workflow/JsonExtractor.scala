@@ -32,7 +32,6 @@ import org.json4s.native.JsonMethods.compact
 import org.json4s.native.JsonMethods.pretty
 import org.json4s.native.JsonMethods.parse
 import org.json4s.native.JsonMethods.render
-import org.json4s.reflect.TypeInfo
 
 object JsonExtractor {
 
@@ -144,7 +143,13 @@ object JsonExtractor {
     formats: Formats,
     clazz: Class[T]): T = {
 
-    Extraction.extract(parse(json), TypeInfo(clazz, None))(formats).asInstanceOf[T]
+    implicit val f = formats
+    implicit val m = if (clazz == classOf[Map[_, _]]) {
+      Manifest.classType(clazz, manifest[String], manifest[Any])
+    } else {
+      Manifest.classType(clazz)
+    }
+    Extraction.extract(parse(json))
   }
 
   private def extractWithGson[T](

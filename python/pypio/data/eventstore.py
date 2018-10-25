@@ -17,8 +17,8 @@
 
 from __future__ import absolute_import
 
-from pypio.utils import new_string_array
 from pyspark.sql.dataframe import DataFrame
+from pyspark.sql import utils
 
 __all__ = ["PEventStore"]
 
@@ -43,7 +43,7 @@ class PEventStore(object):
         pes = self._sc._jvm.org.apache.predictionio.data.store.python.PPythonEventStore
         jdf = pes.aggregateProperties(app_name, entity_type, channel_name,
                                       start_time, until_time,
-                                      new_string_array(required, self._sc._gateway),
+                                      utils.toJArray(self._sc._gateway, self._sc._gateway.jvm.String, required),
                                       self._jss)
         return DataFrame(jdf, self.sql_ctx)
 
