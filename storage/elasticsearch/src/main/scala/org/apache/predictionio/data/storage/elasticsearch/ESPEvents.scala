@@ -41,7 +41,7 @@ import org.json4s.native.JsonMethods._
 import org.json4s.ext.JodaTimeSerializers
 
 
-class ESPEvents(client: RestClient, config: StorageClientConfig, index: String)
+class ESPEvents(client: RestClient, config: StorageClientConfig, baseIndex: String)
     extends PEvents {
   implicit val formats = DefaultFormats.lossless ++ JodaTimeSerializers.all
 
@@ -78,6 +78,7 @@ class ESPEvents(client: RestClient, config: StorageClientConfig, index: String)
       eventNames, targetEntityType, targetEntityId, None)
 
     val estype = getEsType(appId, channelId)
+    val index = baseIndex + "_" + estype
     val conf = new Configuration()
     conf.set("es.resource", s"$index/$estype")
     conf.set("es.query", query)
@@ -97,6 +98,7 @@ class ESPEvents(client: RestClient, config: StorageClientConfig, index: String)
     events: RDD[Event],
     appId: Int, channelId: Option[Int])(sc: SparkContext): Unit = {
     val estype = getEsType(appId, channelId)
+    val index = baseIndex + "_" + estype
     val conf = Map("es.resource" -> s"$index/$estype", "es.nodes" -> getESNodes())
     events.map { event =>
       ESEventsUtil.eventToPut(event, appId)
@@ -107,6 +109,7 @@ class ESPEvents(client: RestClient, config: StorageClientConfig, index: String)
     eventIds: RDD[String],
     appId: Int, channelId: Option[Int])(sc: SparkContext): Unit = {
     val estype = getEsType(appId, channelId)
+    val index = baseIndex + "_" + estype
       eventIds.foreachPartition { iter =>
         iter.foreach { eventId =>
           try {
