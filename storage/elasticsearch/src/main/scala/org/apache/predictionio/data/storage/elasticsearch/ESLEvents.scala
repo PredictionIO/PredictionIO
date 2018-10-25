@@ -38,9 +38,10 @@ import org.json4s.ext.JodaTimeSerializers
 import grizzled.slf4j.Logging
 import org.apache.http.message.BasicHeader
 
-class ESLEvents(val client: RestClient, config: StorageClientConfig, val index: String)
+class ESLEvents(val client: RestClient, config: StorageClientConfig, val baseIndex: String)
     extends LEvents with Logging {
   implicit val formats = DefaultFormats.lossless ++ JodaTimeSerializers.all
+  private val index = baseIndex + "_" + estype
 
   def getEsType(appId: Int, channelId: Option[Int] = None): String = {
     channelId.map { ch =>
