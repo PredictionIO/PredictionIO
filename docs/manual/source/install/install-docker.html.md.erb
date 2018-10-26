@@ -21,22 +21,34 @@ limitations under the License.
 
 ## Download and Start Docker
 
-Docker is a widely used container solution. Please download and start Docker by following their [official guide](https://www.docker.com/get-started).
+Docker is a widely used container solution. Please download and start Docker by following their [guide](https://www.docker.com/get-started).
 
 ## Get PredictionIO and Dependencies Configuration
 
-Starting from v0.13.0, Apache PredictionIO® starts to provide official docker support for production environment. `Dockerfile` and dependencies configuration can be found in the `docker` folder in the [git repository](https://github.com/apache/predictionio/tree/develop/docker).
+Starting from v0.13.0, Apache PredictionIO® starts to provide docker support for the production environment. `Dockerfile` and dependencies configuration can be found in the `docker` folder in the [git repository](https://github.com/apache/predictionio/tree/develop/docker).
 
 ```bash
 git clone https://github.com/apache/predictionio.git
 cd predictionio/docker
 ```
 
-INFO: In this installation, we only need the `docker` sub-directory in the repository. One can use other tools to get the folder without cloning the whole preject.
+INFO: In this installation, we only need the `docker` sub-directory in the repository. One can use other tools to get the folder without cloning the whole project.
+
+## Build Docker Image
+
+To build PredictionIO docker image, `Dockerfile` is provided in sub-directory `pio`.
+
+```
+docker build -t predictionio/pio pio
+```
+
+One will be able to build an image with tag `prediction/pio:latest` using the above command.
+
+WARNING: People can get PredictionIO image from Dockerhub through `docker pull predictionio/pio`. However, since the image cannot run without a properly configured storage, please follow the following steps to complete the installation.
+
+WARNING: Image `prediction/pio` hosted on Dockerhub is **NOT** regarded as an official ASF release and might provide a different PredictionIO version from your desired PredictionIO version. It is recommended to build the image locally other than pulling directly from Dockerhub.
 
 ## Pull Images and Start
-
-WARNING: People can get PredictionIO image from Dockerhub through `docker pull predictionio/pio`. However, since the image cannot  run without a properly configured storage, please follow the following steps to complete the installation.
 
 In this repository, PostgreSQL, MySQL, ElasticSearch, and local file system are supported with their corresponding configuration.
 
@@ -109,18 +121,6 @@ One should be able to see the corresponding log in the following structure, and 
 ```
 
 INFO: After the service is up, one can continue by changing `pio` to `pio-docker` for further deployment. More details are provided in [this document](https://github.com/apache/predictionio/tree/develop/docker#tutorial).
-
-## Build Docker Image
-
-To build PredictionIO docker image, `Dockerfile` is provided in sub-directory `pio`.
-
-```
-docker build -t predictionio/pio pio
-```
-
-One will be able to build an image with tag `prediction/pio:latest` using the above command.
-
-WARNING: Image `prediction/pio` hosted on Dockerhub might provide a different PredictionIO version from your desired PredictionIO version. It is recommaned to build the image locally other than pulling directly from Dockerhub.
 
 ## Community Docker Support
 
