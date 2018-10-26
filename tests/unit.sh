@@ -32,13 +32,15 @@ sbt/sbt scalastyle \
     -Dscala.version=$PIO_SCALA_VERSION \
     -Dspark.version=$PIO_SPARK_VERSION \
     -Dhadoop.version=$PIO_HADOOP_VERSION \
-    -Delasticsearch.version=$PIO_ELASTICSEARCH_VERSION
+    -Delasticsearch.version=$PIO_ELASTICSEARCH_VERSION \
+    -Dhbase.version=$PIO_HBASE_VERSION
 
 # Run all unit tests
 sbt/sbt dataJdbc/compile test storage/test \
     -Dscala.version=$PIO_SCALA_VERSION \
     -Dspark.version=$PIO_SPARK_VERSION \
     -Dhadoop.version=$PIO_HADOOP_VERSION \
-    -Delasticsearch.version=$PIO_ELASTICSEARCH_VERSION
+    -Delasticsearch.version=$PIO_ELASTICSEARCH_VERSION \
+    -Dhbase.version=$PIO_HBASE_VERSION
 
 popd

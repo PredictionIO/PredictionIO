@@ -21,7 +21,7 @@ services:
       - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
   hbase:
-    image: harisekhon/hbase:1.0
+    image: harisekhon/hbase:${HBASE_TAG}
   postgres:
     image: postgres:9
     environment:

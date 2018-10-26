@@ -41,7 +41,8 @@ set -e
     -Dscala.version=$PIO_SCALA_VERSION \
     -Dspark.version=$PIO_SPARK_VERSION \
     -Dhadoop.version=$PIO_HADOOP_VERSION \
-    -Delasticsearch.version=$PIO_ELASTICSEARCH_VERSION
+    -Delasticsearch.version=$PIO_ELASTICSEARCH_VERSION \
+    -Dhbase.version=$PIO_HBASE_VERSION
 sbt/sbt clean storage/clean
 
 assembly_folder=assembly/src/universal/lib

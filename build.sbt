@@ -56,7 +56,7 @@ javacOptions in (ThisBuild, compile) ++= Seq("-source", "1.8", "-target", "1.8",
   "-Xlint:deprecation", "-Xlint:unchecked")
 
 // Ignore differentiation of Spark patch levels
-sparkVersion in ThisBuild := sys.props.getOrElse("spark.version", "2.1.2")
+sparkVersion in ThisBuild := sys.props.getOrElse("spark.version", "2.1.3")
 
 sparkBinaryVersion in ThisBuild := binaryVersion(sparkVersion.value)
 
@@ -314,6 +314,7 @@ testOptions in Test += Tests.Argument("-oDF")
 printBuildInfo := {
   println(s"PIO_SCALA_VERSION=${scalaVersion.value}")
   println(s"PIO_SPARK_VERSION=${sparkVersion.value}")
-  println(s"PIO_ELASTICSEARCH_VERSION=${elasticsearchVersion.value}")
   println(s"PIO_HADOOP_VERSION=${hadoopVersion.value}")
+  println(s"PIO_ELASTICSEARCH_VERSION=${elasticsearchVersion.value}")
+  println(s"PIO_HBASE_VERSION=${hbaseVersion.value}")
 }
