@@ -41,6 +41,9 @@ import scala.concurrent.duration.Duration
   *   -Dscala.concurrent.context.numThreads=1000 \
   *   -Dscala.concurrent.context.maxThreads=1000"
   * </pre>
+  *
+  * You can learn more about the global execution context in the Scala documentation:
+  * [[https://docs.scala-lang.org/overviews/core/futures.html#the-global-execution-context]]
   */
 object LEventStore {
 
