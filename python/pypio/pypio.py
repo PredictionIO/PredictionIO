@@ -43,15 +43,7 @@ def find(app_name):
 def save(model):
     engine = sc._jvm.org.apache.predictionio.e2.engine.PythonEngine
     engine.model().set(model._to_java())
-    args = sys.argv
-#    args.append("--engine-factory")
-#    args.append(engine.getClass().getName())
-    main_args = utils.toJArray(sc._gateway, sc._gateway.jvm.String, args)
+    main_args = utils.toJArray(sc._gateway, sc._gateway.jvm.String, sys.argv)
     create_workflow = sc._jvm.org.apache.predictionio.workflow.CreateWorkflow
     spark.stop()
     create_workflow.main(main_args)
-
-
-def import_file(path=None, destination_frame=None, parse=True, header=0, sep=None, col_names=None, col_types=None,
-                na_strings=None, pattern=None):
-    print("TODO")

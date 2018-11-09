@@ -56,9 +56,15 @@ class PythonPreparator extends PPreparator[EmptyTrainingData, EmptyPreparedData]
     new SerializableClass()
 }
 
-class PythonServing extends LServing[Query, Row] {
-  def serve(query: Query, predictedResults: Seq[Row]): Row = {
-    predictedResults.head
+object PythonServing {
+  private[engine] val columns = "PythonPredictColumns"
+
+  case class Params(columns: Seq[String]) extends org.apache.predictionio.controller.Params
+}
+
+class PythonServing(params: PythonServing.Params) extends LFirstServing[Query, Row] {
+  override def supplement(q: Query): Query = {
+    q + (PythonServing.columns -> params.columns)
   }
 }
 
@@ -70,7 +76,8 @@ class PythonAlgorithm extends
   }
 
   def predict(model: PipelineModel, query: Query): Row = {
-    val (colNames, data) = query.toList.unzip
+    val selectCols = query(PythonServing.columns).asInstanceOf[Seq[String]]
+    val (colNames, data) = (query - PythonServing.columns).toList.unzip
 
     val rows = Arrays.asList(Row.fromSeq(data))
     val schema = StructType(colNames.zipWithIndex.map { case (col, i) =>
@@ -79,7 +86,9 @@ class PythonAlgorithm extends
 
     val spark = SparkSession.builder.getOrCreate()
     val df = spark.createDataFrame(rows, schema)
-    model.transform(df).first()
+    model.transform(df)
+      .select(selectCols.head, selectCols.tail: _*)
+      .first()
   }
 
 }
