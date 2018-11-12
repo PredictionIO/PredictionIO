@@ -17,21 +17,21 @@
 
 package org.apache.predictionio.data.storage.s3
 
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
 import org.apache.predictionio.data.storage.BaseStorageClient
 import org.apache.predictionio.data.storage.StorageClientConfig
-
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
-
 import grizzled.slf4j.Logging
 
 class StorageClient(val config: StorageClientConfig) extends BaseStorageClient
     with Logging {
   override val prefix = "S3"
   val client: AmazonS3 = {
-    val builder = AmazonS3ClientBuilder.standard().withCredentials(new ProfileCredentialsProvider())
+    val builder = AmazonS3ClientBuilder
+                    .standard()
+                    .withCredentials(DefaultAWSCredentialsProviderChain.getInstance())
     (config.properties.get("ENDPOINT"), config.properties.get("REGION")) match {
       case (Some(endpoint), Some(region)) =>
         builder.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, region))
