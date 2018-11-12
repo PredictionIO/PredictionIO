@@ -43,4 +43,6 @@ sbt/sbt dataJdbc/compile test storage/test \
     -Delasticsearch.version=$PIO_ELASTICSEARCH_VERSION \
     -Dhbase.version=$PIO_HBASE_VERSION
 
+./tests/check_templates.sh
+
 popd
