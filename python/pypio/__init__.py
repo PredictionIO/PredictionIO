@@ -18,3 +18,12 @@
 """
 PyPIO is the Python API for PredictionIO.
 """
+
+from __future__ import absolute_import
+
+from pypio.pypio import *
+
+
+__all__ = [
+    'pypio'
+]

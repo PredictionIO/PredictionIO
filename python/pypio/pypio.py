@@ -36,11 +36,11 @@ def init():
     print("Initialized pypio")
 
 
-def find(app_name):
+def find_events(app_name):
     return p_event_store.find(app_name)
 
 
-def save(model):
+def save_model(model):
     engine = sc._jvm.org.apache.predictionio.e2.engine.PythonEngine
     engine.model().set(model._to_java())
     main_args = utils.toJArray(sc._gateway, sc._gateway.jvm.String, sys.argv)
