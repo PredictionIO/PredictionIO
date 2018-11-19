@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.example.recommendation
+package org.apache.predictionio.recommendation
 
 import org.apache.predictionio.controller.PDataSource
 import org.apache.predictionio.controller.EmptyEvaluationInfo

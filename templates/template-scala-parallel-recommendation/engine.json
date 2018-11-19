@@ -1,7 +1,7 @@
 {
   "id": "default",
   "description": "Default settings",
-  "engineFactory": "org.example.recommendation.RecommendationEngine",
+  "engineFactory": "package org.apache.predictionio.recommendation.RecommendationEngine",
   "datasource": {
     "params" : {
       "appName": "INVALID_APP_NAME"
