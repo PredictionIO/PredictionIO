@@ -23,10 +23,12 @@ cd ${FWDIR}
 # Extract information from PIO's build configuration
 PIO_VERSION=$(grep ^version ${FWDIR}/build.sbt | grep ThisBuild | grep -o '".*"' | sed 's/"//g')
 SCALA_VERSION=$(grep ^scalaVersion ${FWDIR}/build.sbt | grep ThisBuild | grep -o ', ".*"' | sed 's/[, "]//g')
+SPARK_VERSION=$(grep ^sparkVersion ${FWDIR}/build.sbt | grep ThisBuild | grep -o ', ".*"' | sed 's/[, "]//g')
 
 echo "======================================================================="
 echo "PIO_VERSION: $PIO_VERSION"
 echo "SCALA_VERSION: $SCALA_VERSION"
+echo "SPARK_VERSION: $SPARK_VERSION"
 echo "======================================================================="
 
 "${FWDIR}/sbt/sbt" publishLocal
@@ -37,18 +39,22 @@ function check_template(){
   cd "${FWDIR}/templates/$TEMPLATE"
   TEMPLATE_PIO_VERSION=$(grep apache-predictionio-core build.sbt | grep -o '".*"' | sed 's/"//g' | awk '{ print $5 }')
   TEMPLATE_SCALA_VERSION=$(grep ^scalaVersion build.sbt | grep -o '".*"' | sed 's/"//g')
+  TEMPLATE_SPARK_VERSION=$(grep spark-mllib build.sbt | grep -o '".*"' | sed 's/"//g' | awk '{ print $5 }')
 
   echo "Checking $TEMPLATE..."
   
   if test "$PIO_VERSION" != "$TEMPLATE_PIO_VERSION" ; then
-    echo -e "\033[0;31m[error]\033[0;39m $TEMPLATE: Currect PIO version is $PIO_VERSION but template is $TEMPLATE_PIO_VERSION."
+    echo -e "\033[0;31m[error]\033[0;39m $TEMPLATE: PIO is $PIO_VERSION but template version is $TEMPLATE_PIO_VERSION."
     exit 1
   fi
   if test "$SCALA_VERSION" != "$TEMPLATE_SCALA_VERSION" ; then
-    echo -e "\033[0;31m[error]\033[0;39m $TEMPLATE: Current Scala version $SCALA_VERSION but template is $TEMPLATE_SCALA_VERSION is incorrect."
+    echo -e "\033[0;31m[error]\033[0;39m $TEMPLATE: PIO's Scala version should be $SCALA_VERSION but template version is $TEMPLATE_SCALA_VERSION."
     exit 1
   fi
-  
+  if test "$SPARK_VERSION" != "$TEMPLATE_SPARK_VERSION" ; then
+    echo -e "\033[0;31m[error]\033[0;39m $TEMPLATE: PIO's Spark version should be $SPARK_VERSION but template version is $TEMPLATE_SPARK_VERSION."
+    exit 1
+  fi  
   "${FWDIR}/sbt/sbt" clean test
 }
 
