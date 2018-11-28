@@ -55,9 +55,10 @@ object EngineServerPluginContext extends Logging {
       EngineServerPlugin.outputSniffer -> mutable.Map())
     val pluginParams = mutable.Map[String, JValue]()
     val serviceLoader = ServiceLoader.load(classOf[EngineServerPlugin])
-    val variantJson = parse(stringFromFile(engineVariant))
-    (variantJson \ "plugins").extractOpt[JObject].foreach { pluginDefs =>
-      pluginDefs.obj.foreach { pluginParams += _ }
+    stringFromFile(engineVariant).foreach { variantJson =>
+      (parse(variantJson) \ "plugins").extractOpt[JObject].foreach { pluginDefs =>
+        pluginDefs.obj.foreach { pluginParams += _ }
+      }
     }
     serviceLoader foreach { service =>
       pluginParams.get(service.pluginName) map { params =>
@@ -77,11 +78,15 @@ object EngineServerPluginContext extends Logging {
       log)
   }
 
-  private def stringFromFile(filePath: String): String = {
+  private def stringFromFile(filePath: String): Option[String] = {
     try {
-      val uri = new URI(filePath)
-      val fs = FileSystem.get(uri, new Configuration())
-      new String(ByteStreams.toByteArray(fs.open(new Path(uri))).map(_.toChar))
+      val fs = FileSystem.get(new Configuration())
+      val path = new Path(new URI(filePath))
+      if (fs.exists(path)) {
+        Some(new String(ByteStreams.toByteArray(fs.open(path)).map(_.toChar)))
+      } else {
+        None
+      }
     } catch {
       case e: java.io.IOException =>
         error(s"Error reading from file: ${e.getMessage}. Aborting.")

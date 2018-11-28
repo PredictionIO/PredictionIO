@@ -18,9 +18,9 @@
 package org.apache.predictionio.e2.engine
 
 import java.util.Arrays
-import java.util.concurrent.atomic.AtomicReference
 
 import org.apache.predictionio.controller._
+import org.apache.predictionio.workflow.KryoInstantiator
 import org.apache.spark.SparkContext
 import org.apache.spark.ml.PipelineModel
 import org.apache.spark.sql.catalyst.expressions.Literal
@@ -30,7 +30,6 @@ import org.apache.spark.sql.{Row, SparkSession}
 
 object PythonEngine extends EngineFactory {
 
-  val model = new AtomicReference[PipelineModel]
   private[engine] type Query = Map[String, Any]
 
   def apply(): Engine[EmptyTrainingData, EmptyEvaluationInfo, EmptyPreparedData,
@@ -40,6 +39,11 @@ object PythonEngine extends EngineFactory {
       classOf[PythonPreparator],
       Map("default" -> classOf[PythonAlgorithm]),
       classOf[PythonServing])
+  }
+
+  def models(model: PipelineModel): Array[Byte] = {
+    val kryo = KryoInstantiator.newKryoInjection
+    kryo(Seq(model))
   }
 
 }
@@ -71,9 +75,7 @@ class PythonServing(params: PythonServing.Params) extends LFirstServing[Query, R
 class PythonAlgorithm extends
   P2LAlgorithm[EmptyPreparedData, PipelineModel, Query, Row] {
 
-  def train(sc: SparkContext, data: EmptyPreparedData): PipelineModel = {
-    PythonEngine.model.get()
-  }
+  def train(sc: SparkContext, data: EmptyPreparedData): PipelineModel = ???
 
   def predict(model: PipelineModel, query: Query): Row = {
     val selectCols = query(PythonServing.columns).asInstanceOf[Seq[String]]

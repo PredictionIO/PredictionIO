@@ -218,22 +218,23 @@ object Engine extends EitherLogging {
     if (verifyResult.isLeft) {
       return Left(verifyResult.left.get)
     }
-    val ei = Console.getEngineInfo(
-      serverArgs.variantJson.getOrElse(new File(engineDirPath, "engine.json")),
-      engineDirPath)
     val engineInstances = storage.Storage.getMetaDataEngineInstances
-    val engineInstance = engineInstanceId map { eid =>
-      engineInstances.get(eid)
-    } getOrElse {
-      engineInstances.getLatestCompleted(
-        ei.engineId, ei.engineVersion, ei.variantId)
-    }
-    engineInstance map { r =>
-      RunServer.runServer(
-        r.id, serverArgs, sparkArgs, pioHome, engineDirPath, verbose)
-    } getOrElse {
-      engineInstanceId map { eid =>
+    engineInstanceId map { eid =>
+      engineInstances.get(eid).map { r =>
+        RunServer.runServer(
+          r.id, serverArgs, sparkArgs, pioHome, engineDirPath, verbose)
+      } getOrElse {
         logAndFail(s"Invalid engine instance ID ${eid}. Aborting.")
+      }
+    } getOrElse {
+      val ei = Console.getEngineInfo(
+        serverArgs.variantJson.getOrElse(new File(engineDirPath, "engine.json")),
+        engineDirPath)
+
+      engineInstances.getLatestCompleted(
+        ei.engineId, ei.engineVersion, ei.variantId).map { r =>
+        RunServer.runServer(
+          r.id, serverArgs, sparkArgs, pioHome, engineDirPath, verbose)
       } getOrElse {
         logAndFail(s"No valid engine instance found for engine ${ei.engineId} " +
           s"${ei.engineVersion}.\nTry running 'train' before 'deploy'. Aborting.")

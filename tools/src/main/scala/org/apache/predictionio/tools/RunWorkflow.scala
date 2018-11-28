@@ -52,18 +52,14 @@ object RunWorkflow extends Logging {
 
     val jarFiles = jarFilesForScala(engineDirPath).map(_.toURI)
     val variantJson = wa.variantJson.getOrElse(new File(engineDirPath, "engine.json"))
-    val ei = Console.getEngineInfo(
-      variantJson,
-      engineDirPath)
-    val args = Seq(
-      "--engine-id",
-      ei.engineId,
-      "--engine-version",
-      ei.engineVersion,
-      "--engine-variant",
-      variantJson.toURI.toString,
-      "--verbosity",
-      wa.verbosity.toString) ++
+    val args =
+      (if (wa.mainPyFile.isEmpty || variantJson.exists) {
+        val ei = Console.getEngineInfo(variantJson, engineDirPath)
+        Seq(
+          "--engine-id", ei.engineId,
+          "--engine-version", ei.engineVersion,
+          "--engine-variant", variantJson.toURI.toString)
+      } else Nil) ++
       wa.engineFactory.map(
         x => Seq("--engine-factory", x)).getOrElse(Nil) ++
       wa.engineParamsKey.map(
@@ -72,19 +68,15 @@ object RunWorkflow extends Logging {
       (if (verbose) Seq("--verbose") else Nil) ++
       (if (wa.skipSanityCheck) Seq("--skip-sanity-check") else Nil) ++
       (if (wa.stopAfterRead) Seq("--stop-after-read") else Nil) ++
-      (if (wa.stopAfterPrepare) {
-        Seq("--stop-after-prepare")
-      } else {
-        Nil
-      }) ++
+      (if (wa.stopAfterPrepare) Seq("--stop-after-prepare") else Nil) ++
       wa.evaluation.map(x => Seq("--evaluation-class", x)).
         getOrElse(Nil) ++
       // If engineParamsGenerator is specified, it overrides the evaluation.
       wa.engineParamsGenerator.orElse(wa.evaluation)
         .map(x => Seq("--engine-params-generator-class", x))
         .getOrElse(Nil) ++
-      (if (wa.batch != "") Seq("--batch", wa.batch) else Nil) ++
-      Seq("--json-extractor", wa.jsonExtractor.toString)
+      Seq("--json-extractor", wa.jsonExtractor.toString,
+          "--verbosity", wa.verbosity.toString)
 
     val resourceName = wa.mainPyFile match {
       case Some(x) => x
