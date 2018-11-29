@@ -51,9 +51,9 @@ object RunWorkflow extends Logging {
     verbose: Boolean = false): Expected[(Process, () => Unit)] = {
 
     val jarFiles = jarFilesForScala(engineDirPath).map(_.toURI)
-    val variantJson = wa.variantJson.getOrElse(new File(engineDirPath, "engine.json"))
     val args =
-      (if (wa.mainPyFile.isEmpty || variantJson.exists) {
+      (if (wa.mainPyFile.isEmpty) {
+        val variantJson = wa.variantJson.getOrElse(new File(engineDirPath, "engine.json"))
         val ei = Console.getEngineInfo(variantJson, engineDirPath)
         Seq(
           "--engine-id", ei.engineId,

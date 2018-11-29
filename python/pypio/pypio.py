@@ -51,17 +51,12 @@ def find_events(app_name):
 def save_model(model, predict_columns):
     if not predict_columns:
         raise ValueError("predict_columns should have more than one value")
-    serving_params = {"":{"columns":[]}}
-    serving_params[""]["columns"].extend(predict_columns)
-
     if os.environ.get('PYSPARK_PYTHON') is None:
         # spark-submit
         d = list_to_dict(sys.argv[1:])
-        engine_factory = d.get('--engine-factory')
         pio_env = list_to_dict([v for e in d['--env'].split(',') for v in e.split('=')])
     else:
         # pyspark
-        engine_factory = None
         pio_env = {k: v for k, v in os.environ.items() if k.startswith('PIO_')}
 
     meta_storage = sc._jvm.org.apache.predictionio.data.storage.Storage.getMetaDataEngineInstances()
@@ -71,17 +66,17 @@ def save_model(model, predict_columns):
         "INIT", # status
         sc._jvm.org.joda.time.DateTime.now(), # startTime
         sc._jvm.org.joda.time.DateTime.now(), # endTime
-        engine_factory or "org.apache.predictionio.e2.engine.PythonEngine", # engineId
+        "org.apache.predictionio.e2.engine.PythonEngine", # engineId
         "1", # engineVersion
         "default", # engineVariant
-        engine_factory or "org.apache.predictionio.e2.engine.PythonEngine", # engineFactory
+        "org.apache.predictionio.e2.engine.PythonEngine", # engineFactory
         "", # batch
         dict_to_scalamap(sc._jvm, pio_env), # env
         sc._jvm.scala.Predef.Map().empty(), # sparkConf
         "{\"\":{}}", # dataSourceParams
         "{\"\":{}}", # preparatorParams
         "[{\"default\":{}}]", # algorithmsParams
-        json.dumps(serving_params) # servingParams
+        json.dumps({"":{"columns":[v for v in predict_columns]}}) # servingParams
     )
     id = meta_storage.insert(meta)
 
