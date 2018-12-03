@@ -28,7 +28,13 @@ from pypio.workflow import CleanupFunctions
 from pyspark.sql import SparkSession
 
 
-def init():
+def init(app_name=None):
+    """
+    Initialize pypio.
+    If app name is specified then create a new application.
+
+    :param app_name: app name. If specified, create a new app
+    """
     global spark
     spark = SparkSession.builder.getOrCreate()
     global sc
@@ -41,14 +47,35 @@ def init():
     cleanup_functions = CleanupFunctions(sqlContext)
     atexit.register(lambda: cleanup_functions.run())
     atexit.register(lambda: sc.stop())
+
+    if app_name is not None:
+        app = sc._jvm.org.apache.predictionio.tools.commands.App.create(app_name, sc._jvm.scala.Option.empty(), sc._jvm.scala.Option.empty(), "")
+        if app.isRight():
+            print("Created a new app:")
+            print("      Name: {}".format(app.right().get().app().name()))
+            print("        ID: {}".format(app.right().get().app().id()))
+            print("Access Key: {}".format(app.right().get().keys().head().key()))
     print("Initialized pypio")
 
 
 def find_events(app_name):
+    """
+    Returns a dataset of the specified app.
+
+    :param app_name: app name
+    :return: :py:class:`pyspark.sql.DataFrame`
+    """
     return p_event_store.find(app_name)
 
 
 def save_model(model, predict_columns):
+    """
+    Save a PipelineModel object to storage.
+
+    :param model: :py:class:`pyspark.ml.pipeline.PipelineModel`
+    :param predict_columns: prediction columns
+    :return: identifier for the trained model to use for predict
+    """
     if not predict_columns:
         raise ValueError("predict_columns should have more than one value")
     if os.environ.get('PYSPARK_PYTHON') is None:

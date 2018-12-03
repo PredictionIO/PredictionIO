@@ -37,9 +37,17 @@ def list_to_dict(l):
     :param l: python type list
 
     >>> list = ["key1", 1, "key2", 2, "key3", 3]
-    >>> list_to_dict(list)
-    {'key1': 1, 'key2': 2, 'key3': 3}
+    >>> list_to_dict(list) == {'key1': 1, 'key2': 2, 'key3': 3}
+    True
     """
     if l is None:
         return None
     return dict(zip(l[0::2], l[1::2]))
+
+
+if __name__ == "__main__":
+    import doctest
+    import sys
+    (failure_count, test_count) = doctest.testmod()
+    if failure_count:
+        sys.exit(-1)
