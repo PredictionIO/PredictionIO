@@ -28,13 +28,7 @@ from pypio.workflow import CleanupFunctions
 from pyspark.sql import SparkSession
 
 
-def init(app_name=None):
-    """
-    Initialize pypio.
-    If app name is specified then create a new application.
-
-    :param app_name: app name. If specified, create a new app
-    """
+def init():
     global spark
     spark = SparkSession.builder.getOrCreate()
     global sc
@@ -47,14 +41,6 @@ def init(app_name=None):
     cleanup_functions = CleanupFunctions(sqlContext)
     atexit.register(lambda: cleanup_functions.run())
     atexit.register(lambda: sc.stop())
-
-    if app_name is not None:
-        app = sc._jvm.org.apache.predictionio.tools.commands.App.create(app_name, sc._jvm.scala.Option.empty(), sc._jvm.scala.Option.empty(), "")
-        if app.isRight():
-            print("Created a new app:")
-            print("      Name: {}".format(app.right().get().app().name()))
-            print("        ID: {}".format(app.right().get().app().id()))
-            print("Access Key: {}".format(app.right().get().keys().head().key()))
     print("Initialized pypio")
 
 
