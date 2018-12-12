@@ -20,27 +20,23 @@ package org.apache.predictionio.data.storage.hbase
 
 import org.apache.predictionio.data.storage.BaseStorageClient
 import org.apache.predictionio.data.storage.StorageClientConfig
-
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.HBaseConfiguration
 import org.apache.hadoop.hbase.MasterNotRunningException
 import org.apache.hadoop.hbase.ZooKeeperConnectionException
-import org.apache.hadoop.hbase.client.HConnectionManager
-import org.apache.hadoop.hbase.client.HConnection
-import org.apache.hadoop.hbase.client.HBaseAdmin
-
+import org.apache.hadoop.hbase.client._
 import grizzled.slf4j.Logging
 
 case class HBClient(
-  val conf: Configuration,
-  val connection: HConnection,
-  val admin: HBaseAdmin
+  conf: Configuration,
+  connection: Connection,
+  admin: Admin
 )
 
 class StorageClient(val config: StorageClientConfig)
   extends BaseStorageClient with Logging {
 
-  val conf = HBaseConfiguration.create()
+  val conf: Configuration = HBaseConfiguration.create()
 
   if (config.test) {
     // use fewer retries and shorter timeout for test mode
@@ -73,12 +69,12 @@ class StorageClient(val config: StorageClientConfig)
     }
   }
 
-  val connection = HConnectionManager.createConnection(conf)
+  val connection: Connection = ConnectionFactory.createConnection(conf)
 
   val client = HBClient(
     conf = conf,
     connection = connection,
-    admin = new HBaseAdmin(connection)
+    admin = connection.getAdmin
   )
 
   override

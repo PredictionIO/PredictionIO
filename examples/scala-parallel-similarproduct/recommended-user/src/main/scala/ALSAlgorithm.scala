@@ -25,6 +25,7 @@ import org.apache.spark.SparkContext._
 import org.apache.spark.mllib.recommendation.{ALS, Rating => MLlibRating}
 
 import scala.collection.mutable
+import scala.concurrent.{ExecutionContext, Future}
 
 case class ALSAlgorithmParams(
   rank: Int,
@@ -125,7 +126,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     )
   }
 
-  def predict(model: ALSModel, query: Query): PredictedResult = {
+  def predictAsync(model: ALSModel, query: Query)(implicit ec: ExecutionContext): Future[PredictedResult] = {
 
     val similarUserFeatures = model.similarUserFeatures
 
@@ -181,7 +182,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       )
     }
 
-    PredictedResult(similarUserScores)
+    Future.successful(PredictedResult(similarUserScores))
   }
 
   private

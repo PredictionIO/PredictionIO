@@ -19,12 +19,13 @@ package org.apache.predictionio.controller
 
 import org.apache.predictionio.controller.{Params => PIOParams}
 import org.apache.predictionio.core._
-
 import grizzled.slf4j.Logger
 import org.apache.predictionio.workflow.WorkflowParams
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
+
+import scala.concurrent.{ExecutionContext, Future}
 
 object Engine0 {
   @transient lazy val logger = Logger[this.type] 
@@ -204,8 +205,9 @@ object Engine0 {
       qs.mapValues(q => Prediction(id, q, Some(m)))
     }
     
-    def predict(m: PAlgo0.Model, q: Query): Prediction = {
-      Prediction(id, q, Some(m))
+    override def predictAsync(m: PAlgo0.Model, q: Query)
+                             (implicit ec: ExecutionContext): Future[Prediction] = {
+      Future.successful(Prediction(id, q, Some(m)))
     }
   }
 
@@ -224,8 +226,8 @@ object Engine0 {
       qs.mapValues(q => Prediction(id, q, Some(m)))
     }
 
-    def predict(m: PAlgo1.Model, q: Query): Prediction = {
-      Prediction(id, q, Some(m))
+    override def predictAsync(m: PAlgo1.Model, q: Query)(implicit ec: ExecutionContext): Future[Prediction] = {
+      Future.successful(Prediction(id, q, Some(m)))
     }
   }
   
@@ -247,8 +249,8 @@ object Engine0 {
       qs.mapValues(q => Prediction(id, q, Some(m)))
     }
 
-    def predict(m: PAlgo2.Model, q: Query): Prediction = {
-      Prediction(id, q, Some(m))
+    override def predictAsync(m: PAlgo2.Model, q: Query)(implicit ec: ExecutionContext): Future[Prediction] = {
+      Future.successful(Prediction(id, q, Some(m)))
     }
   }
   
@@ -274,8 +276,9 @@ object Engine0 {
       qs.mapValues(q => Prediction(id, q, Some(m)))
     }
 
-    def predict(m: PAlgo3.Model, q: Query): Prediction = {
-      Prediction(id, q, Some(m))
+    override def predictAsync(m: PAlgo3.Model, q: Query)
+                             (implicit ec: ExecutionContext): Future[Prediction] = {
+      Future.successful(Prediction(id, q, Some(m)))
     }
   }
   
@@ -283,12 +286,13 @@ object Engine0 {
     case class Model(id: Int, pd: ProcessedData)
   }
 
-  class LAlgo0(id: Int = 0) 
+  class LAlgo0(id: Int = 0)
   extends LAlgorithm[ProcessedData, LAlgo0.Model, Query, Prediction] {
     def train(pd: ProcessedData): LAlgo0.Model = LAlgo0.Model(id, pd)
 
-    def predict(m: LAlgo0.Model, q: Query): Prediction = {
-      Prediction(id, q, Some(m))
+    override def predictAsync(m: LAlgo0.Model, q: Query)
+                             (implicit ec: ExecutionContext): Future[Prediction] = {
+      Future.successful(Prediction(id, q, Some(m)))
     }
   }
   
@@ -296,12 +300,13 @@ object Engine0 {
     case class Model(id: Int, pd: ProcessedData)
   }
 
-  class LAlgo1(id: Int = 0) 
+  class LAlgo1(id: Int = 0)
   extends LAlgorithm[ProcessedData, LAlgo1.Model, Query, Prediction] {
     def train(pd: ProcessedData): LAlgo1.Model = LAlgo1.Model(id, pd)
     
-    def predict(m: LAlgo1.Model, q: Query): Prediction = {
-      Prediction(id, q, Some(m))
+    override def predictAsync(m: LAlgo1.Model, q: Query)
+                             (implicit ec: ExecutionContext): Future[Prediction] = {
+      Future.successful(Prediction(id, q, Some(m)))
     }
   }
   
@@ -314,12 +319,13 @@ object Engine0 {
     object Model extends LocalFileSystemPersistentModelLoader[EmptyParams, Model]
   }
 
-  class LAlgo2(params: LAlgo2.Params) 
+  class LAlgo2(params: LAlgo2.Params)
   extends LAlgorithm[ProcessedData, LAlgo2.Model, Query, Prediction] {
     def train(pd: ProcessedData): LAlgo2.Model = LAlgo2.Model(params.id, pd)
     
-    def predict(m: LAlgo2.Model, q: Query): Prediction = {
-      Prediction(params.id, q, Some(m))
+    override def predictAsync(m: LAlgo2.Model, q: Query)
+                             (implicit ec: ExecutionContext): Future[Prediction] = {
+      Future.successful(Prediction(params.id, q, Some(m)))
     }
   }
 
@@ -329,12 +335,13 @@ object Engine0 {
     case class Model(id: Int, pd: ProcessedData)
   }
 
-  class LAlgo3(params: LAlgo3.Params) 
+  class LAlgo3(params: LAlgo3.Params)
   extends LAlgorithm[ProcessedData, LAlgo3.Model, Query, Prediction] {
     def train(pd: ProcessedData): LAlgo3.Model = LAlgo3.Model(params.id, pd)
     
-    def predict(m: LAlgo3.Model, q: Query): Prediction = {
-      Prediction(params.id, q, Some(m))
+    override def predictAsync(m: LAlgo3.Model, q: Query)
+                             (implicit ec: ExecutionContext): Future[Prediction] = {
+      Future.successful(Prediction(params.id, q, Some(m)))
     }
   }
 
@@ -348,8 +355,9 @@ object Engine0 {
     def train(sc: SparkContext, pd: ProcessedData)
     : NAlgo0.Model = NAlgo0.Model(id, pd)
   
-    def predict(m: NAlgo0.Model, q: Query): Prediction = {
-      Prediction(id, q, Some(m))
+    override def predictAsync(m: NAlgo0.Model, q: Query)
+                             (implicit ec: ExecutionContext): Future[Prediction] = {
+      Future.successful(Prediction(id, q, Some(m)))
     }
   }
 
@@ -362,8 +370,9 @@ object Engine0 {
     def train(sc: SparkContext, pd: ProcessedData)
     : NAlgo1.Model = NAlgo1.Model(id, pd)
    
-    def predict(m: NAlgo1.Model, q: Query): Prediction = {
-      Prediction(id, q, Some(m))
+    override def predictAsync(m: NAlgo1.Model, q: Query)
+                             (implicit ec: ExecutionContext): Future[Prediction] = {
+      Future.successful(Prediction(id, q, Some(m)))
     }
   }
   
@@ -376,13 +385,13 @@ object Engine0 {
     object Model extends LocalFileSystemPersistentModelLoader[EmptyParams, Model]
   }
 
-  class NAlgo2(params: NAlgo2.Params) 
+  class NAlgo2(params: NAlgo2.Params)
   extends P2LAlgorithm[ProcessedData, NAlgo2.Model, Query, Prediction] {
     def train(sc: SparkContext, pd: ProcessedData)
     : NAlgo2.Model = NAlgo2.Model(params.id, pd)
-    
-    def predict(m: NAlgo2.Model, q: Query): Prediction = {
-      Prediction(params.id, q, Some(m))
+    override def predictAsync(m: NAlgo2.Model, q: Query)
+                             (implicit ec: ExecutionContext): Future[Prediction] = {
+      Future.successful(Prediction(params.id, q, Some(m)))
     }
   }
 
@@ -392,13 +401,14 @@ object Engine0 {
     case class Model(id: Int, pd: ProcessedData)
   }
 
-  class NAlgo3(params: NAlgo3.Params) 
+  class NAlgo3(params: NAlgo3.Params)
   extends P2LAlgorithm[ProcessedData, NAlgo3.Model, Query, Prediction] {
     def train(sc: SparkContext, pd: ProcessedData)
     : NAlgo3.Model = NAlgo3.Model(params.id, pd)
     
-    def predict(m: NAlgo3.Model, q: Query): Prediction = {
-      Prediction(params.id, q, Some(m))
+    override def predictAsync(m: NAlgo3.Model, q: Query)
+                             (implicit ec: ExecutionContext): Future[Prediction] = {
+      Future.successful(Prediction(params.id, q, Some(m)))
     }
   }
 
@@ -436,18 +446,18 @@ object Engine1 {
   case class DSP(v: Double) extends Params
 }
 
-class Engine1 
+class Engine1
 extends BaseEngine[
   Engine1.EvalInfo, Engine1.Query, Engine1.Prediction, Engine1.Actual] {
 
   def train(
-    sc: SparkContext, 
+    sc: SparkContext,
     engineParams: EngineParams,
     engineInstanceId: String = "",
     params: WorkflowParams = WorkflowParams()): Seq[Any] = Seq[Any]()
 
   def eval(sc: SparkContext, engineParams: EngineParams, params: WorkflowParams)
-  : Seq[(Engine1.EvalInfo, 
+  : Seq[(Engine1.EvalInfo,
       RDD[(Engine1.Query, Engine1.Prediction, Engine1.Actual)])] = {
     val dsp = engineParams.dataSourceParams._2.asInstanceOf[Engine1.DSP]
     Seq(
@@ -463,7 +473,7 @@ Engine1.Actual, Double] {
   override def header: String = "Metric0"
 
   def calculate(
-    sc: SparkContext, 
+    sc: SparkContext,
     evalDataSet: Seq[(Engine1.EvalInfo, RDD[(Engine1.Query, Engine1.Prediction,
     Engine1.Actual)])]): Double = {
     evalDataSet.head._1.v
@@ -480,7 +490,7 @@ Engine1.Actual, Metric1.Result]()(Ordering.by[Metric1.Result, Double](_.v)) {
   override def header: String = "Metric1"
 
   def calculate(
-    sc: SparkContext, 
+    sc: SparkContext,
     evalDataSet: Seq[(Engine1.EvalInfo, RDD[(Engine1.Query, Engine1.Prediction,
     Engine1.Actual)])]): Metric1.Result = {
     Metric1.Result(0, evalDataSet.head._1.v)

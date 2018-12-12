@@ -20,7 +20,6 @@ package org.apache.predictionio.data.storage.elasticsearch
 import java.io.IOException
 
 import scala.collection.JavaConverters._
-
 import org.apache.http.entity.ContentType
 import org.apache.http.nio.entity.NStringEntity
 import org.apache.http.util.EntityUtils
@@ -34,8 +33,10 @@ import org.json4s._
 import org.json4s.JsonDSL._
 import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization.write
-
 import grizzled.slf4j.Logging
+import scala.concurrent.duration._
+import scala.language.postfixOps
+import scala.concurrent.Await
 
 class ESEvaluationInstances(client: RestClient, config: StorageClientConfig, index: String)
     extends EvaluationInstances with Logging {
@@ -107,33 +108,35 @@ class ESEvaluationInstances(client: RestClient, config: StorageClientConfig, ind
   }
 
   def getAll(): Seq[EvaluationInstance] = {
-    try {
-      val json =
-        ("query" ->
-          ("match_all" -> List.empty))
-      ESUtils.getAll[EvaluationInstance](client, internalIndex, estype, compact(render(json)))
-    } catch {
-      case e: IOException =>
-        error("Failed to access to /$internalIndex/$estype/_search", e)
-        Nil
-    }
+    val json =
+      ("query" ->
+        ("match_all" -> List.empty))
+    import scala.concurrent.ExecutionContext.Implicits.global
+    Await.result(ESUtils
+      .getAll[EvaluationInstance](client, internalIndex, estype, compact(render(json)))
+      .recover {
+        case e: IOException =>
+          error("Failed to access to /$internalIndex/$estype/_search", e)
+          Nil
+      }, 1 minute)
   }
 
   def getCompleted(): Seq[EvaluationInstance] = {
-    try {
-      val json =
-        ("query" ->
-          ("term" ->
-            ("status" -> "EVALCOMPLETED"))) ~
-            ("sort" ->
-              ("startTime" ->
-                ("order" -> "desc")))
-      ESUtils.getAll[EvaluationInstance](client, internalIndex, estype, compact(render(json)))
-    } catch {
-      case e: IOException =>
-        error("Failed to access to /$internalIndex/$estype/_search", e)
-        Nil
-    }
+    val json =
+      ("query" ->
+        ("term" ->
+          ("status" -> "EVALCOMPLETED"))) ~
+          ("sort" ->
+            ("startTime" ->
+              ("order" -> "desc")))
+    import scala.concurrent.ExecutionContext.Implicits.global
+    Await.result(ESUtils
+      .getAll[EvaluationInstance](client, internalIndex, estype, compact(render(json)))
+      .recover {
+        case e: IOException =>
+          error("Failed to access to /$internalIndex/$estype/_search", e)
+          Nil
+      }, 1 minute)
   }
 
   def update(i: EvaluationInstance): Unit = {

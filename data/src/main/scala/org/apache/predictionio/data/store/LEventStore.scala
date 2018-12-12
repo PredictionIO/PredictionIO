@@ -54,6 +54,19 @@ object LEventStore {
   /** Reads events of the specified entity. May use this in Algorithm's predict()
     * or Serving logic to have fast event store access.
     *
+    * Note that this method uses `scala.concurrent.ExecutionContext.Implicits.global`
+    * internally. Since this is a thread pool which has a number of threads equal to
+    * available processors, parallelism is limited up to the number of processors.
+    *
+    * If this limitation become bottleneck of resource usage, you can increase the
+    * number of threads by declaring following VM options before calling "pio deploy":
+    *
+    * <pre>
+    * export JAVA_OPTS="$JAVA_OPTS \
+    *   -Dscala.concurrent.context.numThreads=1000 \
+    *   -Dscala.concurrent.context.maxThreads=1000"
+    * </pre>
+    *
     * @param appName return events of this app
     * @param entityType return events of this entityType
     * @param entityId return events of this entityId
@@ -92,8 +105,8 @@ object LEventStore {
 
     Await.result(findByEntityAsync(
       appName = appName,
-      entityType = entityType,
-      entityId = entityId,
+      entityType = Some(entityType),
+      entityId = Some(entityId),
       channelName = channelName,
       eventNames = eventNames,
       targetEntityType = targetEntityType,
@@ -129,8 +142,8 @@ object LEventStore {
     */
   def findByEntityAsync(
     appName: String,
-    entityType: String,
-    entityId: String,
+    entityType: Option[String],
+    entityId: Option[String],
     channelName: Option[String] = None,
     eventNames: Option[Seq[String]] = None,
     targetEntityType: Option[Option[String]] = None,
@@ -147,8 +160,8 @@ object LEventStore {
       channelId = channelId,
       startTime = startTime,
       untilTime = untilTime,
-      entityType = Some(entityType),
-      entityId = Some(entityId),
+      entityType = entityType,
+      entityId = entityId,
       eventNames = eventNames,
       targetEntityType = targetEntityType,
       targetEntityId = targetEntityId,

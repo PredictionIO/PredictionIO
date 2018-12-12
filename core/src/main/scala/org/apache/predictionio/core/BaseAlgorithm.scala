@@ -26,6 +26,8 @@ import net.jodah.typetools.TypeResolver
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
+import scala.concurrent.{ExecutionContext, Future, blocking}
+
 /** :: DeveloperApi ::
   * Base trait with default custom query serializer, exposed to engine developer
   * via [[org.apache.predictionio.controller.CustomQuerySerializer]]
@@ -87,10 +89,27 @@ abstract class BaseAlgorithm[PD, M, Q, P]
     *
     * @param bm Model
     * @param q Query
+    * @param ec ExecutionContext to use for async operations
+    * @return Future of a Predicted result
+    */
+  @DeveloperApi
+  def predictBaseAsync(bm: Any, q: Q)(implicit ec: ExecutionContext): Future[P] =
+    Future.successful(blocking {predictBase(bm, q)})
+
+  /** :: DeveloperApi ::
+    * Engine developers should not use this directly. Called by serving to
+    * perform a single prediction.
+    *
+    * @param bm Model
+    * @param q Query
     * @return Predicted result
     */
   @DeveloperApi
-  def predictBase(bm: Any, q: Q): P
+  @deprecated(message = "override non blocking predictBaseAsync() instead", since = "0.14.0")
+  def predictBase(bm: Any, q: Q): P =
+    throw new NotImplementedError(
+      "predictBase() is deprecated, override predictBaseAsync() instead"
+    )
 
   /** :: DeveloperApi ::
     * Engine developers should not use this directly. Prepare a model for

@@ -20,7 +20,6 @@ package org.apache.predictionio.data.storage.elasticsearch
 import java.io.IOException
 
 import scala.collection.JavaConverters.mapAsJavaMapConverter
-
 import org.apache.http.entity.ContentType
 import org.apache.http.nio.entity.NStringEntity
 import org.apache.http.util.EntityUtils
@@ -32,8 +31,10 @@ import org.json4s._
 import org.json4s.JsonDSL._
 import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization.write
-
 import grizzled.slf4j.Logging
+import scala.concurrent.duration._
+import scala.language.postfixOps
+import scala.concurrent.Await
 
 class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
     extends Channels with Logging {
@@ -97,17 +98,18 @@ class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
   }
 
   def getByAppid(appid: Int): Seq[Channel] = {
-    try {
-      val json =
-        ("query" ->
-          ("term" ->
-            ("appid" -> appid)))
-      ESUtils.getAll[Channel](client, internalIndex, estype, compact(render(json)))
-    } catch {
-      case e: IOException =>
-        error(s"Failed to access to /$internalIndex/$estype/_search", e)
-        Nil
-    }
+    val json =
+      ("query" ->
+        ("term" ->
+          ("appid" -> appid)))
+    import scala.concurrent.ExecutionContext.Implicits.global
+    Await.result(ESUtils
+      .getAll[Channel](client, internalIndex, estype, compact(render(json)))
+      .recover {
+        case e: IOException =>
+          error(s"Failed to access to /$internalIndex/$estype/_search", e)
+          Nil
+        }, 1 minute)
   }
 
   def update(channel: Channel): Boolean = {

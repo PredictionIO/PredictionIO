@@ -22,16 +22,15 @@ import org.apache.predictionio.controller.Params
 import org.apache.predictionio.data.storage.BiMap
 import org.apache.predictionio.data.storage.Event
 import org.apache.predictionio.data.store.LEventStore
-
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.mllib.recommendation.ALS
 import org.apache.spark.mllib.recommendation.{Rating => MLlibRating}
 import org.apache.spark.rdd.RDD
-
 import grizzled.slf4j.Logger
 
 import scala.collection.mutable.PriorityQueue
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -239,7 +238,7 @@ class ECommAlgorithm(val ap: ECommAlgorithmParams)
     buyCountsRDD.collectAsMap.toMap
   }
 
-  def predict(model: ECommModel, query: Query): PredictedResult = {
+  def predictAsync(model: ECommModel, query: Query)(implicit ec: ExecutionContext): Future[PredictedResult] = {
 
     val userFeatures = model.userFeatures
     val productModels = model.productModels
@@ -322,7 +321,7 @@ class ECommAlgorithm(val ap: ECommAlgorithmParams)
       )
     }
 
-    new PredictedResult(itemScores)
+    Future.successful(new PredictedResult(itemScores))
   }
 
   /** Generate final blackList based on other constraints */

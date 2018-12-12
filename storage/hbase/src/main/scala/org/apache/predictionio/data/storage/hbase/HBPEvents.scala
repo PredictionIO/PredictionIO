@@ -61,7 +61,7 @@ class HBPEvents(client: HBClient, config: StorageClientConfig, namespace: String
 
     val conf = HBaseConfiguration.create()
     conf.set(TableInputFormat.INPUT_TABLE,
-      HBEventsUtil.tableName(namespace, appId, channelId))
+      HBEventsUtil.tableName(namespace, appId, channelId).getNameAsString)
 
     val scan = HBEventsUtil.createScan(
         startTime = startTime,
@@ -95,7 +95,7 @@ class HBPEvents(client: HBClient, config: StorageClientConfig, namespace: String
 
     val conf = HBaseConfiguration.create()
     conf.set(TableOutputFormat.OUTPUT_TABLE,
-      HBEventsUtil.tableName(namespace, appId, channelId))
+      HBEventsUtil.tableName(namespace, appId, channelId).getNameAsString)
     conf.setClass("mapreduce.outputformat.class",
       classOf[TableOutputFormat[Object]],
       classOf[OutputFormat[Object, Writable]])
@@ -117,9 +117,9 @@ class HBPEvents(client: HBClient, config: StorageClientConfig, namespace: String
     eventIds.foreachPartition{ iter =>
       val conf = HBaseConfiguration.create()
       conf.set(TableOutputFormat.OUTPUT_TABLE,
-        tableName)
+        tableName.getNameAsString)
 
-      val table = new HTable(conf, tableName)
+      val table = client.connection.getTable(tableName)
       iter.foreach { id =>
         val rowKey = HBEventsUtil.RowKey(id)
         val delete = new Delete(rowKey.b)

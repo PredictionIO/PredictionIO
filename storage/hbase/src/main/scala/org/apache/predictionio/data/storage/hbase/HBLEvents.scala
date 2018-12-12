@@ -18,6 +18,8 @@
 
 package org.apache.predictionio.data.storage.hbase
 
+import java.util.concurrent.Executors
+
 import grizzled.slf4j.Logging
 import org.apache.predictionio.data.storage.Event
 import org.apache.predictionio.data.storage.LEvents
@@ -26,23 +28,26 @@ import org.apache.predictionio.data.storage.hbase.HBEventsUtil.RowKey
 import org.apache.hadoop.hbase.HColumnDescriptor
 import org.apache.hadoop.hbase.HTableDescriptor
 import org.apache.hadoop.hbase.NamespaceDescriptor
-import org.apache.hadoop.hbase.TableName
 import org.apache.hadoop.hbase.client._
 import org.joda.time.DateTime
 
 import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.concurrent.blocking
 
 class HBLEvents(val client: HBClient, config: StorageClientConfig, val namespace: String)
   extends LEvents with Logging {
+
+  private val blockingThreadPoolExecutor =
+    ExecutionContext.fromExecutor(Executors.newFixedThreadPool(10))
 
   // implicit val formats = DefaultFormats + new EventJson4sSupport.DBSerializer
 
   def resultToEvent(result: Result, appId: Int): Event =
     HBEventsUtil.resultToEvent(result, appId)
 
-  def getTable(appId: Int, channelId: Option[Int] = None): HTableInterface =
+  def getTable(appId: Int, channelId: Option[Int] = None): Table =
     client.connection.getTable(HBEventsUtil.tableName(namespace, appId, channelId))
 
   override
@@ -56,7 +61,7 @@ class HBLEvents(val client: HBClient, config: StorageClientConfig, val namespace
       client.admin.createNamespace(nameDesc)
     }
 
-    val tableName = TableName.valueOf(HBEventsUtil.tableName(namespace, appId, channelId))
+    val tableName = HBEventsUtil.tableName(namespace, appId, channelId)
     if (!client.admin.tableExists(tableName)) {
       info(s"The table ${tableName.getNameAsString()} doesn't exist yet." +
         " Creating now...")
@@ -70,7 +75,7 @@ class HBLEvents(val client: HBClient, config: StorageClientConfig, val namespace
 
   override
   def remove(appId: Int, channelId: Option[Int] = None): Boolean = {
-    val tableName = TableName.valueOf(HBEventsUtil.tableName(namespace, appId, channelId))
+    val tableName = HBEventsUtil.tableName(namespace, appId, channelId)
     try {
       if (client.admin.tableExists(tableName)) {
         info(s"Removing table ${tableName.getNameAsString()}...")
@@ -100,13 +105,14 @@ class HBLEvents(val client: HBClient, config: StorageClientConfig, val namespace
     event: Event, appId: Int, channelId: Option[Int])(implicit ec: ExecutionContext):
     Future[String] = {
     Future {
-      val table = getTable(appId, channelId)
-      val (put, rowKey) = HBEventsUtil.eventToPut(event, appId)
-      table.put(put)
-      table.flushCommits()
-      table.close()
-      rowKey.toString
-    }
+      blocking {
+        val table = getTable(appId, channelId)
+        val (put, rowKey) = HBEventsUtil.eventToPut(event, appId)
+        table.put(put)
+        table.close()
+        rowKey.toString
+      }
+    }(blockingThreadPoolExecutor)
   }
 
   override
@@ -114,13 +120,14 @@ class HBLEvents(val client: HBClient, config: StorageClientConfig, val namespace
     events: Seq[Event], appId: Int, channelId: Option[Int])(implicit ec: ExecutionContext):
     Future[Seq[String]] = {
     Future {
-      val table = getTable(appId, channelId)
-      val (puts, rowKeys) = events.map { event => HBEventsUtil.eventToPut(event, appId) }.unzip
-      table.put(puts)
-      table.flushCommits()
-      table.close()
-      rowKeys.map(_.toString)
-    }
+      blocking {
+        val table = getTable(appId, channelId)
+        val (puts, rowKeys) = events.map { event => HBEventsUtil.eventToPut(event, appId) }.unzip
+        table.put(puts)
+        table.close()
+        rowKeys.map(_.toString)
+      }
+    }(blockingThreadPoolExecutor)
   }
 
   override
@@ -128,20 +135,22 @@ class HBLEvents(val client: HBClient, config: StorageClientConfig, val namespace
     eventId: String, appId: Int, channelId: Option[Int])(implicit ec: ExecutionContext):
     Future[Option[Event]] = {
       Future {
-        val table = getTable(appId, channelId)
-        val rowKey = RowKey(eventId)
-        val get = new Get(rowKey.toBytes)
+        blocking {
+          val table = getTable(appId, channelId)
+          val rowKey = RowKey(eventId)
+          val get = new Get(rowKey.toBytes)
 
-        val result = table.get(get)
-        table.close()
+          val result = table.get(get)
+          table.close()
 
-        if (!result.isEmpty()) {
-          val event = resultToEvent(result, appId)
-          Some(event)
-        } else {
-          None
+          if (!result.isEmpty()) {
+            val event = resultToEvent(result, appId)
+            Some(event)
+          } else {
+            None
+          }
         }
-      }
+      }(blockingThreadPoolExecutor)
     }
 
   override
@@ -149,13 +158,15 @@ class HBLEvents(val client: HBClient, config: StorageClientConfig, val namespace
     eventId: String, appId: Int, channelId: Option[Int])(implicit ec: ExecutionContext):
     Future[Boolean] = {
     Future {
-      val table = getTable(appId, channelId)
-      val rowKey = RowKey(eventId)
-      val exists = table.exists(new Get(rowKey.toBytes))
-      table.delete(new Delete(rowKey.toBytes))
-      table.close()
-      exists
-    }
+      blocking {
+        val table = getTable(appId, channelId)
+        val rowKey = RowKey(eventId)
+        val exists = table.exists(new Get(rowKey.toBytes))
+        table.delete(new Delete(rowKey.toBytes))
+        table.close()
+        exists
+      }
+    }(blockingThreadPoolExecutor)
   }
 
   override
@@ -173,37 +184,39 @@ class HBLEvents(val client: HBClient, config: StorageClientConfig, val namespace
     reversed: Option[Boolean] = None)(implicit ec: ExecutionContext):
     Future[Iterator[Event]] = {
       Future {
+        blocking {
+          require(!(reversed.contains(true) && (entityType.isEmpty || entityId.isEmpty)),
+            "the parameter reversed can only be used with both entityType and entityId specified.")
 
-        require(!((reversed == Some(true)) && (entityType.isEmpty || entityId.isEmpty)),
-          "the parameter reversed can only be used with both entityType and entityId specified.")
+          val table = getTable(appId, channelId)
 
-        val table = getTable(appId, channelId)
+          val scan = HBEventsUtil.createScan(
+            startTime = startTime,
+            untilTime = untilTime,
+            entityType = entityType,
+            entityId = entityId,
+            eventNames = eventNames,
+            targetEntityType = targetEntityType,
+            targetEntityId = targetEntityId,
+            reversed = reversed)
+          val scanner = table.getScanner(scan)
+          table.close()
 
-        val scan = HBEventsUtil.createScan(
-          startTime = startTime,
-          untilTime = untilTime,
-          entityType = entityType,
-          entityId = entityId,
-          eventNames = eventNames,
-          targetEntityType = targetEntityType,
-          targetEntityId = targetEntityId,
-          reversed = reversed)
-        val scanner = table.getScanner(scan)
-        table.close()
+          val eventsIter = scanner.iterator()
 
-        val eventsIter = scanner.iterator()
+          // Get all events if None or Some(-1)
+          val results: Iterator[Result] = limit match {
+            case Some(-1) => eventsIter
+            case None => eventsIter
+            case Some(x) => eventsIter.take(x)
+          }
 
-        // Get all events if None or Some(-1)
-        val results: Iterator[Result] = limit match {
-          case Some(-1) => eventsIter
-          case None => eventsIter
-          case Some(x) => eventsIter.take(x)
+          val eventsIt = results.map {
+            resultToEvent(_, appId)
+          }
+
+          eventsIt
         }
-
-        val eventsIt = results.map { resultToEvent(_, appId) }
-
-        eventsIt
-      }
+      }(blockingThreadPoolExecutor)
   }
-
 }

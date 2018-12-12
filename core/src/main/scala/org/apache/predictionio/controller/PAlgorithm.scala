@@ -24,6 +24,8 @@ import org.apache.predictionio.workflow.PersistentModelManifest
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
+import scala.concurrent.{ExecutionContext, Future, blocking}
+
 /** Base class of a parallel algorithm.
   *
   * A parallel algorithm can be run in parallel on a cluster and produces a
@@ -72,9 +74,31 @@ abstract class PAlgorithm[PD, M, Q, P]
   def batchPredict(m: M, qs: RDD[(Long, Q)]): RDD[(Long, P)] =
     throw new NotImplementedError("batchPredict not implemented")
 
-  def predictBase(baseModel: Any, query: Q): P = {
+  override def predictBaseAsync(bm: Any, q: Q)(implicit ec: ExecutionContext): Future[P] =
+    predictAsync(bm.asInstanceOf[M], q)(ec)
+
+  @deprecated(message =
+    "this method is just here for backward compatibility, predictBaseAsync() is called now",
+    since = "0.14.0")
+  override def predictBase(baseModel: Any, query: Q): P =
     predict(baseModel.asInstanceOf[M], query)
-  }
+
+  /** Implement this method to produce a Future of a prediction in a non blocking way
+    * from a query and trained model.
+    *
+    * This method is implemented to just delegate to blocking predict() for
+    * backward compatibility reasons.
+    * Definitely overwrite it to implement your blocking prediction method, and leave
+    * the old blocking predict() as it is (throwing an exception), it won't be called from
+    * now on.
+    *
+    * @param model Trained model produced by [[train]].
+    * @param query An input query.
+    * @param ec ExecutionContext to use for async operations
+    * @return A Future of a prediction.
+    */
+  def predictAsync(model: M, query: Q)(implicit ec: ExecutionContext): Future[P] =
+    Future.successful(blocking(predict(model, query)))
 
   /** Implement this method to produce a prediction from a query and trained
     * model.
@@ -83,7 +107,9 @@ abstract class PAlgorithm[PD, M, Q, P]
     * @param query An input query.
     * @return A prediction.
     */
-  def predict(model: M, query: Q): P
+  @deprecated(message = "override non blocking predictAsync() instead", since = "0.14.0")
+  def predict(model: M, query: Q): P =
+    throw new NotImplementedError("predict() is deprecated, override predictAsync() instead")
 
   /** :: DeveloperApi ::
     * Engine developers should not use this directly (read on to see how parallel

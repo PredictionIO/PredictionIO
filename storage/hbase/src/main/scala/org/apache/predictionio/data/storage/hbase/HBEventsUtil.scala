@@ -21,7 +21,6 @@ package org.apache.predictionio.data.storage.hbase
 import org.apache.predictionio.data.storage.Event
 import org.apache.predictionio.data.storage.EventValidation
 import org.apache.predictionio.data.storage.DataMap
-
 import org.apache.hadoop.hbase.client.Result
 import org.apache.hadoop.hbase.client.Put
 import org.apache.hadoop.hbase.client.Scan
@@ -32,30 +31,28 @@ import org.apache.hadoop.hbase.filter.CompareFilter.CompareOp
 import org.apache.hadoop.hbase.filter.BinaryComparator
 import org.apache.hadoop.hbase.filter.QualifierFilter
 import org.apache.hadoop.hbase.filter.SkipFilter
-
 import org.json4s.DefaultFormats
 import org.json4s.JObject
-import org.json4s.native.Serialization.{ read, write }
-
+import org.json4s.native.Serialization.{read, write}
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
-
 import org.apache.commons.codec.binary.Base64
 import java.security.MessageDigest
-
 import java.util.UUID
+
+import org.apache.hadoop.hbase.TableName
 
 /* common utility function for accessing EventsStore in HBase */
 object HBEventsUtil {
 
   implicit val formats = DefaultFormats
 
-  def tableName(namespace: String, appId: Int, channelId: Option[Int] = None): String = {
-    channelId.map { ch =>
+  def tableName(namespace: String, appId: Int, channelId: Option[Int] = None): TableName = {
+    TableName.valueOf(channelId.map { ch =>
       s"${namespace}:events_${appId}_${ch}"
     }.getOrElse {
       s"${namespace}:events_${appId}"
-    }
+    })
   }
 
   // column names for "e" column family

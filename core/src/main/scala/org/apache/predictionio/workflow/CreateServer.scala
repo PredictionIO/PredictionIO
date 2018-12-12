@@ -51,6 +51,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import org.apache.predictionio.akkahttpjson4s.Json4sSupport._
 import org.apache.predictionio.configuration.SSLConfiguration
+import org.json4s
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Await, Future}
@@ -487,7 +488,6 @@ class PredictionServer[Q, P](
             try {
               val servingStartTime = DateTime.now
               val jsonExtractorOption = args.jsonExtractor
-              val queryTime = DateTime.now
               // Extract Query from Json
               val query = JsonExtractor.extract(
                 jsonExtractorOption,
@@ -504,107 +504,67 @@ class PredictionServer[Q, P](
               // Deploy logic. First call Serving.supplement, then Algo.predict,
               // finally Serving.serve.
               val supplementedQuery = serving.supplementBase(query)
-              // TODO: Parallelize the following.
-              val predictions = algorithms.zip(models).map { case (a, m) =>
-                a.predictBase(m, supplementedQuery)
-              }
+
+              val predictionsFuture = Future.sequence(algorithms.zip(models).map { case (a, m) =>
+                a.predictBaseAsync(m, supplementedQuery)
+              })
               // Notice that it is by design to call Serving.serve with the
               // *original* query.
-              val prediction = serving.serveBase(query, predictions)
-              val predictionJValue = JsonExtractor.toJValue(
-                jsonExtractorOption,
-                prediction,
-                algorithms.head.querySerializer,
-                algorithms.head.gsonTypeAdapterFactories)
-              /** Handle feedback to Event Server
-                * Send the following back to the Event Server
-                * - appId
-                * - engineInstanceId
-                * - query
-                * - prediction
-                * - prId
-                */
-              val result = if (feedbackEnabled) {
-                implicit val formats =
-                  algorithms.headOption map { alg =>
-                    alg.querySerializer
-                  } getOrElse {
-                    Utils.json4sDefaultFormats
-                  }
-                // val genPrId = Random.alphanumeric.take(64).mkString
-                def genPrId: String = Random.alphanumeric.take(64).mkString
-                val newPrId = prediction match {
-                  case id: WithPrId =>
-                    val org = id.prId
-                    if (org.isEmpty) genPrId else org
-                  case _ => genPrId
-                }
+              val pluginResultFuture = predictionsFuture.map {
+                predictions =>
+                  val prediction = serving.serveBase(query, predictions)
+                  val predictionJValue = JsonExtractor.toJValue(
+                    jsonExtractorOption,
+                    prediction,
+                    algorithms.head.querySerializer,
+                    algorithms.head.gsonTypeAdapterFactories)
+                  /** Handle feedback to Event Server
+                    * Send the following back to the Event Server
+                    * - appId
+                    * - engineInstanceId
+                    * - query
+                    * - prediction
+                    * - prId
+                    */
+                  val result: json4s.JValue = if (feedbackEnabled) {
+                    sendFeedback(prediction, query, predictionJValue)
+                  } else predictionJValue
 
-                // also save Query's prId as prId of this pio_pr predict events
-                val queryPrId =
-                  query match {
-                    case id: WithPrId =>
-                      Map("prId" -> id.prId)
-                    case _ =>
-                      Map.empty
-                  }
-                val data = Map(
-                  // "appId" -> dataSourceParams.asInstanceOf[ParamsWithAppId].appId,
-                  "event" -> "predict",
-                  "eventTime" -> queryTime.toString(),
-                  "entityType" -> "pio_pr", // prediction result
-                  "entityId" -> newPrId,
-                  "properties" -> Map(
-                    "engineInstanceId" -> engineInstance.id,
-                    "query" -> query,
-                    "prediction" -> prediction)) ++ queryPrId
-                // At this point args.accessKey should be Some(String).
-                val accessKey = args.accessKey.getOrElse("")
-                val f: Future[Int] = Future {
-                  scalaj.http.Http(
-                    s"http://${args.eventServerIp}:${args.eventServerPort}/" +
-                    s"events.json?accessKey=$accessKey").postData(
-                    write(data)).header(
-                    "content-type", "application/json").asString.code
-                }
-                f onComplete {
-                  case Success(code) => {
-                    if (code != 201) {
-                      log.error(s"Feedback event failed. Status code: $code."
-                        + s"Data: ${write(data)}.")
+                  val pluginResult =
+                    pluginContext.outputBlockers.values.foldLeft(result) { case (r, p) =>
+                      p.process(engineInstance, queryJValue, r, pluginContext)
                     }
+                  pluginsActorRef ! (engineInstance, queryJValue, result)
+
+                  // Bookkeeping
+                  val servingEndTime = DateTime.now
+                  lastServingSec =
+                    (servingEndTime.getMillis - servingStartTime.getMillis) / 1000.0
+                  avgServingSec =
+                    ((avgServingSec * requestCount) + lastServingSec) /
+                      (requestCount + 1)
+                  requestCount += 1
+
+                  pluginResult
+              }
+
+              onComplete(pluginResultFuture) {
+                case Success(pluginResult) =>
+                  val responseBody = compact(render(pluginResult))
+                  log.info(s"Recommendation for query $queryString is: $responseBody")
+                  complete(responseBody)
+                case Failure(t) =>
+                  val msg = s"Query:\n$queryString\n\nStack Trace:\n" +
+                    s"${ExceptionUtils.getStackTrace(t)}\n\n"
+                  log.error(msg)
+                  args.logUrl map { url =>
+                    remoteLog(
+                      url,
+                      args.logPrefix.getOrElse(""),
+                      msg)
                   }
-                  case Failure(t) => {
-                    log.error(s"Feedback event failed: ${t.getMessage}") }
-                }
-                // overwrite prId in predictedResult
-                // - if it is WithPrId,
-                //   then overwrite with new prId
-                // - if it is not WithPrId, no prId injection
-                if (prediction.isInstanceOf[WithPrId]) {
-                  predictionJValue merge parse(s"""{"prId" : "$newPrId"}""")
-                } else {
-                  predictionJValue
-                }
-              } else predictionJValue
-
-              val pluginResult =
-                pluginContext.outputBlockers.values.foldLeft(result) { case (r, p) =>
-                  p.process(engineInstance, queryJValue, r, pluginContext)
-                }
-              pluginsActorRef ! (engineInstance, queryJValue, result)
-
-              // Bookkeeping
-              val servingEndTime = DateTime.now
-              lastServingSec =
-                (servingEndTime.getMillis - servingStartTime.getMillis) / 1000.0
-              avgServingSec =
-                ((avgServingSec * requestCount) + lastServingSec) /
-                (requestCount + 1)
-              requestCount += 1
-
-              complete(compact(render(pluginResult)))
-
+                  complete(StatusCodes.InternalServerError, msg)
+              }
             } catch {
               case e: MappingException =>
                 val msg = s"Query:\n$queryString\n\nStack Trace:\n" +
@@ -702,5 +662,70 @@ class PredictionServer[Q, P](
       }
 
     myRoute
+  }
+
+  def sendFeedback(prediction: P, query: Q, predictionJValue: JsonAST.JValue): json4s.JValue = {
+    val queryTime = DateTime.now
+    implicit val formats =
+      algorithms.headOption map { alg =>
+        alg.querySerializer
+      } getOrElse {
+        Utils.json4sDefaultFormats
+      }
+    // val genPrId = Random.alphanumeric.take(64).mkString
+    def genPrId: String = Random.alphanumeric.take(64).mkString
+    val newPrId = prediction match {
+      case id: WithPrId =>
+        val org = id.prId
+        if (org.isEmpty) genPrId else org
+      case _ => genPrId
+    }
+
+    // also save Query's prId as prId of this pio_pr predict events
+    val queryPrId =
+      query match {
+        case id: WithPrId =>
+          Map("prId" -> id.prId)
+        case _ =>
+          Map.empty
+      }
+    val data = Map(
+      // "appId" -> dataSourceParams.asInstanceOf[ParamsWithAppId].appId,
+      "event" -> "predict",
+      "eventTime" -> queryTime.toString(),
+      "entityType" -> "pio_pr", // prediction result
+      "entityId" -> newPrId,
+      "properties" -> Map(
+        "engineInstanceId" -> engineInstance.id,
+        "query" -> query,
+        "prediction" -> prediction)) ++ queryPrId
+    // At this point args.accessKey should be Some(String).
+    val accessKey = args.accessKey.getOrElse("")
+    val f: Future[Int] = Future {
+      scalaj.http.Http(
+        s"http://${args.eventServerIp}:${args.eventServerPort}/" +
+          s"events.json?accessKey=$accessKey").postData(
+        write(data)).header(
+        "content-type", "application/json").asString.code
+    }
+    f onComplete {
+      case Success(code) => {
+        if (code != 201) {
+          log.error(s"Feedback event failed. Status code: $code."
+            + s"Data: ${write(data)}.")
+        }
+      }
+      case Failure(t) => {
+        log.error(s"Feedback event failed: ${t.getMessage}") }
+    }
+    // overwrite prId in predictedResult
+    // - if it is WithPrId,
+    //   then overwrite with new prId
+    // - if it is not WithPrId, no prId injection
+    if (prediction.isInstanceOf[WithPrId]) {
+      predictionJValue merge parse(s"""{"prId" : "$newPrId"}""")
+    } else {
+      predictionJValue
+    }
   }
 }

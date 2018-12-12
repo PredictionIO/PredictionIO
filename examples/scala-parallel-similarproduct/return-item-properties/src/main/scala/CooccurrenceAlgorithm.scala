@@ -20,9 +20,10 @@ package org.apache.predictionio.examples.similarproduct
 import org.apache.predictionio.controller.P2LAlgorithm
 import org.apache.predictionio.controller.Params
 import org.apache.predictionio.data.storage.BiMap
-
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+
+import scala.concurrent.{ExecutionContext, Future}
 
 case class CooccurrenceAlgorithmParams(
   n: Int // top co-occurrence
@@ -103,7 +104,7 @@ class CooccurrenceAlgorithm(val ap: CooccurrenceAlgorithmParams)
     topCooccurrences
   }
 
-  def predict(model: CooccurrenceModel, query: Query): PredictedResult = {
+  def predictAsync(model: CooccurrenceModel, query: Query)(implicit ec: ExecutionContext): Future[PredictedResult] = {
 
     // convert items to Int index
     val queryList: Set[Int] = query.items

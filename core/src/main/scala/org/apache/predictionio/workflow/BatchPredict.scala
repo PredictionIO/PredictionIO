@@ -32,7 +32,12 @@ import org.apache.predictionio.workflow.CleanupFunctions
 import org.apache.spark.rdd.RDD
 import org.json4s._
 import org.json4s.native.JsonMethods._
+import scala.concurrent.duration._
+import scala.language.postfixOps
+import scala.concurrent.blocking
+import scala.concurrent.{Await, Future}
 import scala.language.existentials
+import scala.concurrent.ExecutionContext.Implicits.global
 
 case class BatchPredictConfig(
   inputFilePath: String = "batchpredict-input.json",
@@ -207,23 +212,26 @@ object BatchPredict extends Logging {
         // Deploy logic. First call Serving.supplement, then Algo.predict,
         // finally Serving.serve.
         val supplementedQuery = serving.supplementBase(query)
-        // TODO: Parallelize the following.
-        val predictions = algorithms.zip(models).map { case (a, m) =>
-          a.predictBase(m, supplementedQuery)
-        }
+        val predictionsFuture = Future.sequence(algorithms.zip(models).map { case (a, m) =>
+          a.predictBaseAsync(m, supplementedQuery)
+        })
         // Notice that it is by design to call Serving.serve with the
         // *original* query.
-        val prediction = serving.serveBase(query, predictions)
-        // Combine query with prediction, so the batch results are
-        // self-descriptive.
-        val predictionJValue = JsonExtractor.toJValue(
-          jsonExtractorOption,
-          Map("query" -> query,
-              "prediction" -> prediction),
-          algorithms.head.querySerializer,
-          algorithms.head.gsonTypeAdapterFactories)
-        // Return JSON string
-        compact(render(predictionJValue))
+        val predFutureRdds = predictionsFuture.map {
+          predictions =>
+            val prediction = serving.serveBase(query, predictions)
+            // Combine query with prediction, so the batch results are
+            // self-descriptive.
+            val predictionJValue = JsonExtractor.toJValue(
+              jsonExtractorOption,
+              Map("query" -> query,
+                  "prediction" -> prediction),
+              algorithms.head.querySerializer,
+              algorithms.head.gsonTypeAdapterFactories)
+            // Return JSON string
+            compact(render(predictionJValue))
+        }
+        Await.result(predFutureRdds, 60 minutes)
       }
 
       predictionsRDD.saveAsTextFile(config.outputFilePath)

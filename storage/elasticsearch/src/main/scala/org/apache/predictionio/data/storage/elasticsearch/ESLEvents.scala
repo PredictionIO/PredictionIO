@@ -37,6 +37,7 @@ import org.json4s.native.Serialization.write
 import org.json4s.ext.JodaTimeSerializers
 import grizzled.slf4j.Logging
 import org.apache.http.message.BasicHeader
+import org.apache.predictionio.data.storage.elasticsearch.ScalaRestClient.ExtendedScalaRestClient
 
 class ESLEvents(val client: RestClient, config: StorageClientConfig, val baseIndex: String)
     extends LEvents with Logging {
@@ -107,7 +108,6 @@ class ESLEvents(val client: RestClient, config: StorageClientConfig, val baseInd
     event: Event,
     appId: Int,
     channelId: Option[Int])(implicit ec: ExecutionContext): Future[String] = {
-    Future {
       val estype = getEsType(appId, channelId)
       val index = baseIndex + "_" + estype
       try {
@@ -127,33 +127,39 @@ class ESLEvents(val client: RestClient, config: StorageClientConfig, val baseInd
           ("creationTime" -> ESUtils.formatUTCDateTime(event.creationTime)) ~
           ("properties" -> write(event.properties.toJObject))
         val entity = new NStringEntity(compact(render(json)), ContentType.APPLICATION_JSON)
-        val response = client.performRequest(
+        val futureResponse = client.performRequestFuture(
           "POST",
           s"/$index/$estype/$id",
-          Map("refresh" -> ESUtils.getEventDataRefresh(config)).asJava,
+          Map("refresh" -> ESUtils.getEventDataRefresh(config)),
           entity)
-        val jsonResponse = parse(EntityUtils.toString(response.getEntity))
-        val result = (jsonResponse \ "result").extract[String]
-        result match {
-          case "created" => id
-          case "updated" => id
-          case _ =>
-            error(s"[$result] Failed to update $index/$estype/$id")
+
+        futureResponse.map {
+          response =>
+            val jsonResponse = parse(EntityUtils.toString(response.getEntity))
+            val result = (jsonResponse \ "result").extract[String]
+            result match {
+              case "created" => id
+              case "updated" => id
+              case _ =>
+                error(s"[$result] Failed to update $index/$estype/$id")
+                ""
+            }
+        }.recover {
+          case t =>
+            error(s"Failed to update $index/$estype/<id>", t)
             ""
         }
       } catch {
         case e: IOException =>
           error(s"Failed to update $index/$estype/<id>", e)
-          ""
+          Future.successful("")
       }
-    }
   }
 
   override def futureInsertBatch(
     events: Seq[Event],
     appId: Int,
     channelId: Option[Int])(implicit ec: ExecutionContext): Future[Seq[String]] = {
-    Future {
       val estype = getEsType(appId, channelId)
       val index = baseIndex + "_" + estype
       try {
@@ -187,34 +193,40 @@ class ESLEvents(val client: RestClient, config: StorageClientConfig, val baseInd
         }.mkString("", "\n", "\n")
 
         val entity = new StringEntity(json)
-        val response = client.performRequest(
+        val responseFuture = client.performRequestFuture(
           "POST",
           "/_bulk",
-          Map("refresh" -> ESUtils.getEventDataRefresh(config)).asJava,
+          Map("refresh" -> ESUtils.getEventDataRefresh(config)),
           entity,
           new BasicHeader("Content-Type", "application/x-ndjson"))
 
-        val responseJson = parse(EntityUtils.toString(response.getEntity))
-        val items = (responseJson \ "items").asInstanceOf[JArray]
+        responseFuture.map {
+          response =>
+            val responseJson = parse(EntityUtils.toString(response.getEntity))
+            val items = (responseJson \ "items").asInstanceOf[JArray]
 
-        items.arr.map { case value: JObject =>
-          val result = (value \ "index" \ "result").extract[String]
-          val id = (value \ "index" \ "_id").extract[String]
+            items.arr.map { case value: JObject =>
+              val result = (value \ "index" \ "result").extract[String]
+              val id = (value \ "index" \ "_id").extract[String]
 
-          result match {
-            case "created" => id
-            case "updated" => id
-            case _ =>
-              error(s"[$result] Failed to update $index/$estype/$id")
-              ""
-          }
+              result match {
+                case "created" => id
+                case "updated" => id
+                case _ =>
+                  error(s"[$result] Failed to update $index/$estype/$id")
+                  ""
+              }
+            }
+        }.recover {
+          case t =>
+            error(s"Failed to update $index/$estype/<id>", t)
+            Nil
         }
       } catch {
         case e: IOException =>
           error(s"Failed to update $index/$estype/<id>", e)
-          Nil
+          Future.successful(Nil)
       }
-    }
   }
 
   private def exists(client: RestClient, estype: String, id: Int): Boolean = {
@@ -245,7 +257,6 @@ class ESLEvents(val client: RestClient, config: StorageClientConfig, val baseInd
     eventId: String,
     appId: Int,
     channelId: Option[Int])(implicit ec: ExecutionContext): Future[Option[Event]] = {
-    Future {
       val estype = getEsType(appId, channelId)
       val index = baseIndex + "_" + estype
       try {
@@ -254,32 +265,37 @@ class ESLEvents(val client: RestClient, config: StorageClientConfig, val baseInd
             ("term" ->
               ("eventId" -> eventId)))
         val entity = new NStringEntity(compact(render(json)), ContentType.APPLICATION_JSON)
-        val response = client.performRequest(
+        val responseFuture = client.performRequestFuture(
           "POST",
           s"/$index/$estype/_search",
-          Map.empty[String, String].asJava,
+          Map.empty[String, String],
           entity)
-        val jsonResponse = parse(EntityUtils.toString(response.getEntity))
-        (jsonResponse \ "hits" \ "total").extract[Long] match {
-          case 0 => None
-          case _ =>
-            val results = (jsonResponse \ "hits" \ "hits").extract[Seq[JValue]]
-            val result = (results.head \ "_source").extract[Event]
-            Some(result)
+        responseFuture.map {
+          response =>
+            val jsonResponse = parse(EntityUtils.toString(response.getEntity))
+            (jsonResponse \ "hits" \ "total").extract[Long] match {
+              case 0 => None
+              case _ =>
+                val results = (jsonResponse \ "hits" \ "hits").extract[Seq[JValue]]
+                val result = (results.head \ "_source").extract[Event]
+                Some(result)
+            }
+        }.recover {
+          case t =>
+            error("Failed to access to /$index/$estype/_search", t)
+            None
         }
       } catch {
         case e: IOException =>
           error("Failed to access to /$index/$estype/_search", e)
-          None
+          Future.successful(None)
       }
-    }
   }
 
   override def futureDelete(
     eventId: String,
     appId: Int,
     channelId: Option[Int])(implicit ec: ExecutionContext): Future[Boolean] = {
-    Future {
       val estype = getEsType(appId, channelId)
       val index = baseIndex + "_" + estype
       try {
@@ -288,19 +304,25 @@ class ESLEvents(val client: RestClient, config: StorageClientConfig, val baseInd
             ("term" ->
               ("eventId" -> eventId)))
         val entity = new NStringEntity(compact(render(json)), ContentType.APPLICATION_JSON)
-        val response = client.performRequest(
+        val responseFuture = client.performRequestFuture(
           "POST",
           s"/$index/$estype/_delete_by_query",
-          Map("refresh" -> ESUtils.getEventDataRefresh(config)).asJava,
+          Map("refresh" -> ESUtils.getEventDataRefresh(config)),
           entity)
-        val jsonResponse = parse(EntityUtils.toString(response.getEntity))
-        (jsonResponse \ "deleted").extract[Int] > 0
+        responseFuture.map {
+          response =>
+            val jsonResponse = parse(EntityUtils.toString(response.getEntity))
+            (jsonResponse \ "deleted").extract[Int] > 0
+        }.recover {
+          case t =>
+            error(s"Failed to delete $index/$estype:$eventId", t)
+            false
+        }
       } catch {
         case e: IOException =>
           error(s"Failed to delete $index/$estype:$eventId", e)
-          false
+          Future.successful(false)
       }
-    }
   }
 
   override def futureFind(
@@ -316,23 +338,26 @@ class ESLEvents(val client: RestClient, config: StorageClientConfig, val baseInd
     limit: Option[Int] = None,
     reversed: Option[Boolean] = None)
     (implicit ec: ExecutionContext): Future[Iterator[Event]] = {
-    Future {
       val estype = getEsType(appId, channelId)
       val index = baseIndex + "_" + estype
       try {
         val query = ESUtils.createEventQuery(
           startTime, untilTime, entityType, entityId,
           eventNames, targetEntityType, targetEntityId, reversed)
-        limit.getOrElse(20) match {
-          case -1 => ESUtils.getEventAll(client, index, estype, query).toIterator
-          case size => ESUtils.getEvents(client, index, estype, query, size).toIterator
+        val eventsFuture = limit.getOrElse(20) match {
+          case -1 => ESUtils.getEventAll(client, index, estype, query).map(_.toIterator)
+          case size => ESUtils.getEvents(client, index, estype, query, size).map(_.toIterator)
+        }
+        eventsFuture.recover {
+          case t =>
+            error(t.getMessage)
+            Iterator.empty
         }
       } catch {
         case e: IOException =>
           error(e.getMessage)
-          Iterator.empty
+          Future.successful(Iterator.empty)
       }
-    }
   }
 
 }

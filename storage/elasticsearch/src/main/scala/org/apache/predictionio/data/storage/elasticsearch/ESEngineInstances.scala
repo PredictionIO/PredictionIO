@@ -20,7 +20,6 @@ package org.apache.predictionio.data.storage.elasticsearch
 import java.io.IOException
 
 import scala.collection.JavaConverters.mapAsJavaMapConverter
-
 import org.apache.http.entity.ContentType
 import org.apache.http.nio.entity.NStringEntity
 import org.apache.http.util.EntityUtils
@@ -33,8 +32,10 @@ import org.json4s._
 import org.json4s.JsonDSL._
 import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization.write
-
 import grizzled.slf4j.Logging
+import scala.concurrent.duration._
+import scala.language.postfixOps
+import scala.concurrent.Await
 
 class ESEngineInstances(client: RestClient, config: StorageClientConfig, index: String)
     extends EngineInstances with Logging {
@@ -133,44 +134,47 @@ class ESEngineInstances(client: RestClient, config: StorageClientConfig, index: 
   }
 
   def getAll(): Seq[EngineInstance] = {
-    try {
-      val json =
-        ("query" ->
-          ("match_all" -> List.empty))
-      ESUtils.getAll[EngineInstance](client, index, estype, compact(render(json)))
-    } catch {
-      case e: IOException =>
-        error("Failed to access to /$index/$estype/_search", e)
-        Nil
-    }
+    val json =
+      ("query" ->
+        ("match_all" -> List.empty))
+    import scala.concurrent.ExecutionContext.Implicits.global
+
+    Await.result(ESUtils
+      .getAll[EngineInstance](client, index, estype, compact(render(json)))
+      .recover {
+        case e: IOException =>
+          error("Failed to access to /$index/$estype/_search", e)
+          Nil
+      }, 1 minute)
   }
 
   def getCompleted(
     engineId: String,
     engineVersion: String,
     engineVariant: String): Seq[EngineInstance] = {
-    try {
-      val json =
-        ("query" ->
-          ("bool" ->
-            ("must" -> List(
-              ("term" ->
-                ("status" -> "COMPLETED")),
-              ("term" ->
-                ("engineId" -> engineId)),
-              ("term" ->
-                ("engineVersion" -> engineVersion)),
-              ("term" ->
-                ("engineVariant" -> engineVariant)))))) ~
-              ("sort" -> List(
-                ("startTime" ->
-                  ("order" -> "desc"))))
-      ESUtils.getAll[EngineInstance](client, index, estype, compact(render(json)))
-    } catch {
-      case e: IOException =>
-        error(s"Failed to access to /$index/$estype/_search", e)
-        Nil
-    }
+    val json =
+      ("query" ->
+        ("bool" ->
+          ("must" -> List(
+            ("term" ->
+              ("status" -> "COMPLETED")),
+            ("term" ->
+              ("engineId" -> engineId)),
+            ("term" ->
+              ("engineVersion" -> engineVersion)),
+            ("term" ->
+              ("engineVariant" -> engineVariant)))))) ~
+            ("sort" -> List(
+              ("startTime" ->
+                ("order" -> "desc"))))
+    import scala.concurrent.ExecutionContext.Implicits.global
+    Await.result(ESUtils
+      .getAll[EngineInstance](client, index, estype, compact(render(json)))
+      .recover {
+        case e: IOException =>
+          error(s"Failed to access to /$index/$estype/_search", e)
+          Nil
+      }, 1 minute)
   }
 
   def getLatestCompleted(

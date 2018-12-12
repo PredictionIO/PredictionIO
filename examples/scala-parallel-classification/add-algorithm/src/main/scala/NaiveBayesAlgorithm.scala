@@ -19,13 +19,13 @@ package org.apache.predictionio.examples.classification
 
 import org.apache.predictionio.controller.P2LAlgorithm
 import org.apache.predictionio.controller.Params
-
 import org.apache.spark.mllib.classification.NaiveBayes
 import org.apache.spark.mllib.classification.NaiveBayesModel
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.SparkContext
-
 import grizzled.slf4j.Logger
+
+import scala.concurrent.{ExecutionContext, Future}
 
 case class AlgorithmParams(
   lambda: Double
@@ -47,11 +47,11 @@ class NaiveBayesAlgorithm(val ap: AlgorithmParams)
     NaiveBayes.train(data.labeledPoints, ap.lambda)
   }
 
-  def predict(model: NaiveBayesModel, query: Query): PredictedResult = {
+  def predictAsync(model: NaiveBayesModel, query: Query)(implicit ec: ExecutionContext): Future[PredictedResult] = {
     val label = model.predict(Vectors.dense(
       Array(query.attr0, query.attr1, query.attr2)
     ))
-    PredictedResult(label)
+    Future.successful(PredictedResult(label))
   }
 
 }

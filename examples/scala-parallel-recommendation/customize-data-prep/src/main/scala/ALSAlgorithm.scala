@@ -20,15 +20,15 @@ package org.apache.predictionio.examples.recommendation
 import org.apache.predictionio.controller.PAlgorithm
 import org.apache.predictionio.controller.Params
 import org.apache.predictionio.data.storage.BiMap
-
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.mllib.recommendation.ALS
 import org.apache.spark.mllib.recommendation.{Rating => MLlibRating}
 import org.apache.spark.mllib.recommendation.ALSModel
-
 import grizzled.slf4j.Logger
+
+import scala.concurrent.{ExecutionContext, Future}
 
 case class ALSAlgorithmParams(
   rank: Int,
@@ -92,7 +92,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       itemStringIntMap = itemStringIntMap)
   }
 
-  def predict(model: ALSModel, query: Query): PredictedResult = {
+  def predictAsync(model: ALSModel, query: Query)(implicit ec: ExecutionContext): Future[PredictedResult] = {
     // Convert String ID to Int index for Mllib
     model.userStringIntMap.get(query.user).map { userInt =>
       // create inverse view of itemStringIntMap
@@ -101,10 +101,10 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       // index. Convert it to String ID for returning PredictedResult
       val itemScores = model.recommendProducts(userInt, query.num)
         .map (r => ItemScore(itemIntStringMap(r.product), r.rating))
-      PredictedResult(itemScores)
+      Future.successful(PredictedResult(itemScores))
     }.getOrElse{
       logger.info(s"No prediction for unknown user ${query.user}.")
-      PredictedResult(Array.empty)
+      Future.successful(PredictedResult(Array.empty))
     }
   }
 

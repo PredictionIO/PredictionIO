@@ -19,7 +19,6 @@ package org.apache.predictionio.data.storage.elasticsearch
 
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
-
 import org.apache.http.entity.ContentType
 import org.apache.http.entity.StringEntity
 import org.apache.http.nio.entity.NStringEntity
@@ -36,6 +35,10 @@ import org.apache.predictionio.data.storage.StorageClientConfig
 import org.apache.http.HttpHost
 import org.apache.predictionio.data.storage.Event
 import org.apache.predictionio.data.storage.DataMap
+import org.apache.predictionio.data.storage.elasticsearch.ScalaRestClient.ExtendedScalaRestClient
+
+import scala.concurrent.{ExecutionContext, Future}
+
 
 object ESUtils {
   val scrollLife = "1m"
@@ -86,8 +89,8 @@ object ESUtils {
     estype: String,
     query: String,
     size: Int)(
-      implicit formats: Formats): Seq[Event] = {
-    getDocList(client, index, estype, query, size).map(x => toEvent(x))
+      implicit formats: Formats, ec: ExecutionContext): Future[Seq[Event]] = {
+    getDocList(client, index, estype, query, size).map(docs => docs.map(x => toEvent(x)))
   }
 
   def getDocList(
@@ -96,16 +99,19 @@ object ESUtils {
     estype: String,
     query: String,
     size: Int)(
-      implicit formats: Formats): Seq[JValue] = {
+      implicit formats: Formats, ec: ExecutionContext): Future[Seq[JValue]] = {
     val entity = new NStringEntity(query, ContentType.APPLICATION_JSON)
-    val response = client.performRequest(
+    val responseFuture = client.performRequestFuture(
       "POST",
       s"/$index/$estype/_search",
       Map("size" -> s"${size}"),
       entity)
-    val responseJValue = parse(EntityUtils.toString(response.getEntity))
-    val hits = (responseJValue \ "hits" \ "hits").extract[Seq[JValue]]
-    hits.map(h => (h \ "_source"))
+    responseFuture.map {
+      response =>
+        val responseJValue = parse(EntityUtils.toString(response.getEntity))
+        val hits = (responseJValue \ "hits" \ "hits").extract[Seq[JValue]]
+        hits.map(h => (h \ "_source"))
+    }
   }
 
   def getAll[T: Manifest](
@@ -113,8 +119,9 @@ object ESUtils {
     index: String,
     estype: String,
     query: String)(
-      implicit formats: Formats): Seq[T] = {
-    getDocAll(client, index, estype, query).map(x => x.extract[T])
+      implicit formats: Formats, ec: ExecutionContext): Future[Seq[T]] = {
+    getDocAll(client, index, estype, query)
+      .map(docs => docs.map(x => x.extract[T]))
   }
 
   def getEventAll(
@@ -122,8 +129,8 @@ object ESUtils {
     index: String,
     estype: String,
     query: String)(
-      implicit formats: Formats): Seq[Event] = {
-    getDocAll(client, index, estype, query).map(x => toEvent(x))
+      implicit formats: Formats, ec: ExecutionContext): Future[Seq[Event]] = {
+    getDocAll(client, index, estype, query).map(docs => docs.map(x => toEvent(x)))
   }
 
   def getDocAll(
@@ -131,7 +138,7 @@ object ESUtils {
     index: String,
     estype: String,
     query: String)(
-      implicit formats: Formats): Seq[JValue] = {
+      implicit formats: Formats, ec: ExecutionContext): Future[Seq[JValue]] = {
 
     @scala.annotation.tailrec
     def scroll(scrollId: String, hits: Seq[JValue], results: Seq[JValue]): Seq[JValue] = {
@@ -152,15 +159,18 @@ object ESUtils {
     }
 
     val entity = new NStringEntity(query, ContentType.APPLICATION_JSON)
-    val response = client.performRequest(
+    val responseFuture = client.performRequestFuture(
       "POST",
       s"/$index/$estype/_search",
       Map("scroll" -> scrollLife),
       entity)
-    val responseJValue = parse(EntityUtils.toString(response.getEntity))
-    scroll((responseJValue \ "_scroll_id").extract[String],
-      (responseJValue \ "hits" \ "hits").extract[Seq[JValue]],
-      Nil)
+    responseFuture.map {
+      response =>
+        val responseJValue = parse(EntityUtils.toString(response.getEntity))
+        scroll((responseJValue \ "_scroll_id").extract[String],
+          (responseJValue \ "hits" \ "hits").extract[Seq[JValue]],
+          Nil)
+    }
   }
 
   def createIndex(
