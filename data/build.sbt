@@ -20,6 +20,7 @@ import PIOBuild._
 name := "apache-predictionio-data"
 
 libraryDependencies ++= Seq(
+  "org.scala-lang"          % "scala-reflect"  % scalaVersion.value,
   "com.github.nscala-time" %% "nscala-time"    % "2.6.0",
   "com.google.guava"        % "guava"          % "14.0.1",
   "com.typesafe.akka"      %% "akka-http-testkit" % "10.1.5" % "test",
