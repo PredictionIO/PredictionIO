@@ -157,7 +157,7 @@ fi
 # Deploy
 # Get current running instance PID
 PIDBYPORT_COMMAND="lsof -t -i:$PORT"
-DEPLOYEDPORT=$($PIDBYPORT_COMMAND)
+DEPLOYEDPID=$($PIDBYPORT_COMMAND)
 
 DEPLOY_LOG=`mktemp $LOG_DIR/tmp.XXXXXXXXXX`
 $($DEPLOY_COMMAND 1>$DEPLOY_LOG 2>&1) &
@@ -175,13 +175,13 @@ while [[ $RETURN_VAL -ne 0 && $COUNTER -lt 20 ]]; do
 done
 
 # Check if the previous engine instance is running
-KILLSD_COMMAND="kill $DEPLOYEDPORT"
-if [ -z "$DEPLOYEDPORT" ]
+KILLSD_COMMAND="kill $DEPLOYEDPID"
+if [ -z "$DEPLOYEDPID" ]
 then
   printf "\nNo stale PIDs found for port $PORT\n"
 else
   $($KILLSD_COMMAND)
-  printf "\nStale PID found as $DEPLOYEDPORT. Resources released.\n"
+  printf "\nStale PID found as $DEPLOYEDPID. Resources released.\n"
 fi
 
 cat $DEPLOY_LOG >> $LOG_FILE
