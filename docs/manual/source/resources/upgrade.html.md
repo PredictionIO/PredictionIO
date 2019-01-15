@@ -23,18 +23,75 @@ This page highlights major changes in each version and upgrade tools.
 
 # How to Upgrade
 
-To upgrade and use new version of PredictionIO, do the following:
+## Upgrade to 0.14.0
 
-- Download and build the new PredictionIO binary
-  [(instructions)](/install/install-sourcecode/).
-- Retain the setting from current `PredictionIO/conf/pio-env.sh` to the new
-  `PredictionIO/conf/pio-env.sh`.
-- If you have added `PredictionIO/bin` to your `PATH` environment variable before,
-  change it to the new `PredictionIO/bin` as well.
+This release adds Elasticsearch 6 support. See [pull request](https://github.com/apache/predictionio/pull/466) for details.
+Consequently, you must reindex your data.
 
-# Additional Notes for Specific Versions Upgrade
+1. Access your old cluster to check an existing index
 
-In addition, please take notes of the following for specific version upgrade.
+```
+$ curl -XGET 'http://localhost:9200/_cat/indices?v'
+health status index     uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+yellow open   pio_event 6BAPz-DfQ2e9bICdVRr03g   5   1       1501            0    321.3kb        321.3kb
+yellow open   pio_meta  oxDMU1mGRn-vnXtAjmifSw   5   1          4            0     32.4kb         32.4kb
+
+$ curl -XGET "http://localhost:9200/pio_meta/_search" -d'
+{
+  "aggs": {
+    "typesAgg": {
+      "terms": {
+        "field": "_type",
+        "size": 200
+      }
+    }
+  },
+  "size": 0
+}'
+{"took":3,"timed_out":false,"_shards":{"total":5,"successful":5,"skipped":0,"failed":0},"hits":{"total":4,"max_score":0.0,"hits":[]},"aggregations":{"typesAgg":{"doc_count_error_upper_bound":0,"sum_other_doc_count":0,"buckets":[{"key":"accesskeys","doc_count":1},{"key":"apps","doc_count":1},{"key":"engine_instances","doc_count":1},{"key":"sequences","doc_count":1}]}}}
+
+$ curl -XGET "http://localhost:9200/pio_event/_search" -d'
+{
+  "aggs": {
+    "typesAgg": {
+      "terms": {
+        "field": "_type",
+        "size": 200
+      }
+    }
+  },
+  "size": 0
+}'
+{"took":2,"timed_out":false,"_shards":{"total":5,"successful":5,"skipped":0,"failed":0},"hits":{"total":1501,"max_score":0.0,"hits":[]},"aggregations":{"typesAgg":{"doc_count_error_upper_bound":0,"sum_other_doc_count":0,"buckets":[{"key":"1","doc_count":1501}]}}}
+```
+
+2. [Reindex](https://www.elastic.co/guide/en/elasticsearch/reference/6.0/reindex-upgrade-remote.html)
+
+In the above case, the indices that you need to migrate are as follows.
+
+- pio_meta_accesskeys
+- pio_meta_apps
+- pio_meta_engine_instances
+- pio_meta_sequences
+- pio_event_1
+
+For example,
+
+```
+$ curl -H "Content-Type: application/json" -XPOST "http://localhost:9600/_reindex" -d'
+{
+  "source": {
+    "remote": {
+      "host": "http://localhost:9200"
+    },
+    "index": "pio_meta",
+    "type": "accesskeys"
+  },
+  "dest": {
+    "index": "pio_meta_accesskeys"
+  }
+}'
+```
 
 ## Upgrade to 0.12.0
 

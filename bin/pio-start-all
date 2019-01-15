@@ -34,8 +34,6 @@ if [ `echo $SOURCE_TYPE | grep -i elasticsearch | wc -l` != 0 ] ; then
   echo "Starting Elasticsearch..."
   if [ -n "$PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME" ]; then
     ELASTICSEARCH_HOME=$PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME
-  elif [ -n "$PIO_STORAGE_SOURCES_ELASTICSEARCH5_HOME" ]; then
-    ELASTICSEARCH_HOME=$PIO_STORAGE_SOURCES_ELASTICSEARCH5_HOME
   fi
   if [ -n "$ELASTICSEARCH_HOME" ]; then
     if [ -n "$JAVA_HOME" ]; then
