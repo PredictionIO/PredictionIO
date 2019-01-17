@@ -42,12 +42,9 @@ class ESAccessKeys(client: RestClient, config: StorageClientConfig, index: Strin
   private val estype = "accesskeys"
   private val internalIndex = index + "_" + estype
    
-  ESUtils.createIndex(client, internalIndex,
-    ESUtils.getNumberOfShards(config, internalIndex.toUpperCase),
-    ESUtils.getNumberOfReplicas(config, internalIndex.toUpperCase))
+  ESUtils.createIndex(client, internalIndex)
   val mappingJson =
     (estype ->
-      ("_all" -> ("enabled" -> false)) ~
       ("properties" ->
         ("key" -> ("type" -> "keyword")) ~
         ("events" -> ("type" -> "keyword"))))

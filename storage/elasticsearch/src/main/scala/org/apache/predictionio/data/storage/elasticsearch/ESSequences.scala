@@ -21,7 +21,6 @@ import java.io.IOException
 
 import scala.collection.JavaConverters._
 
-import org.apache.http.Header
 import org.apache.http.entity.ContentType
 import org.apache.http.nio.entity.NStringEntity
 import org.apache.http.util.EntityUtils
@@ -40,12 +39,9 @@ class ESSequences(client: RestClient, config: StorageClientConfig, index: String
   private val estype = "sequences"
   private val internalIndex = index + "_" + estype
 
-  ESUtils.createIndex(client, internalIndex,
-    ESUtils.getNumberOfShards(config, internalIndex.toUpperCase),
-    ESUtils.getNumberOfReplicas(config, internalIndex.toUpperCase))
+  ESUtils.createIndex(client, internalIndex)
   val mappingJson =
     (estype ->
-      ("_all" -> ("enabled" -> false)) ~
       ("properties" ->
         ("n" -> ("enabled" -> false))))
   ESUtils.createMapping(client, internalIndex, estype, compact(render(mappingJson)))

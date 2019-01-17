@@ -53,12 +53,9 @@ class ESLEvents(val client: RestClient, config: StorageClientConfig, val baseInd
   override def init(appId: Int, channelId: Option[Int] = None): Boolean = {
     val estype = getEsType(appId, channelId)
     val index = baseIndex + "_" + estype
-    ESUtils.createIndex(client, index,
-      ESUtils.getNumberOfShards(config, index.toUpperCase),
-      ESUtils.getNumberOfReplicas(config, index.toUpperCase))
+    ESUtils.createIndex(client, index)
     val json =
       (estype ->
-        ("_all" -> ("enabled" -> false)) ~
         ("properties" ->
           ("name" -> ("type" -> "keyword")) ~
           ("eventId" -> ("type" -> "keyword")) ~

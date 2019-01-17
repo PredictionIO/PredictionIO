@@ -21,7 +21,6 @@ import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 
 import org.apache.http.entity.ContentType
-import org.apache.http.entity.StringEntity
 import org.apache.http.nio.entity.NStringEntity
 import org.elasticsearch.client.RestClient
 import org.json4s._
@@ -165,23 +164,16 @@ object ESUtils {
 
   def createIndex(
     client: RestClient,
-    index: String,
-    numberOfShards: Option[Int],
-    numberOfReplicas: Option[Int]): Unit = {
+    index: String): Unit = {
     client.performRequest(
       "HEAD",
       s"/$index",
       Map.empty[String, String].asJava).getStatusLine.getStatusCode match {
         case 404 =>
-          val json = ("settings" ->
-            ("number_of_shards" -> numberOfShards) ~
-            ("number_of_replicas" -> numberOfReplicas))
-          val entity = new NStringEntity(compact(render(json)), ContentType.APPLICATION_JSON)
           client.performRequest(
             "PUT",
             s"/$index",
-            Map.empty[String, String].asJava,
-            entity)
+            Map.empty[String, String].asJava)
         case 200 =>
         case _ =>
           throw new IllegalStateException(s"/$index is invalid.")
@@ -267,14 +259,6 @@ object ESUtils {
     val schemes = config.properties.get("SCHEMES").
       map(_.split(",").toSeq).getOrElse(Seq("http"))
     (hosts, ports, schemes).zipped.map((h, p, s) => new HttpHost(h, p, s))
-  }
-
-  def getNumberOfShards(config: StorageClientConfig, index: String): Option[Int] = {
-    config.properties.get(s"${index}_NUM_OF_SHARDS").map(_.toInt)
-  }
-
-  def getNumberOfReplicas(config: StorageClientConfig, index: String): Option[Int] = {
-    config.properties.get(s"${index}_NUM_OF_REPLICAS").map(_.toInt)
   }
 
   def getEventDataRefresh(config: StorageClientConfig): String = {

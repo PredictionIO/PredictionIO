@@ -39,15 +39,12 @@ class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
     extends Channels with Logging {
   implicit val formats = DefaultFormats.lossless
   private val estype = "channels"
-  private val seq = new ESSequences(client, config, internalIndex)
+  private val seq = new ESSequences(client, config, index)
   private val internalIndex = index + "_" + estype
 
-  ESUtils.createIndex(client, internalIndex,
-    ESUtils.getNumberOfShards(config, internalIndex.toUpperCase),
-    ESUtils.getNumberOfReplicas(config, internalIndex.toUpperCase))
+  ESUtils.createIndex(client, internalIndex)
   val mappingJson =
     (estype ->
-      ("_all" -> ("enabled" -> false)) ~
       ("properties" ->
         ("name" -> ("type" -> "keyword"))))
   ESUtils.createMapping(client, internalIndex, estype, compact(render(mappingJson)))

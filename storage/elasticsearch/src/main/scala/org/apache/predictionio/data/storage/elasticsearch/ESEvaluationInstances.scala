@@ -28,7 +28,6 @@ import org.apache.predictionio.data.storage.EvaluationInstance
 import org.apache.predictionio.data.storage.EvaluationInstanceSerializer
 import org.apache.predictionio.data.storage.EvaluationInstances
 import org.apache.predictionio.data.storage.StorageClientConfig
-import org.apache.predictionio.data.storage.StorageClientException
 import org.elasticsearch.client.{ResponseException, RestClient}
 import org.json4s._
 import org.json4s.JsonDSL._
@@ -41,15 +40,12 @@ class ESEvaluationInstances(client: RestClient, config: StorageClientConfig, ind
     extends EvaluationInstances with Logging {
   implicit val formats = DefaultFormats + new EvaluationInstanceSerializer
   private val estype = "evaluation_instances"
-  private val seq = new ESSequences(client, config, internalIndex)
+  private val seq = new ESSequences(client, config, index)
   private val internalIndex = index + "_" + estype
 
-  ESUtils.createIndex(client, internalIndex,
-    ESUtils.getNumberOfShards(config, internalIndex.toUpperCase),
-    ESUtils.getNumberOfReplicas(config, internalIndex.toUpperCase))
+  ESUtils.createIndex(client, internalIndex)
   val mappingJson =
     (estype ->
-      ("_all" -> ("enabled" -> false)) ~
       ("properties" ->
         ("status" -> ("type" -> "keyword")) ~
         ("startTime" -> ("type" -> "date")) ~

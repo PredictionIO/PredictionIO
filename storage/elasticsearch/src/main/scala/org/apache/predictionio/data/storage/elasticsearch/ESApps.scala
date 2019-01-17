@@ -40,16 +40,12 @@ class ESApps(client: RestClient, config: StorageClientConfig, index: String)
     extends Apps with Logging {
   implicit val formats = DefaultFormats.lossless
   private val estype = "apps"
+  private val seq = new ESSequences(client, config, index)
   private val internalIndex = index + "_" + estype
 
-  private val seq = new ESSequences(client, config, internalIndex)
-
-  ESUtils.createIndex(client, internalIndex,
-    ESUtils.getNumberOfShards(config, internalIndex.toUpperCase),
-    ESUtils.getNumberOfReplicas(config, internalIndex.toUpperCase))
+  ESUtils.createIndex(client, internalIndex)
   val mappingJson =
     (estype ->
-      ("_all" -> ("enabled" -> false)) ~
       ("properties" ->
         ("id" -> ("type" -> "keyword")) ~
         ("name" -> ("type" -> "keyword"))))
