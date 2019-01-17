@@ -67,13 +67,17 @@ $ curl -XGET "http://localhost:9200/pio_event/_search" -d'
 
 2. [Reindex](https://www.elastic.co/guide/en/elasticsearch/reference/6.0/reindex-upgrade-remote.html)
 
-In the above case, the indices that you need to migrate are as follows.
+According to the following conversion table, you run the reindex every index that you need to migrate to your new cluster.
 
-- pio_meta_accesskeys
-- pio_meta_apps
-- pio_meta_engine_instances
-- pio_meta_sequences
-- pio_event_1
+| Old Cluster | New Cluster |
+| --------------- | ---------------- |
+| index: `pio_meta` type: `accesskeys` | index: `pio_meta_accesskeys` |
+| index: `pio_meta` type: `apps` | index: `pio_meta_apps` |
+| index: `pio_meta` type: `channels` | index: `pio_meta_channels` |
+| index: `pio_meta` type: `engine_instances` | index: `pio_meta_engine_instances` |
+| index: `pio_meta` type: `evaluation_instances` | index: `pio_meta_evaluation_instances` |
+| index: `pio_meta` type: `sequences` | index: `pio_meta_sequences` |
+| index: `pio_event` type: It depends on your use case. (e.g. `1`) | index: pio_event_<old_type> (e.g. `pio_event_1`) |
 
 For example,
 
