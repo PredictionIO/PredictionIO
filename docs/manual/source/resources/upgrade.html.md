@@ -28,7 +28,7 @@ This page highlights major changes in each version and upgrade tools.
 This release adds Elasticsearch 6 support. See [pull request](https://github.com/apache/predictionio/pull/466) for details.
 Consequently, you must reindex your data.
 
-1. Access your old cluster to check an existing index
+1. Access your old cluster to check existing indices
 
 ```
 $ curl -XGET 'http://localhost:9200/_cat/indices?v'
@@ -65,7 +65,32 @@ $ curl -XGET "http://localhost:9200/pio_event/_search" -d'
 {"took":2,"timed_out":false,"_shards":{"total":5,"successful":5,"skipped":0,"failed":0},"hits":{"total":1501,"max_score":0.0,"hits":[]},"aggregations":{"typesAgg":{"doc_count_error_upper_bound":0,"sum_other_doc_count":0,"buckets":[{"key":"1","doc_count":1501}]}}}
 ```
 
-2. [Reindex](https://www.elastic.co/guide/en/elasticsearch/reference/6.0/reindex-upgrade-remote.html)
+2. (Optional) Settings for new indices
+
+If you want to add specific settings associated with each index, we would recommend defining [Index Templates](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-templates.html).
+
+For example,
+
+```
+$ curl -H "Content-Type: application/json" -XPUT "http://localhost:9600/_template/pio_meta" -d'
+{
+  "index_patterns": ["pio_meta_*"],
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1
+  }
+}'
+$ curl -H "Content-Type: application/json" -XPUT "http://localhost:9600/_template/pio_event" -d'
+{
+  "index_patterns": ["pio_event_*"],
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1
+  }
+}'
+```
+
+3. [Reindex](https://www.elastic.co/guide/en/elasticsearch/reference/6.0/reindex-upgrade-remote.html)
 
 According to the following conversion table, you run the reindex every index that you need to migrate to your new cluster.
 
