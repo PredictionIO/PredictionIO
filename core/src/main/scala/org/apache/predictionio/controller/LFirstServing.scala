@@ -27,7 +27,7 @@ import org.apache.predictionio.core.BaseAlgorithm
   */
 class LFirstServing[Q, P] extends LServing[Q, P] {
   /** Returns the first algorithm's prediction. */
-  def serve(query: Q, predictions: Seq[P]): P = predictions.head
+  override def serve(query: Q, predictions: Seq[P]): P = predictions.head
 }
 
 /** A concrete implementation of [[LServing]] returning the first algorithm's

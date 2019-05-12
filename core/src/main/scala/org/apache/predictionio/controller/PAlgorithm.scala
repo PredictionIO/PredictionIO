@@ -47,7 +47,7 @@ import org.apache.spark.rdd.RDD
 abstract class PAlgorithm[PD, M, Q, P]
   extends BaseAlgorithm[PD, M, Q, P] {
 
-  def trainBase(sc: SparkContext, pd: PD): M = train(sc, pd)
+  override def trainBase(sc: SparkContext, pd: PD): M = train(sc, pd)
 
   /** Implement this method to produce a model from prepared data.
     *
@@ -56,7 +56,7 @@ abstract class PAlgorithm[PD, M, Q, P]
     */
   def train(sc: SparkContext, pd: PD): M
 
-  def batchPredictBase(sc: SparkContext, bm: Any, qs: RDD[(Long, Q)])
+  override def batchPredictBase(sc: SparkContext, bm: Any, qs: RDD[(Long, Q)])
   : RDD[(Long, P)] = batchPredict(bm.asInstanceOf[M], qs)
 
   /** To provide evaluation feature, one must override and implement this method
@@ -72,7 +72,7 @@ abstract class PAlgorithm[PD, M, Q, P]
   def batchPredict(m: M, qs: RDD[(Long, Q)]): RDD[(Long, P)] =
     throw new NotImplementedError("batchPredict not implemented")
 
-  def predictBase(baseModel: Any, query: Q): P = {
+  override def predictBase(baseModel: Any, query: Q): P = {
     predict(baseModel.asInstanceOf[M], query)
   }
 

@@ -29,7 +29,7 @@ class PluginsActor(engineVariant: String) extends Actor {
 
   val pluginContext = EngineServerPluginContext(log, engineVariant)
 
-  def receive: PartialFunction[Any, Unit] = {
+  override def receive: PartialFunction[Any, Unit] = {
     case (ei: EngineInstance, q: JValue, p: JValue) =>
       pluginContext.outputSniffers.values.foreach(_.process(ei, q, p, pluginContext))
     case h: PluginsActor.HandleREST =>

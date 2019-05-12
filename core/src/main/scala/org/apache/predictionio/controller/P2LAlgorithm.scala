@@ -46,7 +46,7 @@ import scala.reflect._
 abstract class P2LAlgorithm[PD, M: ClassTag, Q: ClassTag, P]
   extends BaseAlgorithm[PD, M, Q, P] {
 
-  def trainBase(sc: SparkContext, pd: PD): M = train(sc, pd)
+  override def trainBase(sc: SparkContext, pd: PD): M = train(sc, pd)
 
   /** Implement this method to produce a model from prepared data.
     *
@@ -55,7 +55,7 @@ abstract class P2LAlgorithm[PD, M: ClassTag, Q: ClassTag, P]
     */
   def train(sc: SparkContext, pd: PD): M
 
-  def batchPredictBase(sc: SparkContext, bm: Any, qs: RDD[(Long, Q)])
+  override def batchPredictBase(sc: SparkContext, bm: Any, qs: RDD[(Long, Q)])
   : RDD[(Long, P)] = batchPredict(bm.asInstanceOf[M], qs)
 
   /** This is a default implementation to perform batch prediction. Override
@@ -70,7 +70,7 @@ abstract class P2LAlgorithm[PD, M: ClassTag, Q: ClassTag, P]
     qs.mapValues { q => predict(m, q) }
   }
 
-  def predictBase(bm: Any, q: Q): P = predict(bm.asInstanceOf[M], q)
+  override def predictBase(bm: Any, q: Q): P = predict(bm.asInstanceOf[M], q)
 
   /** Implement this method to produce a prediction from a query and trained
     * model.

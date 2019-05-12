@@ -30,7 +30,7 @@ import org.apache.spark.SparkContext
   * @group Preparator
   */
 class IdentityPreparator[TD] extends BasePreparator[TD, TD] {
-  def prepareBase(sc: SparkContext, td: TD): TD = td
+  override def prepareBase(sc: SparkContext, td: TD): TD = td
 }
 
 /** Companion object of [[IdentityPreparator]] that conveniently returns an

@@ -33,7 +33,7 @@ import org.apache.spark.SparkContext
 abstract class PPreparator[TD, PD]
   extends BasePreparator[TD, PD] {
 
-  def prepareBase(sc: SparkContext, td: TD): PD = {
+  override def prepareBase(sc: SparkContext, td: TD): PD = {
     prepare(sc, td)
   }
 

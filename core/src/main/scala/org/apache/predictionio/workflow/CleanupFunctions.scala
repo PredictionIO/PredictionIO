@@ -37,7 +37,7 @@ object CleanupFunctions {
     * CleanupFunctions.add { MyStorageClass.close }
     * }}}
     *
-    * @param anonymous function containing cleanup code.
+    * @param f function containing cleanup code.
     */
   def add(f: () => Unit): Seq[() => Unit] = {
     functions = functions :+ f
@@ -56,8 +56,6 @@ object CleanupFunctions {
     *   CleanupFunctions.run()
     * }
     * }}}
-    *
-    * @param anonymous function containing cleanup code.
     */
   def run(): Unit = {
     functions.foreach { f => f() }

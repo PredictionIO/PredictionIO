@@ -45,7 +45,7 @@ import scala.reflect._
 abstract class LAlgorithm[PD, M : ClassTag, Q, P]
   extends BaseAlgorithm[RDD[PD], RDD[M], Q, P] {
 
-  def trainBase(sc: SparkContext, pd: RDD[PD]): RDD[M] = pd.map(train)
+  override def trainBase(sc: SparkContext, pd: RDD[PD]): RDD[M] = pd.map(train)
 
   /** Implement this method to produce a model from prepared data.
     *
@@ -54,7 +54,7 @@ abstract class LAlgorithm[PD, M : ClassTag, Q, P]
     */
   def train(pd: PD): M
 
-  def batchPredictBase(sc: SparkContext, bm: Any, qs: RDD[(Long, Q)])
+  override def batchPredictBase(sc: SparkContext, bm: Any, qs: RDD[(Long, Q)])
   : RDD[(Long, P)] = {
     val mRDD = bm.asInstanceOf[RDD[M]]
     batchPredict(mRDD, qs)
@@ -76,7 +76,7 @@ abstract class LAlgorithm[PD, M : ClassTag, Q, P]
     }
   }
 
-  def predictBase(localBaseModel: Any, q: Q): P = {
+  override def predictBase(localBaseModel: Any, q: Q): P = {
     predict(localBaseModel.asInstanceOf[M], q)
   }
 
