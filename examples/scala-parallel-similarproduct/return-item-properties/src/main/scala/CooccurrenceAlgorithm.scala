@@ -44,6 +44,7 @@ class CooccurrenceModel(
 class CooccurrenceAlgorithm(val ap: CooccurrenceAlgorithmParams)
   extends P2LAlgorithm[PreparedData, CooccurrenceModel, Query, PredictedResult] {
 
+  override
   def train(sc: SparkContext, data: PreparedData): CooccurrenceModel = {
 
     val itemStringIntMap = BiMap.stringInt(data.items.keys)
@@ -103,6 +104,7 @@ class CooccurrenceAlgorithm(val ap: CooccurrenceAlgorithmParams)
     topCooccurrences
   }
 
+  override
   def predict(model: CooccurrenceModel, query: Query): PredictedResult = {
 
     // convert items to Int index

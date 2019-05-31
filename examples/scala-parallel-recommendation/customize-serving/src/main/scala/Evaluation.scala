@@ -35,6 +35,7 @@ case class PrecisionAtK(k: Int, ratingThreshold: Double = 2.0)
 
   override def header = s"Precision@K (k=$k, threshold=$ratingThreshold)"
 
+  override
   def calculate(q: Query, p: PredictedResult, a: ActualResult): Option[Double] = {
     val positives: Set[String] = a.ratings.filter(_.rating >= ratingThreshold).map(_.item).toSet
 
@@ -53,6 +54,7 @@ case class PositiveCount(ratingThreshold: Double = 2.0)
     extends AverageMetric[EmptyEvaluationInfo, Query, PredictedResult, ActualResult] {
   override def header = s"PositiveCount (threshold=$ratingThreshold)"
 
+  override
   def calculate(q: Query, p: PredictedResult, a: ActualResult): Double = {
     a.ratings.filter(_.rating >= ratingThreshold).size
   }

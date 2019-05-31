@@ -59,6 +59,7 @@ class ALSModel(
     scored.top(num)(Ordering.by(_._2))
   }
 
+  override
   def save(id: String, params: ALSAlgorithmParams,
     sc: SparkContext): Boolean = {
 

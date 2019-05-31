@@ -42,6 +42,7 @@ class RandomForestAlgorithm(val ap: RandomForestAlgorithmParams) // CHANGED
   Query, PredictedResult] {
 
   // CHANGED
+  override
   def train(sc: SparkContext, data: PreparedData): RandomForestModel = {
     // CHANGED
     // Empty categoricalFeaturesInfo indicates all features are continuous.
@@ -57,6 +58,7 @@ class RandomForestAlgorithm(val ap: RandomForestAlgorithmParams) // CHANGED
       ap.maxBins)
   }
 
+  override
   def predict(
     model: RandomForestModel, // CHANGED
     query: Query): PredictedResult = {
