@@ -26,6 +26,6 @@ name := "template-scala-parallel-recommendation"
 organization := "org.apache.predictionio"
 
 libraryDependencies ++= Seq(
-  "org.apache.predictionio" % "apache-predictionio-core_2.11" % "0.15.0-SNAPSHOT" % "provided",
+  "org.apache.predictionio" % "apache-predictionio-core" % "0.15.0-SNAPSHOT" % "provided",
   "org.apache.spark"        %% "spark-core"    % sys.env.getOrElse("PIO_SPARK_VERSION", "2.1.1") % "provided",
   "org.apache.spark"        %% "spark-mllib"   % sys.env.getOrElse("PIO_SPARK_VERSION", "2.1.1") % "provided")
