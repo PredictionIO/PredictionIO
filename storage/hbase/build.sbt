@@ -33,7 +33,7 @@ libraryDependencies ++= Seq(
     exclude("org.mortbay.jetty", "servlet-api-2.5")
     exclude("org.mortbay.jetty", "jsp-api-2.1")
     exclude("org.mortbay.jetty", "jsp-2.1"),
-  "org.specs2"              %% "specs2-core"         % "4.5.1" % "test")
+  "org.specs2"              %% "specs2-core"         % "2.4.17" % "test")
 
 parallelExecution in Test := false
 

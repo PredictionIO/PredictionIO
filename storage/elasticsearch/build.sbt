@@ -28,7 +28,7 @@ libraryDependencies ++= Seq(
   "org.elasticsearch"       % "elasticsearch-spark-20_2.11" % elasticsearchVersion.value
     exclude("org.apache.spark", "*"),
   "org.elasticsearch"        % "elasticsearch-hadoop-mr"  % elasticsearchVersion.value,
-  "org.specs2"              %% "specs2-core"                   % "4.5.1" % "test")
+  "org.specs2"              %% "specs2-core"                   % "2.4.17" % "test")
 
 parallelExecution in Test := false
 

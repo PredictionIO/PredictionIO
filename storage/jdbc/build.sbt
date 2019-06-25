@@ -24,7 +24,7 @@ libraryDependencies ++= Seq(
   "org.apache.spark"        %% "spark-sql"      % sparkVersion.value % "provided",
   "org.scalikejdbc"         %% "scalikejdbc"    % "3.1.0",
   "org.postgresql"           % "postgresql"     % "9.4-1204-jdbc41" % "test",
-  "org.specs2"              %% "specs2-core"         % "4.5.1" % "test")
+  "org.specs2"              %% "specs2-core"         % "2.4.17" % "test")
 
 parallelExecution in Test := false
 
