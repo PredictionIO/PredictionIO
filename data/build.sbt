@@ -21,15 +21,15 @@ name := "apache-predictionio-data"
 
 libraryDependencies ++= Seq(
   "org.scala-lang"          % "scala-reflect"  % scalaVersion.value,
-  "com.github.nscala-time" %% "nscala-time"    % "2.6.0",
+  "com.github.nscala-time" %% "nscala-time"    % "2.22.0",
   "com.google.guava"        % "guava"          % "14.0.1",
   "com.typesafe.akka"      %% "akka-http-testkit" % "10.1.5" % "test",
   "org.apache.spark"       %% "spark-sql"      % sparkVersion.value % "provided",
-  "org.clapper"            %% "grizzled-slf4j" % "1.0.2",
-  "org.scalatest"          %% "scalatest"      % "2.1.7" % "test",
-  "org.specs2"             %% "specs2"         % "3.3.1" % "test"
+  "org.clapper"            %% "grizzled-slf4j" % "1.3.4",
+  "org.scalatest"          %% "scalatest"      % "3.0.5" % "test",
+  "org.specs2"             %% "specs2-core"    % "4.5.1" % "test"
     exclude("org.scalaz.stream", s"scalaz-stream_${scalaBinaryVersion.value}"),
-  "org.scalamock"          %% "scalamock-specs2-support" % "3.5.0" % "test",
+  "org.scalamock"          %% "scalamock-specs2-support" % "3.6.0" % "test",
   "com.h2database"           % "h2"             % "1.4.196" % "test")
 
 parallelExecution in Test := false

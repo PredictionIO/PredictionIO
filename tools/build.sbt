@@ -25,7 +25,7 @@ libraryDependencies ++= Seq(
   "org.apache.spark"       %% "spark-sql"         % sparkVersion.value % "provided",
   "com.typesafe.akka"      %% "akka-slf4j"        % akkaVersion.value,
   "com.typesafe.akka"      %% "akka-http-testkit" % "10.1.5" % "test",
-  "org.specs2"             %% "specs2-core"       % "4.2.0" % "test")
+  "org.specs2"             %% "specs2-core"       % "4.5.1" % "test")
 
 assemblyMergeStrategy in assembly := {
   case PathList("META-INF", "LICENSE.txt") => MergeStrategy.concat
