@@ -24,7 +24,7 @@ libraryDependencies ++= Seq(
     exclude("commons-beanutils", "*"),
   "org.apache.hadoop"        % "hadoop-hdfs"              % hadoopVersion.value,
   "org.apache.predictionio" %% "apache-predictionio-data" % version.value % "provided",
-  "org.scalatest"           %% "scalatest"                % "2.1.7" % "test")
+  "org.scalatest"           %% "scalatest"                % "3.0.5" % "test")
 
 parallelExecution in Test := false
 
