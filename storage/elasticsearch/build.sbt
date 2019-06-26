@@ -25,7 +25,7 @@ libraryDependencies ++= Seq(
   "org.apache.predictionio" %% "apache-predictionio-core" % version.value % "provided",
   "org.apache.spark"        %% "spark-core"               % sparkVersion.value % "provided",
   "org.elasticsearch.client" % "elasticsearch-rest-client" % elasticsearchVersion.value,
-  "org.elasticsearch"       % "elasticsearch-spark-20_2.11" % elasticsearchVersion.value
+  "org.elasticsearch"       %% "elasticsearch-spark-20" % elasticsearchVersion.value
     exclude("org.apache.spark", "*"),
   "org.elasticsearch"        % "elasticsearch-hadoop-mr"  % elasticsearchVersion.value,
   "org.specs2"              %% "specs2-core"                   % "2.4.17" % "test")
