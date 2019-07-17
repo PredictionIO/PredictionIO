@@ -82,7 +82,7 @@ object PPythonEventStore {
       Option(entityType),
       Option(entityId),
       Option(eventNames),
-      targetEntityType match { 
+      targetEntityType match {
         case null => None
         case "" => Option(None)
         case _ => Option(Option(targetEntityType))
