@@ -18,7 +18,6 @@
 package org.apache.predictionio.data.storage.elasticsearch
 
 import scala.collection.JavaConversions._
-import scala.collection.JavaConverters._
 
 import org.apache.http.entity.ContentType
 import org.apache.http.nio.entity.NStringEntity
@@ -82,24 +81,22 @@ object ESUtils {
   def getEvents(
     client: RestClient,
     index: String,
-    estype: String,
     query: String,
     size: Int)(
       implicit formats: Formats): Seq[Event] = {
-    getDocList(client, index, estype, query, size).map(x => toEvent(x))
+    getDocList(client, index, query, size).map(x => toEvent(x))
   }
 
   def getDocList(
     client: RestClient,
     index: String,
-    estype: String,
     query: String,
     size: Int)(
       implicit formats: Formats): Seq[JValue] = {
     val entity = new NStringEntity(query, ContentType.APPLICATION_JSON)
     val response = client.performRequest(
       "POST",
-      s"/$index/$estype/_search",
+      s"/$index/_search",
       Map("size" -> s"${size}"),
       entity)
     val responseJValue = parse(EntityUtils.toString(response.getEntity))
@@ -110,25 +107,22 @@ object ESUtils {
   def getAll[T: Manifest](
     client: RestClient,
     index: String,
-    estype: String,
     query: String)(
       implicit formats: Formats): Seq[T] = {
-    getDocAll(client, index, estype, query).map(x => x.extract[T])
+    getDocAll(client, index, query).map(x => x.extract[T])
   }
 
   def getEventAll(
     client: RestClient,
     index: String,
-    estype: String,
     query: String)(
       implicit formats: Formats): Seq[Event] = {
-    getDocAll(client, index, estype, query).map(x => toEvent(x))
+    getDocAll(client, index, query).map(x => toEvent(x))
   }
 
   def getDocAll(
     client: RestClient,
     index: String,
-    estype: String,
     query: String)(
       implicit formats: Formats): Seq[JValue] = {
 
@@ -153,7 +147,7 @@ object ESUtils {
     val entity = new NStringEntity(query, ContentType.APPLICATION_JSON)
     val response = client.performRequest(
       "POST",
-      s"/$index/$estype/_search",
+      s"/$index/_search",
       Map("scroll" -> scrollLife),
       entity)
     val responseJValue = parse(EntityUtils.toString(response.getEntity))
@@ -164,42 +158,52 @@ object ESUtils {
 
   def createIndex(
     client: RestClient,
-    index: String): Unit = {
+    index: String,
+    json: String)(
+      implicit formats: Formats): String = {
     client.performRequest(
       "HEAD",
       s"/$index",
-      Map.empty[String, String].asJava).getStatusLine.getStatusCode match {
-        case 404 =>
-          client.performRequest(
-            "PUT",
-            s"/$index",
-            Map.empty[String, String].asJava)
-        case 200 =>
-        case _ =>
-          throw new IllegalStateException(s"/$index is invalid.")
-      }
-  }
-
-  def createMapping(
-    client: RestClient,
-    index: String,
-    estype: String,
-    json: String): Unit = {
-    client.performRequest(
-      "HEAD",
-      s"/$index/_mapping/$estype",
-      Map.empty[String, String].asJava).getStatusLine.getStatusCode match {
+      Map("include_type_name" -> "false")).getStatusLine.getStatusCode match {
         case 404 =>
           val entity = new NStringEntity(json, ContentType.APPLICATION_JSON)
           client.performRequest(
             "PUT",
-            s"/$index/_mapping/$estype",
-            Map.empty[String, String].asJava,
-            entity)
+            s"/$index",
+            Map("include_type_name" -> "false"),
+            entity).getStatusLine.getStatusCode match {
+              case 200 =>
+                "_doc"
+              case _ =>
+                throw new IllegalStateException(s"/$index is invalid: $json")
+            }
         case 200 =>
+          esType(client, index)
         case _ =>
-          throw new IllegalStateException(s"/$index/$estype is invalid: $json")
+          throw new IllegalStateException(s"/$index is invalid: $json")
       }
+  }
+
+  // We cannot have several types within a single index as of ES 6.0, so
+  // continue to add or update a document under the current type. This code is
+  // a step towards ES 7.0 support (removal of mapping types).
+  def esType(
+    client: RestClient,
+    index: String)(
+      implicit formats: Formats): String = {
+    val response = client.performRequest(
+      "GET",
+      s"/$index",
+      Map("include_type_name" -> "true"))
+    response.getStatusLine.getStatusCode match {
+      case 200 =>
+        (parse(EntityUtils.toString(response.getEntity)) \ index \ "mappings")
+          .extract[JObject].values.collectFirst {
+          case (name, _) if name != "_doc" && name != "properties" => name
+        }.getOrElse("_doc")
+      case _ =>
+        throw new IllegalStateException(s"/$index is invalid.")
+    }
   }
 
   def formatUTCDateTime(dt: DateTime): String = {

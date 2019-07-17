@@ -36,34 +36,35 @@ import org.json4s.native.Serialization.write
 
 import grizzled.slf4j.Logging
 
-class ESEvaluationInstances(client: RestClient, config: StorageClientConfig, index: String)
+class ESEvaluationInstances(client: RestClient, config: StorageClientConfig, metadataName: String)
     extends EvaluationInstances with Logging {
   implicit val formats = DefaultFormats + new EvaluationInstanceSerializer
-  private val estype = "evaluation_instances"
-  private val seq = new ESSequences(client, config, index)
-  private val internalIndex = index + "_" + estype
+  private val seq = new ESSequences(client, config, metadataName)
+  private val metadataKey = "evaluation_instances"
+  private val index = metadataName + "_" + metadataKey
+  private val estype = {
+    val mappingJson =
+      ("mappings" ->
+        ("properties" ->
+          ("status" -> ("type" -> "keyword")) ~
+          ("startTime" -> ("type" -> "date")) ~
+          ("endTime" -> ("type" -> "date")) ~
+          ("evaluationClass" -> ("type" -> "keyword")) ~
+          ("engineParamsGeneratorClass" -> ("type" -> "keyword")) ~
+          ("batch" -> ("type" -> "keyword")) ~
+          ("evaluatorResults" -> ("type" -> "text")) ~
+          ("evaluatorResultsHTML" -> ("enabled" -> false)) ~
+          ("evaluatorResultsJSON" -> ("enabled" -> false))))
 
-  ESUtils.createIndex(client, internalIndex)
-  val mappingJson =
-    (estype ->
-      ("properties" ->
-        ("status" -> ("type" -> "keyword")) ~
-        ("startTime" -> ("type" -> "date")) ~
-        ("endTime" -> ("type" -> "date")) ~
-        ("evaluationClass" -> ("type" -> "keyword")) ~
-        ("engineParamsGeneratorClass" -> ("type" -> "keyword")) ~
-        ("batch" -> ("type" -> "keyword")) ~
-        ("evaluatorResults" -> ("type" -> "text")) ~
-        ("evaluatorResultsHTML" -> ("enabled" -> false)) ~
-        ("evaluatorResultsJSON" -> ("enabled" -> false))))
-  ESUtils.createMapping(client, internalIndex, estype, compact(render(mappingJson)))
+    ESUtils.createIndex(client, index, compact(render(mappingJson)))
+  }
 
   def insert(i: EvaluationInstance): String = {
     val id = i.id match {
       case v if v.isEmpty =>
         @scala.annotation.tailrec
         def generateId: String = {
-          seq.genNext(estype).toString match {
+          seq.genNext(metadataKey).toString match {
             case x if !get(x).isEmpty => generateId
             case x => x
           }
@@ -79,7 +80,7 @@ class ESEvaluationInstances(client: RestClient, config: StorageClientConfig, ind
     try {
       val response = client.performRequest(
         "GET",
-        s"/$internalIndex/$estype/$id",
+        s"/$index/$estype/$id",
         Map.empty[String, String].asJava)
       val jsonResponse = parse(EntityUtils.toString(response.getEntity))
       (jsonResponse \ "found").extract[Boolean] match {
@@ -93,11 +94,11 @@ class ESEvaluationInstances(client: RestClient, config: StorageClientConfig, ind
         e.getResponse.getStatusLine.getStatusCode match {
           case 404 => None
           case _ =>
-            error(s"Failed to access to /$internalIndex/$estype/$id", e)
+            error(s"Failed to access to /$index/$estype/$id", e)
             None
         }
       case e: IOException =>
-        error(s"Failed to access to /$internalIndex/$estype/$id", e)
+        error(s"Failed to access to /$index/$estype/$id", e)
         None
     }
   }
@@ -107,10 +108,10 @@ class ESEvaluationInstances(client: RestClient, config: StorageClientConfig, ind
       val json =
         ("query" ->
           ("match_all" -> List.empty))
-      ESUtils.getAll[EvaluationInstance](client, internalIndex, estype, compact(render(json)))
+      ESUtils.getAll[EvaluationInstance](client, index, compact(render(json)))
     } catch {
       case e: IOException =>
-        error("Failed to access to /$internalIndex/$estype/_search", e)
+        error(s"Failed to access to /$index/_search", e)
         Nil
     }
   }
@@ -124,10 +125,10 @@ class ESEvaluationInstances(client: RestClient, config: StorageClientConfig, ind
             ("sort" ->
               ("startTime" ->
                 ("order" -> "desc")))
-      ESUtils.getAll[EvaluationInstance](client, internalIndex, estype, compact(render(json)))
+      ESUtils.getAll[EvaluationInstance](client, index, compact(render(json)))
     } catch {
       case e: IOException =>
-        error("Failed to access to /$internalIndex/$estype/_search", e)
+        error(s"Failed to access to /$index/_search", e)
         Nil
     }
   }
@@ -137,8 +138,8 @@ class ESEvaluationInstances(client: RestClient, config: StorageClientConfig, ind
     try {
       val entity = new NStringEntity(write(i), ContentType.APPLICATION_JSON)
       val response = client.performRequest(
-        "POST",
-        s"/$internalIndex/$estype/$id",
+        "PUT",
+        s"/$index/$estype/$id",
         Map("refresh" -> "true").asJava,
         entity)
       val json = parse(EntityUtils.toString(response.getEntity))
@@ -147,11 +148,11 @@ class ESEvaluationInstances(client: RestClient, config: StorageClientConfig, ind
         case "created" =>
         case "updated" =>
         case _ =>
-          error(s"[$result] Failed to update $internalIndex/$estype/$id")
+          error(s"[$result] Failed to update $index/$estype/$id")
       }
     } catch {
       case e: IOException =>
-        error(s"Failed to update $internalIndex/$estype/$id", e)
+        error(s"Failed to update $index/$estype/$id", e)
     }
   }
 
@@ -159,18 +160,18 @@ class ESEvaluationInstances(client: RestClient, config: StorageClientConfig, ind
     try {
       val response = client.performRequest(
         "DELETE",
-        s"/$internalIndex/$estype/$id",
+        s"/$index/$estype/$id",
         Map("refresh" -> "true").asJava)
       val json = parse(EntityUtils.toString(response.getEntity))
       val result = (json \ "result").extract[String]
       result match {
         case "deleted" =>
         case _ =>
-          error(s"[$result] Failed to update $internalIndex/$estype/$id")
+          error(s"[$result] Failed to delete $index/$estype/$id")
       }
     } catch {
       case e: IOException =>
-        error(s"Failed to update $internalIndex/$estype/$id", e)
+        error(s"Failed to delete $index/$estype/$id", e)
     }
   }
 }

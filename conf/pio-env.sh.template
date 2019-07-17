@@ -24,8 +24,7 @@
 # you need to change these to fit your site.
 
 # SPARK_HOME: Apache Spark is a hard dependency and must be configured.
-# SPARK_HOME=$PIO_HOME/vendors/spark-2.0.2-bin-hadoop2.7
-SPARK_HOME=$PIO_HOME/vendors/spark-2.1.1-bin-hadoop2.6
+SPARK_HOME=$PIO_HOME/vendors/spark-2.4.3-bin-hadoop2.7
 
 POSTGRES_JDBC_DRIVER=$PIO_HOME/lib/postgresql-42.0.0.jar
 MYSQL_JDBC_DRIVER=$PIO_HOME/lib/mysql-connector-java-5.1.41.jar
@@ -40,7 +39,7 @@ MYSQL_JDBC_DRIVER=$PIO_HOME/lib/mysql-connector-java-5.1.41.jar
 
 # HBASE_CONF_DIR: You must configure this if you intend to run PredictionIO
 #                 with HBase on a remote cluster.
-# HBASE_CONF_DIR=$PIO_HOME/vendors/hbase-1.0.0/conf
+# HBASE_CONF_DIR=$PIO_HOME/vendors/hbase-1.2.6/conf
 
 # Filesystem paths where PredictionIO uses as block storage.
 PIO_FS_BASEDIR=$HOME/.pio_store
@@ -89,7 +88,7 @@ PIO_STORAGE_SOURCES_PGSQL_PASSWORD=pio
 # PIO_STORAGE_SOURCES_ELASTICSEARCH_HOSTS=localhost
 # PIO_STORAGE_SOURCES_ELASTICSEARCH_PORTS=9200
 # PIO_STORAGE_SOURCES_ELASTICSEARCH_SCHEMES=http
-# PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME=$PIO_HOME/vendors/elasticsearch-5.6.9
+# PIO_STORAGE_SOURCES_ELASTICSEARCH_HOME=$PIO_HOME/vendors/elasticsearch-6.8.1
 # Optional basic HTTP auth
 # PIO_STORAGE_SOURCES_ELASTICSEARCH_USERNAME=my-name
 # PIO_STORAGE_SOURCES_ELASTICSEARCH_PASSWORD=my-secret
@@ -100,7 +99,7 @@ PIO_STORAGE_SOURCES_PGSQL_PASSWORD=pio
 
 # HBase Example
 # PIO_STORAGE_SOURCES_HBASE_TYPE=hbase
-# PIO_STORAGE_SOURCES_HBASE_HOME=$PIO_HOME/vendors/hbase-1.0.0
+# PIO_STORAGE_SOURCES_HBASE_HOME=$PIO_HOME/vendors/hbase-1.2.6
 
 # AWS S3 Example
 # PIO_STORAGE_SOURCES_S3_TYPE=s3
