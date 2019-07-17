@@ -82,8 +82,17 @@ object PPythonEventStore {
       Option(entityType),
       Option(entityId),
       Option(eventNames),
-      Option(Option(targetEntityType)),
-      Option(Option(targetEntityId)))(spark.sparkContext).map { e =>
+      targetEntityType match { 
+        case null => None
+        case "" => Option(None)
+        case _ => Option(Option(targetEntityType))
+      },
+      targetEntityId match {
+        case null => None
+        case "" => Option(None)
+        case _ => Option(Option(targetEntityId))
+      }
+      )(spark.sparkContext).map { e =>
       (
         e.eventId,
         e.event,
