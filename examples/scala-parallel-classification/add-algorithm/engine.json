@@ -3,7 +3,7 @@
   "description": "Default settings",
   "engineFactory": "org.apache.predictionio.examples.classification.ClassificationEngine",
   "datasource": {
-    "params": {
+    "params": { 
       "appName": "MyApp1"
     }
   },
@@ -15,9 +15,9 @@
         "numTrees": 5,
         "featureSubsetStrategy": "auto",
         "impurity": "gini",
-        "maxDepth": 4,
+        "maxDepth": 4,   
         "maxBins": 100
-      }
+       }
     }
   ]
 }
