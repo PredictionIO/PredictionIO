@@ -35,26 +35,27 @@ import org.json4s.native.Serialization.write
 
 import grizzled.slf4j.Logging
 
-class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
+class ESChannels(client: RestClient, config: StorageClientConfig, metadataName: String)
     extends Channels with Logging {
   implicit val formats = DefaultFormats.lossless
-  private val estype = "channels"
-  private val seq = new ESSequences(client, config, index)
-  private val internalIndex = index + "_" + estype
+  private val seq = new ESSequences(client, config, metadataName)
+  private val metadataKey = "channels"
+  private val index = metadataName + "_" + metadataKey
+  private val estype = {
+    val mappingJson =
+      ("mappings" ->
+        ("properties" ->
+          ("name" -> ("type" -> "keyword"))))
 
-  ESUtils.createIndex(client, internalIndex)
-  val mappingJson =
-    (estype ->
-      ("properties" ->
-        ("name" -> ("type" -> "keyword"))))
-  ESUtils.createMapping(client, internalIndex, estype, compact(render(mappingJson)))
+    ESUtils.createIndex(client, index, compact(render(mappingJson)))
+  }
 
   def insert(channel: Channel): Option[Int] = {
     val id = channel.id match {
       case v if v == 0 =>
         @scala.annotation.tailrec
         def generateId: Int = {
-          seq.genNext(estype).toInt match {
+          seq.genNext(metadataKey).toInt match {
             case x if !get(x).isEmpty => generateId
             case x => x
           }
@@ -70,7 +71,7 @@ class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
     try {
       val response = client.performRequest(
         "GET",
-        s"/$internalIndex/$estype/$id",
+        s"/$index/$estype/$id",
         Map.empty[String, String].asJava)
       val jsonResponse = parse(EntityUtils.toString(response.getEntity))
       (jsonResponse \ "found").extract[Boolean] match {
@@ -84,11 +85,11 @@ class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
         e.getResponse.getStatusLine.getStatusCode match {
           case 404 => None
           case _ =>
-            error(s"Failed to access to /$internalIndex/$estype/$id", e)
+            error(s"Failed to access to /$index/$estype/$id", e)
             None
         }
       case e: IOException =>
-        error(s"Failed to access to /$internalIndex/$estype/$id", e)
+        error(s"Failed to access to /$index/$estype/$id", e)
         None
     }
   }
@@ -99,10 +100,10 @@ class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
         ("query" ->
           ("term" ->
             ("appid" -> appid)))
-      ESUtils.getAll[Channel](client, internalIndex, estype, compact(render(json)))
+      ESUtils.getAll[Channel](client, index, compact(render(json)))
     } catch {
       case e: IOException =>
-        error(s"Failed to access to /$internalIndex/$estype/_search", e)
+        error(s"Failed to access to /$index/_search", e)
         Nil
     }
   }
@@ -112,8 +113,8 @@ class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
     try {
       val entity = new NStringEntity(write(channel), ContentType.APPLICATION_JSON)
       val response = client.performRequest(
-        "POST",
-        s"/$internalIndex/$estype/$id",
+        "PUT",
+        s"/$index/$estype/$id",
         Map("refresh" -> "true").asJava,
         entity)
       val json = parse(EntityUtils.toString(response.getEntity))
@@ -122,12 +123,12 @@ class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
         case "created" => true
         case "updated" => true
         case _ =>
-          error(s"[$result] Failed to update $internalIndex/$estype/$id")
+          error(s"[$result] Failed to update $index/$estype/$id")
           false
       }
     } catch {
       case e: IOException =>
-        error(s"Failed to update $internalIndex/$estype/$id", e)
+        error(s"Failed to update $index/$estype/$id", e)
         false
     }
   }
@@ -136,18 +137,18 @@ class ESChannels(client: RestClient, config: StorageClientConfig, index: String)
     try {
       val response = client.performRequest(
         "DELETE",
-        s"/$internalIndex/$estype/$id",
+        s"/$index/$estype/$id",
         Map("refresh" -> "true").asJava)
       val jsonResponse = parse(EntityUtils.toString(response.getEntity))
       val result = (jsonResponse \ "result").extract[String]
       result match {
         case "deleted" =>
         case _ =>
-          error(s"[$result] Failed to update $internalIndex/$estype/$id")
+          error(s"[$result] Failed to delete $index/$estype/$id")
       }
     } catch {
       case e: IOException =>
-        error(s"Failed to update $internalIndex/$estype/$id", e)
+        error(s"Failed to delete $index/$estype/$id", e)
     }
   }
 }

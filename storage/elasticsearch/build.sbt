@@ -19,15 +19,12 @@ import PIOBuild._
 
 name := "apache-predictionio-data-elasticsearch"
 
-elasticsearchVersion := (if (majorVersion(elasticsearchVersion.value) < 5) "5.6.9" else elasticsearchVersion.value)
-
 libraryDependencies ++= Seq(
-  "org.apache.predictionio" %% "apache-predictionio-core" % version.value % "provided",
-  "org.apache.spark"        %% "spark-core"               % sparkVersion.value % "provided",
+  "org.apache.predictionio" %% "apache-predictionio-core"  % version.value % "provided",
+  "org.apache.spark"        %% "spark-core"                % sparkVersion.value % "provided",
   "org.elasticsearch.client" % "elasticsearch-rest-client" % elasticsearchVersion.value,
-  "org.elasticsearch"       %% "elasticsearch-spark-20" % elasticsearchVersion.value
+  "org.elasticsearch"       %% "elasticsearch-spark-20"    % elasticsearchVersion.value
     exclude("org.apache.spark", "*"),
-  "org.elasticsearch"        % "elasticsearch-hadoop-mr"  % elasticsearchVersion.value,
   "org.specs2"              %% "specs2-core"                   % "2.4.17" % "test")
 
 parallelExecution in Test := false
@@ -35,12 +32,6 @@ parallelExecution in Test := false
 pomExtra := childrenPomExtra.value
 
 assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
-
-assemblyShadeRules in assembly := Seq(
-  ShadeRule.rename("org.apache.http.**" ->
-    "org.apache.predictionio.shaded.org.apache.http.@1").inAll,
-  ShadeRule.rename("org.elasticsearch.client.**" ->
-    "org.apache.predictionio.shaded.org.elasticsearch.client.@1").inAll)
 
 // skip test in assembly
 test in assembly := {}

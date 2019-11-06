@@ -1,7 +1,7 @@
 pio: 0.14.0
 spark: 2.4.0
 spark_download_filename: spark-2.4.0-bin-hadoop2.7
-elasticsearch_download_filename: elasticsearch-5.6.9
+elasticsearch_download_filename: elasticsearch-6.8.1
 hbase_version: 1.2.6
 hbase_basename: hbase-1.2.6
 hbase_variant: bin

@@ -54,6 +54,5 @@ $ psql -c "create user pio with password 'pio'"
 Starting from 0.11.0, PredictionIO no longer bundles JDBC drivers. Download the
 PostgreSQL JDBC driver from the [official web
 site](https://jdbc.postgresql.org/), and put the JAR file in the `lib`
-subdirectory. By default, `conf/pio-env.sh` assumes version 42.0.0 JDBC 4.2. If
-you use a different version, modify `POSTGRES_JDBC_DRIVER` to point to the
-correct JAR.
+subdirectory. Afterwords, you need to edit `conf/pio-env.sh` and change the
+`POSTGRES_JDBC_DRIVER` variable to point to the correct JAR.

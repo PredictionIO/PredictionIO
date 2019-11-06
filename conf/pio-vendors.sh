@@ -32,7 +32,7 @@ if [ -z "$PIO_HADOOP_VERSION" ]; then
 fi
 
 if [ -z "$PIO_ELASTICSEARCH_VERSION" ]; then
-    PIO_ELASTICSEARCH_VERSION="5.6.9"
+    PIO_ELASTICSEARCH_VERSION="6.8.1"
 fi
 
 if [ -z "$PIO_HBASE_VERSION" ]; then

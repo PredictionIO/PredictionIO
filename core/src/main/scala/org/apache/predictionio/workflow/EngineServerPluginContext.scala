@@ -80,8 +80,9 @@ object EngineServerPluginContext extends Logging {
 
   private def stringFromFile(filePath: String): Option[String] = {
     try {
-      val fs = FileSystem.get(new Configuration())
-      val path = new Path(new URI(filePath))
+      val uri = new URI(filePath)
+      val fs = FileSystem.get(uri, new Configuration())
+      val path = new Path(uri)
       if (fs.exists(path)) {
         Some(new String(ByteStreams.toByteArray(fs.open(path)).map(_.toChar)))
       } else {

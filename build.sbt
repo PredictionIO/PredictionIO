@@ -16,6 +16,25 @@
  */
 import PIOBuild._
 
+lazy val scalaSparkDepsVersion = Map(
+  "2.11" -> Map(
+    "2.0" -> Map(
+      "akka" -> "2.5.16",
+      "hadoop" -> "2.7.7",
+      "json4s" -> "3.2.11"),
+    "2.1" -> Map(
+      "akka" -> "2.5.17",
+      "hadoop" -> "2.7.7",
+      "json4s" -> "3.2.11"),
+    "2.2" -> Map(
+      "akka" -> "2.5.17",
+      "hadoop" -> "2.7.7",
+      "json4s" -> "3.2.11"),
+    "2.3" -> Map(
+      "akka" -> "2.5.17",
+      "hadoop" -> "2.7.7",
+      "json4s" -> "3.2.11")))
+
 name := "apache-predictionio-parent"
 
 version in ThisBuild := "0.15.0-SNAPSHOT"
@@ -45,7 +64,7 @@ hadoopVersion in ThisBuild := sys.props.getOrElse("hadoop.version", "2.7.7")
 
 akkaVersion in ThisBuild := sys.props.getOrElse("akka.version", "2.5.17")
 
-elasticsearchVersion in ThisBuild := sys.props.getOrElse("elasticsearch.version", "5.6.9")
+elasticsearchVersion in ThisBuild := sys.props.getOrElse("elasticsearch.version", "6.8.1")
 
 hbaseVersion in ThisBuild := sys.props.getOrElse("hbase.version", "1.2.6")
 

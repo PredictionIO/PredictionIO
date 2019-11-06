@@ -24,6 +24,7 @@ import grizzled.slf4j.Logging
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
+import scala.io.StdIn
 import scala.language.implicitConversions
 import scala.sys.process._
 
@@ -238,7 +239,7 @@ object Pio extends Logging {
           info(f"              ${ch.name}%16s | ${ch.id}%10s")
         }
 
-        val choice = if(force) "YES" else readLine("Enter 'YES' to proceed: ")
+        val choice = if(force) "YES" else StdIn.readLine("Enter 'YES' to proceed: ")
         choice match {
           case "YES" =>
             AppCmd.delete(name)
@@ -278,7 +279,7 @@ object Pio extends Logging {
           info(s"      App ID: ${appDesc.app.id}")
           info(s" Description: ${appDesc.app.description}")
 
-          val choice = if(force) "YES" else readLine("Enter 'YES' to proceed: ")
+          val choice = if(force) "YES" else StdIn.readLine("Enter 'YES' to proceed: ")
           choice match {
             case "YES" =>
               AppCmd.dataDelete(name, channel, all)
@@ -307,7 +308,7 @@ object Pio extends Logging {
               info(s"      Channel ID: ${chan.id}")
               info(s"        App Name: ${appDesc.app.name}")
               info(s"          App ID: ${appDesc.app.id}")
-              val choice = if(force) "YES" else readLine("Enter 'YES' to proceed: ")
+              val choice = if(force) "YES" else StdIn.readLine("Enter 'YES' to proceed: ")
               choice match {
                 case "YES" =>
                   AppCmd.channelDelete(appName, deleteChannel)

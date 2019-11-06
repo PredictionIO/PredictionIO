@@ -52,14 +52,14 @@ object RunWorkflow extends Logging {
 
     val jarFiles = jarFilesForScala(engineDirPath).map(_.toURI)
     val args =
-      (if (wa.mainPyFile.isEmpty) {
+      {
         val variantJson = wa.variantJson.getOrElse(new File(engineDirPath, "engine.json"))
         val ei = Console.getEngineInfo(variantJson, engineDirPath)
         Seq(
           "--engine-id", ei.engineId,
           "--engine-version", ei.engineVersion,
           "--engine-variant", variantJson.toURI.toString)
-      } else Nil) ++
+      } ++
       wa.engineFactory.map(
         x => Seq("--engine-factory", x)).getOrElse(Nil) ++
       wa.engineParamsKey.map(
