@@ -45,7 +45,7 @@ scalaVersion in ThisBuild := sys.props.getOrElse("scala.version", "2.11.12")
 
 scalaBinaryVersion in ThisBuild := binaryVersion(scalaVersion.value)
 
-crossScalaVersions in ThisBuild := Seq(scalaVersion.value)
+crossScalaVersions in ThisBuild := Seq("2.11.12", "2.12.8")
 
 scalacOptions in ThisBuild ++= Seq("-deprecation", "-unchecked", "-feature")
 
@@ -56,7 +56,7 @@ javacOptions in (ThisBuild, compile) ++= Seq("-source", "1.8", "-target", "1.8",
   "-Xlint:deprecation", "-Xlint:unchecked")
 
 // Ignore differentiation of Spark patch levels
-sparkVersion in ThisBuild := sys.props.getOrElse("spark.version", "2.1.3")
+sparkVersion in ThisBuild := sys.props.getOrElse("spark.version", "2.4.3")
 
 sparkBinaryVersion in ThisBuild := binaryVersion(sparkVersion.value)
 
