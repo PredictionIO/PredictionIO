@@ -90,6 +90,9 @@ mkdir -p ${DISTDIR}/project
 
 mkdir -p ${DISTDIR}/sbt
 
+mkdir -p ${DISTDIR}/examples
+mkdir -p ${DISTDIR}/templates
+
 cp ${FWDIR}/bin/* ${DISTDIR}/bin || :
 cp ${FWDIR}/conf/* ${DISTDIR}/conf
 cp -r ${FWDIR}/python/* ${DISTDIR}/python
@@ -102,6 +105,9 @@ rm -f ${DISTDIR}/lib/*javadoc.jar
 rm -f ${DISTDIR}/lib/*sources.jar
 rm -f ${DISTDIR}/conf/pio-env.sh
 mv ${DISTDIR}/conf/pio-env.sh.template ${DISTDIR}/conf/pio-env.sh
+
+cp -r ${FWDIR}/examples/* ${DISTDIR}/examples
+cp -r ${FWDIR}/templates/* ${DISTDIR}/templates
 
 touch ${DISTDIR}/RELEASE
 

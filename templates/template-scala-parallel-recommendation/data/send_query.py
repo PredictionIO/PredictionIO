@@ -1,4 +1,3 @@
-#!/bin/bash -ex
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -16,33 +15,10 @@
 # limitations under the License.
 #
 
-pushd /PredictionIO
+"""
+Send sample query to prediction engine
+"""
 
-# Run license check
-./tests/check_license.sh
-
-# Prepare pio environment variables
-set -a
-source ./conf/pio-env.sh
-set +a
-source ./conf/pio-vendors.sh
-
-# Run stylecheck
-sbt/sbt scalastyle \
-    -Dscala.version=$PIO_SCALA_VERSION \
-    -Dspark.version=$PIO_SPARK_VERSION \
-    -Dhadoop.version=$PIO_HADOOP_VERSION \
-    -Delasticsearch.version=$PIO_ELASTICSEARCH_VERSION \
-    -Dhbase.version=$PIO_HBASE_VERSION
-
-# Run all unit tests
-sbt/sbt dataJdbc/compile test storage/test \
-    -Dscala.version=$PIO_SCALA_VERSION \
-    -Dspark.version=$PIO_SPARK_VERSION \
-    -Dhadoop.version=$PIO_HADOOP_VERSION \
-    -Delasticsearch.version=$PIO_ELASTICSEARCH_VERSION \
-    -Dhbase.version=$PIO_HBASE_VERSION
-
-./tests/check_templates.sh
-
-popd
+import predictionio
+engine_client = predictionio.EngineClient(url="http://localhost:8000")
+print(engine_client.send_query({"user": "1", "num": 4}))
