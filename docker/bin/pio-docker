@@ -25,10 +25,7 @@ get_container_id() {
     echo $PIO_CONTAINER_ID
     return
   fi
-  for i in `docker ps -f "name=pio" -q` ; do
-    echo $i
-    return
-  done
+  docker ps -f ancestor=predictionio/pio -q
 }
 
 get_current_dir() {
@@ -52,5 +49,4 @@ fi
 
 wdir=`get_current_dir`
 
-docker exec -w $wdir -it $cid pio $@
-
+docker exec -w $wdir $cid pio $@
