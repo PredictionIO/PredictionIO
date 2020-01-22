@@ -48,6 +48,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       s"To remedy it, set lower numIterations or checkpoint parameters.")
   }
 
+  override
   def train(sc: SparkContext, data: PreparedData): ALSModel = {
     // MLLib ALS cannot handle empty training data.
     require(!data.ratings.take(1).isEmpty,
@@ -92,6 +93,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       itemStringIntMap = itemStringIntMap)
   }
 
+  override
   def predict(model: ALSModel, query: Query): PredictedResult = {
     // Convert String ID to Int index for Mllib
     model.userStringIntMap.get(query.user).map { userInt =>

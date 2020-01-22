@@ -29,6 +29,7 @@ class PreparedData(
 
 class Preparator extends PPreparator[TrainingData, PreparedData] {
 
+  override
   def prepare(sc: SparkContext, trainingData: TrainingData): PreparedData = {
     new PreparedData(trainingData.labeledPoints)
   }

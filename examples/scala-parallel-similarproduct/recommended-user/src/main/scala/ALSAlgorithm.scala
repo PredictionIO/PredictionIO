@@ -58,6 +58,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
   @transient lazy val logger = Logger[this.type]
 
+  override
   def train(sc: SparkContext, data: PreparedData): ALSModel = {
     require(data.followEvents.take(1).nonEmpty,
       s"followEvents in PreparedData cannot be empty." +
@@ -125,6 +126,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     )
   }
 
+  override
   def predict(model: ALSModel, query: Query): PredictedResult = {
 
     val similarUserFeatures = model.similarUserFeatures

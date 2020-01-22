@@ -34,7 +34,7 @@ private[predictionio] class FakeEngine
 extends BaseEngine[EmptyParams, EmptyParams, EmptyParams, EmptyParams] {
   @transient lazy val logger = Logger[this.type]
 
-  def train(
+  override def train(
     sc: SparkContext,
     engineParams: EngineParams,
     engineInstanceId: String,
@@ -42,7 +42,7 @@ extends BaseEngine[EmptyParams, EmptyParams, EmptyParams, EmptyParams] {
     throw new StopAfterReadInterruption()
   }
 
-  def eval(
+  override def eval(
     sc: SparkContext,
     engineParams: EngineParams,
     params: WorkflowParams)
@@ -56,7 +56,7 @@ private[predictionio] class FakeRunner(f: (SparkContext => Unit))
     extends BaseEvaluator[EmptyParams, EmptyParams, EmptyParams, EmptyParams,
       FakeEvalResult] {
   @transient private lazy val logger = Logger[this.type]
-  def evaluateBase(
+  override def evaluateBase(
     sc: SparkContext,
     evaluation: Evaluation,
     engineEvalDataSet:

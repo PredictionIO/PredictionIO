@@ -34,6 +34,7 @@ case class CustomPreparatorParams(
 class Preparator(pp: CustomPreparatorParams) // ADDED CustomPreparatorParams
   extends PPreparator[TrainingData, PreparedData] {
 
+  override
   def prepare(sc: SparkContext, trainingData: TrainingData): PreparedData = {
     val noTrainItems = Source.fromFile(pp.filepath).getLines.toSet // CHANGED
     val ratings = trainingData.ratings.filter( r =>

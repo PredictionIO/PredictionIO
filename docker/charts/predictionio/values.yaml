@@ -1,0 +1,53 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+pio:
+  replicas: 1
+  image:
+    repository: predictionio/pio-jupyter
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8888
+  env:
+    - name: PIO_STORAGE_SOURCES_PGSQL_TYPE
+      value: jdbc
+    - name: PIO_STORAGE_SOURCES_PGSQL_URL
+      value: "jdbc:postgresql://postgresql/pio"
+    - name: PIO_STORAGE_SOURCES_PGSQL_USERNAME
+      value: pio
+    - name: PIO_STORAGE_SOURCES_PGSQL_PASSWORD
+      value: pio
+    - name: PIO_STORAGE_REPOSITORIES_MODELDATA_NAME
+      value: pio_model
+    - name: PIO_STORAGE_REPOSITORIES_MODELDATA_SOURCE
+      value: PGSQL
+    - name: PIO_STORAGE_REPOSITORIES_METADATA_NAME
+      value: pio_meta
+    - name: PIO_STORAGE_REPOSITORIES_METADATA_SOURCE
+      value: PGSQL
+    - name: PIO_STORAGE_REPOSITORIES_EVENTDATA_NAME
+      value: pio_event
+    - name: PIO_STORAGE_REPOSITORIES_EVENTDATA_SOURCE
+      value: PGSQL
+    - name: PYSPARK_DRIVER_PYTHON_OPTS
+      value: "notebook --NotebookApp.token=''"
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+

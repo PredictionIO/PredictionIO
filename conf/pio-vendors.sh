@@ -32,22 +32,15 @@ if [ -z "$PIO_HADOOP_VERSION" ]; then
 fi
 
 if [ -z "$PIO_ELASTICSEARCH_VERSION" ]; then
-    PIO_ELASTICSEARCH_VERSION="5.6.9"
+    PIO_ELASTICSEARCH_VERSION="6.8.1"
 fi
 
 if [ -z "$PIO_HBASE_VERSION" ]; then
     PIO_HBASE_VERSION="1.2.6"
 fi
 
-ES_MAJOR=`echo $PIO_ELASTICSEARCH_VERSION | awk -F. '{print $1}'`
-
-if [ "$ES_MAJOR" = "1" ]; then
-    export ES_IMAGE="elasticsearch"
-    export ES_TAG="1"
-else
-    export ES_IMAGE="docker.elastic.co/elasticsearch/elasticsearch"
-    export ES_TAG="$PIO_ELASTICSEARCH_VERSION"
-fi
+export ES_IMAGE="docker.elastic.co/elasticsearch/elasticsearch"
+export ES_TAG="$PIO_ELASTICSEARCH_VERSION"
 
 HBASE_MAJOR=`echo $PIO_HBASE_VERSION | awk -F. '{print $1 "." $2}'`
 export HBASE_TAG="$HBASE_MAJOR"
@@ -60,6 +53,3 @@ SPARK_DIR=spark-${PIO_SPARK_VERSION}-bin-hadoop${HADOOP_MAJOR}
 SPARK_ARCHIVE=${SPARK_DIR}.tgz
 SPARK_DOWNLOAD_MIRROR=https://www.apache.org/dyn/closer.lua\?action=download\&filename=spark/spark-${PIO_SPARK_VERSION}/${SPARK_ARCHIVE}
 SPARK_DOWNLOAD_ARCHIVE=https://archive.apache.org/dist/spark/spark-${PIO_SPARK_VERSION}/${SPARK_ARCHIVE}
-# ELASTICSEARCH_DOWNLOAD
-#   5.x https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${PIO_ELASTICSEARCH_VERSION}.tar.gz
-#   1.x https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${PIO_ELASTICSEARCH_VERSION}.tar.gz

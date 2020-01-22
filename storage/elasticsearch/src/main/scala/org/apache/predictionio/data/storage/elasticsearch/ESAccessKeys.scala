@@ -36,19 +36,20 @@ import org.json4s.native.Serialization.write
 import grizzled.slf4j.Logging
 
 /** Elasticsearch implementation of AccessKeys. */
-class ESAccessKeys(client: RestClient, config: StorageClientConfig, index: String)
+class ESAccessKeys(client: RestClient, config: StorageClientConfig, metadataName: String)
     extends AccessKeys with Logging {
   implicit val formats = DefaultFormats.lossless
-  private val estype = "accesskeys"
-  private val internalIndex = index + "_" + estype
-   
-  ESUtils.createIndex(client, internalIndex)
-  val mappingJson =
-    (estype ->
-      ("properties" ->
-        ("key" -> ("type" -> "keyword")) ~
-        ("events" -> ("type" -> "keyword"))))
-  ESUtils.createMapping(client, internalIndex, estype, compact(render(mappingJson)))
+  private val metadataKey = "accesskeys"
+  private val index = metadataName + "_" + metadataKey
+  private val estype = {
+    val mappingJson =
+      ("mappings" ->
+        ("properties" ->
+          ("key" -> ("type" -> "keyword")) ~
+          ("events" -> ("type" -> "keyword"))))
+
+    ESUtils.createIndex(client, index, compact(render(mappingJson)))
+  }
 
   def insert(accessKey: AccessKey): Option[String] = {
     val key = if (accessKey.key.isEmpty) generateKey else accessKey.key
@@ -63,7 +64,7 @@ class ESAccessKeys(client: RestClient, config: StorageClientConfig, index: Strin
     try {
       val response = client.performRequest(
         "GET",
-        s"/$internalIndex/$estype/$id",
+        s"/$index/$estype/$id",
         Map.empty[String, String].asJava)
       val jsonResponse = parse(EntityUtils.toString(response.getEntity))
       (jsonResponse \ "found").extract[Boolean] match {
@@ -77,11 +78,11 @@ class ESAccessKeys(client: RestClient, config: StorageClientConfig, index: Strin
         e.getResponse.getStatusLine.getStatusCode match {
           case 404 => None
           case _ =>
-            error(s"Failed to access to /$internalIndex/$estype/$id", e)
+            error(s"Failed to access to /$index/$estype/$id", e)
             None
         }
       case e: IOException =>
-        error(s"Failed to access to /$internalIndex/$estype/$id", e)
+        error(s"Failed to access to /$index/$estype/$id", e)
         None
     }
   }
@@ -91,10 +92,10 @@ class ESAccessKeys(client: RestClient, config: StorageClientConfig, index: Strin
       val json =
         ("query" ->
           ("match_all" -> List.empty))
-      ESUtils.getAll[AccessKey](client, internalIndex, estype, compact(render(json)))
+      ESUtils.getAll[AccessKey](client, index, compact(render(json)))
     } catch {
       case e: IOException =>
-        error("Failed to access to /$internalIndex/$estype/_search", e)
+        error(s"Failed to access to /$index/_search", e)
         Nil
     }
   }
@@ -105,10 +106,10 @@ class ESAccessKeys(client: RestClient, config: StorageClientConfig, index: Strin
         ("query" ->
           ("term" ->
             ("appid" -> appid)))
-      ESUtils.getAll[AccessKey](client, internalIndex, estype, compact(render(json)))
+      ESUtils.getAll[AccessKey](client, index, compact(render(json)))
     } catch {
       case e: IOException =>
-        error("Failed to access to /$internalIndex/$estype/_search", e)
+        error(s"Failed to access to /$index/_search", e)
         Nil
     }
   }
@@ -118,8 +119,8 @@ class ESAccessKeys(client: RestClient, config: StorageClientConfig, index: Strin
     try {
       val entity = new NStringEntity(write(accessKey), ContentType.APPLICATION_JSON)
       val response = client.performRequest(
-        "POST",
-        s"/$internalIndex/$estype/$id",
+        "PUT",
+        s"/$index/$estype/$id",
         Map("refresh" -> "true").asJava,
         entity)
       val jsonResponse = parse(EntityUtils.toString(response.getEntity))
@@ -128,11 +129,11 @@ class ESAccessKeys(client: RestClient, config: StorageClientConfig, index: Strin
         case "created" =>
         case "updated" =>
         case _ =>
-          error(s"[$result] Failed to update $internalIndex/$estype/$id")
+          error(s"[$result] Failed to update $index/$estype/$id")
       }
     } catch {
       case e: IOException =>
-        error(s"Failed to update $internalIndex/$estype/$id", e)
+        error(s"Failed to update $index/$estype/$id", e)
     }
   }
 
@@ -140,18 +141,18 @@ class ESAccessKeys(client: RestClient, config: StorageClientConfig, index: Strin
     try {
       val response = client.performRequest(
         "DELETE",
-        s"/$internalIndex/$estype/$id",
+        s"/$index/$estype/$id",
         Map("refresh" -> "true").asJava)
       val json = parse(EntityUtils.toString(response.getEntity))
       val result = (json \ "result").extract[String]
       result match {
         case "deleted" =>
         case _ =>
-          error(s"[$result] Failed to update $internalIndex/$estype/id")
+          error(s"[$result] Failed to delete $index/$estype/$id")
       }
     } catch {
       case e: IOException =>
-        error(s"Failed to update $internalIndex/$estype/id", e)
+        error(s"Failed to delete $index/$estype/$id", e)
     }
   }
 }

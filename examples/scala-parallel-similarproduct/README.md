@@ -17,4 +17,4 @@ limitations under the License.
 
 This is based on Similar Product Template v0.14.0.
 
-Please refer to http://predictionio.apache.org/templates/similarproduct/how-to/
+Please refer to https://predictionio.apache.org/templates/similarproduct/how-to/

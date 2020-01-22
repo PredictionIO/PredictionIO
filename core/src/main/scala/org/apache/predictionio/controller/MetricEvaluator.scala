@@ -215,7 +215,7 @@ class MetricEvaluator[EI, Q, P, A, R] (
     writer.close()
   }
 
-  def evaluateBase(
+  override def evaluateBase(
     sc: SparkContext,
     evaluation: Evaluation,
     engineEvalDataSet: Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])],

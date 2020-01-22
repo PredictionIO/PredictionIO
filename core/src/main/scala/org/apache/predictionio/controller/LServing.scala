@@ -28,7 +28,7 @@ import org.apache.predictionio.core.BaseServing
   * @group Serving
   */
 abstract class LServing[Q, P] extends BaseServing[Q, P] {
-  def supplementBase(q: Q): Q = supplement(q)
+  override def supplementBase(q: Q): Q = supplement(q)
 
   /** :: Experimental ::
     * Implement this method to supplement the query before sending it to
@@ -40,7 +40,7 @@ abstract class LServing[Q, P] extends BaseServing[Q, P] {
   @Experimental
   def supplement(q: Q): Q = q
 
-  def serveBase(q: Q, ps: Seq[P]): P = {
+  override def serveBase(q: Q, ps: Seq[P]): P = {
     serve(q, ps)
   }
 

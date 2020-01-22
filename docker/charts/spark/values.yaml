@@ -1,0 +1,63 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# Default values for spark.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+Spark:
+  Path: "/spark"
+
+Master:
+  Name: master
+  Image: "bde2020/spark-master"
+  ImageTag: "2.2.2-hadoop2.7"
+  Replicas: 1
+  Component: "spark-master"
+  Cpu: "100m"
+  Memory: "512Mi"
+  ServicePort: 7077
+  ContainerPort: 7077
+  # Set Master JVM memory. Default 1g
+  # DaemonMemory: 1g
+  ServiceType: LoadBalancer
+
+WebUi:
+  Name: webui
+  ServicePort: 8080
+  ContainerPort: 8080
+  ServiceType: LoadBalancer
+
+Worker:
+  Name: worker
+  Image: "bde2020/spark-worker"
+  ImageTag: "2.2.2-hadoop2.7"
+  Replicas: 3
+  Component: "spark-worker"
+  Cpu: "100m"
+  Memory: "512Mi"
+  ContainerPort: 8081
+  # Set Worker JVM memory. Default 1g
+  # DaemonMemory: 1g
+  # Set how much total memory workers have to give executors
+  # ExecutorMemory: 1g
+  Autoscaling:
+    Enabled: false
+  ReplicasMax: 10
+  CpuTargetPercentage: 50
+

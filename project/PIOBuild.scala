@@ -27,7 +27,6 @@ object PIOBuild {
   val akkaVersion = settingKey[String]("The version of Akka used for building")
 
   val childrenPomExtra = settingKey[scala.xml.NodeSeq]("Extra POM data for children projects")
-  val elasticsearchSparkArtifact = settingKey[String]("Name of Elasticsearch-Spark artifact used for building")
 
   def binaryVersion(versionString: String): String = versionString.split('.').take(2).mkString(".")
   def majorVersion(versionString: String): Int = versionString.split('.')(0).toInt

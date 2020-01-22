@@ -24,14 +24,6 @@ replace `/home/abc` with your own home directory wherever you see it.
 
 ## Downloading Binary Distribution
 
-You can use pre-built binary distribution for Apache PredictionIO® if you are
-building against
-
-* Scala 2.11.12
-* Spark 2.1.3
-* Hadoop 2.7.7
-* Elasticsearch 5.6.9
-
 Download [binary release from an Apache
 mirror](https://www.apache.org/dyn/closer.lua/predictionio/<%= data.versions.pio
 %>/apache-predictionio-<%= data.versions.pio %>-bin.tar.gz).
@@ -100,9 +92,14 @@ and complete information.
 ### Building
 
 Run the following at the directory where you downloaded the source code to build
-Apache PredictionIO®.
-As an example, if you want to build PredictionIO to support Scala 2.11.12,
-Spark 2.4.0, and Elasticsearch 6.4.2, you can do
+
+Apache PredictionIO®. By default, the build will be against
+
+* Scala 2.11.8
+* Spark 2.1.1
+* Hadoop 2.7.7
+* Elasticsearch 5.6.9
+
 
 ```
 $ tar zxvf apache-predictionio-<%= data.versions.pio %>.tar.gz
@@ -126,17 +123,6 @@ Extract the binary distribution you have just built.
 ```
 $ tar zxvf PredictionIO-<%= data.versions.pio %>.tar.gz
 ```
-
-### Building against Different Versions of Dependencies
-
-Starting from version 0.11.0, PredictionIO can be built against different
-versions of dependencies. As of writing, one could build PredictionIO against
-these different dependencies:
-
-* Scala 2.11.x
-* Spark 2.0.x, 2.1.x, 2.2.x, 2.3.x, 2.4.x
-* Hadoop 2.6.x, 2.7.x
-* Elasticsearch 1.7.x(deprecated), 5.6.x, 6.x
 
 ## Installing Dependencies
 

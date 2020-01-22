@@ -103,9 +103,9 @@ abstract class AverageMetric[EI, Q, P, A]
   /** Implement this method to return a score that will be used for averaging
     * across all QPA tuples.
     */
-  def calculate(q: Q, p: P, a: A): Double
+  override def calculate(q: Q, p: P, a: A): Double
 
-  def calculate(sc: SparkContext, evalDataSet: Seq[(EI, RDD[(Q, P, A)])])
+  override def calculate(sc: SparkContext, evalDataSet: Seq[(EI, RDD[(Q, P, A)])])
   : Double = {
     calculateStats(sc, evalDataSet).mean
   }
@@ -128,9 +128,9 @@ abstract class OptionAverageMetric[EI, Q, P, A]
   /** Implement this method to return a score that will be used for averaging
     * across all QPA tuples.
     */
-  def calculate(q: Q, p: P, a: A): Option[Double]
+  override def calculate(q: Q, p: P, a: A): Option[Double]
 
-  def calculate(sc: SparkContext, evalDataSet: Seq[(EI, RDD[(Q, P, A)])])
+  override def calculate(sc: SparkContext, evalDataSet: Seq[(EI, RDD[(Q, P, A)])])
   : Double = {
     calculateStats(sc, evalDataSet).mean
   }
@@ -156,9 +156,9 @@ abstract class StdevMetric[EI, Q, P, A]
     * the stdev
     * across all QPA tuples.
     */
-  def calculate(q: Q, p: P, a: A): Double
+  override def calculate(q: Q, p: P, a: A): Double
 
-  def calculate(sc: SparkContext, evalDataSet: Seq[(EI, RDD[(Q, P, A)])])
+  override def calculate(sc: SparkContext, evalDataSet: Seq[(EI, RDD[(Q, P, A)])])
   : Double = {
     calculateStats(sc, evalDataSet).stdev
   }
@@ -184,9 +184,9 @@ abstract class OptionStdevMetric[EI, Q, P, A]
     * the stdev
     * across all QPA tuples.
     */
-  def calculate(q: Q, p: P, a: A): Option[Double]
+  override def calculate(q: Q, p: P, a: A): Option[Double]
 
-  def calculate(sc: SparkContext, evalDataSet: Seq[(EI, RDD[(Q, P, A)])])
+  override def calculate(sc: SparkContext, evalDataSet: Seq[(EI, RDD[(Q, P, A)])])
   : Double = {
     calculateStats(sc, evalDataSet).stdev
   }
@@ -208,9 +208,9 @@ abstract class SumMetric[EI, Q, P, A, R: ClassTag](implicit num: Numeric[R])
   /** Implement this method to return a score that will be used for summing
     * across all QPA tuples.
     */
-  def calculate(q: Q, p: P, a: A): R
+  override def calculate(q: Q, p: P, a: A): R
 
-  def calculate(sc: SparkContext, evalDataSet: Seq[(EI, RDD[(Q, P, A)])])
+  override def calculate(sc: SparkContext, evalDataSet: Seq[(EI, RDD[(Q, P, A)])])
   : R = {
     val union: RDD[R] = sc.union(
       evalDataSet.map { case (_, qpaRDD) =>
@@ -232,7 +232,7 @@ abstract class SumMetric[EI, Q, P, A, R: ClassTag](implicit num: Numeric[R])
   * @group Evaluation
   */
 class ZeroMetric[EI, Q, P, A] extends Metric[EI, Q, P, A, Double]() {
-   def calculate(sc: SparkContext, evalDataSet: Seq[(EI, RDD[(Q, P, A)])]): Double = 0.0
+  override def calculate(sc: SparkContext, evalDataSet: Seq[(EI, RDD[(Q, P, A)])]): Double = 0.0
 }
 
 /** Companion object of [[ZeroMetric]]

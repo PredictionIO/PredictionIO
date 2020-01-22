@@ -39,6 +39,7 @@ class ALSModel(
   extends MatrixFactorizationModel(rank, userFeatures, productFeatures)
   with PersistentModel[ALSAlgorithmParams] {
 
+  override
   def save(id: String, params: ALSAlgorithmParams,
     sc: SparkContext): Boolean = {
 

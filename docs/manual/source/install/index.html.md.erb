@@ -21,55 +21,34 @@ limitations under the License.
 
 ## Prerequisites
 
-It is **very important** to meet the minimum version of the following
+It is **very important** to meet the version of the following
 technologies that power Apache PredictionIO®.
 
-* Apache Hadoop 2.6.5 (optional, required only if YARN and HDFS are needed)
-* Apache Spark 2.0.2 for Hadoop 2.6
 * Java SE Development Kit 8
+* Apache Spark 2.0+
+* Apache Hadoop 2.6, 2.7
 
 and one of the following sets:
 
-* PostgreSQL 9.1
-
-or
-
-* MySQL 5.1
-
-or
-
-* Apache HBase 0.98.5
-* Elasticsearch 1.7.6
-
-WARNING: **Note that support for Scala 2.10 and Spark 1.6 were removed as of PredictionIO 0.14.0.
-Note that support for Elasticsearch 1 is deprecated as of PredictionIO 0.14.0.**
-
-If you are running on a single machine, we recommend a minimum of 2GB memory.
-
-INFO: If you are using Linux, Apache Spark local mode, which is the default
-operation mode without further configuration, may not work. In that case,
-configure your Apache Spark to run in [standalone cluster
-mode](http://spark.apache.org/docs/latest/spark-standalone.html).
+* PostgreSQL 9.6 or MySQL 5.1
+* Apache HBase 1.2
+* Elasticsearch 6.x, 5.6(deprecated)
 
 ## Installation
 
-* [Installing Apache PredictionIO](install-sourcecode.html)
+Pre-built for the following versions
 
-You may also use Docker to install Apache PredictionIO®
+* Scala 2.11
+* Apache Spark 2.4
+* Apache Hadoop 2.7
+* Elasticsearch 6.8
+
+* [Downloading Binary Distribution](install-sourcecode.html#downloading-binary-distribution)
+
+Building Apache PredictionIO
+
+* [Downloading Source Code](install-sourcecode.html#downloading-source-code)
+
+Docker
 
 * [Installing Apache PredictionIO with Docker](install-docker.html)
-
-
-[//]: # (* *(coming soon)* Installing Apache PredictionIO with Homebrew)
-
-
-
-WARNING: **0.8.2 contains schema changes from the previous versions, if you have
-installed the previous versions, you may need to clear both HBase and
-Elasticsearch. See more [here](/resources/upgrade/).**
-
-
-[//]: # (## Production Deployment)
-
-[//]: # (For production environment setup, please refer to [Production)
-[//]: # (Deployment](/production/deploy.html) guide.)

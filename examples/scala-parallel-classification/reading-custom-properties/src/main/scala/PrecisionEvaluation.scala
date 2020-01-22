@@ -25,6 +25,7 @@ case class Precision(label: Double)
   extends OptionAverageMetric[EmptyEvaluationInfo, Query, PredictedResult, ActualResult] {
   override def header: String = s"Precision(label = $label)"
 
+  override
   def calculate(query: Query, predicted: PredictedResult, actual: ActualResult)
   : Option[Double] = {
     if (predicted.label == label) {

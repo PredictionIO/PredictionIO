@@ -37,6 +37,7 @@ class NaiveBayesAlgorithm(val ap: AlgorithmParams)
 
   @transient lazy val logger = Logger[this.type]
 
+  override
   def train(sc: SparkContext, data: PreparedData): NaiveBayesModel = {
     // MLLib NaiveBayes cannot handle empty training data.
     require(data.labeledPoints.take(1).nonEmpty,
@@ -47,6 +48,7 @@ class NaiveBayesAlgorithm(val ap: AlgorithmParams)
     NaiveBayes.train(data.labeledPoints, ap.lambda)
   }
 
+  override
   def predict(model: NaiveBayesModel, query: Query): PredictedResult = {
     val label = model.predict(Vectors.dense(
       Array(query.attr0, query.attr1, query.attr2)
