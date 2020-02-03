@@ -331,28 +331,20 @@ object Console extends Logging {
       cmd("batchpredict").
         text("Use an engine instance to process batch predictions. This\n" +
               "command will pass all pass-through arguments to its underlying\n" +
-              "spark-submit command. All algorithm classes used in the engine\n" +
-              "must be serializable.").
+              "spark-submit command.").
         action { (_, c) =>
           c.copy(commands = c.commands :+ "batchpredict")
         } children(
           opt[String]("input") action { (x, c) =>
             c.copy(batchPredict = c.batchPredict.copy(inputFilePath = x))
           } text("Path to file containing queries; a multi-object JSON file\n" +
-                  "with one query object per line. Accepts any valid Hadoop\n" +
-                  "file URL. Default: batchpredict-input.json"),
+                  "with one query object per line.\n" +
+                  "Default: batchpredict-input.json"),
           opt[String]("output") action { (x, c) =>
             c.copy(batchPredict = c.batchPredict.copy(outputFilePath = x))
           } text("Path to file to receive results; a multi-object JSON file\n" +
                   "with one object per line, the prediction + original query.\n" +
-                  "Accepts any valid Hadoop file URL. Actual output will be\n" +
-                  "written as Hadoop partition files in a directory with the\n" +
-                  "output name. Default: batchpredict-output.json"),
-          opt[Int]("query-partitions") action { (x, c) =>
-            c.copy(batchPredict = c.batchPredict.copy(queryPartitions = Some(x)))
-          } text("Limit concurrency of predictions by setting the number\n" +
-                  "of partitions used internally for the RDD of queries.\n" +
-                  "Default: number created by Spark context's `textFile`"),
+                  "Default: batchpredict-output.json"),
           opt[String]("engine-instance-id") action { (x, c) =>
             c.copy(engineInstanceId = Some(x))
           } text("Engine instance ID."),
@@ -696,7 +688,6 @@ object Console extends Logging {
             BatchPredictArgs(
               ca.batchPredict.inputFilePath,
               ca.batchPredict.outputFilePath,
-              ca.batchPredict.queryPartitions,
               ca.workflow.variantJson,
               ca.workflow.jsonExtractor),
             ca.spark,

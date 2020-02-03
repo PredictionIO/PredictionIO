@@ -18,7 +18,8 @@
 
 package org.apache.predictionio.workflow
 
-import java.io.Serializable
+import java.io.{BufferedWriter, File, FileWriter, Serializable}
+import java.net.URI
 
 import com.twitter.bijection.Injection
 import com.twitter.chill.{KryoBase, KryoInjection, ScalaKryoInstantiator}
@@ -32,12 +33,13 @@ import org.apache.predictionio.workflow.CleanupFunctions
 import org.apache.spark.rdd.RDD
 import org.json4s._
 import org.json4s.native.JsonMethods._
+import scala.collection.parallel.ParSeq
+import scala.io.Source
 import scala.language.existentials
 
 case class BatchPredictConfig(
   inputFilePath: String = "batchpredict-input.json",
   outputFilePath: String = "batchpredict-output.json",
-  queryPartitions: Option[Int] = None,
   engineInstanceId: String = "",
   engineId: Option[String] = None,
   engineVersion: Option[String] = None,
@@ -78,10 +80,6 @@ object BatchPredict extends Logging {
         c.copy(outputFilePath = x)
       } text("Path to file containing output predictions; a " +
         "multi-object JSON file with one object per line.")
-      opt[Int]("query-partitions") action { (x, c) =>
-        c.copy(queryPartitions = Some(x))
-      } text("Limit concurrency of predictions by setting the number " +
-        "of partitions used internally for the RDD of queries.")
       opt[String]("engineId") action { (x, c) =>
         c.copy(engineId = Some(x))
       } text("Engine ID.")
@@ -148,6 +146,14 @@ object BatchPredict extends Logging {
     engine: Engine[_, _, _, Q, P, _]): Unit = {
 
     try {
+      val outputFile = try {
+        new File(new URI(config.outputFilePath))
+      } catch {
+        case e: Throwable => new File(config.outputFilePath)
+      }
+      outputFile.delete
+      outputFile.createNewFile
+
       val engineParams = engine.engineInstanceToEngineParams(
         engineInstance, config.jsonExtractor)
 
@@ -180,21 +186,14 @@ object BatchPredict extends Logging {
       val serving = Doer(engine.servingClassMap(servingParamsWithName._1),
         servingParamsWithName._2)
 
-      val runSparkContext = WorkflowContext(
-        batch = engineInstance.engineFactory,
-        executorEnv = engineInstance.env,
-        mode = "Batch Predict (runner)",
-        sparkEnv = engineInstance.sparkConf)
+      val inputQueries: ParSeq[String] = Source.
+        fromURL(config.inputFilePath).
+        getLines.
+        filter(_.trim.nonEmpty).
+        toSeq.
+        par
 
-      val inputRDD: RDD[String] = runSparkContext.
-        textFile(config.inputFilePath).
-        filter(_.trim.nonEmpty)
-      val queriesRDD: RDD[String] = config.queryPartitions match {
-        case Some(p) => inputRDD.repartition(p)
-        case None => inputRDD
-      }
-
-      val predictionsRDD: RDD[String] = queriesRDD.map { queryString =>
+      val parallelPredictions: ParSeq[String] = inputQueries.map { queryString =>
         val jsonExtractorOption = config.jsonExtractor
         // Extract Query from Json
         val query = JsonExtractor.extract(
@@ -226,7 +225,14 @@ object BatchPredict extends Logging {
         compact(render(predictionJValue))
       }
 
-      predictionsRDD.saveAsTextFile(config.outputFilePath)
+      val output = new BufferedWriter(new FileWriter(outputFile, true))
+      try {
+        parallelPredictions.foreach { line =>
+          output.write(s"${line}\n")
+        }
+      } finally {
+        output.close
+      }
 
     } finally {
       CleanupFunctions.run()
