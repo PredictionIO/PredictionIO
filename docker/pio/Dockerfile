@@ -50,7 +50,7 @@ RUN bash ./make-distribution.sh \
 RUN cp /etc/predictionio/pio-env.sh /etc/predictionio/pio-env.sh.orig && \
     echo "#!/usr/bin/env bash" > /etc/predictionio/pio-env.sh
 RUN curl -o $PIO_HOME/lib/postgresql-$PGSQL_VERSION.jar \
-    http://central.maven.org/maven2/org/postgresql/postgresql/$PGSQL_VERSION/postgresql-$PGSQL_VERSION.jar && \
+    https://repo1.maven.org/maven2/org/postgresql/postgresql/$PGSQL_VERSION/postgresql-$PGSQL_VERSION.jar && \
     echo "POSTGRES_JDBC_DRIVER=$PIO_HOME/lib/postgresql-$PGSQL_VERSION.jar" >> /etc/predictionio/pio-env.sh && \
     echo "MYSQL_JDBC_DRIVER=$PIO_HOME/lib/mysql-connector-java-$MYSQL_VERSION.jar" >> /etc/predictionio/pio-env.sh
 

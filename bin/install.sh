@@ -391,7 +391,7 @@ case $source_setup in
       echo -e "\033[1;31mPlease install MySQL manually!\033[0m"
       exit 4
     fi
-    curl -O http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.37/mysql-connector-java-${MYSQL_VERSION}.jar
+    curl -O https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.37/mysql-connector-java-${MYSQL_VERSION}.jar
     mv mysql-connector-java-${MYSQL_VERSION}.jar ${pio_dir}/lib/
     ;;
   "$ES_HB")
