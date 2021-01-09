@@ -19,7 +19,8 @@ import PIOBuild._
 
 name := "apache-predictionio-data-elasticsearch"
 
-elasticsearchVersion := (if (majorVersion(elasticsearchVersion.value) < 5) "5.6.9" else elasticsearchVersion.value)
+/* elasticsearchVersion := (if (majorVersion(elasticsearchVersion.value) < 5) "5.6.9" else elasticsearchVersion.value) */
+elasticsearchVersion := "5.6.9"
 
 libraryDependencies ++= Seq(
   "org.apache.predictionio" %% "apache-predictionio-core" % version.value % "provided",

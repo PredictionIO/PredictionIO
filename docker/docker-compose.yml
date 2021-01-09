@@ -16,7 +16,7 @@
 version: "3"
 services:
   pio:
-    image: predictionio/pio:latest
+    image: vking34/pio:latest
     ports:
       - 7070:7070
       - 8000:8000

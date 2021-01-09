@@ -59,6 +59,6 @@ if [ x"$PIO_RUN_FILE" != "x" ] ; then
   sh $PIO_RUN_FILE
 else
   # Start PIO Event Server
-  $PIO_HOME/bin/pio eventserver
+  $PIO_HOME/bin/pio eventserver -Xmx
 fi
 

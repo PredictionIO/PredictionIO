@@ -17,8 +17,8 @@
 
 FROM openjdk:8
 
-ARG PIO_GIT_URL=https://github.com/apache/predictionio.git
-ARG PIO_TAG=v0.13.0
+ARG PIO_GIT_URL=https://github.com/vking34/predictionio.git
+ARG PIO_TAG=v0.14.0
 ENV SCALA_VERSION=2.11.12
 ENV SPARK_VERSION=2.2.3
 ENV HADOOP_VERSION=2.7.7
@@ -34,6 +34,19 @@ RUN apt-get update && \
 
 WORKDIR /opt/src
 RUN git clone -b $PIO_TAG $PIO_GIT_URL
+
+#
+RUN mkdir -p /root/.sbt/launchers/0.13.15/ && \
+    mkdir /root/.sbt/launchers/0.13.13/ && \
+    mkdir /root/.sbt/launchers/1.2.3/ && \
+    mkdir /root/.sbt/launchers/1.2.8/
+
+COPY ./sbt-0.13.15-bin/ /root/.sbt/launchers/0.13.15/
+COPY ./sbt-0.13.13-bin/ /root/.sbt/launchers/0.13.13/
+COPY ./sbt-1.2.3-bin/ /root/.sbt/launchers/1.2.3/
+COPY ./sbt-1.2.8-bin/ /root/.sbt/launchers/1.2.8/
+#
+
 WORKDIR /opt/src/predictionio
 RUN bash ./make-distribution.sh \
       -Dscala.version=$SCALA_VERSION \
@@ -49,14 +62,20 @@ RUN bash ./make-distribution.sh \
 
 RUN cp /etc/predictionio/pio-env.sh /etc/predictionio/pio-env.sh.orig && \
     echo "#!/usr/bin/env bash" > /etc/predictionio/pio-env.sh
+# RUN curl -o $PIO_HOME/lib/postgresql-$PGSQL_VERSION.jar \
+#     http://central.maven.org/maven2/org/postgresql/postgresql/$PGSQL_VERSION/postgresql-$PGSQL_VERSION.jar && \
+#     echo "POSTGRES_JDBC_DRIVER=$PIO_HOME/lib/postgresql-$PGSQL_VERSION.jar" >> /etc/predictionio/pio-env.sh && \
+#     echo "MYSQL_JDBC_DRIVER=$PIO_HOME/lib/mysql-connector-java-$MYSQL_VERSION.jar" >> /etc/predictionio/pio-env.sh
+
 RUN curl -o $PIO_HOME/lib/postgresql-$PGSQL_VERSION.jar \
-    http://central.maven.org/maven2/org/postgresql/postgresql/$PGSQL_VERSION/postgresql-$PGSQL_VERSION.jar && \
+    https://repo1.maven.org/maven2/org/postgresql/postgresql/$PGSQL_VERSION/postgresql-$PGSQL_VERSION.jar && \
     echo "POSTGRES_JDBC_DRIVER=$PIO_HOME/lib/postgresql-$PGSQL_VERSION.jar" >> /etc/predictionio/pio-env.sh && \
     echo "MYSQL_JDBC_DRIVER=$PIO_HOME/lib/mysql-connector-java-$MYSQL_VERSION.jar" >> /etc/predictionio/pio-env.sh
 
+
 WORKDIR /usr/share
 RUN curl -o /opt/src/spark-$SPARK_VERSION.tgz \
-    http://www-us.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop2.7.tgz && \
+    http://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop2.7.tgz && \
     tar zxvf /opt/src/spark-$SPARK_VERSION.tgz && \
     echo "SPARK_HOME="`pwd`/`ls -d spark*` >> /etc/predictionio/pio-env.sh && \
     rm -rf /opt/src
